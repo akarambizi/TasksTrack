@@ -5,7 +5,7 @@ TasksTrack is a task tracking app with integrated Pomodoro timer functionality t
 ## Features
 
 - **Task Tracking:** Manage and track tasks.
-- **Pomodoro Timer:** Boost focus during work sessions.
+- **Pomodoro Timer:** Enhance focus during work sessions.
 - **User Authentication:** Register, log in, and log out securely.
 - **Session History:** Review completed Pomodoro sessions.
 

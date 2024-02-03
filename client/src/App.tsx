@@ -1,9 +1,7 @@
+import { ModeToggle } from './components/ModeToggle';
+
 const App = () => {
-    return (
-        <>
-            <p>TasksTrack</p>
-        </>
-    );
+    return <ModeToggle></ModeToggle>;
 };
 
 export default App;

@@ -1,7 +1,13 @@
-import { ModeToggle } from './components/ModeToggle';
+import { ModeToggle } from '@/components/ModeToggle';
+import { TasksTable } from './components/TasksTable/TasksTable';
 
 const App = () => {
-    return <ModeToggle></ModeToggle>;
+    return (
+        <>
+            <ModeToggle />
+            <TasksTable />
+        </>
+    );
 };
 
 export default App;

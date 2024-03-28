@@ -1,12 +1,11 @@
-import { ModeToggle } from '@/components/ModeToggle';
-import { TasksTable } from './components/TasksTable/TasksTable';
+import { Dashboard } from './components/DashBoard/DashBoard';
+import { BrowserRouter as Router } from "react-router-dom";
 
 const App = () => {
     return (
-        <>
-            <ModeToggle />
-            <TasksTable />
-        </>
+        <Router>
+            <Dashboard />
+        </Router>
     );
 };
 

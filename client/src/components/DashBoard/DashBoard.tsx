@@ -4,21 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import {
-    Bell,
-    CircleUser,
-    Home,
-    LineChart,
-    Menu,
-    Package,
-    Package2,
-    Search,
-    ShoppingCart,
-    Users
-} from 'lucide-react';
+import { Bell, CircleUser, Home, LineChart, Menu, Package, Package2, Search, ShoppingCart, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ModeToggle } from '../ModeToggle';
 import { TasksTable } from '../TasksTable/TasksTable';
+import { HabitsCardList } from '../Habits/HabitsCardList';
 
 export function Dashboard() {
     return (
@@ -48,7 +38,7 @@ export function Dashboard() {
                             </Link>
                             <Link to="#" className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary">
                                 <Package className="h-4 w-4" />
-                                Products{' '}
+                                Tasks{' '}
                             </Link>
                             <Link to="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
                                 <Users className="h-4 w-4" />
@@ -101,7 +91,7 @@ export function Dashboard() {
                                 </Link>
                                 <Link to="#" className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground">
                                     <Package className="h-5 w-5" />
-                                    Products
+                                    Tasks
                                 </Link>
                                 <Link to="#" className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground">
                                     <Users className="h-5 w-5" />
@@ -157,14 +147,15 @@ export function Dashboard() {
                     <div className="flex items-center">
                         <h1 className="text-lg font-semibold md:text-2xl">Tasks</h1>
                     </div>
+                    <HabitsCardList />
                     <div className="rounded-lg border shadow-sm">
-                        <TasksTable />∏
+                        <TasksTable />
                     </div>
                     <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
                         <div className="flex flex-col items-center gap-1 text-center">
-                            <h3 className="text-2xl font-bold tracking-tight">You have no products</h3>
-                            <p className="text-sm text-muted-foreground">You can start selling as soon as you add a product.</p>
-                            <Button className="mt-4">Add Product</Button>
+                            <h3 className="text-2xl font-bold tracking-tight">You have no tasks</h3>
+                            <p className="text-sm text-muted-foreground">You can start selling as soon as you add a task.</p>
+                            <Button className="mt-4">Add Task</Button>
                         </div>
                     </div>
                 </main>

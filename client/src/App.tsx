@@ -1,14 +1,16 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { SideBarNav } from './components/Sidebar/SideBarNav';
-import { Header } from './components/Header/Header';
-import { TasksContainer } from './components/Tasks/TasksContainer';
-import { Login } from './components/Auth/ Login';
+import { SideBarNav } from '@/components/Sidebar/SideBarNav';
+import { Header } from '@/components/Header/Header';
+import { TasksContainer } from '@/components/Tasks/TasksContainer';
+import { Login } from '@/components/Auth/ Login';
+import { SignUp } from '@/components/Auth/SignUp';
 
 const App = () => {
     return (
         <Router>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
                 <Route
                     path="*"
                     element={

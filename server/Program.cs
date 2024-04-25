@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
-        builder.WithOrigins("http://localhost:3001") // Replace with your client's origin
+                builder.WithOrigins("http://localhost:3000", "http://localhost:3001")
                .AllowAnyHeader()
                .AllowAnyMethod());
 });

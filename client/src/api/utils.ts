@@ -4,8 +4,9 @@
  * @returns {string} The api url.
  */
 export const getUrl = (path: string) => {
-    let baseUrl;
-    switch (process.env.REACT_APP_API_ENV) {
+    let baseUrl = '';
+    const env: string = "dev"; // process.env.NODE_ENV;
+    switch (env) {
         case 'prod':
             baseUrl = '';
             break;

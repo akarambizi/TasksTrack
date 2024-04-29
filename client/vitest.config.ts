@@ -10,10 +10,7 @@ export default mergeConfig(
             coverage: {
                 provider: 'istanbul',
                 include: ['src/components/**/*.{js,jsx,ts,tsx}'],
-                exclude: [
-                    "src/components/**/*.{types,stories,constants,test,spec}.{js,jsx,ts,tsx}",
-                    "src/components/ui"
-                ],
+                exclude: ['src/components/**/*.{types,stories,constants,test,spec}.{js,jsx,ts,tsx}', 'src/components/ui'],
                 thresholds: {
                     global: {
                         branches: 80,

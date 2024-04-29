@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export const HabitsCard = () => {
     return (
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden" data-testid="habits-card">
             <CardHeader className='p-1'>
                 <div className="grid gap-2" >
                     <img

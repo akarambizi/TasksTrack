@@ -9,6 +9,7 @@ project.fragment.lock.json
 *.suo
 *.userosscache
 *.sln.docstates
+.vs/
 
 # Build results
 [Dd]ebug/

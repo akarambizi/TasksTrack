@@ -14,38 +14,38 @@ namespace TasksTrack.Controllers
             _service = service;
         }
 
-        [HttpGet("users")]
+        [HttpGet("api/users")]
         public ActionResult<IEnumerable<string>> GetUsers()
         {
             var users = new List<string> { "User1", "User2", "User3" };
             return Ok(users);
         }
 
-        [HttpGet("users/{id}")]
+        [HttpGet("api/users/{id}")]
         public ActionResult<string> GetUser(int id)
         {
             var user = "User" + id;
             return Ok(user);
         }
 
-        [HttpPost("users")]
+        [HttpPost("api/users")]
         public ActionResult<string> AddUser()
         {
             var user = "New User";
             return Ok(user);
         }
 
-        [HttpPut("users/{id}")]
+        [HttpPut("api/users/{id}")]
         public ActionResult<string> UpdateUser(int id)
         {
             var user = "Updated User" + id;
             return Ok(user);
         }
 
-        [HttpDelete("users/{id}")]
+        [HttpDelete("api/users/{id}")]
         public ActionResult<string> DeleteUser(int id)
         {
-            return Ok("User deleted");
+            return Ok("api/user deleted");
         }
     }
 }

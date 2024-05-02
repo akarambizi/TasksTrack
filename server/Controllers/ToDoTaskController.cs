@@ -13,7 +13,7 @@ namespace TasksTrack.Controllers
         //     _toDoTaskService = toDoTaskService;
         // }
 
-        [HttpGet("tasks")]
+        [HttpGet("api/tasks")]
         public IEnumerable<ToDoTask> GetAll()
         {
             return new List<ToDoTask>
@@ -23,25 +23,25 @@ namespace TasksTrack.Controllers
                     };
         }
 
-        [HttpGet("tasks/{id}")]
+        [HttpGet("api/tasks/{id}")]
         public ToDoTask GetById(int id)
         {
             return new ToDoTask { Id = id, Title = $"Task {id}", Completed = false, CreatedBy = "User1", CreatedDate = "2021-01-01", Description = "Task 1 description" };
         }
 
-        [HttpPost("tasks")]
+        [HttpPost("api/tasks")]
         public void Add([FromBody] ToDoTask toDoTask)
         {
             return;
         }
 
-        [HttpPut("tasks/{id}")]
+        [HttpPut("api/tasks/{id}")]
         public void Update([FromBody] ToDoTask toDoTask)
         {
             return;
         }
 
-        [HttpDelete("tasks/{id}")]
+        [HttpDelete("api/tasks/{id}")]
         public void Delete(int id)
         {
             return;

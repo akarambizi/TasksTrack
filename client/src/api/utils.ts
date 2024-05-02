@@ -5,7 +5,7 @@
  */
 export const getUrl = (path: string) => {
     let baseUrl = '';
-    const env: string = "dev"; // process.env.NODE_ENV;
+    const env = process.env.NODE_ENV || 'dev';
     switch (env) {
         case 'prod':
             baseUrl = '';

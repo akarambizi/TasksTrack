@@ -9,7 +9,7 @@ import { getUrl } from './utils';
  */
 export const getTodoTaskData = async (query = ''): Promise<IToDoTask[]> => {
     try {
-        const url = getUrl('/tasks');
+        const url = getUrl('/api/tasks');
         const response = await axios.get(`${url}${query}`);
         return response?.data ?? [];
     } catch (error) {

@@ -11,3 +11,6 @@ docker:
 
 github:
   - .github/**/*
+
+documentation:
+  - '**/*.md'

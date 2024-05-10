@@ -1,0 +1,62 @@
+# Specifies the version of the Docker Compose file format. '3.8' is the latest version.
+version: '3.8'
+
+services:
+    # Defines the client service.
+    client:
+        # Specifies the path to the Dockerfile for building the client's Docker image.
+        # './client' is the directory containing the Dockerfile for the client.
+        build: ./client
+        # Maps port 3000 of the host machine to port 3000 inside the client container.
+        # This allows you to access the client service on localhost:3000.
+        ports:
+            - 3000:3000
+        # Mounts the host's ./client directory and a named volume to specific directories inside the client container.
+        # This allows for hot reloading of code changes.
+        volumes:
+            - ./client:/app
+            - client_node_modules:/app/node_modules
+        # Specifies the command to start the client application inside the container.
+        # 'yarn dev --host' starts the client in development mode and allows connections from any host.
+        command: yarn dev --host
+
+    server:
+        # Specifies the path to the Dockerfile for building the server's Docker image.
+        # './server' is the directory containing the Dockerfile for the server.
+        build: ./server
+        # Maps port 5206 of the host machine to port 5206 inside the server container.
+        # This allows you to access the server service on localhost:5206.
+        ports:
+            - 5206:5206
+        # Mounts the host's ./server directory to a specific directory inside the server container.
+        # This allows for hot reloading of code changes.
+        volumes:
+            - ./server:/app
+        # Specifies the command to start the server application inside the container.
+        # 'dotnet watch run --urls http://*:5206' starts the server in watch mode and allows connections on port 5206 from any host.
+        command: dotnet watch run --urls http://*:5206
+        # Specifies that the server service should be started only after the db service has been started.
+        # This ensures that the database is ready before the server starts.
+        depends_on:
+            - db
+
+    db:
+        # Specifies the Docker image to use for the db service.
+        # 'postgres:13' is the Docker image for PostgreSQL version 13.
+        image: postgres:13
+        # Sets environment variables inside the db container. These are used by the PostgreSQL server to set up the initial database and user.
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: mydatabase
+        # Mounts a named volume to a specific directory inside the db container.
+        # This is where PostgreSQL stores its data. The named volume 'postgres_data' persists data across container restarts.
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+
+# Defines the named volumes used by services.
+volumes:
+    # Defines a volume named postgres_data. This is used by the db service to persist database data.
+    postgres_data:
+    # This is used by the client service to cache the node_modules directory and improve build performance.
+    client_node_modules:

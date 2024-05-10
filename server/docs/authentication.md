@@ -32,6 +32,19 @@ The objective of this document is to outline the design of the authentication sy
 - `200 OK` on successful registration
 - `400 Bad Request` if the username or email is already taken
 
+```mermaid
+graph TD;
+    Start((Start)) --> UserRegistration[User Registration]
+    UserRegistration -->|User Details| ValidateUserDetails[Validate User Details]
+    ValidateUserDetails -->|Valid| CheckUserExists[Check if User Exists]
+    CheckUserExists -->|Exists| ReturnError[User Already Exists]
+    CheckUserExists -->|Not Exists| CreateUser[Create User]
+    CreateUser -->|Success| GenerateJWT[Generate JWT]
+    GenerateJWT --> SendJWT[Send JWT to User]
+    CreateUser -->|Failure| ReturnError2[Failed to Create User]
+    ValidateUserDetails -->|Invalid| ReturnError3[Invalid User Details]
+```
+
 #### User Login
 
 - **Endpoint:** `/api/auth/login`
@@ -49,6 +62,15 @@ The objective of this document is to outline the design of the authentication sy
 - `200 OK` on successful login
 - `401 Unauthorized` if the credentials are incorrect
 
+```mermaid
+graph TD;
+    Start((Start)) --> UserLogin[User Login]
+    UserLogin -->|User Credentials| ValidateUserCredentials[Validate User Credentials]
+    ValidateUserCredentials -->|Valid| GenerateJWT[Generate JWT]
+    GenerateJWT --> SendJWT[Send JWT to User]
+    ValidateUserCredentials -->|Invalid| ReturnError[Invalid Credentials]
+```
+
 #### Password Reset
 
 - **Endpoint:** `/api/auth/reset-password`
@@ -65,6 +87,14 @@ The objective of this document is to outline the design of the authentication sy
 - `200 OK` if the password reset email is sent successfully
 - `404 Not Found` if the email is not associated with any user account
 
+```mermaid
+graph TD;
+    Start((Start)) --> PasswordReset[Password Reset]
+    PasswordReset -->|User Email| SendResetEmail[Send Reset Email]
+    SendResetEmail -->|Success| ReturnSuccess[Return Success]
+    SendResetEmail -->|Failure| ReturnError[User Not Found]
+```
+
 #### Token Generation
 
 - JWT (JSON Web Token) will be used for token-based authentication.
@@ -78,11 +108,26 @@ The objective of this document is to outline the design of the authentication sy
 - User passwords will be hashed using a strong hashing algorithm before storing them in the database.
 - `BCrypt` will be used for password hashing.
 
+```mermaid
+graph TD;
+    Start((Start)) --> PasswordHashing[Password Hashing]
+    PasswordHashing -->|Strong Hashing Algorithm| HashPassword[Hash Password]
+    HashPassword -->|BCrypt| StoreHashedPassword[Store Hashed Password]
+```
+
 #### JWT (JSON Web Token)
 
 - Tokens will be signed using a secure key.
 - Tokens will have an expiry time.
 - Tokens will be transmitted securely over HTTPS.
+
+```mermaid
+graph TD;
+    Start((Start)) --> TokenGeneration[Token Generation]
+    TokenGeneration -->|Sign with Secure Key| SignToken[Sign Token]
+    SignToken -->|Expiry Time| SetTokenExpiry[Set Token Expiry]
+    SetTokenExpiry -->|HTTPS| TransmitToken[Transmit Token]
+```
 
 ### Database Schema
 

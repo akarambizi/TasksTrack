@@ -1,0 +1,13 @@
+backend:
+  - server/**/*
+
+frontend:
+  - client/**/*
+
+docker:
+  - docker-compose.yml
+  - client/Dockerfile
+  - server/Dockerfile
+
+github:
+  - .github/**/*

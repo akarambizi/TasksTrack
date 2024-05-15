@@ -39,6 +39,22 @@ namespace TasksTrack.Tests.Services
         [Fact]
         public void GetAll_ShouldReturnAllTasks()
         {
+            // Arrange
+            var expectedTasks = new List<ToDoTask>
+            {
+                new ToDoTask {
+                    Id = 1,
+                Title = "Test Task",
+                CreatedDate = "2021-01-01",
+                CreatedBy = "Test User" },
+                new ToDoTask {
+                    Id = 2,
+                Title = "Test Task 2",
+                CreatedDate = "2021-01-01",
+                CreatedBy = "Test User" }
+            };
+            _repositoryMock.Setup(r => r.GetAll()).Returns(expectedTasks);
+
             // Act
             var tasks = _service.GetAll();
 

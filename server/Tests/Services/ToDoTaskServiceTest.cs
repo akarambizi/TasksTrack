@@ -3,6 +3,8 @@ using Xunit;
 using TasksTrack.Models;
 using TasksTrack.Services;
 using TasksTrack.Repositories;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TasksTrack.Tests.Services
 {

@@ -22,3 +22,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+
+# Coverage results
+coverage
+.DS_Store

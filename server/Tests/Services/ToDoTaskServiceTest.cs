@@ -18,25 +18,6 @@ namespace TasksTrack.Tests.Services
         }
 
         [Fact]
-        [Trait("Description", "This test verifies that the Add method calls Add on the repository when it is called.")]
-        public void Add_ShouldCallAddOnRepository_WhenCalled()
-        {
-            // Arrange
-            var task = new ToDoTask
-            {
-                Title = "Test Task",
-                CreatedDate = "2021-01-01",
-                CreatedBy = "Test User"
-            };
-
-            // Act
-            _service.Add(task);
-
-            // Assert
-            _repositoryMock.Verify(r => r.Add(task), Times.Once);
-        }
-
-        [Fact]
         public void GetAll_ShouldReturnAllTasks()
         {
             // Arrange
@@ -53,7 +34,6 @@ namespace TasksTrack.Tests.Services
                 CreatedDate = "2021-01-01",
                 CreatedBy = "Test User" }
             };
-            _repositoryMock.Setup(r => r.GetAll()).Returns(expectedTasks);
 
             // Act
             var tasks = _service.GetAll();

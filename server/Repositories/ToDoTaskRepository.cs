@@ -4,7 +4,7 @@ namespace TasksTrack.Repositories
 {
     public class ToDoTaskRepository : IToDoTaskRepository
     {
-        private readonly TasksTrackContext _context;
+        // private readonly TasksTrackContext _context;
 
         public ToDoTaskRepository(TasksTrackContext context)
         {

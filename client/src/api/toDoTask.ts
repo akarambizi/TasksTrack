@@ -5,7 +5,7 @@ import { getUrl } from './utils';
 /**
  * Gets todo task data.
  * @param {string} query - The search query string.
- * @returns {Promise<ICity[]>}  array of cities results.
+ * @returns {Promise<IToDoTask[]>}  array of todo tasks results.
  */
 export const getTodoTaskData = async (query = ''): Promise<IToDoTask[]> => {
     try {

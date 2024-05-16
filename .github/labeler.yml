@@ -14,3 +14,6 @@ github:
 
 documentation:
   - '**/*.md'
+
+migrations:
+  - server/Migrations/**

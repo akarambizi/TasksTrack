@@ -16,4 +16,4 @@ documentation:
   - '**/*.md'
 
 migrations:
-  - server/Migrations/**
+  - server/Migrations/**/*

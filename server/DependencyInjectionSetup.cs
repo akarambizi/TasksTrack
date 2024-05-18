@@ -12,10 +12,6 @@ public static class DependencyInjectionSetup
         services.AddScoped<IToDoTaskService, ToDoTaskService>();
         services.AddScoped<IToDoTaskRepository, ToDoTaskRepository>();
 
-        // Add DbContext
-        services.AddDbContext<TasksTrackContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
         return services;
     }
 }

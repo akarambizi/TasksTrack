@@ -1,16 +1,23 @@
 backend:
-  - server/**/*
+    - changed-files:
+          - any-glob-to-any-file: ['server/**/*']
 
 frontend:
-  - client/**/*
+    - changed-files:
+          - any-glob-to-any-file: ['client/**/*']
 
 docker:
-  - docker-compose.yml
-  - client/Dockerfile
-  - server/Dockerfile
+    - changed-files:
+          - any-glob-to-any-file: ['docker-compose.yml', 'client/Dockerfile', 'server/Dockerfile']
 
 github:
-  - .github/**/*
+    - changed-files:
+          - any-glob-to-any-file: ['.github/**/*']
 
 documentation:
-  - '**/*.md'
+    - changed-files:
+          - any-glob-to-any-file: ["'**/*.md'"]
+
+migrations:
+    - changed-files:
+          - any-glob-to-any-file: ['server/Migrations/**/*']

@@ -16,7 +16,7 @@
 
 - [x] Create user registration form
 - [x] Create user login form
-- [ ] Create password reset form
+- [x] Create password reset form
 - [ ] Implement form validation for user inputs
 - [ ] Handle API requests and responses
 - [ ] Implement error handling and display error messages to users

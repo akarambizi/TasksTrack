@@ -2,7 +2,7 @@ import { useState, ChangeEvent } from 'react';
 
 export interface IFormData {
   email: string;
-  password: string;
+  password?: string;
 }
 
 export const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
@@ -15,7 +15,7 @@ export const validateForm = (formData: IFormData) => {
     errors.email = 'Invalid email address';
   }
 
-  if (!validatePassword(formData.password)) {
+  if (formData?.password && !validatePassword(formData?.password)) {
     errors.password = 'Password must be at least 6 characters long';
   }
 

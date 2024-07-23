@@ -18,8 +18,8 @@
 - [x] Create user login form
 - [x] Create password reset form
 - [x] Implement form validation for user inputs
+- [x] Implement error handling and display error messages to users
 - [ ] Handle API requests and responses
-- [ ] Implement error handling and display error messages to users
 
 ## 2. Task Management
 

@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useForm } from '@/hooks';
 import { Link } from 'react-router-dom';
-import { useForm } from './Auth.hooks';
 
 export const Login = () => {
     const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' });

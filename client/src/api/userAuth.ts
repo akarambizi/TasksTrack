@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IUserData } from './userAuth.types';
+import { IPasswordResetData, IUserData } from './userAuth.types';
 import { getUrl } from './utils';
 
 /**
@@ -71,15 +71,14 @@ export const requestPasswordReset = async (email: string) => {
 
 /**
  * Resets the user's password using a token.
- * @param {string} newPassword - The new password to set.
- * @param {string} token - The token used for password reset.
+ * @param {IPasswordResetData} data - The data including the new password and token.
  * @returns {Promise<any>} - A promise that resolves to the response data.
  * @throws {Error} - If the password reset fails.
  */
-export const resetPasswordWithToken = async (newPassword: string, token: string) => {
+export const resetPasswordWithToken = async (data: IPasswordResetData) => {
     try {
         const url = getUrl('/api/auth/reset-password-with-token');
-        const response = await axios.post(url, { newPassword, token });
+        const response = await axios.post(url, data);
         return response.data;
     } catch (error) {
         console.error('Password reset failed:', error);

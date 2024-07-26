@@ -1,11 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useForm } from '@/hooks';
 import { Link } from 'react-router-dom';
 
 export const Login = () => {
+    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' });
+
     return (
-        <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -15,16 +18,18 @@ export const Login = () => {
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="m@example.com" required />
+                            <Input name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
+                            {errors.email && <p className="text-red-500">{errors.email}</p>}
                         </div>
                         <div className="grid gap-2">
                             <div className="flex items-center">
                                 <Label htmlFor="password">Password</Label>
-                                <Link to="/forgot-password" className="ml-auto inline-block text-sm underline">
+                                <Link to="/reset-password" className="ml-auto inline-block text-sm underline">
                                     Forgot your password?
                                 </Link>
                             </div>
-                            <Input id="password" type="password" required />
+                            <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
+                            {errors.password && <p className="text-red-500">{errors.password}</p>}
                         </div>
                         <Button type="submit" className="w-full">
                             Login
@@ -50,6 +55,6 @@ export const Login = () => {
                     width="100"
                 />
             </div>
-        </div>
+        </form>
     );
 };

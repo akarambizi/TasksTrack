@@ -7,19 +7,20 @@
 - [ ] Implement user registration (`POST /api/auth/register`)
 - [ ] Implement user login (`POST /api/auth/login`)
 - [ ] Implement user logout (`POST /api/auth/logout`)
-- [ ] Implement password reset functionality (`POST /api/auth/reset-password`)
+- [ ] Implement password reset functionality (`POST /api/auth/request-password-reset`)
+- [ ] Implement password reset functionality (`POST /api/auth/reset-password-with-token`)
 - [ ] Implement authentication middleware to protect routes
 - [ ] Integrate authentication with database
 - [ ] Handle authentication errors and validation errors
 
 ### 1.2 Frontend
 
-- [ ] Create user registration form
-- [ ] Create user login form
-- [ ] Create password reset form
-- [ ] Implement form validation for user inputs
+- [x] Create user registration form
+- [x] Create user login form
+- [x] Create password reset form
+- [x] Implement form validation for user inputs
+- [x] Implement error handling and display error messages to users
 - [ ] Handle API requests and responses
-- [ ] Implement error handling and display error messages to users
 
 ## 2. Task Management
 

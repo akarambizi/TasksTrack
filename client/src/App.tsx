@@ -1,4 +1,4 @@
-import { Header, Login, SideBarNav, SignUp, TasksContainer } from '@/components';
+import { Header, Login, ResetPassword, SideBarNav, SignUp, TasksContainer } from '@/components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ const App = () => {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route
                         path="*"
                         element={

@@ -2,18 +2,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from '@/hooks';
+import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export const SignUp = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' });
+export const ResetPassword = () => {
+    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '' });
 
     return (
         <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
-                        <h1 className="text-3xl font-bold">Sign Up</h1>
-                        <p className="text-balance text-muted-foreground">Enter your information to create an account</p>
+                        <h1 className="text-3xl font-bold">Forgort Password?</h1>
+                        <p className="text-balance text-muted-foreground">Enter your email below to reset your password.</p>
                     </div>
                     <div className="grid gap-4">
                         <div className="grid gap-2">
@@ -21,27 +22,19 @@ export const SignUp = () => {
                             <Input name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
                             {errors.email && <p className="text-red-500">{errors.email}</p>}
                         </div>
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Label htmlFor="password">Password</Label>
-                                <Link to="/reset-password" className="ml-auto inline-block text-sm underline">
-                                    Forgot your password?
-                                </Link>
-                            </div>
-                            <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
-                            {errors.password && <p className="text-red-500">{errors.password}</p>}
-                        </div>
                         <Button type="submit" className="w-full">
-                            Create an account
+                            Reset password
                         </Button>
-                        <Button variant="outline" className="w-full">
-                            Sign up with Google
-                        </Button>
+                        <Link to="/login">
+                            <Button variant="outline" className="w-full">
+                                <ArrowLeft /> <span className="block mx-1">Back to Login</span>
+                            </Button>
+                        </Link>
                     </div>
                     <div className="mt-4 text-center text-sm">
-                        Already have an account?{' '}
-                        <Link to="/login" className="underline">
-                            Sign in
+                        Don&apos;t have an account?{' '}
+                        <Link to="/signup" className="underline">
+                            Sign up
                         </Link>
                     </div>
                 </div>

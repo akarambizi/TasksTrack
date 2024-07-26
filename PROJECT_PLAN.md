@@ -7,7 +7,8 @@
 - [ ] Implement user registration (`POST /api/auth/register`)
 - [ ] Implement user login (`POST /api/auth/login`)
 - [ ] Implement user logout (`POST /api/auth/logout`)
-- [ ] Implement password reset functionality (`POST /api/auth/reset-password`)
+- [ ] Implement password reset functionality (`POST /api/auth/request-password-reset`)
+- [ ] Implement password reset functionality (`POST /api/auth/reset-password-with-token`)
 - [ ] Implement authentication middleware to protect routes
 - [ ] Integrate authentication with database
 - [ ] Handle authentication errors and validation errors

@@ -42,8 +42,8 @@ services:
 
     db:
         # Specifies the Docker image to use for the db service.
-        # 'postgres:13' is the Docker image for PostgreSQL version 13.
-        image: postgres:13
+        # 'postgres:17' is the Docker image for PostgreSQL version 13.
+        image: postgres:17
         # Sets environment variables inside the db container. These are used by the PostgreSQL server to set up the initial database and user.
         environment:
             POSTGRES_USER: postgres

@@ -22,67 +22,86 @@ TasksTrack is a task tracking app with integrated Pomodoro timer functionality t
 
 1. **Clone the Repository:**
 
-     ```bash
-     git clone https://github.com/akarambizi/TasksTrack.git
-     ```
+   ```sh
+   git clone https://github.com/akarambizi/TasksTrack.git
+   ```
 
 2. **Run the Project with Docker Compose:**
 
-     Ensure you have Docker and Docker Compose installed. [Docker](https://www.docker.com/)
+   Ensure you have Docker and Docker Compose installed. [Docker](https://www.docker.com/)
 
-     ```bash
+   ```sh
+   docker-compose up --build
+   ```
+
+   **Access the Application:**
+
+   - Client: Open your browser and navigate to <http://localhost:3000>.
+   - Server: Open your browser and navigate to <http://localhost:5206>.
+
+   ***Additional Commands***
+
+   - Stop the Services:
+
+     ```sh
+     docker-compose down
+     ```
+
+   - Rebuild the Services:
+
+     ```sh
      docker-compose up --build
      ```
 
-     **Access the Application:**
+   - View Logs:
 
-     - Client: Open your browser and navigate to <http://localhost:3000>.
-     - Server: Open your browser and navigate to <http://localhost:5206>.
+     ```sh
+     docker-compose logs -f
+     ```
 
-     ***Additional Commands***
+3. **Run the Client and Server Locally:**
 
-     - Stop the Services:
+   Navigate to the `./client` folder and use the scripts defined in the `package.json` to run the client.
 
-         ```bash
-         docker-compose down
-         ```
+   1. Start Development Server with Mock Server:
 
-     - Rebuild the Services:
+      ```sh
+      yarn dev:mock
+      ```
 
-         ```bash
-         docker-compose up --build
-         ```
+   2. Start Development Server and Mock Server separately
 
-     - View Logs:
+      - Start Development Server:
 
-         ```bash
-         docker-compose logs -f
-         ```
-
-3. **Run the Client Locally:**
-
-     Navigate to the `./client` folder and use the scripts defined in the `package.json` to run the client.
-
-     1. Start Development Server with Mock Server:
-
-        ```bash
-        yarn dev:mock
+        ```sh
+        yarn dev
         ```
 
-     2. Start Development Server and Mock Server separately
+        This will start the Vite development server on <http://localhost:3000>.
 
-        - Start Development Server:
+      - Start Mock Server:
 
-            ```bash
-            yarn dev
-            ```
+        This will start the mock server on <http://localhost:4200>.
 
-            This will start the Vite development server on <http://localhost:3000>.
+        ```sh
+        yarn mock-server
+        ```
 
-        - Start Mock Server:
+   Navigate to the `./server` folder and use the `Makefile` to build and run the server.
 
-            This will start the mock server on <http://localhost:4200>.
+   1. **Build the Server:**
 
-            ```bash
-            yarn mock-server
-            ```
+      ```sh
+      cd server
+      make build
+      ```
+
+   2. **Run the Server:**
+
+      ```sh
+      make run
+      ```
+
+   3. **Access the Server:**
+
+      Open your browser and navigate to [http://localhost:5206](http://localhost:5206) to access the server.

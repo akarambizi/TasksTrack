@@ -4,6 +4,9 @@ build:
 run:
 	dotnet run
 
+watch:
+	dotnet watch run
+
 clean:
 	dotnet clean
 

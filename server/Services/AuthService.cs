@@ -45,7 +45,7 @@ namespace TasksTrack.Services
             await _authRepository.CreateUserAsync(user);
 
             // Generate JWT
-            var token = GenerateJwtToken(user);
+            var token = this.GenerateJwtToken(user);
 
             return new AuthResult { Success = true, Token = token };
         }
@@ -60,7 +60,7 @@ namespace TasksTrack.Services
             }
 
             // Generate JWT
-            var token = GenerateJwtToken(user);
+            var token = this.GenerateJwtToken(user);
 
             return new AuthResult { Success = true, Token = token };
         }

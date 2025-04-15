@@ -1,11 +1,12 @@
+using System.Threading.Tasks;
+using TasksTrack.Models;
+
 namespace TasksTrack.Services
 {
     public interface IAuthService
     {
-        string Register();
-        string Login();
-        string Logout();
-        string RequestPasswordReset();
-        string ResetPasswordWithToken(int id);
+        Task<AuthResult> RegisterAsync(RegisterRequest request);
+        Task<AuthResult> LoginAsync(LoginRequest request);
+        Task<AuthResult> ResetPasswordAsync(PasswordResetRequest request);
     }
 }

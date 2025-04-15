@@ -1,51 +1,50 @@
 using Microsoft.AspNetCore.Mvc;
 using TasksTrack.Services;
-using System.Collections.Generic;
+using TasksTrack.Models;
 
 namespace TasksTrack.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _service;
+        private readonly IAuthService _authService;
 
-        public AuthController(AuthService service)
+        public AuthController(IAuthService authService)
         {
-            _service = service;
+            _authService = authService;
         }
 
-        [HttpGet("api/register")]
-        public ActionResult<IEnumerable<string>> Register()
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var result = _service.Register();
+            var result = await _authService.RegisterAsync(request);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(result);
         }
 
-        [HttpGet("api/login")]
-        public ActionResult<string> Login()
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = _service.Login();
+            var result = await _authService.LoginAsync(request);
+            if (!result.Success)
+            {
+                return Unauthorized(result.Message);
+            }
             return Ok(result);
         }
 
-        [HttpPost("api/logout")]
-        public ActionResult<string> Logout()
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] PasswordResetRequest request)
         {
-            var result = _service.Logout();
-            return Ok(result);
-        }
-
-        [HttpPut("api/request-password-reset")]
-        public ActionResult<string> RequestPasswordReset()
-        {
-            var result = _service.RequestPasswordReset();
-            return Ok(result);
-        }
-
-        [HttpDelete("reset-password-with-token")]
-        public ActionResult<string> ResetPasswordWithToken(int id)
-        {
-            var result = _service.ResetPasswordWithToken(id);
+            var result = await _authService.ResetPasswordAsync(request);
+            if (!result.Success)
+            {
+                return NotFound(result.Message);
+            }
             return Ok(result);
         }
     }

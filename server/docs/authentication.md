@@ -155,7 +155,6 @@ Add rate limiting to the login endpoint to protect against brute-force attacks. 
 
 Enforce a strong password policy for better security. This policy will require passwords to be a certain length and include a mix of uppercase and lowercase letters, numbers, and special characters.
 
-
 #### Refresh Tokens
 
  Implement refresh tokens for maintaining user sessions with short-lived access tokens. A refresh token can be used to get a new access token when the old one expires, without requiring the user to log in again. This provides a balance between security and user convenience.

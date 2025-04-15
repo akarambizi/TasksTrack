@@ -38,7 +38,6 @@ namespace TasksTrack.Services
             {
                 Username = request.Username,
                 Email = request.Email,
-                Password = request.Password, // Ensure required property is set
                 PasswordHash = passwordHash
             };
 

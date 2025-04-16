@@ -30,6 +30,13 @@ namespace TasksTrack.Services
                 return new AuthResult { Success = false, Message = "Email is already taken." };
             }
 
+            // Check if username exists
+            var existingUsername = await _authRepository.GetUserByUsernameAsync(request.Username);
+            if (existingUsername != null)
+            {
+                return new AuthResult { Success = false, Message = "Username is already taken." };
+            }
+
             // Hash password
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 

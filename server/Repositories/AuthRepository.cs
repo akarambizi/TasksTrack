@@ -19,6 +19,11 @@ namespace TasksTrack.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
         public async Task CreateUserAsync(User user)
         {
             await _context.Users.AddAsync(user);

@@ -27,3 +27,7 @@ test-coverage-summary: test-coverage
 
 test-coverage-report: test-coverage
 	reportgenerator "-reports:./Tests/coverage/lcov.info" "-targetdir:./Tests/coverage/report" -reporttypes:Html
+
+update-table:
+	dotnet ef migrations add UpdateTableMigration
+	dotnet ef database update

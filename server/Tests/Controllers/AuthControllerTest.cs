@@ -46,7 +46,7 @@ namespace TasksTrack.Tests.Controllers
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("test_token", ((AuthResult)okResult.Value)?.Token ?? string.Empty);
+            Assert.Equal("test_token", ((AuthResult?)okResult.Value)?.Token ?? string.Empty);
         }
     }
 }

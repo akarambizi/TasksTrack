@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace TasksTrack.Services
 {
@@ -53,7 +54,7 @@ namespace TasksTrack.Services
             // Generate JWT
             var token = this.GenerateJwtToken(user);
 
-            return new AuthResult { Success = true, Token = token };
+            return new AuthResult { Success = true, Token = token ?? string.Empty };
         }
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
@@ -68,7 +69,7 @@ namespace TasksTrack.Services
             // Generate JWT
             var token = this.GenerateJwtToken(user);
 
-            return new AuthResult { Success = true, Token = token };
+            return new AuthResult { Success = true, Token = token ?? string.Empty };
         }
 
         public async Task<AuthResult> ResetPasswordAsync(PasswordResetRequest request)

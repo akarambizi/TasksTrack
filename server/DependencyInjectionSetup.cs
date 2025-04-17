@@ -12,6 +12,9 @@ public static class DependencyInjectionSetup
         services.AddScoped<IToDoTaskService, ToDoTaskService>();
         services.AddScoped<IToDoTaskRepository, ToDoTaskRepository>();
 
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IAuthRepository, AuthRepository>();
+
         return services;
     }
 }

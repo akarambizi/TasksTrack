@@ -155,7 +155,6 @@ Add rate limiting to the login endpoint to protect against brute-force attacks. 
 
 Enforce a strong password policy for better security. This policy will require passwords to be a certain length and include a mix of uppercase and lowercase letters, numbers, and special characters.
 
-
 #### Refresh Tokens
 
  Implement refresh tokens for maintaining user sessions with short-lived access tokens. A refresh token can be used to get a new access token when the old one expires, without requiring the user to log in again. This provides a balance between security and user convenience.
@@ -163,3 +162,39 @@ Enforce a strong password policy for better security. This policy will require p
 #### Email Verification
 
 Add email verification after registration to confirm the user's email address.
+
+#### Key Updates
+
+1. **JWT Secret Configuration**:
+   - Added a `Jwt:Secret` configuration in `appsettings.Development.json` to ensure a secure key is used for token generation.
+   - The secret must be at least 256 bits (32 characters) to comply with HMAC-SHA256 requirements.
+
+2. **Password Security**:
+   - Removed the plain text `Password` property from the `User` model to enhance security.
+   - Passwords are now stored only as hashed values using `BCrypt`.
+
+3. **Error Handling**:
+   - Improved error handling in the `AuthService` to provide more descriptive error messages.
+
+4. **Controller Updates**:
+   - Updated the `AuthController` to align with the changes in the `AuthService`.
+
+#### Migration Steps
+
+- Ensure the `Jwt:Secret` is configured in your environment.
+- Run the following commands to update the database schema:
+
+  ```bash
+  dotnet ef migrations add UpdateTableMigration
+  dotnet ef database update
+  ```
+
+#### Testing
+
+- Test the `Register`, `Login`, and `ResetPassword` endpoints to ensure they work as expected.
+- Verify that passwords are hashed and no plain text passwords are stored in the database.
+
+#### Notes
+
+- The `Jwt:Secret` must be kept secure and should not be hardcoded in the source code.
+- Use environment variables or a secure secrets manager for production environments.

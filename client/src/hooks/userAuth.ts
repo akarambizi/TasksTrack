@@ -1,4 +1,4 @@
-import { IPasswordResetData, IUserData, loginUser, logoutUser, registerUser, requestPasswordReset, resetPasswordWithToken } from '@/api';
+import { IPasswordResetData, IUserData, loginUser, logoutUser, registerUser, resetPassword } from '@/api';
 import { useMutation } from 'react-query';
 
 export const useRegisterUser = () => {
@@ -19,14 +19,8 @@ export const useLogoutUser = () => {
     });
 };
 
-export const useRequestPasswordReset = () => {
+export const useResetPassword = () => {
     return useMutation({
-        mutationFn: (email: string) => requestPasswordReset(email)
-    });
-};
-
-export const useResetPasswordWithToken = () => {
-    return useMutation({
-        mutationFn: (data: IPasswordResetData) => resetPasswordWithToken(data)
+        mutationFn: (data: IPasswordResetData) => resetPassword(data)
     });
 };

@@ -4,7 +4,7 @@ import { getUrl } from './utils';
 
 /**
  * Registers a new user.
- * @param userData - The user data including email and password.
+ * @param userData - The user data including email, username, and password.
  * @returns A promise that resolves to the response data.
  * @throws An error if the registration fails.
  */
@@ -52,36 +52,20 @@ export const logoutUser = async () => {
     }
 };
 
+
 /**
- * Sends a request to reset the user's password.
- * @param {string} email - The email address of the user.
+ * Resets the user's password.
+ * @param {PasswordResetRequest} data - The data including email, token, and new password.
  * @returns {Promise<any>} - A promise that resolves to the response data.
  * @throws {Error} - If the password reset request fails.
  */
-export const requestPasswordReset = async (email: string) => {
+export const resetPassword = async (data: IPasswordResetData) => {
     try {
-        const url = getUrl('/api/auth/request-password-reset');
-        const response = await axios.post(url, { email });
+        const url = getUrl('/api/auth/reset-password');
+        const response = await axios.post(url, data);
         return response.data;
     } catch (error) {
         console.error('Password reset request failed:', error);
         throw new Error('Password reset request failed');
-    }
-};
-
-/**
- * Resets the user's password using a token.
- * @param {IPasswordResetData} data - The data including the new password and token.
- * @returns {Promise<any>} - A promise that resolves to the response data.
- * @throws {Error} - If the password reset fails.
- */
-export const resetPasswordWithToken = async (data: IPasswordResetData) => {
-    try {
-        const url = getUrl('/api/auth/reset-password-with-token');
-        const response = await axios.post(url, data);
-        return response.data;
-    } catch (error) {
-        console.error('Password reset failed:', error);
-        throw new Error('Password reset failed');
     }
 };

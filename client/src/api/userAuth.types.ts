@@ -1,9 +1,11 @@
 export interface IUserData {
     email: string;
+    username: string;
     password?: string;
 }
 
 export interface IPasswordResetData {
-    newPassword: string;
+    email: string;
+    password: string;
     token: string;
 }

@@ -31,7 +31,7 @@ services:
             - ./server:/app
         # Specifies the command to start the server application inside the container.
         # Updated to ensure compatibility with .NET 8.
-        command: dotnet run --urls http://*:5206
+        command: dotnet watch run --urls http://*:5206
         # Sets environment variables inside the server container.
         environment:
             - DOTNET_USE_POLLING_FILE_WATCHER=1

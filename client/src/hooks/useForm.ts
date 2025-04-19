@@ -10,7 +10,15 @@ export const validateEmail = (email: string) => {
 
 // Password regex: Min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
 export const validatePassword = (password: string) => {
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = new RegExp(
+    "^" +
+    "(?=.*[a-z])" + // At least one lowercase letter
+    "(?=.*[A-Z])" + // At least one uppercase letter
+    "(?=.*\\d)" +  // At least one digit
+    "(?=.*[!@#$%^&*])" + // At least one special character
+    "[A-Za-z\\d!@#$%^&*]{8,}" + // Minimum 8 characters
+    "$"
+  );
   return passwordRegex.test(password);
 };
 

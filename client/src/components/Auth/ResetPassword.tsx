@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const ResetPassword = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' }, FormType.ResetPassword);
+    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', newPassword: '' }, FormType.ResetPassword);
 
     return (
         <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">

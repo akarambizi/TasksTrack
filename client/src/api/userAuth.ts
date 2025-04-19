@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IPasswordResetData, IUserData } from './userAuth.types';
+import { IUserData } from './userAuth.types';
 import { getUrl } from './utils';
 
 /**
@@ -55,11 +55,11 @@ export const logoutUser = async () => {
 
 /**
  * Resets the user's password.
- * @param {PasswordResetRequest} data - The data including email, token, and new password.
+ * @param {IUserData} data - The data including email, token, and new password.
  * @returns {Promise<any>} - A promise that resolves to the response data.
  * @throws {Error} - If the password reset request fails.
  */
-export const resetPassword = async (data: IPasswordResetData) => {
+export const resetPassword = async (data: IUserData) => {
     try {
         const url = getUrl('/api/auth/reset-password');
         const response = await axios.post(url, data);

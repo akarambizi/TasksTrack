@@ -22,8 +22,32 @@ namespace TasksTrack.Services
             _jwtSecret = configuration["Jwt:Secret"] ?? throw new ArgumentNullException("Jwt:Secret", "JWT secret cannot be null.");
         }
 
+        // Email regex: Validates format like example@domain.com
+        private bool ValidateEmail(string email)
+        {
+            var emailRegex = new System.Text.RegularExpressions.Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+            return emailRegex.IsMatch(email);
+        }
+
+        // Password regex: Min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
+        private bool ValidatePassword(string password)
+        {
+            var passwordRegex = new System.Text.RegularExpressions.Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
+            return passwordRegex.IsMatch(password);
+        }
+
         public async Task<AuthResult> RegisterAsync(RegisterRequest request)
         {
+            if (!ValidateEmail(request.Email))
+            {
+                return new AuthResult { Success = false, Message = "Invalid email format. Please provide a valid email in the format: example@domain.com." };
+            }
+
+            if (!ValidatePassword(request.Password))
+            {
+                return new AuthResult { Success = false, Message = "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character." };
+            }
+
             // Check if user exists
             var existingUser = await _authRepository.GetUserByEmailAsync(request.Email);
             if (existingUser != null)
@@ -59,6 +83,11 @@ namespace TasksTrack.Services
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
         {
+            if (!ValidateEmail(request.Email))
+            {
+                return new AuthResult { Success = false, Message = "Invalid email format. Please provide a valid email in the format: example@domain.com." };
+            }
+
             // Get user by email
             var user = await _authRepository.GetUserByEmailAsync(request.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))

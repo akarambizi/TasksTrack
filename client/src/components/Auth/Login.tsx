@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm } from '@/hooks';
+import { FormType, useForm } from '@/hooks';
 import { Link } from 'react-router-dom';
 
 export const Login = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' });
+    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' }, FormType.Login);
 
     return (
         <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">

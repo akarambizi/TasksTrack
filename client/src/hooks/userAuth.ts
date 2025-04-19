@@ -1,15 +1,15 @@
-import { IUserData, loginUser, logoutUser, registerUser, resetPassword } from '@/api';
+import { IAuthData, loginUser, logoutUser, registerUser, resetPassword } from '@/api';
 import { useMutation } from 'react-query';
 
 export const useRegisterUser = () => {
     return useMutation({
-        mutationFn: (userData: IUserData) => registerUser(userData)
+        mutationFn: (userData: IAuthData) => registerUser(userData)
     });
 };
 
 export const useLoginUser = () => {
     return useMutation({
-        mutationFn: (userData: IUserData) => loginUser(userData)
+        mutationFn: (userData: IAuthData) => loginUser(userData)
     });
 };
 
@@ -21,6 +21,6 @@ export const useLogoutUser = () => {
 
 export const useResetPassword = () => {
     return useMutation({
-        mutationFn: (data: IUserData) => resetPassword(data)
+        mutationFn: (data: IAuthData) => resetPassword(data)
     });
 };

@@ -5,10 +5,10 @@ import { FormType, useForm } from '@/hooks';
 import { Link } from 'react-router-dom';
 
 export const Login = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' }, FormType.Login);
+    const { formData, errors, handleChange, handleLoginSubmit } = useForm({ email: '', password: '' }, FormType.Login);
 
     return (
-        <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form onSubmit={handleLoginSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">

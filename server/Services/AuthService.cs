@@ -32,8 +32,19 @@ namespace TasksTrack.Services
         // Password regex: Min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
         private bool ValidatePassword(string password)
         {
-            var passwordRegex = new System.Text.RegularExpressions.Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
-            return passwordRegex.IsMatch(password);
+            // Separate regex into readable parts
+            var passwordRegex = new System.Text.RegularExpressions.Regex(
+                "^" +
+                "(?=.*[a-z])" + // At least one lowercase letter
+                "(?=.*[A-Z])" + // At least one uppercase letter
+                "(?=.*\\d)" +  // At least one digit
+                "(?=.*[!@#$%^&*])" + // At least one special character
+                "[A-Za-z\\d!@#$%^&*]{8,}" + // Minimum 8 characters
+                "$"
+            );
+
+            var isValid = passwordRegex.IsMatch(password);
+            return isValid;
         }
 
         public async Task<AuthResult> RegisterAsync(RegisterRequest request)

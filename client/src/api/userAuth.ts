@@ -69,3 +69,17 @@ export const resetPassword = async (data: IAuthData) => {
         throw new Error('Password reset request failed');
     }
 };
+
+/**
+ * Validates the provided token by making a POST request to the validate-token API endpoint.
+ * @param {string} token - The token to validate.
+ * @returns {Promise<any>} - A promise that resolves to the response data.
+ * @throws {Error} - If the token validation request fails.
+ */
+export const validateToken = async (token: string) => {
+    const url = getUrl('/api/auth/validate-token');
+    const response = await axios.post(url, { token }, {
+        withCredentials: true // Include cookies in the request
+    });
+    return response.data;
+};

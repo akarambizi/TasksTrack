@@ -41,13 +41,16 @@ namespace TasksTrack.Controllers
             }
 
             // Set the authentication token in a secure, HTTP-only cookie
-            Response.Cookies.Append("authToken", result.Token, new CookieOptions
+            if (!string.IsNullOrEmpty(result.Token))
             {
-                HttpOnly = true,
-                Secure = true, // Set to true in production
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(1)
-            });
+                Response.Cookies.Append("authToken", result.Token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Set to true in production
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddHours(1)
+                });
+            }
 
             return Ok(new { Message = "Login successful" });
         }

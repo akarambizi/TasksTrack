@@ -1,5 +1,7 @@
+import { validateToken } from '@/api';
 import { Login } from '@/components';
-import { createContext, useContext, useState } from 'react';
+import Cookies from 'js-cookie';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 // Create an AuthContext to manage authentication state
 interface AuthContextType {
@@ -19,8 +21,20 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    useEffect(() => {
+        const token = Cookies.get('authToken');
+        if (token) {
+            validateToken(token)
+                .then(() => setIsAuthenticated(true))
+                .catch(() => setIsAuthenticated(false));
+        }
+    }, []);
+
     const login = () => setIsAuthenticated(true);
-    const logout = () => setIsAuthenticated(false);
+    const logout = () => {
+        Cookies.remove('authToken'); // Remove the cookie on logout
+        setIsAuthenticated(false);
+    };
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

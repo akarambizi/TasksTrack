@@ -28,7 +28,9 @@ export const registerUser = async (userData: IAuthData) => {
 export const loginUser = async (userData: IAuthData) => {
     try {
         const url = getUrl('/api/auth/login');
-        const response = await axios.post(url, userData);
+        const response = await axios.post(url, userData, {
+            withCredentials: true // Include cookies in the request
+        });
         return response.data;
     } catch (error) {
         throw new Error('Login failed');
@@ -43,7 +45,9 @@ export const loginUser = async (userData: IAuthData) => {
 export const logoutUser = async () => {
     try {
         const url = getUrl('/api/auth/logout');
-        const response = await axios.post(url);
+        const response = await axios.post(url, {}, {
+            withCredentials: true // Include cookies in the request
+        });
         return response.data;
     } catch (error) {
         throw new Error('Logout failed');

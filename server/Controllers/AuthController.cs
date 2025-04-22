@@ -34,7 +34,30 @@ namespace TasksTrack.Controllers
             {
                 return Unauthorized(result.Message);
             }
-            return Ok(result);
+
+            if (string.IsNullOrEmpty(result.Token))
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            // Set the authentication token in a secure, HTTP-only cookie
+            Response.Cookies.Append("authToken", result.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Set to true in production
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(1)
+            });
+
+            return Ok(new { Message = "Login successful" });
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Clear the authentication token cookie
+            Response.Cookies.Delete("authToken");
+            return Ok(new { Message = "Logout successful" });
         }
 
         [HttpPost("reset-password")]

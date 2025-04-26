@@ -1,4 +1,4 @@
-import { IAuthData, loginUser, logoutUser, registerUser, resetPassword } from '@/api';
+import { IAuthData, loginUser, logoutUser, registerUser, resetPassword, validateToken } from '@/api';
 import { useMutation } from 'react-query';
 
 export const useRegisterUser = () => {
@@ -22,5 +22,11 @@ export const useLogoutUser = () => {
 export const useResetPassword = () => {
     return useMutation({
         mutationFn: (data: IAuthData) => resetPassword(data)
+    });
+};
+
+export const useValidateToken = () => {
+    return useMutation({
+        mutationFn: (token: string) => validateToken(token)
     });
 };

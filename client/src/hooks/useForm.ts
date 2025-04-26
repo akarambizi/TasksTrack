@@ -89,7 +89,7 @@ export const useForm = (initialFormData: IAuthData, formType: FormType) => {
 
         // Only call login if the response indicates success
         if (response && response.success) {
-            login();
+            login(response?.token ?? '');
         } else {
             // TODO:
             // Handle error case, e.g., show a toast message

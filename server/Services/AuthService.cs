@@ -89,7 +89,7 @@ namespace TasksTrack.Services
             // Generate JWT
             var token = this.GenerateJwtToken(user);
 
-            return new AuthResult { Success = true, Token = token ?? string.Empty };
+            return new AuthResult { Success = true, Token = token ?? string.Empty, Message = "User registered successfully." };
         }
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
@@ -109,7 +109,7 @@ namespace TasksTrack.Services
             // Generate JWT
             var token = this.GenerateJwtToken(user);
 
-            return new AuthResult { Success = true, Token = token ?? string.Empty };
+            return new AuthResult { Success = true, Token = token ?? string.Empty, Message = "Login successful." };
         }
 
         public async Task<AuthResult> ResetPasswordAsync(PasswordResetRequest request)
@@ -150,18 +150,18 @@ namespace TasksTrack.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public bool ValidateToken(string token)
+        public Task<AuthResult> ValidateTokenAsync(TokenRequest request)
         {
-            if (string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(request.Token))
             {
-                return false;
+                return Task.FromResult(new AuthResult { Success = false, Message = "Token is required." });
             }
 
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_jwtSecret);
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                tokenHandler.ValidateToken(request.Token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -170,11 +170,11 @@ namespace TasksTrack.Services
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                return true;
+                return Task.FromResult(new AuthResult { Success = true, Message = "Token is valid." });
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Task.FromResult(new AuthResult { Success = false, Message = $"Invalid token: {ex.Message}" });
             }
         }
     }

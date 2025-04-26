@@ -1,12 +1,12 @@
 import { validateToken } from '@/api';
 import { Login } from '@/components';
-import Cookies from 'js-cookie';
+import { useCookies } from "react-cookie";
 import { createContext, useContext, useEffect, useState } from 'react';
 
 // Create an AuthContext to manage authentication state
 interface AuthContextType {
     isAuthenticated: boolean;
-    login: () => void;
+    login: (token: string) => void; // Updated to accept a token parameter
     logout: () => void;
 }
 
@@ -20,19 +20,29 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies(["authToken"]);
 
     useEffect(() => {
-        const token = Cookies.get('authToken');
+        const token = cookies.authToken;
         if (token) {
             validateToken(token)
                 .then(() => setIsAuthenticated(true))
                 .catch(() => setIsAuthenticated(false));
         }
-    }, []);
+    }, [cookies.authToken]);
 
-    const login = () => setIsAuthenticated(true);
+    const login = (token: string) => {
+        setCookie("authToken", token, {
+            path: "/",
+            secure: true,
+            sameSite: "strict",
+            maxAge: 3600 // 1 hour
+        });
+        setIsAuthenticated(true);
+    };
+
     const logout = () => {
-        Cookies.remove('authToken'); // Remove the cookie on logout
+        removeCookie("authToken", { path: "/" });
         setIsAuthenticated(false);
     };
 

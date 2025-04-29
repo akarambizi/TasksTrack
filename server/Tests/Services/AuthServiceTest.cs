@@ -29,7 +29,7 @@ namespace TasksTrack.Tests.Services
             var existingUser = new User { Email = "test@example.com" };
             _authRepositoryMock.Setup(repo => repo.GetUserByEmailAsync("test@example.com")).ReturnsAsync(existingUser);
 
-            var request = new RegisterRequest { Email = "test@example.com", Username = "testuser", Password = "password123" };
+            var request = new RegisterRequest { Email = "test@example.com", Username = "testuser", Password = "Password123!" };
 
             // Act
             var result = await _authService.RegisterAsync(request);
@@ -46,7 +46,7 @@ namespace TasksTrack.Tests.Services
             var existingUser = new User { Username = "testuser", Email = "test@example.com" };
             _authRepositoryMock.Setup(repo => repo.GetUserByUsernameAsync("testuser")).ReturnsAsync(existingUser);
 
-            var request = new RegisterRequest { Email = "new@example.com", Username = "testuser", Password = "password123" };
+            var request = new RegisterRequest { Email = "new@example.com", Username = "testuser", Password = "Password123!" };
 
             // Act
             var result = await _authService.RegisterAsync(request);
@@ -61,9 +61,9 @@ namespace TasksTrack.Tests.Services
         {
             // Arrange
             _authRepositoryMock.Setup(repo => repo.GetUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
-            _authRepositoryMock.Setup(repo => repo.GetUserByUsernameAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+            _ = _authRepositoryMock.Setup(repo => repo.GetUserByUsernameAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
-            var request = new RegisterRequest { Email = "new@example.com", Username = "newuser", Password = "password123" };
+            var request = new RegisterRequest { Email = "new@example.com", Username = "newuser", Password = "Password123!" };
 
             // Act
             var result = await _authService.RegisterAsync(request);

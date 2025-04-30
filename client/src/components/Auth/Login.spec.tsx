@@ -6,8 +6,8 @@ import { Login } from './Login';
 vi.mock('@/hooks', () => ({
     useForm: vi.fn(),
     FormType: {
-        Login: 'Login',
-    },
+        Login: 'Login'
+    }
 }));
 
 describe('Login Component', () => {

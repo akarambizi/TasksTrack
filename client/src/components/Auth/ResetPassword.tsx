@@ -1,19 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm } from '@/hooks';
+import { FormType, useForm } from '@/hooks';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const ResetPassword = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '' });
+    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', newPassword: '' }, FormType.ResetPassword);
 
     return (
         <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
-                        <h1 className="text-3xl font-bold">Forgort Password?</h1>
+                        <h1 className="text-3xl font-bold">Forgot Password?</h1>
                         <p className="text-balance text-muted-foreground">Enter your email below to reset your password.</p>
                     </div>
                     <div className="grid gap-4">

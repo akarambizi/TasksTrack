@@ -4,3 +4,4 @@ export * from './Auth/ResetPassword';
 export * from './Header/Header';
 export * from './Sidebar/SideBarNav';
 export * from './Tasks/TasksContainer';
+export * from './Container';

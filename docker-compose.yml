@@ -1,6 +1,3 @@
-# Specifies the version of the Docker Compose file format. '3.8' is the latest version.
-version: '3.8'
-
 services:
     # Defines the client service.
     client:
@@ -33,8 +30,11 @@ services:
         volumes:
             - ./server:/app
         # Specifies the command to start the server application inside the container.
-        # 'dotnet watch run --urls http://*:5206' starts the server in watch mode and allows connections on port 5206 from any host.
+        # Updated to ensure compatibility with .NET 8.
         command: dotnet watch run --urls http://*:5206
+        # Sets environment variables inside the server container.
+        environment:
+            - DOTNET_USE_POLLING_FILE_WATCHER=1
         # Specifies that the server service should be started only after the db service has been started.
         # This ensures that the database is ready before the server starts.
         depends_on:
@@ -44,11 +44,6 @@ services:
         # Specifies the Docker image to use for the db service.
         # 'postgres:17' is the Docker image for PostgreSQL version 13.
         image: postgres:17
-        # Sets environment variables inside the db container. These are used by the PostgreSQL server to set up the initial database and user.
-        environment:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: mydatabase
         # Mounts a named volume to a specific directory inside the db container.
         # This is where PostgreSQL stores its data. The named volume 'postgres_data' persists data across container restarts.
         volumes:

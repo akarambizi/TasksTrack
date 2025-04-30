@@ -1,9 +1,13 @@
-export interface IUserData {
+export interface IAuthData {
     email: string;
     password?: string;
+    username?: string;
+    token?: string;
+    newPassword?: string;
 }
 
-export interface IPasswordResetData {
-    newPassword: string;
-    token: string;
+export interface IAuthResult {
+    success: boolean;
+    message?: string;
+    token?: string;
 }

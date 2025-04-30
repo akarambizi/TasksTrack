@@ -34,7 +34,33 @@ namespace TasksTrack.Controllers
             {
                 return Unauthorized(result.Message);
             }
+
+            if (string.IsNullOrEmpty(result.Token))
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            // Set the authentication token in a secure, HTTP-only cookie
+            if (!string.IsNullOrEmpty(result.Token))
+            {
+                Response.Cookies.Append("authToken", result.Token, new CookieOptions
+                {
+                    HttpOnly = false, // Removed HttpOnly to allow client-side access
+                    Secure = true, // Set to true in production
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddHours(1)
+                });
+            }
+
             return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Clear the authentication token cookie
+            Response.Cookies.Delete("authToken");
+            return Ok(new { Message = "Logout successful" });
         }
 
         [HttpPost("reset-password")]
@@ -44,6 +70,17 @@ namespace TasksTrack.Controllers
             if (!result.Success)
             {
                 return NotFound(result.Message);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("validate-token")]
+        public async Task<IActionResult> ValidateToken([FromBody] TokenRequest request)
+        {
+            var result = await _authService.ValidateTokenAsync(request);
+            if (!result.Success)
+            {
+                return Unauthorized(result.Message);
             }
             return Ok(result);
         }

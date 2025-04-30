@@ -1,14 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm } from '@/hooks';
+import { FormType, useForm } from '@/hooks';
 import { Link } from 'react-router-dom';
 
 export const Login = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' });
+    const { formData, errors, handleChange, handleLoginSubmit } = useForm({ email: '', password: '' }, FormType.Login);
 
     return (
-        <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form role="form" onSubmit={handleLoginSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -18,7 +18,7 @@ export const Login = () => {
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
+                            <Input id="email" name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
                             {errors.email && <p className="text-red-500">{errors.email}</p>}
                         </div>
                         <div className="grid gap-2">
@@ -28,7 +28,7 @@ export const Login = () => {
                                     Forgot your password?
                                 </Link>
                             </div>
-                            <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
+                            <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required />
                             {errors.password && <p className="text-red-500">{errors.password}</p>}
                         </div>
                         <Button type="submit" className="w-full">
@@ -38,7 +38,7 @@ export const Login = () => {
                             Login with Google
                         </Button>
                     </div>
-                    <div className="mt-4 text-center text-sm">
+                    <div className="mt-4 text-center text-sm" data-testid="signup-link">
                         Don&apos;t have an account?{' '}
                         <Link to="/signup" className="underline">
                             Sign up

@@ -1,5 +1,5 @@
 import jsonServer from 'json-server';
-import authMiddleware from './data/auth/auth.middleware.js';
+import { customMiddlewares } from './data/middlewares.ts';
 import routes from './data/routes.ts';
 
 const server = jsonServer.create();
@@ -9,7 +9,7 @@ const middlewares = jsonServer.defaults({ logger: false });
 server.use(middlewares);
 server.use(jsonServer.bodyParser); // Enable JSON body parsing
 server.use(jsonServer.rewriter({ '/api/*': '/$1' }));
-server.use(authMiddleware);
+customMiddlewares.forEach((mw) => server.use(mw)); // Apply routes middlewares
 server.use(router);
 
 const port = process.env.MOCK_SERVER_PORT || 4200;

@@ -1,5 +1,5 @@
-import auth from './auth.ts';
-import tasks from './tasks.ts';
+import auth from './auth/auth.ts';
+import tasks from './tasks/tasks.ts';
 
 export default {
     tasks,

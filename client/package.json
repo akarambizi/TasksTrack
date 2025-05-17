@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "mock-server": "nodemon --watch src/mock-server --ext ts,json --exec \"node --loader ts-node/esm src/mock-server/server.ts\"",
+    "mock-server": "nodemon --watch src/mock-server --ext ts,json --exec \"node --no-warnings --loader ts-node/esm src/mock-server/server.ts\"",
     "dev:mock": "NODE_ENV=mock concurrently \"yarn mock-server\" \"yarn dev\"",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

@@ -1,5 +1,5 @@
 import jsonServer from 'json-server';
-import authMiddleware from './data/auth-middleware.js';
+import authMiddleware from './data/auth/auth.middleware.js';
 import routes from './data/routes.ts';
 
 const server = jsonServer.create();

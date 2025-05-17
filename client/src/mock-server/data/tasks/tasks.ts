@@ -1,6 +1,4 @@
-import { IToDoTask } from "@/api";
-
-const tasks: IToDoTask[] = [
+const tasks = [
     {
         "id": 1,
         "title": "Task 1",

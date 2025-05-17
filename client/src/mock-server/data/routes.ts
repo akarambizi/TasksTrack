@@ -1,5 +1,7 @@
-import tasks from './tasks.js';
+import auth from './auth/auth.ts';
+import tasks from './tasks/tasks.ts';
 
 export default {
-    tasks
-}
+    tasks,
+    auth
+};

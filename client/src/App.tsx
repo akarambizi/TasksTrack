@@ -1,4 +1,4 @@
-import { Login, ResetPassword, SignUp, TasksContainer } from '@/components';
+import { Login, Pomodoro, ResetPassword, Sessions, SignUp, TasksContainer } from '@/components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context';
@@ -21,8 +21,10 @@ const App = () => {
                                 <ProtectedRoute>
                                     <Container>
                                         <Routes>
-                                            <Route path="/tasks" element={<TasksContainer />} />
                                             <Route path="/dashboard" element={<>dashboard</>} />
+                                            <Route path="/tasks" element={<TasksContainer />} />
+                                            <Route path="/pomodoro" element={<Pomodoro />} />
+                                            <Route path="/history" element={<Sessions />} />
                                             <Route path="/analytics" element={<>analytics</>} />
                                             <Route path="*" element={<div>Not found</div>} />
                                         </Routes>

@@ -5,3 +5,5 @@ export * from './Header/Header';
 export * from './Sidebar/SideBarNav';
 export * from './Tasks/TasksContainer';
 export * from './Container';
+export * from './Pomodoro/Pomodoro';
+export * from './Sessions/Sessions';

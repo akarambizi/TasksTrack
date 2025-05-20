@@ -7,4 +7,5 @@ export interface IToDoTask {
     updatedDate?: string;
     createBy: string;
     updatedBy?: string;
+    priority: 'low' | 'medium' | 'high';
 }

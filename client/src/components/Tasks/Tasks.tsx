@@ -1,6 +1,8 @@
 import { useTodoTaskData } from '@/hooks/useQueryHooks';
-import { CheckCircle, Clock, Settings } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { AddTaskDialog } from './AddTaskDialog';
+import { TaskOptionsMenu } from './TaskOptionsMenu';
+import { PomodoroDialog } from '../Pomodoro/PomodoroDialog';
 
 export const Tasks = () => {
     const { data: tasks } = useTodoTaskData('');
@@ -38,12 +40,8 @@ export const Tasks = () => {
                                     </div>
                                 </div>
                                 <div className="flex space-x-2">
-                                    <button className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
-                                        <Clock size={16} className="text-blue-500 dark:text-blue-400" />
-                                    </button>
-                                    <button className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
-                                        <Settings size={16} className="text-slate-500 dark:text-slate-400" />
-                                    </button>
+                                    <PomodoroDialog task={task} />
+                                    <TaskOptionsMenu task={task} />
                                 </div>
                             </div>
                         </div>

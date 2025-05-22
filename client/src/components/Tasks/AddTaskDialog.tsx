@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTaskForm } from "./useTaskForm";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { getTodoTaskKey } from "@/hooks/queryKeys";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IToDoTask } from "@/api";

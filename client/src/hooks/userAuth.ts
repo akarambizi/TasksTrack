@@ -1,5 +1,5 @@
 import { IAuthData, loginUser, logoutUser, registerUser, resetPassword, validateToken } from '@/api';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 export const useRegisterUser = () => {
     return useMutation({

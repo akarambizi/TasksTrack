@@ -7,58 +7,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings, CheckSquare, Trash2, Edit, AlertCircle } from "lucide-react";
 import { IToDoTask } from "@/api";
-import { useQueryClient } from "react-query";
-import { getTodoTaskKey } from "@/hooks/queryKeys";
+import { useToggleTaskCompletion, useDeleteTask, useUpdateTaskPriority } from "@/hooks/useTasks";
 
 interface TaskOptionsMenuProps {
   task: IToDoTask;
 }
 
 export const TaskOptionsMenu = ({ task }: TaskOptionsMenuProps) => {
-  const queryClient = useQueryClient();
+  const toggleCompletion = useToggleTaskCompletion();
+  const deleteTaskMutation = useDeleteTask();
+  const updatePriority = useUpdateTaskPriority();
 
-  const toggleTaskCompletion = () => {
-    // Optimistically update the UI
-    queryClient.setQueryData<IToDoTask[] | undefined>(getTodoTaskKey(''), (oldData) => {
-      if (!oldData) return oldData;
-      return oldData.map(t =>
-        t.id === task.id
-          ? { ...t, completed: !t.completed }
-          : t
-      );
+  // Determine if any mutation is in progress to disable UI
+  const isLoading = toggleCompletion.isPending || deleteTaskMutation.isPending || updatePriority.isPending;
+
+  // Handler for toggling task completion
+  const handleToggleCompletion = () => {
+    toggleCompletion.mutate({
+      id: task.id,
+      completed: !task.completed
     });
-
-    // TODO: add api call to update the task completion status
-    // await updateTaskCompletion(task.id, !task.completed);
-
-    // Refetch to ensure consistency with server
-    // queryClient.invalidateQueries(getTodoTaskKey(''));
   };
 
-  const deleteTask = () => {
-    // Optimistically update the UI
-    queryClient.setQueryData<IToDoTask[] | undefined>(getTodoTaskKey(''), (oldData) => {
-      if (!oldData) return oldData;
-      return oldData.filter(t => t.id !== task.id);
-    });
-
-    // TODO: add api call to delete the task
-    // await deleteTaskById(task.id);
+  // Handler for deleting a task
+  const handleDeleteTask = () => {
+    deleteTaskMutation.mutate(task.id);
   };
 
-  const changePriority = (priority: 'low' | 'medium' | 'high') => {
-    // Optimistically update the UI
-    queryClient.setQueryData<IToDoTask[] | undefined>(getTodoTaskKey(''), (oldData) => {
-      if (!oldData) return oldData;
-      return oldData.map(t =>
-        t.id === task.id
-          ? { ...t, priority }
-          : t
-      );
-    });
+  // Handler for changing task priority
+  const handleChangePriority = (priority: 'low' | 'medium' | 'high') => {
+    if (task.priority === priority) return; // No change needed
 
-    // TODO: add api call to update the task priority
-    // await updateTaskPriority(task.id, priority);
+    updatePriority.mutate({
+      id: task.id,
+      priority
+    });
   };
 
   return (
@@ -69,29 +52,41 @@ export const TaskOptionsMenu = ({ task }: TaskOptionsMenuProps) => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={toggleTaskCompletion}>
+        <DropdownMenuItem onClick={handleToggleCompletion} disabled={isLoading}>
           <CheckSquare className="mr-2 h-4 w-4" />
           {task.completed ? 'Mark as Todo' : 'Mark as Complete'}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => {}}>
+        <DropdownMenuItem onClick={() => {}} disabled={isLoading}>
           <Edit className="mr-2 h-4 w-4" />
           Edit Task
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => changePriority('low')} className="text-blue-600 dark:text-blue-400">
+        <DropdownMenuItem
+          onClick={() => handleChangePriority('low')}
+          className="text-blue-600 dark:text-blue-400"
+          disabled={isLoading || task.priority === 'low'}
+        >
           <AlertCircle className="mr-2 h-4 w-4" />
           Set Low Priority
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changePriority('medium')} className="text-yellow-600 dark:text-yellow-400">
+        <DropdownMenuItem
+          onClick={() => handleChangePriority('medium')}
+          className="text-yellow-600 dark:text-yellow-400"
+          disabled={isLoading || task.priority === 'medium'}
+        >
           <AlertCircle className="mr-2 h-4 w-4" />
           Set Medium Priority
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changePriority('high')} className="text-red-600 dark:text-red-400">
+        <DropdownMenuItem
+          onClick={() => handleChangePriority('high')}
+          className="text-red-600 dark:text-red-400"
+          disabled={isLoading || task.priority === 'high'}
+        >
           <AlertCircle className="mr-2 h-4 w-4" />
           Set High Priority
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={deleteTask} className="text-red-600 dark:text-red-400">
+        <DropdownMenuItem onClick={handleDeleteTask} className="text-red-600 dark:text-red-400" disabled={isLoading}>
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Task
         </DropdownMenuItem>

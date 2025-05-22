@@ -1,6 +1,7 @@
 // useTaskForm.ts
 import { useState } from "react";
 import { IToDoTask } from "@/api";
+import { createTask } from "@/api/toDoTask";
 
 interface TaskFormData {
   title: string;
@@ -45,19 +46,13 @@ export function useTaskForm(): UseTaskFormReturn {
     setIsSubmitting(true);
 
     try {
-      // This would be replaced with an actual API call
-      const newTask: IToDoTask = {
-        id: Math.floor(Math.random() * 10000), // temporary ID for demonstration
+      // Call the API to create a new task
+      const newTask = await createTask({
         title: formData.title,
         description: formData.description,
         completed: false,
-        createdDate: new Date().toISOString(),
-        createBy: "CurrentUser", //TODO: add user info
-        priority: formData.priority,
-      };
-
-      // TODO: call API to save the task
-      // const response = await createTask(newTask);
+        priority: formData.priority
+      });
 
       // Reset form after successful submission
       setFormData({

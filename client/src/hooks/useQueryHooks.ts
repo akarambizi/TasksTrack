@@ -1,7 +1,7 @@
 import { getTodoTaskData, IToDoTask } from '@/api';
 import { getTodoTaskKey } from '@/hooks/queryKeys';
 import { AxiosError } from 'axios';
-import { UseQueryOptions, useQuery } from 'react-query';
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 
 /**
  * A custom hook that fetches todo tasks data.

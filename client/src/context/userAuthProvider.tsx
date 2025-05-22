@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react';
 import { ToastService } from '@/services/toastService';
 import { Loading } from '@/components/ui/loading';
 
-// Export for use in the useAuth hook
+// Auth context type definition
 export interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
@@ -23,8 +23,10 @@ const defaultAuthContext: AuthContextType = {
   isLoading: true
 };
 
+// Create and export the context
 export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
+// Auth provider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
@@ -103,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider value={contextValue}>
-      {isLoading ? <Loading fullScreen text="Initializing app..." /> : children}
+      {isLoading ? <Loading fullScreen text="Loading application..." /> : children}
     </AuthContext.Provider>
   );
 };

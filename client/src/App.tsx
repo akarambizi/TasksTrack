@@ -1,14 +1,11 @@
-import { Login, Pomodoro, ResetPassword, Sessions, SignUp, TasksContainer } from '@/components';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Container, Login, Pomodoro, ResetPassword, Sessions, SignUp, TasksContainer } from '@/components';
+import { QueryClientProvider } from '@/components/providers';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context';
-import { Container } from '@/components';
-
-const queryClient = new QueryClient();
 
 const App = () => {
     return (
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider>
             <AuthProvider>
                 <Router>
                     <Routes>

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "mock-server": "nodemon --watch src/mock-server --ext ts,json --exec \"node --no-warnings --loader ts-node/esm src/mock-server/server.ts\"",
+    "mock-server": "nodemon --watch src/mock-server --ext ts,json --exec \"node --loader ts-node/esm --no-warnings src/mock-server/server.ts\"",
     "dev:mock": "NODE_ENV=mock concurrently \"yarn mock-server\" \"yarn dev\"",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -14,9 +14,10 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.0.2",
     "axios": "^1.7.4",
     "class-variance-authority": "^0.7.0",

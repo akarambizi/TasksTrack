@@ -1,5 +1,6 @@
 import { SideBarButtons } from './SideBarButtons';
 import { SideBarLinks } from './SideBarLinks';
+import { UserNav } from './UserNav';
 
 export const SideBarNav = () => {
     return (
@@ -9,6 +10,7 @@ export const SideBarNav = () => {
                 <div className="flex-1">
                     <SideBarLinks />
                 </div>
+                <UserNav />
             </div>
         </div>
     );

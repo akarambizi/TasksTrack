@@ -1,16 +1,15 @@
-import { Login, ResetPassword, SignUp, TasksContainer } from '@/components';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { Container, Dashboard, Login, Pomodoro, ResetPassword, Sessions, SignUp, TasksContainer } from '@/components';
+import { QueryClientProvider } from '@/components/providers';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context';
-import { Container } from '@/components';
-
-const queryClient = new QueryClient();
+import { ToastContainer } from '@/components/ui/toast-container';
 
 const App = () => {
     return (
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider>
             <AuthProvider>
                 <Router>
+                    <ToastContainer />
                     <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
@@ -21,8 +20,10 @@ const App = () => {
                                 <ProtectedRoute>
                                     <Container>
                                         <Routes>
+                                            <Route path="/dashboard" element={<Dashboard />} />
                                             <Route path="/tasks" element={<TasksContainer />} />
-                                            <Route path="/dashboard" element={<>dashboard</>} />
+                                            <Route path="/pomodoro" element={<Pomodoro />} />
+                                            <Route path="/history" element={<Sessions />} />
                                             <Route path="/analytics" element={<>analytics</>} />
                                             <Route path="*" element={<div>Not found</div>} />
                                         </Routes>

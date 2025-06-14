@@ -1,4 +1,4 @@
-import { IAuthData, IAuthResult } from '@/api';
+import { IAuthData } from '@/api';
 import { ChangeEvent, useState } from 'react';
 import { useLoginUser, useRegisterUser, useResetPassword } from './userAuth';
 import { useAuth } from '@/context';
@@ -85,10 +85,10 @@ export const useForm = (initialFormData: IAuthData, formType: FormType) => {
     };
 
     const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        const response: IAuthResult = await handleSubmit(e);
+        const response = await handleSubmit(e);
 
         // Only call login if the response indicates success
-        if (response && response.success) {
+        if (response?.success) {
             login(response?.token ?? '');
         } else {
             // TODO:

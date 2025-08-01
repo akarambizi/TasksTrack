@@ -42,8 +42,8 @@ services:
 
     db:
         # Specifies the Docker image to use for the db service.
-        # 'postgres:15' is the Docker image for PostgreSQL version 15, which is more stable.
-        image: postgres:15
+        # 'postgres:17' is the latest stable PostgreSQL release.
+        image: postgres:17
         # Mounts a named volume to a specific directory inside the db container.
         # This is where PostgreSQL stores its data. The named volume 'postgres_data' persists data across container restarts.
         volumes:

@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { validateToken } from './userAuth';
 import { getUrl } from './utils';
 
 // Create a custom axios instance
@@ -35,50 +34,16 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
-    // Get the original request config
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+    // Handle authentication errors
 
-    // Check if the error is due to an expired token (401 Unauthorized) and we haven't retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      // Skip token validation for requests to token validation endpoint to prevent loops
-      const url = originalRequest.url || '';
-      if (url.includes('/api/auth/validate-token')) {
-        return Promise.reject(error);
-      }
-
-      originalRequest._retry = true;
-
-      try {
-        // Try to refresh the token
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          throw new Error('No token available');
-        }
-
-        // Validate token or refresh it
-        const response = await validateToken(token);
-
-        if (response.success && response.token) {
-          // Update token in localStorage
-          localStorage.setItem('authToken', response.token);
-
-          // Update the header in the original request
-          if (originalRequest.headers) {
-            originalRequest.headers['Authorization'] = `Bearer ${response.token}`;
-          }
-
-          // Retry the original request
-          return apiClient(originalRequest);
-        } else {
-          // If token validation returned success:false, clear auth and reject
-          localStorage.removeItem('authToken');
-          return Promise.reject(new Error('Token validation failed'));
-        }
-      } catch (refreshError) {
-        // If refresh fails, redirect to login
-        localStorage.removeItem('authToken');
-        return Promise.reject(refreshError);
-      }
+    // Check if the error is due to an expired token (401 Unauthorized) 
+    if (error.response?.status === 401) {
+      // Clear the token since the server rejected it
+      localStorage.removeItem('authToken');
+      
+      // No need to retry - the AuthContext will detect the missing token on next page load
+      // This avoids making redundant validation API calls
+      return Promise.reject(new Error('Session expired. Please log in again.'));
     }
 
     // For network errors, provide a helpful message

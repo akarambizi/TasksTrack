@@ -2,6 +2,7 @@ import { IAuthData, IAuthResult } from './userAuth.types';
 import axios from 'axios';
 import { apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
+import { getUrl } from './utils';
 
 /**
  * Authentication API key for React Query
@@ -108,7 +109,7 @@ export const validateToken = async (token: string): Promise<IAuthResult> => {
         // Create a direct axios instance for token validation to avoid interceptor loop
         const endpoint = '/api/auth/validate-token';
         // Use a direct axios instance without interceptors to prevent infinite loops
-        const url = `${window.location.origin}${endpoint}`;
+        const url = getUrl(endpoint);
         const response = await axios.post<IAuthResult>(url, { token }, {
             headers: {
                 'Content-Type': 'application/json',

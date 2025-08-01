@@ -8,13 +8,13 @@ services:
         # This allows you to access the client service on localhost:3000.
         ports:
             - 3000:3000
-        # Mounts the host's ./client directory and a named volume to specific directories inside the client container.
+        # Mounts the host's ./client directory to a specific directory inside the client container.
         # This allows for hot reloading of code changes.
         volumes:
             - ./client:/app
-            - client_node_modules:/app/node_modules
+            # The node_modules directory is excluded from the mount
+            - /app/node_modules
         # Specifies the command to start the client application inside the container.
-        # 'yarn dev --host' starts the client in development mode and allows connections from any host.
         command: yarn dev --host
 
     server:
@@ -42,16 +42,18 @@ services:
 
     db:
         # Specifies the Docker image to use for the db service.
-        # 'postgres:17' is the Docker image for PostgreSQL version 13.
-        image: postgres:17
+        # 'postgres:15' is the Docker image for PostgreSQL version 15, which is more stable.
+        image: postgres:15
         # Mounts a named volume to a specific directory inside the db container.
         # This is where PostgreSQL stores its data. The named volume 'postgres_data' persists data across container restarts.
         volumes:
             - postgres_data:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_DB=taskstrack
 
 # Defines the named volumes used by services.
 volumes:
     # Defines a volume named postgres_data. This is used by the db service to persist database data.
     postgres_data:
-    # This is used by the client service to cache the node_modules directory and improve build performance.
-    client_node_modules:

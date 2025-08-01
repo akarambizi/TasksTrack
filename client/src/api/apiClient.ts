@@ -40,6 +40,12 @@ apiClient.interceptors.response.use(
 
     // Check if the error is due to an expired token (401 Unauthorized) and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip token validation for requests to token validation endpoint to prevent loops
+      const url = originalRequest.url || '';
+      if (url.includes('/api/auth/validate-token')) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       try {
@@ -63,14 +69,14 @@ apiClient.interceptors.response.use(
 
           // Retry the original request
           return apiClient(originalRequest);
+        } else {
+          // If token validation returned success:false, clear auth and reject
+          localStorage.removeItem('authToken');
+          return Promise.reject(new Error('Token validation failed'));
         }
       } catch (refreshError) {
         // If refresh fails, redirect to login
         localStorage.removeItem('authToken');
-
-        // You might want to redirect to login page here
-        // or dispatch a logout action if using Redux/context
-
         return Promise.reject(refreshError);
       }
     }

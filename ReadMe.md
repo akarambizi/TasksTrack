@@ -39,6 +39,21 @@ TasksTrack is a task tracking app with integrated Pomodoro timer functionality t
    - Client: Open your browser and navigate to <http://localhost:3000>.
    - Server: Open your browser and navigate to <http://localhost:5206>.
 
+   ***Quick Start with Makefile***
+
+   For easier development, use these commands:
+
+   ```sh
+   # Start all services with live logs
+   make up
+
+   # Stop all services
+   make down
+
+   # See all available commands
+   make help
+   ```
+
    ***Additional Commands***
 
    - Stop the Services:

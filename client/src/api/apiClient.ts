@@ -33,27 +33,10 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
-  async (error: AxiosError) => {
-    // Handle authentication errors
-
-    // Check if the error is due to an expired token (401 Unauthorized)
+  (error: AxiosError) => {
+    // Handle authentication errors - clear token on 401
     if (error.response?.status === 401) {
-      // Clear the token since the server rejected it
       localStorage.removeItem('authToken');
-      
-      // No need to retry - the AuthContext will detect the missing token on next page load
-      // This avoids making redundant validation API calls
-      return Promise.reject(new Error('Session expired. Please log in again.'));
-    }
-
-    // For network errors, provide a helpful message
-    if (error.code === 'ECONNABORTED') {
-      return Promise.reject(new Error('Request timed out. Please check your internet connection.'));
-    }
-
-    // Handle server errors
-    if (error.response?.status && error.response.status >= 500) {
-      return Promise.reject(new Error('Server error. Please try again later.'));
     }
 
     return Promise.reject(error);

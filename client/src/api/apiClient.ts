@@ -36,7 +36,7 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     // Handle authentication errors
 
-    // Check if the error is due to an expired token (401 Unauthorized) 
+    // Check if the error is due to an expired token (401 Unauthorized)
     if (error.response?.status === 401) {
       // Clear the token since the server rejected it
       localStorage.removeItem('authToken');

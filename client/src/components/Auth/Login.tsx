@@ -2,13 +2,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormType, useForm } from '@/hooks';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Login = () => {
-    const { formData, errors, handleChange, handleLoginSubmit } = useForm({ email: '', password: '' }, FormType.Login);
+    const navigate = useNavigate();
+    const { formData, errors, isLoading, handleChange, handleLoginSubmit } = useForm({ email: '', password: '' }, FormType.Login);
+
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        const success = await handleLoginSubmit(e);
+        if (success) {
+            navigate('/dashboard');
+        }
+    };
 
     return (
-        <form role="form" onSubmit={handleLoginSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form role="form" onSubmit={handleFormSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -31,8 +39,8 @@ export const Login = () => {
                             <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required />
                             {errors.password && <p className="text-red-500">{errors.password}</p>}
                         </div>
-                        <Button type="submit" className="w-full">
-                            Login
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? 'Logging in...' : 'Login'}
                         </Button>
                         <Button variant="outline" className="w-full">
                             Login with Google

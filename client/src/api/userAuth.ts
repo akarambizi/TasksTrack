@@ -1,6 +1,8 @@
 import { IAuthData, IAuthResult } from './userAuth.types';
+import axios from 'axios';
 import { apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
+import { getUrl } from './utils';
 
 /**
  * Authentication API key for React Query
@@ -104,8 +106,17 @@ export const resetPassword = async (data: IAuthData): Promise<IAuthResult> => {
  */
 export const validateToken = async (token: string): Promise<IAuthResult> => {
     try {
+        // Create a direct axios instance for token validation to avoid interceptor loop
         const endpoint = '/api/auth/validate-token';
-        return await apiPost<IAuthResult>(endpoint, { token });
+        // Use a direct axios instance without interceptors to prevent infinite loops
+        const url = getUrl(endpoint);
+        const response = await axios.post<IAuthResult>(url, { token }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;
     } catch (error) {
         console.error('Token validation failed:', error);
         throw new Error('Token validation failed');

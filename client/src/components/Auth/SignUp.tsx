@@ -2,13 +2,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormType, useForm } from '@/hooks';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const SignUp = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', password: '' }, FormType.Register);
+    const navigate = useNavigate();
+    const { formData, errors, handleChange, isLoading, handleSubmit } = useForm({ email: '', password: '' }, FormType.Register);
+
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        const response = await handleSubmit(e);
+        if (response?.success) {
+            navigate('/login'); // Redirect to login page
+        }
+    };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form onSubmit={handleFormSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -31,8 +39,8 @@ export const SignUp = () => {
                             <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
                             {errors.password && <p className="text-red-500">{errors.password}</p>}
                         </div>
-                        <Button type="submit" className="w-full">
-                            Create an account
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? 'Creating account...' : 'Create an account'}
                         </Button>
                         <Button variant="outline" className="w-full">
                             Sign up with Google

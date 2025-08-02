@@ -1,7 +1,6 @@
 import { IAuthData } from '@/api';
 import { ChangeEvent, useState } from 'react';
 import { useLogin, useRegister, useResetPassword } from './useAuth';
-import { useAuth } from '@/context';
 
 // Email regex: Validates format like example@domain.com
 export const validateEmail = (email: string) => {
@@ -45,10 +44,8 @@ export enum FormType {
 
 // Custom hook for form handling
 export const useForm = (initialFormData: IAuthData, formType: FormType) => {
-    const { login } = useAuth();
     const [formData, setFormData] = useState<IAuthData>(initialFormData);
     const [errors, setErrors] = useState<IAuthData>({ email: '', password: '' });
-    const [isLoading, setIsLoading] = useState(false);
 
     const mutations = {
         [FormType.Login]: useLogin(),
@@ -56,12 +53,22 @@ export const useForm = (initialFormData: IAuthData, formType: FormType) => {
         [FormType.ResetPassword]: useResetPassword()
     };
 
+    const currentMutation = mutations[formType];
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value
         }));
+
+        // Clear field error when user starts typing
+        if (errors[name as keyof IAuthData]) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                [name]: ''
+            }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,34 +76,17 @@ export const useForm = (initialFormData: IAuthData, formType: FormType) => {
         const newErrors = validateForm(formData);
         setErrors(newErrors);
 
+        // Only proceed if no validation errors
         if (!newErrors.email && !newErrors.password) {
-            setIsLoading(true);
-
-            try {
-                const response = await mutations[formType].mutateAsync(formData);
-                return response; // Return the response to allow further handling
-            } catch (error) {
-                return null; // Return null in case of an error
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        return null; // Return null if there are validation errors
-    };
-
-    const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        const response = await handleSubmit(e);
-
-        // Only call login if the response indicates success
-        if (response?.success) {
-            login(response?.token ?? '');
-            return true; // Return success status to component
-        } else {
-            // Handle error case, e.g., show a toast message
-            console.error('Login failed: Unauthorized or other error');
-            return false; // Return failure status to component
+            currentMutation.mutate(formData);
         }
     };
 
-    return { formData, errors, isLoading, handleChange, handleSubmit, handleLoginSubmit };
+    return {
+        formData,
+        errors,
+        isLoading: currentMutation.isPending,
+        handleChange,
+        handleSubmit
+    };
 };

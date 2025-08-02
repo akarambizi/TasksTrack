@@ -1,6 +1,6 @@
 import { IAuthData } from '@/api';
 import { ChangeEvent, useState } from 'react';
-import { useLoginUser, useRegisterUser, useResetPassword } from './userAuth';
+import { useLogin, useRegister, useResetPassword } from './useAuth';
 import { useAuth } from '@/context';
 
 // Email regex: Validates format like example@domain.com
@@ -51,8 +51,8 @@ export const useForm = (initialFormData: IAuthData, formType: FormType) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const mutations = {
-        [FormType.Login]: useLoginUser(),
-        [FormType.Register]: useRegisterUser(),
+        [FormType.Login]: useLogin(),
+        [FormType.Register]: useRegister(),
         [FormType.ResetPassword]: useResetPassword()
     };
 

@@ -1,8 +1,31 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, logoutUser, registerUser, resetPassword, authKeys } from '../api/userAuth';
+import { loginUser, logoutUser, registerUser, resetPassword } from '../api/userAuth';
 import { IAuthData, IAuthResult } from '../api/userAuth.types';
 import { ToastService } from '../services/toastService';
+
+// Type for API error responses
+interface ApiError extends Error {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+
+/**
+ * Authentication API key for React Query
+ */
+export const authKeys = {
+  all: ['auth'] as const,
+  login: () => [...authKeys.all, 'login'] as const,
+  register: () => [...authKeys.all, 'register'] as const,
+  logout: () => [...authKeys.all, 'logout'] as const,
+  resetPassword: () => [...authKeys.all, 'reset-password'] as const,
+  validateToken: () => [...authKeys.all, 'validate-token'] as const,
+};
+
 
 /**
  * Hook for user registration
@@ -14,8 +37,13 @@ export const useRegister = () => {
     mutationKey: authKeys.register(),
     mutationFn: (userData: IAuthData) => registerUser(userData),
     onSuccess: () => {
+      ToastService.success('Registration successful! Please log in.');
       // Redirect to login page after successful registration
       navigate('/login');
+    },
+    onError: (error: ApiError) => {
+      const errorMessage = error?.response?.data?.message || 'Registration failed. Please try again.';
+      ToastService.error(errorMessage);
     }
   });
 };
@@ -36,12 +64,17 @@ export const useLogin = () => {
         // Store token in local storage
         localStorage.setItem('authToken', data.token);
 
-        // Update auth state
-        queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+        // Update auth state - invalidate all auth queries
+        queryClient.invalidateQueries({ queryKey: authKeys.all });
 
+        ToastService.success('Login successful!');
         // Redirect to dashboard
         navigate('/dashboard');
       }
+    },
+    onError: (error: ApiError) => {
+      const errorMessage = error?.response?.data?.message || 'Login failed. Please check your credentials.';
+      ToastService.error(errorMessage);
     }
   });
 };
@@ -63,6 +96,7 @@ export const useLogout = () => {
       // Clear the query cache
       queryClient.clear();
 
+      ToastService.success('Logged out successfully.');
       // Redirect to login page
       navigate('/login');
     },
@@ -70,6 +104,8 @@ export const useLogout = () => {
       // Even if the API call fails, we still want to clear local state
       localStorage.removeItem('authToken');
       queryClient.clear();
+
+      ToastService.warning('Logged out locally due to server error.');
       navigate('/login');
     }
   });
@@ -87,6 +123,10 @@ export const useResetPassword = () => {
     onSuccess: () => {
       ToastService.success('Password reset link has been sent to your email');
       navigate('/login');
+    },
+    onError: (error: ApiError) => {
+      const errorMessage = error?.response?.data?.message || 'Failed to send password reset email. Please try again.';
+      ToastService.error(errorMessage);
     }
   });
 };

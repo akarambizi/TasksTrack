@@ -2,17 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormType, useForm } from '@/hooks';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const Login = () => {
-    const navigate = useNavigate();
     const { formData, errors, isLoading, handleChange, handleLoginSubmit } = useForm({ email: '', password: '' }, FormType.Login);
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        const success = await handleLoginSubmit(e);
-        if (success) {
-            navigate('/dashboard');
-        }
+        await handleLoginSubmit(e);
     };
 
     return (

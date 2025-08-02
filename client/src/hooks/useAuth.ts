@@ -90,12 +90,3 @@ export const useResetPassword = () => {
     }
   });
 };
-
-/**
- * Check if user is authenticated
- * @returns boolean indicating if user is authenticated
- */
-export const useIsAuthenticated = (): boolean => {
-  const token = localStorage.getItem('authToken');
-  return !!token;
-};

@@ -1,5 +1,5 @@
-import { IAuthData } from '@/api';
 import { ChangeEvent, useState } from 'react';
+import { IAuthData } from '@/api';
 import { useLogin, useRegister, useResetPassword } from './useAuth';
 
 // Email regex: Validates format like example@domain.com
@@ -42,18 +42,59 @@ export enum FormType {
     ResetPassword = 'reset-password'
 }
 
+// Type definition for useForm hook return value
+export interface UseFormReturn {
+    formData: IAuthData;
+    errors: IAuthData;
+    isLoading: boolean;
+    handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+}
+
+// Default values for form fallback
+const DEFAULT_FORM_STATE: UseFormReturn = {
+    formData: { email: '', password: '' },
+    errors: { email: '', password: '' },
+    isLoading: false,
+    handleChange: () => {},
+    handleSubmit: async () => {}
+};
+
+// Custom hook to get the appropriate mutation based on form type
+const useCurrentMutation = (formType: FormType) => {
+    // Get all mutations (hooks must be called unconditionally)
+    const loginMutation = useLogin();
+    const registerMutation = useRegister();
+    const resetPasswordMutation = useResetPassword();
+
+    switch (formType) {
+        case FormType.Login:
+            return loginMutation;
+        case FormType.Register:
+            return registerMutation;
+        case FormType.ResetPassword:
+            return resetPasswordMutation;
+        default:
+            console.error(`No mutation found for form type: ${formType}`);
+            return null;
+    }
+};
+
 // Custom hook for form handling
-export const useForm = (initialFormData: IAuthData, formType: FormType) => {
+export const useForm = (initialFormData: IAuthData, formType: FormType): UseFormReturn => {
     const [formData, setFormData] = useState<IAuthData>(initialFormData);
     const [errors, setErrors] = useState<IAuthData>({ email: '', password: '' });
 
-    const mutations = {
-        [FormType.Login]: useLogin(),
-        [FormType.Register]: useRegister(),
-        [FormType.ResetPassword]: useResetPassword()
-    };
+    const currentMutation = useCurrentMutation(formType);
 
-    const currentMutation = mutations[formType];
+    // Early return if mutation doesn't exist for the form type
+    if (!currentMutation) {
+        return {
+            ...DEFAULT_FORM_STATE,
+            formData,
+            errors
+        };
+    }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -61,14 +102,6 @@ export const useForm = (initialFormData: IAuthData, formType: FormType) => {
             ...prevFormData,
             [name]: value
         }));
-
-        // Clear field error when user starts typing
-        if (errors[name as keyof IAuthData]) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                [name]: ''
-            }));
-        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

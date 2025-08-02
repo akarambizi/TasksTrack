@@ -1,5 +1,5 @@
 import { Loading } from '@/components/ui/loading';
-import { AuthContext } from './userAuth';
+import { AuthContext } from './AuthContext';
 import { useAuthLogic } from '@/hooks/useAuthLogic';
 
 /**

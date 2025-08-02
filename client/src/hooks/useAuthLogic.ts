@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AuthService, UserData } from '@/services/authService';
 import { ToastService } from '@/services/toastService';
-import { AuthContextType } from '@/context/userAuth';
+import { AuthContextType } from '@/context/AuthContext';
 
 /**
  * Custom hook that handles all authentication logic and state management

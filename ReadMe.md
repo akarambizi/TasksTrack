@@ -4,119 +4,137 @@ TasksTrack is a task tracking app with integrated Pomodoro timer functionality t
 
 ## Features
 
-- **Task Tracking:** Manage and track tasks.
-- **Pomodoro Timer:** Enhance focus during work sessions.
-- **User Authentication:** Register, log in, and log out securely.
-- **Session History:** Review completed Pomodoro sessions.
+- **Task Management:** Create, update, delete, and organize tasks with priority levels
+- **Pomodoro Timer:** Built-in timer for focused work sessions using the Pomodoro Technique
+- **User Authentication:** Secure registration, login, and session management with JWT tokens
+- **Session History:** Track and review completed Pomodoro sessions and productivity metrics
 
 ## Technologies
 
-- **Backend:**
-  - [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet) for web API development.
-  - [PostgreSQL](https://www.postgresql.org/) for data storage.
+### Backend
 
-- **Frontend:**
-  - [React.js](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/).
+- **[ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)** - Web API framework
+- **[PostgreSQL](https://www.postgresql.org/)** - Database
+- **[Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)** - Object-relational mapping
+- **[JWT Authentication](https://jwt.io/)** - Secure token-based authentication
 
-## Getting Started
+### Frontend
+
+- **[React.js](https://reactjs.org/)** - Component-based UI library
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[Vite](https://vitejs.dev/)** - Fast build tool and dev server
+- **[TanStack Query](https://tanstack.com/query)** - Data fetching and caching
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[shadcn/ui](https://ui.shadcn.com/)** - UI components
+
+## Prerequisites
+
+Before running the application, ensure you have the following installed:
+
+- **[Docker](https://www.docker.com/get-started)** and **[Docker Compose](https://docs.docker.com/compose/)**
+- **[Node.js](https://nodejs.org/)** (v18+ recommended) and **[Yarn](https://yarnpkg.com/)**
+- **[.NET 8 SDK](https://dotnet.microsoft.com/download)** (for local server development)
+- **[Make](https://www.gnu.org/software/make/)** (optional, for convenience commands)
+
+## Quick Start
+
+### Option 1: Docker Compose (Recommended)
 
 1. **Clone the Repository:**
 
-   ```sh
+   ```bash
    git clone https://github.com/akarambizi/TasksTrack.git
+   cd TasksTrack
    ```
 
-2. **Run the Project with Docker Compose:**
+2. **Start with Docker Compose:**
 
-   Ensure you have Docker and Docker Compose installed. [Docker](https://www.docker.com/)
-
-   ```sh
+   ```bash
    docker-compose up --build
    ```
 
-   **Access the Application:**
+3. **Access the Application:**
 
-   - Client: Open your browser and navigate to <http://localhost:3000>.
-   - Server: Open your browser and navigate to <http://localhost:5206>.
+   - **Frontend:** <http://localhost:3000>
+   - **Backend API:** <http://localhost:5206>
 
-   ***Quick Start with Makefile***
+### Option 2: Makefile Commands
 
-   For easier development, use these commands:
+```bash
+# Start all services with live logs
+make up
 
-   ```sh
-   # Start all services with live logs
-   make up
+# Stop all services
+make down
 
-   # Stop all services
-   make down
+# View all available commands
+make help
+```
 
-   # See all available commands
-   make help
+## Running Client and Server Separately
+
+### Client Development
+
+1. **Navigate to Client Directory:**
+
+   ```bash
+   cd client
    ```
 
-   ***Additional Commands***
+2. **Install Dependencies:**
 
-   - Stop the Services:
+   ```bash
+   yarn install
+   ```
 
-     ```sh
-     docker-compose down
+3. **Development Options:**
+
+   - **With Mock Server (Recommended for UI development):**
+
+     ```bash
+     yarn dev:mock
      ```
 
-   - Rebuild the Services:
+     This starts both the Vite dev server (<http://localhost:3000>) and mock server (<http://localhost:4200>)
 
-     ```sh
-     docker-compose up --build
+   - **Separate Processes:**
+
+     ```bash
+     # Terminal 1: Start development server
+     yarn dev
+
+     # Terminal 2: Start mock server
+     yarn mock-server
      ```
 
-   - View Logs:
+     When using the mock server for testing, use these credentials:
 
-     ```sh
-     docker-compose logs -f
-     ```
-
-3. **Run the Client and Server Locally:**
-
-   Navigate to the `./client` folder and use the scripts defined in the `package.json` to run the client.
-
-   1. Start Development Server with Mock Server:
-
-      ```sh
-      yarn dev:mock
-      ```
-
-   2. Start Development Server and Mock Server separately
-
-      - Start Development Server:
-
-        ```sh
-        yarn dev
+        ```text
+        Email: test@example.com
+        Password: Password!123
         ```
 
-        This will start the Vite development server on <http://localhost:3000>.
+    **Note:** The mock server simulates API responses for development and testing purposes.
 
-      - Start Mock Server:
+#### Server Development
 
-        This will start the mock server on <http://localhost:4200>.
+1. **Navigate to Server Directory:**
 
-        ```sh
-        yarn mock-server
-        ```
+   ```bash
+   cd server
+   ```
 
-   Navigate to the `./server` folder and use the `Makefile` to build and run the server.
+2. **Build and Run:**
 
-   1. **Build the Server:**
+   ```bash
+   # Build the server
+   make build
 
-      ```sh
-      cd server
-      make build
-      ```
+   # Run the server
+   make run
+   ```
 
-   2. **Run the Server:**
+3. **Access the Server:**
 
-      ```sh
-      make run
-      ```
-
-   3. **Access the Server:**
-
-      Open your browser and navigate to [http://localhost:5206](http://localhost:5206) to access the server.
+   - **API Endpoint:** <http://localhost:5206>
+   - **API Documentation:** Available via Swagger UI

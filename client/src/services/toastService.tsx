@@ -6,4 +6,4 @@
 // Re-export from the new files
 export { ToastService } from './toastService';
 export type { ToastProps } from './toastService';
-export { ToastContainer } from '@/components/ui/toast-container';
+export { ToastContainer } from '../components/ui/toast-container';

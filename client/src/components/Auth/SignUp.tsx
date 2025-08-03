@@ -2,17 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormType, useForm } from '@/hooks';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const SignUp = () => {
-    const navigate = useNavigate();
     const { formData, errors, handleChange, isLoading, handleSubmit } = useForm({ email: '', password: '' }, FormType.Register);
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        const response = await handleSubmit(e);
-        if (response?.success) {
-            navigate('/login'); // Redirect to login page
-        }
+        await handleSubmit(e);
     };
 
     return (

@@ -1,4 +1,4 @@
 export * from './useForm';
 export * from './useQueryHooks';
-export * from './userAuth';
+export * from './useAuth';
 export * from './useTasks';

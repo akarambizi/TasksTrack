@@ -21,7 +21,7 @@ The application uses a custom Axios client with interceptors for:
 
 ## Task Management API
 
-### Endpoints
+### Task Management Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -31,7 +31,7 @@ The application uses a custom Axios client with interceptors for:
 | `/api/tasks/:id` | PUT | Update a task |
 | `/api/tasks/:id` | DELETE | Delete a task |
 
-### Available Functions
+### Task API Functions
 
 - `getTodoTaskData(query)`: Fetch tasks with optional query parameters
 - `getTaskById(id)`: Fetch a single task by ID
@@ -43,7 +43,7 @@ The application uses a custom Axios client with interceptors for:
 
 ## Authentication API
 
-### Endpoints
+### Authentication Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -53,7 +53,7 @@ The application uses a custom Axios client with interceptors for:
 | `/api/auth/reset-password` | POST | Request password reset |
 | `/api/auth/validate-token` | POST | Validate auth token |
 
-### Available Functions
+### Authentication API Functions
 
 - `registerUser(userData)`: Register a new user
 - `loginUser(userData)`: Login a user
@@ -63,7 +63,7 @@ The application uses a custom Axios client with interceptors for:
 
 ## User Management API
 
-### Endpoints
+### User Management Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -74,7 +74,7 @@ The application uses a custom Axios client with interceptors for:
 | `/api/users/:id` | DELETE | Delete user |
 | `/api/users/current` | GET | Get current user profile |
 
-### Available Functions
+### User Management API Functions
 
 - `getUsers()`: Get all users
 - `getUserById(id)`: Get user by ID
@@ -103,7 +103,6 @@ For convenient data fetching and state management, the application provides cust
 - `useLogin()`: Login a user
 - `useLogout()`: Logout the current user
 - `useResetPassword()`: Request a password reset
-- `useIsAuthenticated()`: Check if the user is currently authenticated
 
 ## Toast Notifications
 

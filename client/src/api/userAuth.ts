@@ -1,20 +1,7 @@
 import { IAuthData, IAuthResult } from './userAuth.types';
 import axios from 'axios';
 import { apiPost } from './apiClient';
-import { ToastService } from '../services/toastService';
 import { getUrl } from './utils';
-
-/**
- * Authentication API key for React Query
- */
-export const authKeys = {
-  all: ['auth'] as const,
-  login: () => [...authKeys.all, 'login'] as const,
-  register: () => [...authKeys.all, 'register'] as const,
-  logout: () => [...authKeys.all, 'logout'] as const,
-  resetPassword: () => [...authKeys.all, 'reset-password'] as const,
-  validateToken: () => [...authKeys.all, 'validate-token'] as const,
-};
 
 /**
  * Registers a new user.
@@ -26,12 +13,10 @@ export const registerUser = async (userData: IAuthData): Promise<IAuthResult> =>
     try {
         const endpoint = '/api/auth/register';
         const response = await apiPost<IAuthResult>(endpoint, userData);
-        ToastService.success('Registration successful');
         return response;
     } catch (error) {
         console.error('Registration failed:', error);
-        ToastService.error('Registration failed');
-        throw new Error('Registration failed');
+        throw error;
     }
 };
 
@@ -42,21 +27,8 @@ export const registerUser = async (userData: IAuthData): Promise<IAuthResult> =>
  * @throws An error if the login fails.
  */
 export const loginUser = async (userData: IAuthData): Promise<IAuthResult> => {
-    try {
-        const endpoint = '/api/auth/login';
-        const response = await apiPost<IAuthResult>(endpoint, userData);
-
-        // Save token to local storage if provided
-        if (response.token) {
-            localStorage.setItem('authToken', response.token);
-        }
-
-        ToastService.success('Login successful');
-        return response;
-    } catch (error) {
-        ToastService.error('Login failed');
-        throw new Error('Login failed');
-    }
+    const endpoint = '/api/auth/login';
+    return await apiPost<IAuthResult>(endpoint, userData);
 };
 
 /**
@@ -65,19 +37,8 @@ export const loginUser = async (userData: IAuthData): Promise<IAuthResult> => {
  * @throws {Error} If the logout request fails.
  */
 export const logoutUser = async (): Promise<IAuthResult> => {
-    try {
-        const endpoint = '/api/auth/logout';
-        const response = await apiPost<IAuthResult>(endpoint, {});
-
-        // Clear token from localStorage
-        localStorage.removeItem('authToken');
-
-        ToastService.success('Logout successful');
-        return response;
-    } catch (error) {
-        ToastService.error('Logout failed');
-        throw new Error('Logout failed');
-    }
+    const endpoint = '/api/auth/logout';
+    return await apiPost<IAuthResult>(endpoint, {});
 };
 
 /**
@@ -87,15 +48,8 @@ export const logoutUser = async (): Promise<IAuthResult> => {
  * @throws {Error} - If the password reset request fails.
  */
 export const resetPassword = async (data: IAuthData): Promise<IAuthResult> => {
-    try {
-        const endpoint = '/api/auth/reset-password';
-        const response = await apiPost<IAuthResult>(endpoint, data);
-        ToastService.success('Password reset request successful');
-        return response;
-    } catch (error) {
-        ToastService.error('Password reset request failed');
-        throw new Error('Password reset request failed');
-    }
+    const endpoint = '/api/auth/reset-password';
+    return await apiPost<IAuthResult>(endpoint, data);
 };
 
 /**

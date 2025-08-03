@@ -11,7 +11,7 @@ vi.mock('@/hooks', () => ({
 }));
 
 describe('Login Component', () => {
-    const mockHandleLoginSubmit = vi.fn();
+    const mockHandleSubmit = vi.fn();
     const mockHandleChange = vi.fn();
 
     beforeEach(() => {
@@ -19,7 +19,7 @@ describe('Login Component', () => {
             formData: { email: '', password: '' },
             errors: {},
             handleChange: mockHandleChange,
-            handleLoginSubmit: mockHandleLoginSubmit
+            handleSubmit: mockHandleSubmit
         });
     });
 
@@ -73,7 +73,7 @@ describe('Login Component', () => {
         const form = screen.getByRole('form');
         fireEvent.submit(form);
 
-        expect(mockHandleLoginSubmit).toHaveBeenCalled();
+        expect(mockHandleSubmit).toHaveBeenCalled();
     });
 
     it('should display error messages when errors are present', () => {
@@ -81,7 +81,7 @@ describe('Login Component', () => {
             formData: { email: '', password: '' },
             errors: { email: 'Invalid email', password: 'Password is required' },
             handleChange: mockHandleChange,
-            handleLoginSubmit: mockHandleLoginSubmit
+            handleSubmit: mockHandleSubmit
         });
 
         render(

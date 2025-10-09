@@ -20,7 +20,7 @@ namespace TasksTrack.Tests.Services
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllTasks()
+        public async Task GetAll_ShouldReturnAllTasks()
         {
             // Arrange
             var expectedTasks = new List<ToDoTask>
@@ -37,8 +37,10 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "Test User" }
             };
 
+            _repositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(expectedTasks);
+
             // Act
-            var tasks = _service.GetAll();
+            var tasks = await _service.GetAllAsync();
 
             // Assert
             Assert.Equal(2, tasks.Count());

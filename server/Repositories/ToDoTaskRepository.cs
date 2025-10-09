@@ -1,40 +1,48 @@
 using TasksTrack.Models;
 using TasksTrack.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TasksTrack.Repositories
 {
     public class ToDoTaskRepository : IToDoTaskRepository
     {
-        // private readonly TasksTrackContext _context;
+        private readonly TasksTrackContext _context;
 
         public ToDoTaskRepository(TasksTrackContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public IEnumerable<ToDoTask> GetAll()
+        public async Task<IEnumerable<ToDoTask>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Tasks.ToListAsync();
         }
 
-        public ToDoTask GetById(int id)
+        public async Task<ToDoTask?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Tasks.FirstOrDefaultAsync(task => task.Id == id);
         }
 
-        public void Add(ToDoTask task)
+        public async Task AddAsync(ToDoTask task)
         {
-            throw new NotImplementedException();
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(ToDoTask task)
+        public async Task UpdateAsync(ToDoTask task)
         {
-            throw new NotImplementedException();
+            _context.Tasks.Update(task);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var task = await _context.Tasks.FindAsync(id);
+            if (task != null)
+            {
+                _context.Tasks.Remove(task);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

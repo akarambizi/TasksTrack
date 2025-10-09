@@ -35,6 +35,7 @@ services:
         # Sets environment variables inside the server container.
         environment:
             - DOTNET_USE_POLLING_FILE_WATCHER=1
+            - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
         # Specifies that the server service should be started only after the db service has been started.
         # This ensures that the database is ready before the server starts.
         depends_on:

@@ -6,12 +6,9 @@ namespace TasksTrack.Models
         public required string Title { get; set; }
         public string? Description { get; set; }
         public bool Completed { get; set; }
-        public required string CreatedDate { get; set; }
-        public string? UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public required string CreatedBy { get; set; }
-        public string? UpdatedBy
-        {
-            get; set;
-        }
+        public string? UpdatedBy { get; set; }
     }
 }

@@ -6,45 +6,64 @@ namespace TasksTrack.Controllers
 {
     public class ToDoTaskController : ControllerBase
     {
-        // private readonly IToDoTaskService _toDoTaskService;
+        private readonly IToDoTaskService _toDoTaskService;
 
-        // public ToDoTaskController(IToDoTaskService toDoTaskService)
-        // {
-        //     _toDoTaskService = toDoTaskService;
-        // }
+        public ToDoTaskController(IToDoTaskService toDoTaskService)
+        {
+            _toDoTaskService = toDoTaskService;
+        }
 
         [HttpGet("api/tasks")]
-        public IEnumerable<ToDoTask> GetAll()
+        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetAll()
         {
-            return new List<ToDoTask>
-                    {
-                        new ToDoTask { Id = 1, Title = "Task 1", Completed = false, CreatedBy = "User1", CreatedDate = "2021-01-01", Description = "Task 1 description"},
-                        new ToDoTask { Id = 2, Title = "Task 2", Completed = true, CreatedBy = "User2", CreatedDate = "2021-01-01" }
-                    };
+            var result = await _toDoTaskService.GetAllAsync();
+
+            return Ok(result);
         }
 
         [HttpGet("api/tasks/{id}")]
-        public ToDoTask GetById(int id)
+        public async Task<ActionResult<ToDoTask?>> GetById(int id)
         {
-            return new ToDoTask { Id = id, Title = $"Task {id}", Completed = false, CreatedBy = "User1", CreatedDate = "2021-01-01", Description = "Task 1 description" };
+            var result = await _toDoTaskService.GetByIdAsync(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("api/tasks")]
-        public void Add([FromBody] ToDoTask toDoTask)
+        public async Task<ActionResult> Add([FromBody] ToDoTask toDoTask)
         {
-            return;
+            await _toDoTaskService.AddAsync(toDoTask);
+            return CreatedAtAction(nameof(GetById), new { id = toDoTask.Id }, toDoTask);
         }
 
         [HttpPut("api/tasks/{id}")]
-        public void Update([FromBody] ToDoTask toDoTask)
+        public async Task<ActionResult> Update(int id, [FromBody] ToDoTask toDoTask)
         {
-            return;
+            if (id != toDoTask.Id)
+            {
+                return BadRequest();
+            }
+
+            await _toDoTaskService.UpdateAsync(toDoTask);
+            return NoContent();
         }
 
         [HttpDelete("api/tasks/{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return;
+            var existing = await _toDoTaskService.GetByIdAsync(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            await _toDoTaskService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

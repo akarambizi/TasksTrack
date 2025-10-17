@@ -25,12 +25,6 @@ namespace TasksTrack.Services
 
         public async Task AddAsync(ToDoTask task)
         {
-            // Set CreatedDate if not set
-            if (task.CreatedDate == default)
-            {
-                task.CreatedDate = DateTime.UtcNow;
-            }
-
             await _repository.AddAsync(task);
         }
 

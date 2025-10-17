@@ -88,8 +88,8 @@ services:
       db:
         condition: service_healthy
     networks:
-      - backend  # For database access
-      - frontend # For client access
+      - backend  # For database communication
+      - frontend # For client communication
     security_opt:
       - no-new-privileges:true
     init: true
@@ -121,7 +121,8 @@ services:
         limits:
           cpus: "0.5"
           memory: 512M
-    # Database only accessible through backend network
+    # Database isolated on backend network (no external internet access)
+    # Server can still communicate with DB via backend network
     networks:
       - backend
 
@@ -134,7 +135,8 @@ volumes:
 networks:
   frontend:
     driver: bridge
-    internal: false  # Allows external connections
+    internal: false  # Allows external connections (internet access)
   backend:
     driver: bridge
-    internal: true   # Isolated network for security
+    internal: true   # No external connections (no internet access)
+                     # Services can still communicate with each other on this network

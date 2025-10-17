@@ -2,6 +2,17 @@
 
 .PHONY: help build up down restart logs logs-client logs-server clean rebuild stop
 
+# Helper function to show ready message
+define show_ready_message
+	@echo ""
+	@echo "✓ All services are ready!"
+	@echo ""
+	@echo "  Client:   http://localhost:3000"
+	@echo "  Server:   http://localhost:5206"
+	@echo "  Database: postgres://localhost:5432"
+	@echo ""
+endef
+
 # Default target
 help:
 	@echo "Available commands:"
@@ -19,7 +30,15 @@ help:
 
 # Start services
 up:
-	docker compose up
+	@echo "Starting services..."
+	@docker compose up -d
+	@sleep 5
+	$(call show_ready_message)
+	@echo "Showing logs... (Press Ctrl+C to exit, services will keep running)"
+	@echo "To stop services, run 'make down'"
+	@echo ""
+	@sleep 2
+	@docker compose logs -f
 
 # Build services
 build:
@@ -27,7 +46,11 @@ build:
 
 # Rebuild and start
 rebuild:
-	docker compose up --build -d
+	@echo "Building and starting services..."
+	@docker compose up --build -d
+	@sleep 5
+	$(call show_ready_message)
+	@echo "Run 'make logs' to view logs"
 
 # Stop services
 down:
@@ -63,7 +86,7 @@ status:
 	docker compose ps
 
 # Development shortcuts
-dev: up logs
+dev: up
 
 # Quick restart when things break
-fix: down up logs
+fix: down up

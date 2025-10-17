@@ -1,20 +1,14 @@
 services:
-  # Defines the client service.
-
   client:
-    # Specifies the path to the Dockerfile for building the client's Docker image.
-    # './client' is the directory containing the Dockerfile for the client.
-    build: ./client
-    # Maps port 3000 of the host machine to port 3000 inside the client container.
-    # This allows you to access the client service on localhost:3000.
+    build:
+      context: ./client
+      target: development
     ports:
       - "3000:3000"
-    # Mounts the host's ./client directory to a specific directory inside the client container.
-    # This allows for hot reloading of code changes.
     volumes:
       - ./client:/app
+      # Prevents node_modules from being overwritten by host directory
       - /app/node_modules
-    # Specifies the command to start the client application inside the container.
     command: yarn dev --host
     restart: unless-stopped
     healthcheck:
@@ -22,32 +16,48 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      # Allows time for app to fully initialize before health checks begin
+      start_period: 40s
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
+        # Ensures minimum resources are always available
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     networks:
       - frontend
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    # Hot reload configuration
+    develop:
+      watch:
+        - path: ./client/src
+          target: /app/src
+          action: sync
+        # Triggers rebuild when dependencies change
+        - path: ./client/package.json
+          target: /app/package.json
+          action: rebuild
 
   server:
-    # Specifies the path to the Dockerfile for building the server's Docker image.
-    # './server' is the directory containing the Dockerfile for the server.
-    build: ./server
-    # Maps port 5206 of the host machine to port 5206 inside the server container.
-    # This allows you to access the server service on localhost:5206.
+    build:
+      context: ./server
+      target: development
     ports:
       - "5206:5206"
-    # Mounts the host's ./server directory to a specific directory inside the server container.
-    # This allows for hot reloading of code changes.
     volumes:
       - ./server:/app
-    # Specifies the command to start the server application inside the container.
-    # Updated to ensure compatibility with .NET 8.
-    command:
-      dotnet watch run --urls http://*:5206
-    # Sets environment variables inside the server container.
+      # Cache NuGet packages between builds
+      - dotnet-packages:/root/.nuget/packages
+    working_dir: /app
+    command: dotnet watch run --urls http://*:5206
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
       - DOTNET_CONSOLE_ALLOW_ANSI_COLOR=1
@@ -57,7 +67,6 @@ services:
       - COLORTERM=truecolor
       - DOTNET_LOGGING__CONSOLE__FORMATTEROPTIONS__COLORS=true
       - DOTNET_LOGGING__CONSOLE__DISABLECOLORS=false
-      - ASPNETCORE_ENVIRONMENT=Development
     tty: true
     restart: unless-stopped
     healthcheck:
@@ -65,6 +74,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
     deploy:
       resources:
         limits:
@@ -73,14 +83,24 @@ services:
         reservations:
           cpus: "0.5"
           memory: 512M
-    # Specifies that the server service should be started only after the db service has been started.
-    # This ensures that the database is ready before the server starts.
+    # Ensures database is ready before starting
     depends_on:
       db:
         condition: service_healthy
     networks:
-      - backend
-      - frontend
+      - backend  # For database access
+      - frontend # For client access
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    develop:
+      watch:
+        - path: ./server
+          target: /app
+          action: sync
+        - path: ./server/*.csproj
+          target: /app
+          action: rebuild
 
   db:
     image: postgres:17
@@ -101,14 +121,20 @@ services:
         limits:
           cpus: "0.5"
           memory: 512M
+    # Database only accessible through backend network
     networks:
       - backend
 
 volumes:
   postgres_data:
+    driver: local
+  dotnet-packages:
+    driver: local
 
 networks:
   frontend:
     driver: bridge
+    internal: false  # Allows external connections
   backend:
     driver: bridge
+    internal: true   # Isolated network for security

@@ -26,8 +26,8 @@ namespace TasksTrack.Tests.Controllers
             // Arrange
             var tasks = new List<ToDoTask>
             {
-                new ToDoTask { Id = 1, Title = "Task 1", Completed = false, CreatedBy = "User1", CreatedDate = "2021-01-01", Description = "Task 1 description"},
-                new ToDoTask { Id = 2, Title = "Task 2", Completed = true, CreatedBy = "User2", CreatedDate = "2021-01-01" }
+                new ToDoTask { Id = 1, Title = "Task 1", Completed = false, CreatedBy = "User1", CreatedDate = new System.DateTime(2021, 1, 1), Description = "Task 1 description"},
+                new ToDoTask { Id = 2, Title = "Task 2", Completed = true, CreatedBy = "User2", CreatedDate = new System.DateTime(2021, 1, 1) }
             };
             _mockService.Setup(service => service.GetAllAsync()).ReturnsAsync(tasks);
 
@@ -44,7 +44,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetById_ReturnsToDoTask()
         {
             // Arrange
-            var task = new ToDoTask { Id = 1, Title = "Task 1", Completed = false, CreatedBy = "User1", CreatedDate = "2021-01-01", Description = "Task 1 description" };
+            var task = new ToDoTask { Id = 1, Title = "Task 1", Completed = false, CreatedBy = "User1", CreatedDate = new System.DateTime(2021, 1, 1), Description = "Task 1 description" };
             _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(task);
 
             // Act

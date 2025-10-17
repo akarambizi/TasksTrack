@@ -19,48 +19,48 @@ help:
 
 # Start services
 up:
-	docker-compose up
+	docker compose up
 
 # Build services
 build:
-	docker-compose build
+	docker compose build
 
 # Rebuild and start
 rebuild:
-	docker-compose up --build -d
+	docker compose up --build -d
 
 # Stop services
 down:
-	docker-compose down
+	docker compose down
 
 # Alias for down
 stop: down
 
 # Restart services
 restart:
-	docker-compose restart
+	docker compose restart
 
 # Show logs with timestamps
 logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 # Show only client logs
 logs-client:
-	docker-compose logs -f client
+	docker compose logs -f client
 
 # Show only server logs
 logs-server:
-	docker-compose logs -f server
+	docker compose logs -f server
 
 # Clean everything
 clean:
-	docker-compose down -v
-	docker-compose rm -f
+	docker compose down -v
+	docker compose rm -f
 	docker system prune -f
 
 # Show container status
 status:
-	docker-compose ps
+	docker compose ps
 
 # Development shortcuts
 dev: up logs

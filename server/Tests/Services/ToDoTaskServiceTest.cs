@@ -28,12 +28,12 @@ namespace TasksTrack.Tests.Services
                 new ToDoTask {
                     Id = 1,
                 Title = "Test Task",
-                CreatedDate = "2021-01-01",
+                CreatedDate = new System.DateTime(2021, 1, 1),
                 CreatedBy = "Test User" },
                 new ToDoTask {
                     Id = 2,
                 Title = "Test Task 2",
-                CreatedDate = "2021-01-01",
+                CreatedDate = new System.DateTime(2021, 1, 1),
                 CreatedBy = "Test User" }
             };
 

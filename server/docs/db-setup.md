@@ -21,7 +21,7 @@ This command updates the dotnet-ef tool globally to version 7.0.3, allowing you 
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 7.0.3
 ```
 
-This command adds the necessary design-time components to your project, allowing you to use Entity Framework Core commands like migrations.
+This command adds the necessary design-time components to the project, allowing you to use Entity Framework Core commands like migrations.
 
 ### 3.Create the initial migration
 
@@ -47,7 +47,7 @@ This command applies the initial migration to the database, ensuring that the da
 dotnet ef migrations add NewMigrationName
 ```
 
-Replace `NewMigrationName` with a descriptive name for your migration.
+Replace `NewMigrationName` with a descriptive name for the migration.
 
 **Apply the new migration to the database:**
 
@@ -70,7 +70,7 @@ This command removes the last migration and updates the ModelSnapshot file to re
 
 User secrets are a secure way to store sensitive data during development. They are stored outside of the project tree, so there's less risk of accidentally committing them into source control.
 
-First, you need to initialize user secrets for your project. In your terminal, navigate to your project directory and run:
+First, you need to initialize user secrets for the project. In your terminal, navigate to the project directory and run:
 
 ```bash
 dotnet user-secrets init
@@ -89,7 +89,7 @@ In appsettings.json, you can then reference these user secrets:
 "DefaultConnection": "Server=localhost;Database=taskstrackedb;User Id={UserId};Password={Password};MultipleActiveResult"
 ```
 
-This command will list all the user secrets for your project in the terminal. The keys and values of the secrets will be displayed.
+This command will list all the user secrets for the project in the terminal. The keys and values of the secrets will be displayed.
 
 ```bash
 dotnet user-secrets list

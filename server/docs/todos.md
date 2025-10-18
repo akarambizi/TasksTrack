@@ -10,3 +10,4 @@
 - [ ] **Asynchronous Processing**: If the application has long-running tasks, make them asynchronous. This could involve using background jobs, queues, and workers.
 - [ ] **Rate Limiting**: Implement rate limiting to prevent potential abuse.
 - [ ] **Microservices**: If the application is large, consider breaking it down into microservices. Each microservice should be loosely coupled and independently deployable.
+

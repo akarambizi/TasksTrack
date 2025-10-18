@@ -198,3 +198,4 @@ Add email verification after registration to confirm the user's email address.
 
 - The `Jwt:Secret` must be kept secure and should not be hardcoded in the source code.
 - Use environment variables or a secure secrets manager for production environments.
+

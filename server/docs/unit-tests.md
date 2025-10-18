@@ -46,3 +46,4 @@ These settings are for the [.NET Test Explorer extension](https://marketplace.vi
 - `"dotnet-test-explorer.testArguments": "/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./coverage/lcov.info"`: This setting specifies additional arguments to pass to the `dotnet test` command. In this case, it enables code coverage collection and specifies the output format and file for the coverage data.
 
 - `"dotnet-test-explorer.testProjectPath": "**/server.csproj"`: This setting specifies the path to the test project. The `**/server.csproj` pattern will match any `server.csproj` file in any directory or subdirectory.
+

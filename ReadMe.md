@@ -2,6 +2,26 @@
 
 TasksTrack is a task tracking app with integrated Pomodoro timer functionality to enhance productivity.
 
+## About This Project
+
+This is a **personal learning project** designed to explore and master full-stack development concepts using modern technologies. The project demonstrates Clean Architecture principles, repository patterns, JWT authentication, and modern React development practices.
+
+## Documentation
+
+📚 **Comprehensive technical documentation is available in [`/server/docs`](./server/docs):**
+
+- **[Getting Started Guide](./server/docs/getting-started.md)** - Complete setup and development workflow
+- **[Clean Architecture](./server/docs/clean-architecture.md)** - Architecture patterns and implementation
+- **[Repository Pattern](./server/docs/repository-pattern.md)** - Data access layer design
+- **[Dependency Injection](./server/docs/dependency-injection.md)** - DI container and service management
+- **[API Development](./server/docs/api-development.md)** - RESTful API design and best practices
+- **[Database Setup](./server/docs/db-setup.md)** - PostgreSQL and Entity Framework configuration
+- **[Authentication](./server/docs/authentication.md)** - JWT implementation and security
+- **[Testing](./server/docs/unit-tests.md)** - Unit testing setup and patterns
+- **[Learning Notes](./server/docs/learning-notes.md)** - Development insights and observations
+
+The documentation is designed to help developers understand the architectural decisions, patterns used, and provide guidance for extending the application.
+
 ## Features
 
 - **Task Management:** Create, update, delete, and organize tasks with priority levels

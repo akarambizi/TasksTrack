@@ -4,10 +4,10 @@ namespace TasksTrack.Repositories
 {
     public interface IToDoTaskRepository
     {
-        IEnumerable<ToDoTask> GetAll();
-        ToDoTask GetById(int id);
-        void Add(ToDoTask task);
-        void Update(ToDoTask task);
-        void Delete(int id);
+        Task<IEnumerable<ToDoTask>> GetAllAsync();
+        Task<ToDoTask?> GetByIdAsync(int id);
+        Task AddAsync(ToDoTask task);
+        Task UpdateAsync(ToDoTask task);
+        Task DeleteAsync(int id);
     }
 }

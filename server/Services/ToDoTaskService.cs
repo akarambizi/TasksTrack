@@ -12,33 +12,42 @@ namespace TasksTrack.Services
         {
             _repository = repository;
         }
-        public void Add(ToDoTask task)
+
+        public async Task<IEnumerable<ToDoTask>> GetAllAsync()
         {
-            _repository.Add(task);
+            return await _repository.GetAllAsync();
         }
 
-        public void Delete(int id)
+        public async Task<ToDoTask?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _repository.GetByIdAsync(id);
         }
 
-        public IEnumerable<ToDoTask> GetAll()
+        public async Task AddAsync(ToDoTask task)
         {
-             return new List<ToDoTask>
-                    {
-                        new ToDoTask { Id = 1, Title = "Task 1", Completed = false, CreatedBy = "User1", CreatedDate = "2021-01-01", Description = "Task 1 description"},
-                        new ToDoTask { Id = 2, Title = "Task 2", Completed = true, CreatedBy = "User2", CreatedDate = "2021-01-01" }
-                    };
+            await _repository.AddAsync(task);
         }
 
-        public ToDoTask GetById(int id)
+        public async Task<bool> UpdateAsync(ToDoTask task)
         {
-            throw new NotImplementedException();
+            var existing = await _repository.GetByIdAsync(task.Id);
+            if (existing == null)
+                return false;
+
+            // Update fields
+            existing.Title = task.Title;
+            existing.Description = task.Description;
+            existing.Completed = task.Completed;
+            existing.UpdatedDate = DateTime.UtcNow;
+            existing.UpdatedBy = task.UpdatedBy;
+
+            await _repository.UpdateAsync(existing);
+            return true;
         }
 
-        public void Update(ToDoTask task)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _repository.DeleteAsync(id);
         }
     }
 }

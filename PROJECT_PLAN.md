@@ -20,7 +20,7 @@
 - [x] Create password reset form
 - [x] Implement form validation for user inputs
 - [x] Implement error handling and display error messages to users
-- [ ] Handle API requests and responses
+- [x] Handle API requests and responses
 
 ## 2. Task Management
 
@@ -36,10 +36,10 @@
 
 ### 2.2 Frontend
 
-- [ ] Create UI for adding a new task
-- [ ] Create UI for displaying a list of tasks
-- [ ] Create UI for updating task details
-- [ ] Implement task deletion functionality
+- [x] Create UI for adding a new task
+- [x] Create UI for displaying a list of tasks
+- [x] Create UI for updating task details
+- [x] Implement task deletion functionality
 - [ ] Implement API calls for task management
 - [ ] Handle API requests and responses
 - [ ] Implement error handling and display error messages to users
@@ -58,8 +58,8 @@
 
 ### 3.2 Frontend
 
-- [ ] Create UI for starting, pausing, resuming, and ending a Pomodoro session
-- [ ] Display Pomodoro session history
+- [x] Create UI for starting, pausing, resuming, and ending a Pomodoro session
+- [x] Display Pomodoro session history
 - [ ] Implement API calls for Pomodoro timer functionality
 - [ ] Handle API requests and responses
 - [ ] Implement error handling and display error messages to users

@@ -1,59 +1,142 @@
 services:
-    # Defines the client service.
-    client:
-        # Specifies the path to the Dockerfile for building the client's Docker image.
-        # './client' is the directory containing the Dockerfile for the client.
-        build: ./client
-        # Maps port 3000 of the host machine to port 3000 inside the client container.
-        # This allows you to access the client service on localhost:3000.
-        ports:
-            - 3000:3000
-        # Mounts the host's ./client directory to a specific directory inside the client container.
-        # This allows for hot reloading of code changes.
-        volumes:
-            - ./client:/app
-            # The node_modules directory is excluded from the mount
-            - /app/node_modules
-        # Specifies the command to start the client application inside the container.
-        command: yarn dev --host
+  client:
+    build:
+      context: ./client
+      target: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+      # Prevents node_modules from being overwritten by host directory
+      - /app/node_modules
+    command: yarn dev --host
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      # Allows time for app to fully initialize before health checks begin
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        # Ensures minimum resources are always available
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    networks:
+      - frontend
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    # Hot reload configuration
+    develop:
+      watch:
+        - path: ./client/src
+          target: /app/src
+          action: sync
+        # Triggers rebuild when dependencies change
+        - path: ./client/package.json
+          target: /app/package.json
+          action: rebuild
 
-    server:
-        # Specifies the path to the Dockerfile for building the server's Docker image.
-        # './server' is the directory containing the Dockerfile for the server.
-        build: ./server
-        # Maps port 5206 of the host machine to port 5206 inside the server container.
-        # This allows you to access the server service on localhost:5206.
-        ports:
-            - 5206:5206
-        # Mounts the host's ./server directory to a specific directory inside the server container.
-        # This allows for hot reloading of code changes.
-        volumes:
-            - ./server:/app
-        # Specifies the command to start the server application inside the container.
-        # Updated to ensure compatibility with .NET 8.
-        command: dotnet watch run --urls http://*:5206
-        # Sets environment variables inside the server container.
-        environment:
-            - DOTNET_USE_POLLING_FILE_WATCHER=1
-        # Specifies that the server service should be started only after the db service has been started.
-        # This ensures that the database is ready before the server starts.
-        depends_on:
-            - db
+  server:
+    build:
+      context: ./server
+      target: development
+    ports:
+      - "5206:5206"
+    volumes:
+      - ./server:/app
+      # Cache NuGet packages between builds
+      - dotnet-packages:/root/.nuget/packages
+    working_dir: /app
+    command: dotnet watch run --urls http://*:5206
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
+      - DOTNET_CONSOLE_ALLOW_ANSI_COLOR=1
+      - DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION=true
+      - FORCE_COLOR=true
+      - TERM=xterm-256color
+      - COLORTERM=truecolor
+      - DOTNET_LOGGING__CONSOLE__FORMATTEROPTIONS__COLORS=true
+      - DOTNET_LOGGING__CONSOLE__DISABLECOLORS=false
+    tty: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5206/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    # Ensures database is ready before starting
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend  # For database communication
+      - frontend # For client communication
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    develop:
+      watch:
+        - path: ./server
+          target: /app
+          action: sync
+        - path: ./server/*.csproj
+          target: /app
+          action: rebuild
 
-    db:
-        # Specifies the Docker image to use for the db service.
-        # 'postgres:17' is the latest stable PostgreSQL release.
-        image: postgres:17
-        # Mounts a named volume to a specific directory inside the db container.
-        # This is where PostgreSQL stores its data. The named volume 'postgres_data' persists data across container restarts.
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-        environment:
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_USER=postgres
-            - POSTGRES_DB=taskstrack
+  db:
+    image: postgres:17
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=taskstrack
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    # Database isolated on backend network (no external internet access)
+    # Server can still communicate with DB via backend network
+    networks:
+      - backend
 
-# Defines the named volumes used by services.
 volumes:
-    # Defines a volume named postgres_data. This is used by the db service to persist database data.
-    postgres_data:
+  postgres_data:
+    driver: local
+  dotnet-packages:
+    driver: local
+
+networks:
+  frontend:
+    driver: bridge
+    internal: false  # Allows external connections (internet access)
+  backend:
+    driver: bridge
+    internal: true   # No external connections (no internet access)
+                     # Services can still communicate with each other on this network

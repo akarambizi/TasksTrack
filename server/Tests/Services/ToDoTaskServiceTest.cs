@@ -20,7 +20,7 @@ namespace TasksTrack.Tests.Services
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllTasks()
+        public async Task GetAll_ShouldReturnAllTasks()
         {
             // Arrange
             var expectedTasks = new List<ToDoTask>
@@ -28,17 +28,19 @@ namespace TasksTrack.Tests.Services
                 new ToDoTask {
                     Id = 1,
                 Title = "Test Task",
-                CreatedDate = "2021-01-01",
+                CreatedDate = new System.DateTime(2021, 1, 1),
                 CreatedBy = "Test User" },
                 new ToDoTask {
                     Id = 2,
                 Title = "Test Task 2",
-                CreatedDate = "2021-01-01",
+                CreatedDate = new System.DateTime(2021, 1, 1),
                 CreatedBy = "Test User" }
             };
 
+            _repositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(expectedTasks);
+
             // Act
-            var tasks = _service.GetAll();
+            var tasks = await _service.GetAllAsync();
 
             // Assert
             Assert.Equal(2, tasks.Count());

@@ -26,14 +26,25 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // Production error handling
+    app.UseExceptionHandler("/error");
+    app.UseHsts();
+}
+
+app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 

@@ -86,10 +86,8 @@ namespace TasksTrack.Services
 
             await _authRepository.CreateUserAsync(user);
 
-            // Generate JWT
-            var token = this.GenerateJwtToken(user);
-
-            return new AuthResult { Success = true, Token = token ?? string.Empty, Message = "User registered successfully." };
+            // Generate tokens
+            return await GenerateTokensAsync(user);
         }
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
@@ -106,10 +104,8 @@ namespace TasksTrack.Services
                 return new AuthResult { Success = false, Message = "Invalid credentials." };
             }
 
-            // Generate JWT
-            var token = this.GenerateJwtToken(user);
-
-            return new AuthResult { Success = true, Token = token ?? string.Empty, Message = "Login successful." };
+            // Generate tokens
+            return await GenerateTokensAsync(user);
         }
 
         public async Task<AuthResult> ResetPasswordAsync(PasswordResetRequest request)
@@ -128,6 +124,25 @@ namespace TasksTrack.Services
             await _authRepository.UpdateUserAsync(user);
 
             return new AuthResult { Success = true, Message = "Password reset successfully." };
+        }
+
+        public async Task<AuthResult> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            // Find user by refresh token
+            var user = await _authRepository.GetUserByRefreshTokenAsync(request.RefreshToken);
+            if (user == null)
+            {
+                return new AuthResult { Success = false, Message = "Invalid refresh token." };
+            }
+
+            // Check if refresh token is expired
+            if (user.RefreshTokenExpiry == null || user.RefreshTokenExpiry <= DateTime.UtcNow)
+            {
+                return new AuthResult { Success = false, Message = "Refresh token has expired." };
+            }
+
+            // Generate new tokens
+            return await GenerateTokensAsync(user);
         }
 
         private string GenerateJwtToken(User user)
@@ -150,6 +165,37 @@ namespace TasksTrack.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        private string GenerateRefreshToken()
+        {
+            // Generate a secure random refresh token
+            var randomBytes = new byte[64];
+            using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        private async Task<AuthResult> GenerateTokensAsync(User user)
+        {
+            var accessToken = GenerateJwtToken(user);
+            var refreshToken = GenerateRefreshToken();
+            var refreshTokenExpiry = DateTime.UtcNow.AddDays(7); // 7 days expiry
+
+            // Update user with refresh token
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = refreshTokenExpiry;
+            await _authRepository.UpdateUserAsync(user);
+
+            return new AuthResult
+            {
+                Success = true,
+                Token = accessToken,
+                RefreshToken = refreshToken,
+                TokenExpiry = DateTime.UtcNow.AddHours(1),
+                RefreshTokenExpiry = refreshTokenExpiry,
+                Message = "Tokens generated successfully."
+            };
         }
     }
 }

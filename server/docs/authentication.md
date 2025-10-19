@@ -129,15 +129,129 @@ graph TD;
     SetTokenExpiry -->|HTTPS| TransmitToken[Transmit Token]
 ```
 
+#### Refresh Tokens
+
+Refresh tokens provide a secure way to maintain user sessions without requiring frequent re-authentication. Our implementation uses a **dual-token strategy** combining short-lived access tokens with long-lived refresh tokens.
+
+**Why Two Different Token Types?**
+
+Understanding the fundamental difference between access tokens and refresh tokens is crucial for secure authentication:
+
+**Access Token (JWT - JSON Web Token):**
+
+- **Purpose**: Grants access to protected resources
+- **Structure**: Self-contained with user claims (ID, username, email)
+- **Validation**: Stateless - no database lookup required
+- **Lifespan**: Short (1 hour) - limits exposure if compromised
+- **Format**: `header.payload.signature` ([Learn more about JWTs](https://jwt.io/introduction))
+
+**Refresh Token (Opaque Token):**
+
+- **Purpose**: Obtains new access tokens when they expire
+- **Structure**: Random cryptographic string with no embedded data
+- **Validation**: Stateful - requires database lookup to validate
+- **Lifespan**: Long (7 days) - provides user convenience
+- **Format**: Base64-encoded random bytes ([Learn about refresh token security](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/))
+
+**Security Benefits of This Approach:**
+
+- **Principle of Least Privilege**: Access tokens have minimal lifespan
+- **Defense in Depth**: Even if access token is stolen, damage is limited to 1 hour
+- **Revocation Control**: Refresh tokens can be invalidated in the database
+- **Reduced Attack Surface**: Different token types serve different purposes
+
+**Implementation Details:**
+
+- **Access Token Expiry**: 1 hour
+- **Refresh Token Expiry**: 7 days
+- **Storage**: Refresh tokens are stored in the database with the user record
+- **Security**: Refresh tokens are cryptographically secure random 64-byte tokens
+- **Token Rotation**: Each refresh generates both new access and refresh tokens
+
+**Refresh Token Flow:**
+
+- **Endpoint:** `/api/auth/refresh`
+- **Method:** `POST`
+- **Request Body:**
+
+```json
+{
+  "refreshToken": "your-refresh-token-here"
+}
+```
+
+- **Response:**
+- `200 OK` with new tokens on successful refresh
+- `401 Unauthorized` if the refresh token is invalid or expired
+
+**Complete Authentication Flow with Refresh Tokens:**
+
+```mermaid
+graph TD;
+    Start((Start)) --> Login[User Login/Register]
+    Login --> GenerateTokens[Generate Access + Refresh Tokens]
+    GenerateTokens --> UseAccessToken[Use Access Token for API Calls]
+    UseAccessToken --> CheckExpiry{Access Token Valid?}
+    CheckExpiry -->|Valid| AccessGranted[Access Granted]
+    CheckExpiry -->|Expired| UseRefreshToken[Use Refresh Token]
+    UseRefreshToken --> ValidateRefresh{Refresh Token Valid?}
+    ValidateRefresh -->|Valid| GenerateNewTokens[Generate New Access + Refresh Tokens]
+    GenerateNewTokens --> UseAccessToken
+    ValidateRefresh -->|Invalid/Expired| RequireLogin[Require Login]
+    RequireLogin --> Login
+```
+
+**Code Implementation:**
+
+```csharp
+// Access Token Generation (JWT with claims)
+private string GenerateJwtToken(User user)
+{
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Email, user.Email)
+    };
+    // ... JWT creation logic
+}
+
+// Refresh Token Generation (Random bytes)
+private string GenerateRefreshToken()
+{
+    var randomBytes = new byte[64];
+    using var rng = RandomNumberGenerator.Create();
+    rng.GetBytes(randomBytes);
+    return Convert.ToBase64String(randomBytes);
+}
+```
+
+**Additional Resources:**
+
+- [OAuth 2.0 RFC 6749 - Refresh Tokens](https://tools.ietf.org/html/rfc6749#section-1.5)
+- [OWASP JWT Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
+- [Microsoft's Token Refresh Best Practices](https://docs.microsoft.com/en-us/azure/active-directory/develop/refresh-tokens)
+
 ### Database Schema
 
 #### User Table
 
 - **Fields:**
-- `id` (Primary Key)
-- `username`
-- `email`
-- `password_hash`
+  - `id` (Primary Key)
+  - `username`
+  - `email`
+  - `password_hash`
+  - `refresh_token` (Nullable) - Stores the current refresh token
+  - `refresh_token_expiry` (Nullable) - Expiration timestamp for refresh token
+  - `created_at` - User registration timestamp
+  - `updated_at` - Last modification timestamp
+
+**Database Migration:**
+
+```bash
+dotnet ef migrations add AddRefreshTokenFields
+dotnet ef database update
+```
 
 ### Technology Stack
 
@@ -154,10 +268,6 @@ Add rate limiting to the login endpoint to protect against brute-force attacks. 
 #### Password Policy
 
 Enforce a strong password policy for better security. This policy will require passwords to be a certain length and include a mix of uppercase and lowercase letters, numbers, and special characters.
-
-#### Refresh Tokens
-
- Implement refresh tokens for maintaining user sessions with short-lived access tokens. A refresh token can be used to get a new access token when the old one expires, without requiring the user to log in again. This provides a balance between security and user convenience.
 
 #### Email Verification
 
@@ -179,13 +289,25 @@ Add email verification after registration to confirm the user's email address.
 4. **Controller Updates**:
    - Updated the `AuthController` to align with the changes in the `AuthService`.
 
+5. **Refresh Token Implementation**:
+   - Added `RefreshToken` and `RefreshTokenExpiry` fields to the User model.
+   - Implemented refresh token generation using cryptographically secure random bytes.
+   - Created `/api/auth/refresh` endpoint for token renewal.
+   - Updated JWT configuration to allow 5-minute clock skew for seamless token renewal.
+
 #### Migration Steps
 
 - Ensure the `Jwt:Secret` is configured in your environment.
 - Run the following commands to update the database schema:
 
   ```bash
+  # Original migration for basic user authentication
   dotnet ef migrations add UpdateTableMigration
+
+  # New migration for refresh token support
+  dotnet ef migrations add AddRefreshTokenFields
+
+  # Apply all migrations to database
   dotnet ef database update
   ```
 
@@ -198,4 +320,3 @@ Add email verification after registration to confirm the user's email address.
 
 - The `Jwt:Secret` must be kept secure and should not be hardcoded in the source code.
 - Use environment variables or a secure secrets manager for production environments.
-

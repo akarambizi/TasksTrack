@@ -7,6 +7,7 @@ namespace TasksTrack.Repositories
     {
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByUsernameAsync(string username);
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
         Task CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
     }

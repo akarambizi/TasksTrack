@@ -2,7 +2,6 @@ services:
   client:
     build:
       context: ./client
-      target: development
     ports:
       - "3000:3000"
     volumes:
@@ -47,7 +46,6 @@ services:
   server:
     build:
       context: ./server
-      target: development
     ports:
       - "5206:5206"
     volumes:
@@ -83,10 +81,12 @@ services:
         reservations:
           cpus: "0.5"
           memory: 512M
-    # Ensures database is ready before starting
+    # Ensures database and migration are ready before starting
     depends_on:
       db:
         condition: service_healthy
+      migration:
+        condition: service_completed_successfully
     networks:
       - backend  # For database communication
       - frontend # For client communication
@@ -102,6 +102,29 @@ services:
           target: /app
           action: rebuild
 
+  # Database migration service - runs once and exits
+  migration:
+    build:
+      context: ./server
+    volumes:
+      - ./server:/app
+      - dotnet-packages:/root/.nuget/packages
+    working_dir: /app
+    command: dotnet ef database update
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"  # Only run once, don't restart
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
   db:
     image: postgres:17
     volumes:
@@ -109,7 +132,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=taskstrack
+      - POSTGRES_DB=taskstrackdb
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s

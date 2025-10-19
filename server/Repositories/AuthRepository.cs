@@ -24,6 +24,11 @@ namespace TasksTrack.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        }
+
         public async Task CreateUserAsync(User user)
         {
             await _context.Users.AddAsync(user);

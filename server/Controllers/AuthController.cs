@@ -73,5 +73,29 @@ namespace TasksTrack.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            var result = await _authService.RefreshTokenAsync(request);
+            if (!result.Success)
+            {
+                return Unauthorized(result.Message);
+            }
+
+            // Update cookies with new tokens
+            if (!string.IsNullOrEmpty(result.Token))
+            {
+                Response.Cookies.Append("authToken", result.Token, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddHours(1)
+                });
+            }
+
+            return Ok(result);
+        }
     }
 }

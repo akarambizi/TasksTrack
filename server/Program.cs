@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     throw new InvalidOperationException("JWT Secret not configured"))),
             ValidateIssuer = false,
             ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero // No tolerance - strict expiration (no refresh tokens implemented)
+            ClockSkew = TimeSpan.FromMinutes(5) // 5-minute tolerance for token renewal with refresh tokens
         };
     });
 

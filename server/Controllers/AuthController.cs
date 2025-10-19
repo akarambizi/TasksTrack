@@ -73,16 +73,5 @@ namespace TasksTrack.Controllers
             }
             return Ok(result);
         }
-
-        [HttpPost("validate-token")]
-        public async Task<IActionResult> ValidateToken([FromBody] TokenRequest request)
-        {
-            var result = await _authService.ValidateTokenAsync(request);
-            if (!result.Success)
-            {
-                return Unauthorized(result.Message);
-            }
-            return Ok(result);
-        }
     }
 }

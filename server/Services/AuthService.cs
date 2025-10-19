@@ -134,6 +134,8 @@ namespace TasksTrack.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            var expirationTime = DateTime.UtcNow.AddHours(1);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -142,40 +144,12 @@ namespace TasksTrack.Services
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Email, user.Email)
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = expirationTime,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
-        }
-
-        public Task<AuthResult> ValidateTokenAsync(TokenRequest request)
-        {
-            if (string.IsNullOrEmpty(request.Token))
-            {
-                return Task.FromResult(new AuthResult { Success = false, Message = "Token is required." });
-            }
-
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_jwtSecret);
-                tokenHandler.ValidateToken(request.Token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                return Task.FromResult(new AuthResult { Success = true, Message = "Token is valid." });
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(new AuthResult { Success = false, Message = $"Invalid token: {ex.Message}" });
-            }
         }
     }
 }

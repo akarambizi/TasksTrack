@@ -1,9 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { CircleUser } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useLogout } from '@/hooks/useAuth';
 
 export const UserMenu = () => {
+    const { mutate: logout } = useLogout();
+
+    const handleLogout = () => {
+        logout();
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -18,8 +24,8 @@ export const UserMenu = () => {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    <Link to="/login">Logout</Link>
+                <DropdownMenuItem onClick={handleLogout}>
+                    Logout
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

@@ -1,7 +1,5 @@
 import { IAuthData, IAuthResult } from './userAuth.types';
-import axios from 'axios';
 import { apiPost } from './apiClient';
-import { getUrl } from './utils';
 
 /**
  * Registers a new user.
@@ -50,29 +48,4 @@ export const logoutUser = async (): Promise<IAuthResult> => {
 export const resetPassword = async (data: IAuthData): Promise<IAuthResult> => {
     const endpoint = '/api/auth/reset-password';
     return await apiPost<IAuthResult>(endpoint, data);
-};
-
-/**
- * Validates the provided token by making a POST request to the validate-token API endpoint.
- * @param {string} token - The token to validate.
- * @returns {Promise<IAuthResult>} - A promise that resolves to the response data.
- * @throws {Error} - If the token validation request fails.
- */
-export const validateToken = async (token: string): Promise<IAuthResult> => {
-    try {
-        // Create a direct axios instance for token validation to avoid interceptor loop
-        const endpoint = '/api/auth/validate-token';
-        // Use a direct axios instance without interceptors to prevent infinite loops
-        const url = getUrl(endpoint);
-        const response = await axios.post<IAuthResult>(url, { token }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Token validation failed:', error);
-        throw new Error('Token validation failed');
-    }
 };

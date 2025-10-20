@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { AuthService, UserData } from '@/services/authService';
-import { ToastService } from '@/services/toastService';
 import { AuthContextType } from '@/context/AuthContext';
 
 /**
@@ -8,7 +7,6 @@ import { AuthContextType } from '@/context/AuthContext';
  */
 export const useAuthLogic = (): AuthContextType => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,8 +15,6 @@ export const useAuthLogic = (): AuthContextType => {
    */
   const login = (newToken: string, userEmail?: string) => {
     AuthService.setToken(newToken, userEmail);
-
-    setToken(newToken);
     setIsAuthenticated(true);
 
     if (userEmail) {
@@ -31,8 +27,6 @@ export const useAuthLogic = (): AuthContextType => {
    */
   const logout = () => {
     AuthService.clearAuth();
-
-    setToken(null);
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -50,25 +44,11 @@ export const useAuthLogic = (): AuthContextType => {
         return;
       }
 
-      try {
-        const isValid = await AuthService.validateStoredToken();
-
-        if (isValid) {
-          setIsAuthenticated(true);
-          setToken(storedToken);
-
-          const userData = AuthService.getUserData();
-          if (userData) {
-            setUser(userData);
-          }
-        } else {
-          // Token invalid, clear storage
-          logout();
-        }
-      } catch (error) {
-        console.error('Token validation failed:', error);
-        logout();
-        ToastService.error('Session expired. Please log in again.');
+      // Trust stored token - server validates on each API call
+      setIsAuthenticated(true);
+      const userData = AuthService.getUserData();
+      if (userData) {
+        setUser(userData);
       }
 
       setIsLoading(false);
@@ -79,7 +59,6 @@ export const useAuthLogic = (): AuthContextType => {
 
   return {
     isAuthenticated,
-    token,
     login,
     logout,
     user,

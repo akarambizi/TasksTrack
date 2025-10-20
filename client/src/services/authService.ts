@@ -1,5 +1,3 @@
-import { validateToken } from '@/api/userAuth';
-
 export interface UserData {
   email?: string;
 }
@@ -42,21 +40,5 @@ export class AuthService {
   static getUserData(): UserData | null {
     const email = localStorage.getItem(this.USER_EMAIL_KEY);
     return email ? { email } : null;
-  }
-
-  /**
-   * Validate the stored token with the server
-   */
-  static async validateStoredToken(): Promise<boolean> {
-    const token = this.getToken();
-    if (!token) return false;
-
-    try {
-      const result = await validateToken(token);
-      return result.success;
-    } catch (error) {
-      console.error('Token validation failed:', error);
-      return false;
-    }
   }
 }

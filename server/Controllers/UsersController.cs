@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TasksTrack.Services;
 using System.Collections.Generic;
 
 namespace TasksTrack.Controllers
 {
     [ApiController]
+    [Authorize] // Require authentication for all user operations
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;

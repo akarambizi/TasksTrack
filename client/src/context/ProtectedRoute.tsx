@@ -1,10 +1,9 @@
 import { Login } from '@/components';
 import { Loading } from '@/components/ui/loading';
-import { useContext } from 'react';
-import { AuthContext } from './AuthContext';
+import { useAuthContext } from './useAuthContext';
 
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useContext(AuthContext);
+  const { isAuthenticated, isLoading } = useAuthContext();
 
   if (isLoading) {
     return <Loading fullScreen text="Authenticating..." />;

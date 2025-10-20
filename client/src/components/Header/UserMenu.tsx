@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { CircleUser } from 'lucide-react';
-import { useLogout } from '@/hooks/useAuth';
+import { useLogout } from '@/queries';
 
 export const UserMenu = () => {
     const { mutate: logout } = useLogout();

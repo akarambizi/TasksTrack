@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import { IAuthData } from '@/api';
-import { useLogin, useRegister, useResetPassword } from './useAuth';
+import { useLogin, useRegister, useResetPassword } from '@/queries';
 
 // Email regex: Validates format like example@domain.com
 export const validateEmail = (email: string) => {

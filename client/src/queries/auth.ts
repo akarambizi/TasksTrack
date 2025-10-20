@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
 import { loginUser, logoutUser, registerUser, resetPassword } from '../api/userAuth';
 import { IAuthData, IAuthResult } from '../api/userAuth.types';
 import { ToastService } from '../services/toastService';
-import { AuthContext } from '@/context/AuthContext';
+import { useAuthContext } from '@/context/useAuthContext';
 
 // Type for API error responses
 interface ApiError extends Error {
@@ -53,7 +52,7 @@ export const useRegister = () => {
 export const useLogin = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const { login } = useAuthContext();
 
     return useMutation({
         mutationKey: authKeys.login(),
@@ -86,7 +85,7 @@ export const useLogin = () => {
 export const useLogout = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { logout } = useAuthContext();
 
     return useMutation({
         mutationKey: authKeys.logout(),

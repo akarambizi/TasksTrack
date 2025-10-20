@@ -1,4 +1,4 @@
-import { useTodoTaskData } from '@/hooks/useQueryHooks';
+import { useTodoTaskData } from '@/queries';
 import { CheckCircle } from 'lucide-react';
 import { AddTaskDialog } from './AddTaskDialog';
 import { TaskOptionsMenu } from './TaskOptionsMenu';

@@ -4,7 +4,7 @@ export interface UserData {
   email?: string;
 }
 
-// Export for use in the useAuth hook
+// Export for use in the useAuthContext hook
 export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;

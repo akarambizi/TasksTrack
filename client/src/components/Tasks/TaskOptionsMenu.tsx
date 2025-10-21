@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings, CheckSquare, Trash2, Edit, AlertCircle } from "lucide-react";
 import { IToDoTask } from "@/api";
-import { useToggleTaskCompletion, useDeleteTask, useUpdateTaskPriority } from "@/hooks/useTasks";
+import { useToggleTaskCompletion, useDeleteTask, useUpdateTaskPriority } from "@/queries";
 
 interface TaskOptionsMenuProps {
   task: IToDoTask;

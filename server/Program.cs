@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TasksTrack.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +12,25 @@ builder.Services.AddDbContext<TasksTrackContext>(options =>
 
 // DependencyInjectionSetup: Add services to the container.
 builder.Services.AddApplicationServices(builder);
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey( // Secret key for validation
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"] ??
+                    throw new InvalidOperationException("JWT Secret not configured"))),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.FromMinutes(5) // 5-minute tolerance for token renewal with refresh tokens
+        };
+    });
+
+// Add Authorization services - enables [Authorize] attributes on controllers
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -48,9 +70,11 @@ app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 
-app.UseCors(); // Use CORS middleware
+app.UseCors();
 
-app.UseAuthorization();
+// JWT middleware - order matters: Authentication before Authorization
+app.UseAuthentication(); // Validates JWT tokens
+app.UseAuthorization();  // Checks [Authorize] attributes
 
 app.MapControllers();
 

@@ -8,6 +8,7 @@ namespace TasksTrack.Services
         Task<AuthResult> RegisterAsync(RegisterRequest request);
         Task<AuthResult> LoginAsync(LoginRequest request);
         Task<AuthResult> ResetPasswordAsync(PasswordResetRequest request);
-        Task<AuthResult> ValidateTokenAsync(TokenRequest request);
+        Task<AuthResult> RefreshTokenAsync(RefreshTokenRequest request);
+        Task<AuthResult> LogoutAsync(string refreshToken);
     }
 }

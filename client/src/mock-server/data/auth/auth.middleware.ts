@@ -11,9 +11,6 @@ const registerFailureResponse: IAuthResult = { success: false, message: 'User al
 const resetPasswordSuccessResponse: IAuthResult = { success: true, message: 'Password reset successful' };
 const resetPasswordFailureResponse: IAuthResult = { success: false, message: 'User not found' };
 
-const validateTokenSuccessResponse: IAuthResult = { success: true, message: 'Token is valid' };
-const validateTokenFailureResponse: IAuthResult = { success: false, message: 'Invalid token' };
-
 const logoutResponse: IAuthResult = { success: true, message: 'Logout successful' };
 
 function getUsers(): IAuthData[] {
@@ -49,15 +46,6 @@ export default function authMiddleware(req: any, res: any, next: any) {
             return res.status(404).jsonp(resetPasswordFailureResponse);
         }
         return res.jsonp(resetPasswordSuccessResponse);
-    }
-
-    if (req.method === 'POST' && req.path === '/auth/validate-token') {
-        const { token } = req.body;
-        if (token && token.startsWith('mock-token-')) {
-            return res.jsonp(validateTokenSuccessResponse);
-        } else {
-            return res.status(401).jsonp(validateTokenFailureResponse);
-        }
     }
 
     if (req.method === 'POST' && req.path === '/auth/logout') {

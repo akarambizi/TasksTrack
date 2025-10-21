@@ -6,6 +6,13 @@ TasksTrack is a task tracking app with integrated Pomodoro timer functionality t
 
 This is a **personal learning project** designed to explore and master full-stack development concepts using modern technologies. The project demonstrates Clean Architecture principles, repository patterns, JWT authentication, and modern React development practices.
 
+## AI-Assisted Development
+
+This project was developed with assistance from AI tools as part of a comprehensive learning experience:
+
+- **[GitHub Copilot](https://github.com/features/copilot)** - Used for code suggestions, completion, and learning modern development patterns
+- **[GitHub MCP Server](https://github.com/modelcontextprotocol/servers)** - Utilized for code review, security analysis, and best practice recommendations
+
 ## Documentation
 
 📚 **Comprehensive technical documentation is available in [`/server/docs`](./server/docs):**
@@ -49,16 +56,10 @@ The documentation is designed to help developers understand the architectural de
 
 ## Prerequisites
 
-Before running the application, ensure you have the following installed:
-
 - **[Docker](https://www.docker.com/get-started)** and **[Docker Compose](https://docs.docker.com/compose/)**
-- **[Node.js](https://nodejs.org/)** (v18+ recommended) and **[Yarn](https://yarnpkg.com/)**
-- **[.NET 8 SDK](https://dotnet.microsoft.com/download)** (for local server development)
 - **[Make](https://www.gnu.org/software/make/)** (optional, for convenience commands)
 
 ## Quick Start
-
-### Option 1: Docker Compose (Recommended)
 
 1. **Clone the Repository:**
 
@@ -71,6 +72,8 @@ Before running the application, ensure you have the following installed:
 
    ```bash
    docker-compose up --build
+   # Or use the Makefile shortcut
+   make up
    ```
 
 3. **Access the Application:**
@@ -78,83 +81,45 @@ Before running the application, ensure you have the following installed:
    - **Frontend:** <http://localhost:3000>
    - **Backend API:** <http://localhost:5206>
 
-### Option 2: Makefile Commands
+### Development Commands
 
 ```bash
-# Start all services with live logs
-make up
-
-# Stop all services
-make down
-
-# View all available commands
-make help
+make up      # Start all services
+make down    # Stop all services
+make help    # View all available commands
 ```
 
-## Running Client and Server Separately
+## Development Setup
 
-### Client Development
+<details>
+<summary>Client Development (Click to expand)</summary>
 
-1. **Navigate to Client Directory:**
+```bash
+cd client
+yarn install
 
-   ```bash
-   cd client
-   ```
+# With Mock Server (UI development)
+yarn dev:mock
 
-2. **Install Dependencies:**
+# Access: http://localhost:3000
+# Mock API: http://localhost:4200
+# Test credentials: test@example.com / Password!123
+```
 
-   ```bash
-   yarn install
-   ```
+</details>
 
-3. **Development Options:**
+<details>
+<summary>Server Development (Click to expand)</summary>
 
-   - **With Mock Server (Recommended for UI development):**
+```bash
+cd server
 
-     ```bash
-     yarn dev:mock
-     ```
+# Build and run
+make build
+make run
 
-     This starts both the Vite dev server (<http://localhost:3000>) and mock server (<http://localhost:4200>)
+# Access: http://localhost:5206
+# API Documentation (Swagger): http://localhost:5206/swagger
+```
 
-   - **Separate Processes:**
-
-     ```bash
-     # Terminal 1: Start development server
-     yarn dev
-
-     # Terminal 2: Start mock server
-     yarn mock-server
-     ```
-
-     When using the mock server for testing, use these credentials:
-
-        ```text
-        Email: test@example.com
-        Password: Password!123
-        ```
-
-    **Note:** The mock server simulates API responses for development and testing purposes.
-
-#### Server Development
-
-1. **Navigate to Server Directory:**
-
-   ```bash
-   cd server
-   ```
-
-2. **Build and Run:**
-
-   ```bash
-   # Build the server
-   make build
-
-   # Run the server
-   make run
-   ```
-
-3. **Access the Server:**
-
-   - **API Endpoint:** <http://localhost:5206>
-   - **API Documentation:** Available via Swagger UI
+</details>

@@ -6,8 +6,8 @@ const apiClient: AxiosInstance = axios.create({
   timeout: 10000, // 10 seconds
   headers: {
     'Content-Type': 'application/json'
-  },
-  withCredentials: true // Include cookies in all requests
+  }
+  // No need for withCredentials since we're using Authorization headers
 });
 
 // Request interceptor to add auth token if available

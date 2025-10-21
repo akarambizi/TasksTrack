@@ -86,10 +86,8 @@ namespace TasksTrack.Services
 
             await _authRepository.CreateUserAsync(user);
 
-            // Generate JWT
-            var token = this.GenerateJwtToken(user);
-
-            return new AuthResult { Success = true, Token = token ?? string.Empty, Message = "User registered successfully." };
+            // Generate tokens
+            return await GenerateTokensAsync(user);
         }
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
@@ -106,10 +104,8 @@ namespace TasksTrack.Services
                 return new AuthResult { Success = false, Message = "Invalid credentials." };
             }
 
-            // Generate JWT
-            var token = this.GenerateJwtToken(user);
-
-            return new AuthResult { Success = true, Token = token ?? string.Empty, Message = "Login successful." };
+            // Generate tokens
+            return await GenerateTokensAsync(user);
         }
 
         public async Task<AuthResult> ResetPasswordAsync(PasswordResetRequest request)
@@ -130,10 +126,51 @@ namespace TasksTrack.Services
             return new AuthResult { Success = true, Message = "Password reset successfully." };
         }
 
-        private string GenerateJwtToken(User user)
+        public async Task<AuthResult> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            // Hash the refresh token before searching (since we store hashed tokens)
+            var hashedRefreshToken = HashRefreshToken(request.RefreshToken);
+            var user = await _authRepository.GetUserByRefreshTokenAsync(hashedRefreshToken);
+            if (user == null)
+            {
+                return new AuthResult { Success = false, Message = "Invalid refresh token." };
+            }
+
+            // Check if refresh token is expired
+            if (user.RefreshTokenExpiry == null || user.RefreshTokenExpiry <= DateTime.UtcNow)
+            {
+                return new AuthResult { Success = false, Message = "Refresh token has expired." };
+            }
+
+            // Generate new tokens (refresh token rotation - new refresh token on each use)
+            return await GenerateTokensAsync(user);
+        }
+
+        public async Task<AuthResult> LogoutAsync(string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return new AuthResult { Success = true, Message = "Logout successful." };
+            }
+
+            // Hash the refresh token before searching (since we store hashed tokens)
+            var hashedRefreshToken = HashRefreshToken(refreshToken);
+            var user = await _authRepository.GetUserByRefreshTokenAsync(hashedRefreshToken);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiry = null;
+                await _authRepository.UpdateUserAsync(user);
+            }
+
+            return new AuthResult { Success = true, Message = "Logout successful." };
+        }
+
+        private string GenerateJwtToken(User user, DateTime expirationTime)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -142,7 +179,7 @@ namespace TasksTrack.Services
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Email, user.Email)
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = expirationTime,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -150,32 +187,48 @@ namespace TasksTrack.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public Task<AuthResult> ValidateTokenAsync(TokenRequest request)
+        private string GenerateRefreshToken()
         {
-            if (string.IsNullOrEmpty(request.Token))
-            {
-                return Task.FromResult(new AuthResult { Success = false, Message = "Token is required." });
-            }
+            // Generate a secure random refresh token
+            var randomBytes = new byte[64];
+            using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes);
+        }
 
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_jwtSecret);
-                tokenHandler.ValidateToken(request.Token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+        private string HashRefreshToken(string refreshToken)
+        {
+            using var hmac = new System.Security.Cryptography.HMACSHA256();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            hmac.Key = key;
+            var hashBytes = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(refreshToken));
+            return Convert.ToBase64String(hashBytes);
+        }
 
-                return Task.FromResult(new AuthResult { Success = true, Message = "Token is valid." });
-            }
-            catch (Exception ex)
+        private async Task<AuthResult> GenerateTokensAsync(User user)
+        {
+            // Use consistent timestamp for both tokens to prevent timing attacks
+            var now = DateTime.UtcNow;
+            var jwtExpiry = now.AddHours(1);
+            var refreshTokenExpiry = now.AddDays(7); // 7 days expiry
+
+            var accessToken = GenerateJwtToken(user, jwtExpiry);
+            var refreshToken = GenerateRefreshToken();
+
+            // Update user with hashed refresh token (store hash, return plaintext)
+            user.RefreshToken = HashRefreshToken(refreshToken);
+            user.RefreshTokenExpiry = refreshTokenExpiry;
+            await _authRepository.UpdateUserAsync(user);
+
+            return new AuthResult
             {
-                return Task.FromResult(new AuthResult { Success = false, Message = $"Invalid token: {ex.Message}" });
-            }
+                Success = true,
+                Token = accessToken,
+                RefreshToken = refreshToken,
+                TokenExpiry = DateTime.UtcNow.AddHours(1),
+                RefreshTokenExpiry = refreshTokenExpiry,
+                Message = "Tokens generated successfully."
+            };
         }
     }
 }

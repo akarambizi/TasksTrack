@@ -51,7 +51,6 @@ The application uses a custom Axios client with interceptors for:
 | `/api/auth/login` | POST | Login user |
 | `/api/auth/logout` | POST | Logout user |
 | `/api/auth/reset-password` | POST | Request password reset |
-| `/api/auth/validate-token` | POST | Validate auth token |
 
 ### Authentication API Functions
 
@@ -59,7 +58,6 @@ The application uses a custom Axios client with interceptors for:
 - `loginUser(userData)`: Login a user
 - `logoutUser()`: Logout the current user
 - `resetPassword(data)`: Request a password reset
-- `validateToken(token)`: Validate auth token
 
 ## User Management API
 

@@ -52,6 +52,12 @@ This documentation collection provides comprehensive learning resources for deve
 - User secrets configuration
 - Database management best practices
 
+**[Migrations Documentation](./migrations/)**
+- **[troubleshooting-guide.md](./migrations/troubleshooting-guide.md)** - Comprehensive EF Core migration troubleshooting
+- **[case-studies/](./migrations/case-studies/)** - Real-world migration issue solutions and analysis
+- Migration best practices and emergency procedures
+- Common error patterns and solutions
+
 **[authentication.md](./authentication.md)**
 - JWT authentication implementation
 - Security measures and password handling
@@ -99,8 +105,10 @@ This documentation collection provides comprehensive learning resources for deve
 ### For Database Work
 
 1. **Follow [db-setup.md](./db-setup.md)** for Entity Framework operations
-2. **Understand repository patterns** from [repository-pattern.md](./repository-pattern.md)
-3. **Study existing migrations** for schema evolution examples
+2. **Check [migrations/troubleshooting-guide.md](./migrations/troubleshooting-guide.md)** for migration issues
+3. **Review [migrations/case-studies/](./migrations/case-studies/)** for real-world problem solutions
+4. **Understand repository patterns** from [repository-pattern.md](./repository-pattern.md)
+5. **Study existing migrations** for schema evolution examples
 
 ### For Learning and Understanding
 

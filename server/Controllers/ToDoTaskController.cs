@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TasksTrack.Models;
 using TasksTrack.Services;
 
 namespace TasksTrack.Controllers
 {
+    [ApiController]
+    [Authorize] // Require authentication for all task operations
     public class ToDoTaskController : ControllerBase
     {
         private readonly IToDoTaskService _toDoTaskService;

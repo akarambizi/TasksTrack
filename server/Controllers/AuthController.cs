@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TasksTrack.Services;
 using TasksTrack.Models;
 
@@ -40,26 +41,16 @@ namespace TasksTrack.Controllers
                 return Unauthorized("Invalid token");
             }
 
-            // Set the authentication token in a secure, HTTP-only cookie
-            if (!string.IsNullOrEmpty(result.Token))
-            {
-                Response.Cookies.Append("authToken", result.Token, new CookieOptions
-                {
-                    HttpOnly = false, // Removed HttpOnly to allow client-side access
-                    Secure = true, // Set to true in production
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.UtcNow.AddHours(1)
-                });
-            }
+            // Token will be handled by client in Authorization header
 
             return Ok(result);
         }
 
         [HttpPost("logout")]
+        [Authorize] // Must be authenticated to logout
         public IActionResult Logout()
         {
-            // Clear the authentication token cookie
-            Response.Cookies.Delete("authToken");
+            // Logout is handled client-side by removing the token
             return Ok(new { Message = "Logout successful" });
         }
 
@@ -74,14 +65,17 @@ namespace TasksTrack.Controllers
             return Ok(result);
         }
 
-        [HttpPost("validate-token")]
-        public async Task<IActionResult> ValidateToken([FromBody] TokenRequest request)
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            var result = await _authService.ValidateTokenAsync(request);
+            var result = await _authService.RefreshTokenAsync(request);
             if (!result.Success)
             {
                 return Unauthorized(result.Message);
             }
+
+            // New token will be handled by client in Authorization header
+
             return Ok(result);
         }
     }

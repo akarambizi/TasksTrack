@@ -66,7 +66,6 @@ namespace TasksTrack.Controllers
         }
 
         [HttpPost("refresh")]
-        [Authorize] // Must be authenticated to refresh token
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var result = await _authService.RefreshTokenAsync(request);

@@ -128,8 +128,9 @@ namespace TasksTrack.Services
 
         public async Task<AuthResult> RefreshTokenAsync(RefreshTokenRequest request)
         {
-            // Find user by refresh token
-            var user = await _authRepository.GetUserByRefreshTokenAsync(request.RefreshToken);
+            // Hash the refresh token before searching (since we store hashed tokens)
+            var hashedRefreshToken = HashRefreshToken(request.RefreshToken);
+            var user = await _authRepository.GetUserByRefreshTokenAsync(hashedRefreshToken);
             if (user == null)
             {
                 return new AuthResult { Success = false, Message = "Invalid refresh token." };
@@ -141,15 +142,34 @@ namespace TasksTrack.Services
                 return new AuthResult { Success = false, Message = "Refresh token has expired." };
             }
 
-            // Generate new tokens
+            // Generate new tokens (refresh token rotation - new refresh token on each use)
             return await GenerateTokensAsync(user);
         }
 
-        private string GenerateJwtToken(User user)
+        public async Task<AuthResult> LogoutAsync(string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return new AuthResult { Success = true, Message = "Logout successful." };
+            }
+
+            // Hash the refresh token before searching (since we store hashed tokens)
+            var hashedRefreshToken = HashRefreshToken(refreshToken);
+            var user = await _authRepository.GetUserByRefreshTokenAsync(hashedRefreshToken);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiry = null;
+                await _authRepository.UpdateUserAsync(user);
+            }
+
+            return new AuthResult { Success = true, Message = "Logout successful." };
+        }
+
+        private string GenerateJwtToken(User user, DateTime expirationTime)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
-            var expirationTime = DateTime.UtcNow.AddHours(1);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -176,14 +196,27 @@ namespace TasksTrack.Services
             return Convert.ToBase64String(randomBytes);
         }
 
+        private string HashRefreshToken(string refreshToken)
+        {
+            using var hmac = new System.Security.Cryptography.HMACSHA256();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            hmac.Key = key;
+            var hashBytes = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(refreshToken));
+            return Convert.ToBase64String(hashBytes);
+        }
+
         private async Task<AuthResult> GenerateTokensAsync(User user)
         {
-            var accessToken = GenerateJwtToken(user);
-            var refreshToken = GenerateRefreshToken();
-            var refreshTokenExpiry = DateTime.UtcNow.AddDays(7); // 7 days expiry
+            // Use consistent timestamp for both tokens to prevent timing attacks
+            var now = DateTime.UtcNow;
+            var jwtExpiry = now.AddHours(1);
+            var refreshTokenExpiry = now.AddDays(7); // 7 days expiry
 
-            // Update user with refresh token
-            user.RefreshToken = refreshToken;
+            var accessToken = GenerateJwtToken(user, jwtExpiry);
+            var refreshToken = GenerateRefreshToken();
+
+            // Update user with hashed refresh token (store hash, return plaintext)
+            user.RefreshToken = HashRefreshToken(refreshToken);
             user.RefreshTokenExpiry = refreshTokenExpiry;
             await _authRepository.UpdateUserAsync(user);
 

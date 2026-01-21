@@ -48,10 +48,11 @@ namespace TasksTrack.Controllers
 
         [HttpPost("logout")]
         [Authorize] // Must be authenticated to logout
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout([FromBody] RefreshTokenRequest request)
         {
-            // Logout is handled client-side by removing the token
-            return Ok(new { Message = "Logout successful" });
+            // Server-side logout - invalidate refresh token in database
+            var result = await _authService.LogoutAsync(request.RefreshToken);
+            return Ok(result);
         }
 
         [HttpPost("reset-password")]

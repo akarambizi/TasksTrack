@@ -21,6 +21,24 @@ export const getHabitData = async (query = ''): Promise<IHabit[]> => {
 };
 
 /**
+ * Creates a new habit using full habit object (temporary fix for backend expecting full object).
+ * @param {Partial<IHabit>} habitData - The habit data object.
+ * @returns {Promise<IHabit>} The created habit with generated ID.
+ */
+export const createHabitDirect = async (habitData: Partial<IHabit>): Promise<IHabit> => {
+    try {
+        const endpoint = '/api/habits';
+        const response = await apiPost<IHabit>(endpoint, habitData);
+        ToastService.success('Habit created successfully');
+        return response;
+    } catch (error) {
+        console.error('Failed to create habit:', error);
+        ToastService.error('Failed to create habit');
+        throw new Error('Failed to create habit');
+    }
+};
+
+/**
  * Creates a new habit.
  * @param {IHabitCreateRequest} habitData - The habit data to create.
  * @returns {Promise<IHabit>} The created habit with generated ID.

@@ -9,7 +9,7 @@ public static class DependencyInjectionSetup
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
-        
+
         // Habit services
         services.AddScoped<IHabitService, HabitService>();
         services.AddScoped<IHabitRepository, HabitRepository>();

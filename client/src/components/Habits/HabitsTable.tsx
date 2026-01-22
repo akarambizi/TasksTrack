@@ -38,8 +38,8 @@ export const HabitsTable: React.FC<IHabitsTableProps> = ({ habits }) => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                    habit.isActive 
-                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                    habit.isActive
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                         : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                                 }`}>
                                     {habit.isActive ? 'Active' : 'Inactive'}

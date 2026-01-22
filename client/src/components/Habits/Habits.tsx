@@ -23,7 +23,7 @@ export const Habits = () => {
                         <div
                             key={habit.id}
                             className={`p-4 rounded-lg border ${!habit.isActive ? 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-60' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}`}
-                            style={{ 
+                            style={{
                                 borderLeftColor: habit.color || '#3b82f6',
                                 borderLeftWidth: '4px'
                             }}

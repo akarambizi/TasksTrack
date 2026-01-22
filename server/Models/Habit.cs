@@ -34,11 +34,11 @@ namespace TasksTrack.Models
         public required string CreatedBy { get; set; }
 
         public string? UpdatedBy { get; set; }
-        
+
         // Color for UI display
         [StringLength(7, ErrorMessage = "Color cannot exceed 7 characters")]
         public string? Color { get; set; } // Hex color code
-        
+
         // Icon for UI display
         [StringLength(50, ErrorMessage = "Icon cannot exceed 50 characters")]
         public string? Icon { get; set; }

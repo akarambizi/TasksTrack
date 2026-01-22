@@ -26,7 +26,7 @@ namespace TasksTrack.Tests.Services
             // Arrange
             var expectedHabits = new List<Habit>
             {
-                new Habit 
+                new Habit
                 {
                     Id = 1,
                     Name = "Morning Exercise",
@@ -39,7 +39,7 @@ namespace TasksTrack.Tests.Services
                     CreatedDate = new DateTime(2024, 1, 1),
                     CreatedBy = "Test User"
                 },
-                new Habit 
+                new Habit
                 {
                     Id = 2,
                     Name = "Reading Books",
@@ -69,7 +69,7 @@ namespace TasksTrack.Tests.Services
         public async Task GetById_ShouldReturnHabit()
         {
             // Arrange
-            var expectedHabit = new Habit 
+            var expectedHabit = new Habit
             {
                 Id = 1,
                 Name = "Morning Exercise",
@@ -99,7 +99,7 @@ namespace TasksTrack.Tests.Services
         public async Task AddAsync_ShouldSetCreatedDate()
         {
             // Arrange
-            var habit = new Habit 
+            var habit = new Habit
             {
                 Name = "New Habit",
                 MetricType = "minutes",
@@ -118,7 +118,7 @@ namespace TasksTrack.Tests.Services
         public async Task UpdateAsync_ShouldReturnTrue_WhenHabitExists()
         {
             // Arrange
-            var existingHabit = new Habit 
+            var existingHabit = new Habit
             {
                 Id = 1,
                 Name = "Old Name",
@@ -126,7 +126,7 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "Test User"
             };
 
-            var updatedHabit = new Habit 
+            var updatedHabit = new Habit
             {
                 Id = 1,
                 Name = "New Name",
@@ -156,7 +156,7 @@ namespace TasksTrack.Tests.Services
         public async Task UpdateAsync_ShouldReturnFalse_WhenHabitDoesNotExist()
         {
             // Arrange
-            var updatedHabit = new Habit 
+            var updatedHabit = new Habit
             {
                 Id = 1,
                 Name = "New Name",
@@ -193,7 +193,7 @@ namespace TasksTrack.Tests.Services
             // Arrange
             var activeHabits = new List<Habit>
             {
-                new Habit 
+                new Habit
                 {
                     Id = 1,
                     Name = "Active Habit",
@@ -217,7 +217,7 @@ namespace TasksTrack.Tests.Services
         public async Task ArchiveAsync_ShouldSetIsActiveToFalse()
         {
             // Arrange
-            var habit = new Habit 
+            var habit = new Habit
             {
                 Id = 1,
                 Name = "Test Habit",
@@ -241,7 +241,7 @@ namespace TasksTrack.Tests.Services
         public async Task ActivateAsync_ShouldSetIsActiveToTrue()
         {
             // Arrange
-            var habit = new Habit 
+            var habit = new Habit
             {
                 Id = 1,
                 Name = "Test Habit",

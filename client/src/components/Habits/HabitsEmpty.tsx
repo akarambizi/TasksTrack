@@ -12,15 +12,15 @@ export const HabitsEmpty = () => {
                     <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
                 </div>
             </div>
-            
+
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 No Habits Yet
             </h3>
-            
+
             <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md">
                 Ready to start building positive habits? Create your first habit and begin tracking your progress toward your goals.
             </p>
-            
+
             <AddHabitDialog />
         </div>
     );

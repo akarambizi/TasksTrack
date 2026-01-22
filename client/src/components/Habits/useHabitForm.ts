@@ -1,6 +1,7 @@
 // useHabitForm.ts
 import { useState } from "react";
-import { IHabit, IHabitCreateRequest, createHabit } from "@/api";
+import { IHabit, createHabitDirect } from "@/api";
+import { useAuthContext } from "@/context/useAuthContext";
 
 interface HabitFormData {
   name: string;
@@ -24,6 +25,7 @@ interface UseHabitFormReturn {
 }
 
 export function useHabitForm(): UseHabitFormReturn {
+  const { user } = useAuthContext();
   const [formData, setFormData] = useState<HabitFormData>({
     name: '',
     description: '',
@@ -62,8 +64,8 @@ export function useHabitForm(): UseHabitFormReturn {
     setIsSubmitting(true);
 
     try {
-      // Call the API to create a new habit
-      const habitCreateRequest: IHabitCreateRequest = {
+      // Create a habit object as expected by the backend
+      const habitObject: Partial<IHabit> = {
         name: formData.name,
         description: formData.description || undefined,
         metricType: formData.metricType,
@@ -73,9 +75,11 @@ export function useHabitForm(): UseHabitFormReturn {
         category: formData.category || undefined,
         color: formData.color || undefined,
         icon: formData.icon || undefined,
+        isActive: true,
+        createdBy: user?.email || 'unknown'
       };
 
-      const newHabit = await createHabit(habitCreateRequest);
+      const newHabit = await createHabitDirect(habitObject);
 
       // Reset form after successful submission
       setFormData({

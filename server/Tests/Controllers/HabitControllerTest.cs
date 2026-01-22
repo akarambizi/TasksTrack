@@ -26,32 +26,32 @@ namespace TasksTrack.Tests.Controllers
             // Arrange
             var habits = new List<Habit>
             {
-                new Habit 
-                { 
-                    Id = 1, 
-                    Name = "Morning Exercise", 
+                new Habit
+                {
+                    Id = 1,
+                    Name = "Morning Exercise",
                     MetricType = "minutes",
                     Unit = "min",
                     Target = 30,
                     TargetFrequency = "daily",
                     Category = "Health",
-                    IsActive = true, 
-                    CreatedBy = "User1", 
-                    CreatedDate = new System.DateTime(2024, 1, 1), 
+                    IsActive = true,
+                    CreatedBy = "User1",
+                    CreatedDate = new System.DateTime(2024, 1, 1),
                     Description = "Daily morning workout routine"
                 },
-                new Habit 
-                { 
-                    Id = 2, 
-                    Name = "Reading", 
+                new Habit
+                {
+                    Id = 2,
+                    Name = "Reading",
                     MetricType = "pages",
                     Unit = "pages",
                     Target = 10,
                     TargetFrequency = "daily",
                     Category = "Learning",
-                    IsActive = true, 
-                    CreatedBy = "User2", 
-                    CreatedDate = new System.DateTime(2024, 1, 1) 
+                    IsActive = true,
+                    CreatedBy = "User2",
+                    CreatedDate = new System.DateTime(2024, 1, 1)
                 }
             };
             _mockService.Setup(service => service.GetAllAsync()).ReturnsAsync(habits);
@@ -69,18 +69,18 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetById_ReturnsHabit()
         {
             // Arrange
-            var habit = new Habit 
-            { 
-                Id = 1, 
-                Name = "Morning Exercise", 
+            var habit = new Habit
+            {
+                Id = 1,
+                Name = "Morning Exercise",
                 MetricType = "minutes",
                 Unit = "min",
                 Target = 30,
                 TargetFrequency = "daily",
                 Category = "Health",
-                IsActive = true, 
-                CreatedBy = "User1", 
-                CreatedDate = new System.DateTime(2024, 1, 1), 
+                IsActive = true,
+                CreatedBy = "User1",
+                CreatedDate = new System.DateTime(2024, 1, 1),
                 Description = "Daily morning workout routine"
             };
             _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(habit);
@@ -112,18 +112,18 @@ namespace TasksTrack.Tests.Controllers
         public async Task Add_ReturnsCreatedAtAction()
         {
             // Arrange
-            var habit = new Habit 
-            { 
-                Id = 1, 
-                Name = "Morning Exercise", 
+            var habit = new Habit
+            {
+                Id = 1,
+                Name = "Morning Exercise",
                 MetricType = "minutes",
                 Unit = "min",
                 Target = 30,
                 TargetFrequency = "daily",
                 Category = "Health",
-                IsActive = true, 
-                CreatedBy = "User1", 
-                CreatedDate = new System.DateTime(2024, 1, 1), 
+                IsActive = true,
+                CreatedBy = "User1",
+                CreatedDate = new System.DateTime(2024, 1, 1),
                 Description = "Daily morning workout routine"
             };
 
@@ -139,10 +139,10 @@ namespace TasksTrack.Tests.Controllers
         public async Task Delete_ReturnsNoContent_WhenHabitExists()
         {
             // Arrange
-            var habit = new Habit 
-            { 
-                Id = 1, 
-                Name = "Morning Exercise", 
+            var habit = new Habit
+            {
+                Id = 1,
+                Name = "Morning Exercise",
                 MetricType = "minutes",
                 CreatedBy = "User1"
             };
@@ -159,10 +159,10 @@ namespace TasksTrack.Tests.Controllers
         public async Task Archive_ReturnsNoContent_WhenHabitExists()
         {
             // Arrange
-            var habit = new Habit 
-            { 
-                Id = 1, 
-                Name = "Morning Exercise", 
+            var habit = new Habit
+            {
+                Id = 1,
+                Name = "Morning Exercise",
                 MetricType = "minutes",
                 CreatedBy = "User1",
                 IsActive = true
@@ -180,10 +180,10 @@ namespace TasksTrack.Tests.Controllers
         public async Task Activate_ReturnsNoContent_WhenHabitExists()
         {
             // Arrange
-            var habit = new Habit 
-            { 
-                Id = 1, 
-                Name = "Morning Exercise", 
+            var habit = new Habit
+            {
+                Id = 1,
+                Name = "Morning Exercise",
                 MetricType = "minutes",
                 CreatedBy = "User1",
                 IsActive = false

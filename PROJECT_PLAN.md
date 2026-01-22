@@ -4,14 +4,14 @@
 
 ### 1.1 Backend
 
-- [ ] Implement user registration (`POST /api/auth/register`)
-- [ ] Implement user login (`POST /api/auth/login`)
-- [ ] Implement user logout (`POST /api/auth/logout`)
-- [ ] Implement password reset functionality (`POST /api/auth/request-password-reset`)
-- [ ] Implement password reset functionality (`POST /api/auth/reset-password-with-token`)
-- [ ] Implement authentication middleware to protect routes
-- [ ] Integrate authentication with database
-- [ ] Handle authentication errors and validation errors
+- [x] Implement user registration (`POST /api/auth/register`)
+- [x] Implement user login (`POST /api/auth/login`)
+- [x] Implement user logout (`POST /api/auth/logout`)
+- [x] Implement password reset functionality (`POST /api/auth/reset-password`)
+- [x] Implement refresh token functionality (`POST /api/auth/refresh`)
+- [x] Implement authentication middleware to protect routes
+- [x] Integrate authentication with database
+- [x] Handle authentication errors and validation errors
 
 ### 1.2 Frontend
 
@@ -26,13 +26,13 @@
 
 ### 2.1 Backend
 
-- [ ] Implement task creation (`POST /api/tasks`)
-- [ ] Implement task retrieval (`GET /api/tasks`)
-- [ ] Implement task details retrieval (`GET /api/tasks/:id`)
-- [ ] Implement task update (`PUT /api/tasks/:id`)
-- [ ] Implement task deletion (`DELETE /api/tasks/:id`)
-- [ ] Implement database models for tasks
-- [ ] Handle errors and edge cases for task APIs
+- [x] Implement task creation (`POST /api/tasks`)
+- [x] Implement task retrieval (`GET /api/tasks`)
+- [x] Implement task details retrieval (`GET /api/tasks/:id`)
+- [x] Implement task update (`PUT /api/tasks/:id`)
+- [x] Implement task deletion (`DELETE /api/tasks/:id`)
+- [x] Implement database models for tasks
+- [x] Handle errors and edge cases for task APIs
 
 ### 2.2 Frontend
 
@@ -40,9 +40,9 @@
 - [x] Create UI for displaying a list of tasks
 - [x] Create UI for updating task details
 - [x] Implement task deletion functionality
-- [ ] Implement API calls for task management
-- [ ] Handle API requests and responses
-- [ ] Implement error handling and display error messages to users
+- [x] Implement API calls for task management
+- [x] Handle API requests and responses
+- [x] Implement error handling and display error messages to users
 
 ## 3. Pomodoro Timer
 

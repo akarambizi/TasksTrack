@@ -11,7 +11,6 @@ namespace TasksTrack.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<ToDoTask> Tasks { get; set; }
         public DbSet<Habit> Habits { get; set; }
     }
 }

@@ -10,11 +10,7 @@ public static class DependencyInjectionSetup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
         
-        // Legacy Task services (keep for backward compatibility)
-        services.AddScoped<IToDoTaskService, ToDoTaskService>();
-        services.AddScoped<IToDoTaskRepository, ToDoTaskRepository>();
-        
-        // New Habit services
+        // Habit services
         services.AddScoped<IHabitService, HabitService>();
         services.AddScoped<IHabitRepository, HabitRepository>();
 

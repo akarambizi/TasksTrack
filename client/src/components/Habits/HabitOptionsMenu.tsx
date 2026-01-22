@@ -5,43 +5,69 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, CheckSquare, Trash2, Edit, AlertCircle } from "lucide-react";
-import { IToDoTask } from "@/api";
-import { useToggleTaskCompletion, useDeleteTask, useUpdateTaskPriority } from "@/queries";
+import { Settings, Archive, Play, Trash2, Edit, Plus } from "lucide-react";
+import { IHabit, deleteHabit, archiveHabit, activateHabit } from "@/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface TaskOptionsMenuProps {
-  task: IToDoTask;
+interface HabitOptionsMenuProps {
+  habit: IHabit;
+  onEdit?: (habit: IHabit) => void;
+  onLogActivity?: (habit: IHabit) => void;
 }
 
-export const TaskOptionsMenu = ({ task }: TaskOptionsMenuProps) => {
-  const toggleCompletion = useToggleTaskCompletion();
-  const deleteTaskMutation = useDeleteTask();
-  const updatePriority = useUpdateTaskPriority();
+export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsMenuProps) => {
+  const queryClient = useQueryClient();
+
+  const deleteHabitMutation = useMutation({
+    mutationFn: deleteHabit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] });
+    },
+  });
+
+  const archiveHabitMutation = useMutation({
+    mutationFn: archiveHabit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] });
+    },
+  });
+
+  const activateHabitMutation = useMutation({
+    mutationFn: activateHabit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] });
+    },
+  });
 
   // Determine if any mutation is in progress to disable UI
-  const isLoading = toggleCompletion.isPending || deleteTaskMutation.isPending || updatePriority.isPending;
+  const isLoading = deleteHabitMutation.isPending || archiveHabitMutation.isPending || activateHabitMutation.isPending;
 
-  // Handler for toggling task completion
-  const handleToggleCompletion = () => {
-    toggleCompletion.mutate({
-      id: task.id,
-      completed: !task.completed
-    });
+  // Handler for logging activity
+  const handleLogActivity = () => {
+    if (onLogActivity) {
+      onLogActivity(habit);
+    }
   };
 
-  // Handler for deleting a task
-  const handleDeleteTask = () => {
-    deleteTaskMutation.mutate(task.id);
+  // Handler for editing habit
+  const handleEditHabit = () => {
+    if (onEdit) {
+      onEdit(habit);
+    }
   };
 
-  // Handler for changing task priority
-  const handleChangePriority = (priority: 'low' | 'medium' | 'high') => {
-    if (task.priority === priority) return; // No change needed
+  // Handler for deleting a habit
+  const handleDeleteHabit = () => {
+    deleteHabitMutation.mutate(habit.id);
+  };
 
-    updatePriority.mutate({
-      id: task.id,
-      priority
-    });
+  // Handler for archiving/activating habit
+  const handleToggleActive = () => {
+    if (habit.isActive) {
+      archiveHabitMutation.mutate(habit.id);
+    } else {
+      activateHabitMutation.mutate(habit.id);
+    }
   };
 
   return (
@@ -52,43 +78,36 @@ export const TaskOptionsMenu = ({ task }: TaskOptionsMenuProps) => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleToggleCompletion} disabled={isLoading}>
-          <CheckSquare className="mr-2 h-4 w-4" />
-          {task.completed ? 'Mark as Todo' : 'Mark as Complete'}
+        <DropdownMenuItem onClick={handleLogActivity} disabled={isLoading || !habit.isActive}>
+          <Plus className="mr-2 h-4 w-4" />
+          Log Activity
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => {}} disabled={isLoading}>
+        <DropdownMenuItem onClick={handleEditHabit} disabled={isLoading}>
           <Edit className="mr-2 h-4 w-4" />
-          Edit Task
+          Edit Habit
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => handleChangePriority('low')}
-          className="text-blue-600 dark:text-blue-400"
-          disabled={isLoading || task.priority === 'low'}
+          onClick={handleToggleActive}
+          className={habit.isActive ? "text-orange-600 dark:text-orange-400" : "text-green-600 dark:text-green-400"}
+          disabled={isLoading}
         >
-          <AlertCircle className="mr-2 h-4 w-4" />
-          Set Low Priority
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleChangePriority('medium')}
-          className="text-yellow-600 dark:text-yellow-400"
-          disabled={isLoading || task.priority === 'medium'}
-        >
-          <AlertCircle className="mr-2 h-4 w-4" />
-          Set Medium Priority
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleChangePriority('high')}
-          className="text-red-600 dark:text-red-400"
-          disabled={isLoading || task.priority === 'high'}
-        >
-          <AlertCircle className="mr-2 h-4 w-4" />
-          Set High Priority
+          {habit.isActive ? (
+            <>
+              <Archive className="mr-2 h-4 w-4" />
+              Archive Habit
+            </>
+          ) : (
+            <>
+              <Play className="mr-2 h-4 w-4" />
+              Activate Habit
+            </>
+          )}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleDeleteTask} className="text-red-600 dark:text-red-400" disabled={isLoading}>
+        <DropdownMenuItem onClick={handleDeleteHabit} className="text-red-600 dark:text-red-400" disabled={isLoading}>
           <Trash2 className="mr-2 h-4 w-4" />
-          Delete Task
+          Delete Habit
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

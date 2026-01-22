@@ -1,44 +1,60 @@
-// useTaskForm.ts
+// useHabitForm.ts
 import { useState } from "react";
-import { IToDoTask } from "@/api";
-import { createTask } from "@/api/toDoTask";
+import { IHabit, IHabitCreateRequest, createHabit } from "@/api";
 
-interface TaskFormData {
-  title: string;
+interface HabitFormData {
+  name: string;
   description: string;
-  priority: 'low' | 'medium' | 'high';
+  metricType: string;
+  unit: string;
+  target: number;
+  targetFrequency: string;
+  category: string;
+  color: string;
+  icon: string;
 }
 
-interface UseTaskFormReturn {
-  formData: TaskFormData;
-  setFormData: React.Dispatch<React.SetStateAction<TaskFormData>>;
-  handleChange: (field: keyof TaskFormData) => (value: string) => void;
-  handleSubmit: () => Promise<IToDoTask | null>;
+interface UseHabitFormReturn {
+  formData: HabitFormData;
+  setFormData: React.Dispatch<React.SetStateAction<HabitFormData>>;
+  handleChange: (field: keyof HabitFormData) => (value: string | number) => void;
+  handleSubmit: () => Promise<IHabit | null>;
   isSubmitting: boolean;
   error: string | null;
 }
 
-export function useTaskForm(): UseTaskFormReturn {
-  const [formData, setFormData] = useState<TaskFormData>({
-    title: '',
+export function useHabitForm(): UseHabitFormReturn {
+  const [formData, setFormData] = useState<HabitFormData>({
+    name: '',
     description: '',
-    priority: 'low',
+    metricType: 'minutes',
+    unit: 'min',
+    target: 0,
+    targetFrequency: 'daily',
+    category: 'Health',
+    color: '#3b82f6',
+    icon: 'target',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (field: keyof TaskFormData) => (value: string) => {
+  const handleChange = (field: keyof HabitFormData) => (value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleSubmit = async (): Promise<IToDoTask | null> => {
+  const handleSubmit = async (): Promise<IHabit | null> => {
     // Validate form
-    if (!formData.title) {
-      setError("Title is required");
+    if (!formData.name) {
+      setError("Name is required");
+      return null;
+    }
+
+    if (!formData.metricType) {
+      setError("Metric type is required");
       return null;
     }
 
@@ -46,24 +62,37 @@ export function useTaskForm(): UseTaskFormReturn {
     setIsSubmitting(true);
 
     try {
-      // Call the API to create a new task
-      const newTask = await createTask({
-        title: formData.title,
-        description: formData.description,
-        completed: false,
-        priority: formData.priority
-      });
+      // Call the API to create a new habit
+      const habitCreateRequest: IHabitCreateRequest = {
+        name: formData.name,
+        description: formData.description || undefined,
+        metricType: formData.metricType,
+        unit: formData.unit || undefined,
+        target: formData.target > 0 ? formData.target : undefined,
+        targetFrequency: formData.targetFrequency || undefined,
+        category: formData.category || undefined,
+        color: formData.color || undefined,
+        icon: formData.icon || undefined,
+      };
+
+      const newHabit = await createHabit(habitCreateRequest);
 
       // Reset form after successful submission
       setFormData({
-        title: '',
+        name: '',
         description: '',
-        priority: 'low',
+        metricType: 'minutes',
+        unit: 'min',
+        target: 0,
+        targetFrequency: 'daily',
+        category: 'Health',
+        color: '#3b82f6',
+        icon: 'target',
       });
 
-      return newTask;
+      return newHabit;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create task");
+      setError(err instanceof Error ? err.message : "Failed to create habit");
       return null;
     } finally {
       setIsSubmitting(false);

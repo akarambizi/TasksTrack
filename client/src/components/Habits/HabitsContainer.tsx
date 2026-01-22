@@ -1,13 +1,12 @@
-import { ReactNode } from 'react';
+import { Habits } from './Habits';
 
-interface IHabitsContainerProps {
-    children: ReactNode;
-}
-
-export const HabitsContainer: React.FC<IHabitsContainerProps> = ({ children }) => {
+export const HabitsContainer = () => {
     return (
-        <div className="habits-container">
-            {children}
-        </div>
+        <>
+            <div className="flex items-center">
+                <h1 className="text-lg font-semibold md:text-2xl">Habits</h1>
+            </div>
+            <Habits />
+        </>
     );
 };

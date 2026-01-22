@@ -1,0 +1,200 @@
+using Xunit;
+using Moq;
+using TasksTrack.Controllers;
+using TasksTrack.Services;
+using TasksTrack.Models;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace TasksTrack.Tests.Controllers
+{
+    public class HabitControllerTests
+    {
+        private readonly Mock<IHabitService> _mockService;
+        private readonly HabitController _controller;
+
+        public HabitControllerTests()
+        {
+            _mockService = new Mock<IHabitService>();
+            _controller = new HabitController(_mockService.Object);
+        }
+
+        [Fact]
+        public async Task GetAll_ReturnsListOfHabits()
+        {
+            // Arrange
+            var habits = new List<Habit>
+            {
+                new Habit 
+                { 
+                    Id = 1, 
+                    Name = "Morning Exercise", 
+                    MetricType = "minutes",
+                    Unit = "min",
+                    Target = 30,
+                    TargetFrequency = "daily",
+                    Category = "Health",
+                    IsActive = true, 
+                    CreatedBy = "User1", 
+                    CreatedDate = new System.DateTime(2024, 1, 1), 
+                    Description = "Daily morning workout routine"
+                },
+                new Habit 
+                { 
+                    Id = 2, 
+                    Name = "Reading", 
+                    MetricType = "pages",
+                    Unit = "pages",
+                    Target = 10,
+                    TargetFrequency = "daily",
+                    Category = "Learning",
+                    IsActive = true, 
+                    CreatedBy = "User2", 
+                    CreatedDate = new System.DateTime(2024, 1, 1) 
+                }
+            };
+            _mockService.Setup(service => service.GetAllAsync()).ReturnsAsync(habits);
+
+            // Act
+            var result = await _controller.GetAll();
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedHabits = Assert.IsAssignableFrom<IEnumerable<Habit>>(okResult.Value);
+
+            // Assert
+            Assert.Equal(habits.Count, ((List<Habit>)returnedHabits).Count);
+        }
+
+        [Fact]
+        public async Task GetById_ReturnsHabit()
+        {
+            // Arrange
+            var habit = new Habit 
+            { 
+                Id = 1, 
+                Name = "Morning Exercise", 
+                MetricType = "minutes",
+                Unit = "min",
+                Target = 30,
+                TargetFrequency = "daily",
+                Category = "Health",
+                IsActive = true, 
+                CreatedBy = "User1", 
+                CreatedDate = new System.DateTime(2024, 1, 1), 
+                Description = "Daily morning workout routine"
+            };
+            _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(habit);
+
+            // Act
+            var result = await _controller.GetById(1);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedHabit = Assert.IsType<Habit>(okResult.Value);
+
+            // Assert
+            Assert.Equal(habit.Id, returnedHabit.Id);
+            Assert.Equal(habit.Name, returnedHabit.Name);
+        }
+
+        [Fact]
+        public async Task GetById_ReturnsNotFound_WhenHabitDoesNotExist()
+        {
+            // Arrange
+            _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync((Habit?)null);
+
+            // Act
+            var result = await _controller.GetById(1);
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task Add_ReturnsCreatedAtAction()
+        {
+            // Arrange
+            var habit = new Habit 
+            { 
+                Id = 1, 
+                Name = "Morning Exercise", 
+                MetricType = "minutes",
+                Unit = "min",
+                Target = 30,
+                TargetFrequency = "daily",
+                Category = "Health",
+                IsActive = true, 
+                CreatedBy = "User1", 
+                CreatedDate = new System.DateTime(2024, 1, 1), 
+                Description = "Daily morning workout routine"
+            };
+
+            // Act
+            var result = await _controller.Add(habit);
+
+            // Assert
+            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+            Assert.Equal(nameof(_controller.GetById), createdAtActionResult.ActionName);
+        }
+
+        [Fact]
+        public async Task Delete_ReturnsNoContent_WhenHabitExists()
+        {
+            // Arrange
+            var habit = new Habit 
+            { 
+                Id = 1, 
+                Name = "Morning Exercise", 
+                MetricType = "minutes",
+                CreatedBy = "User1"
+            };
+            _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(habit);
+
+            // Act
+            var result = await _controller.Delete(1);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task Archive_ReturnsNoContent_WhenHabitExists()
+        {
+            // Arrange
+            var habit = new Habit 
+            { 
+                Id = 1, 
+                Name = "Morning Exercise", 
+                MetricType = "minutes",
+                CreatedBy = "User1",
+                IsActive = true
+            };
+            _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(habit);
+
+            // Act
+            var result = await _controller.Archive(1);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task Activate_ReturnsNoContent_WhenHabitExists()
+        {
+            // Arrange
+            var habit = new Habit 
+            { 
+                Id = 1, 
+                Name = "Morning Exercise", 
+                MetricType = "minutes",
+                CreatedBy = "User1",
+                IsActive = false
+            };
+            _mockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(habit);
+
+            // Act
+            var result = await _controller.Activate(1);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+        }
+    }
+}

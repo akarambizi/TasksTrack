@@ -6,25 +6,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { useTaskForm } from "./useTaskForm";
+import { useHabitForm } from "./useHabitForm";
 import { useQueryClient } from "@tanstack/react-query";
-import { getTodoTaskKey } from "@/hooks/queryKeys";
+import { getHabitKey } from "@/api";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { IToDoTask } from "@/api";
+import { IHabit } from "@/api";
 
-export function AddTaskDialog() {
+export function AddHabitDialog() {
   const [open, setOpen] = useState(false);
-  const { formData, handleChange, handleSubmit, isSubmitting, error } = useTaskForm();
+  const { formData, handleChange, handleSubmit, isSubmitting, error } = useHabitForm();
   const queryClient = useQueryClient();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newTask = await handleSubmit();
+    const newHabit = await handleSubmit();
 
-    if (newTask) {
-      //TODO: update cache Optimistically update the cache
-      queryClient.setQueryData(getTodoTaskKey(''), (oldData: IToDoTask[] | undefined) => {
-        return oldData ? [newTask, ...oldData] : [newTask];
+    if (newHabit) {
+      // Optimistically update the cache
+      queryClient.setQueryData(getHabitKey(''), (oldData: IHabit[] | undefined) => {
+        return oldData ? [newHabit, ...oldData] : [newHabit];
       });
 
       // Close the dialog
@@ -37,15 +37,15 @@ export function AddTaskDialog() {
       <DialogTrigger asChild>
         <Button className="bg-blue-600 hover:bg-blue-700 text-white">
           <Plus size={16} className="mr-2" />
-          Add Task
+          Add Habit
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
+            <DialogTitle>Add New Habit</DialogTitle>
             <DialogDescription>
-              Create a new task to add to your list.
+              Create a new habit to track your progress.
             </DialogDescription>
           </DialogHeader>
 
@@ -57,43 +57,100 @@ export function AddTaskDialog() {
 
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
-                id="title"
-                placeholder="Task title"
-                value={formData.title}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('title')(e.target.value)}
+                id="name"
+                placeholder="Habit name (e.g., Read books, Exercise)"
+                value={formData.name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('name')(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                placeholder="Describe your task"
+                placeholder="Describe your habit (optional)"
                 value={formData.description}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('description')(e.target.value)}
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="metricType">Metric Type</Label>
+                <Select
+                  value={formData.metricType}
+                  onValueChange={handleChange('metricType')}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select metric" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="minutes">Minutes</SelectItem>
+                    <SelectItem value="pages">Pages</SelectItem>
+                    <SelectItem value="reps">Repetitions</SelectItem>
+                    <SelectItem value="miles">Miles</SelectItem>
+                    <SelectItem value="kilometers">Kilometers</SelectItem>
+                    <SelectItem value="steps">Steps</SelectItem>
+                    <SelectItem value="cups">Cups</SelectItem>
+                    <SelectItem value="times">Times</SelectItem>
+                    <SelectItem value="hours">Hours</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="unit">Unit</Label>
+                <Input
+                  id="unit"
+                  placeholder="min, pages, reps..."
+                  value={formData.unit}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('unit')(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="target">Daily Target</Label>
+                <Input
+                  id="target"
+                  type="number"
+                  placeholder="0"
+                  value={formData.target}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('target')(parseInt(e.target.value) || 0)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="category">Category</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={handleChange('category')}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Health">Health</SelectItem>
+                    <SelectItem value="Learning">Learning</SelectItem>
+                    <SelectItem value="Creative">Creative</SelectItem>
+                    <SelectItem value="Social">Social</SelectItem>
+                    <SelectItem value="Work">Work</SelectItem>
+                    <SelectItem value="Personal">Personal</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="grid gap-2">
-              <Label htmlFor="priority">Priority</Label>
-              <Select
-                value={formData.priority}
-                onValueChange={handleChange('priority')}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="color">Color</Label>
+              <Input
+                id="color"
+                type="color"
+                value={formData.color}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('color')(e.target.value)}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Save Task'}
+              {isSubmitting ? 'Creating...' : 'Create Habit'}
             </Button>
           </DialogFooter>
         </form>

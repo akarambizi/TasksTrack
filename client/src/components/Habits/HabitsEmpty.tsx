@@ -1,4 +1,4 @@
-import { Plus, Target, TrendingUp } from 'lucide-react';
+import { Target, TrendingUp } from 'lucide-react';
 import { AddHabitDialog } from './AddHabitDialog';
 
 export const HabitsEmpty = () => {

@@ -1,1 +1,1 @@
-export const getTodoTaskKey = (query: string) => ['TodoTaskData', query];
+export const getHabitKey = (query: string) => ['HabitData', query];

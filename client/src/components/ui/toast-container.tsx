@@ -13,14 +13,12 @@ const ToastInitializer: React.FC = () => {
   React.useEffect(() => {
     const originalShow = ToastService.show;
 
-    ToastService.show = ({ title, description, type = "default", duration = 5000, action }: ToastProps) => {
+    ToastService.show = ({ title, description, type = "default", duration = 5000 }: ToastProps) => {
       toast({
         title,
         description,
         variant: type === "error" ? "destructive" : "default",
-        duration,
-        // Handle the action properly
-        action
+        duration
       });
     };
 

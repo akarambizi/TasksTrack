@@ -30,30 +30,30 @@ Build a full-stack habit tracking application that helps users build consistent 
 - [x] Implement error handling and display error messages to users
 - [x] Handle API requests and responses
 
-## 2. Habit Management System
+## 2. Habit Management System ✅
 
-### 2.1 Backend
+### 2.1 Backend ✅
 
-- [ ] Implement habit creation (`POST /api/habits`)
-- [ ] Implement habit retrieval (`GET /api/habits`)
-- [ ] Implement habit details retrieval (`GET /api/habits/:id`)
-- [ ] Implement habit update (`PUT /api/habits/:id`)
-- [ ] Implement habit deletion (`DELETE /api/habits/:id`)
-- [ ] Implement habit archiving/activation (`POST /api/habits/:id/archive`)
-- [ ] Create database models for habits with flexible metric types
-- [ ] Handle errors and edge cases for habit APIs
-- [ ] Implement habit categories and tags system
+- [x] Implement habit creation (`POST /api/habits`)
+- [x] Implement habit retrieval (`GET /api/habits`)
+- [x] Implement habit details retrieval (`GET /api/habits/:id`)
+- [x] Implement habit update (`PUT /api/habits/:id`)
+- [x] Implement habit deletion (`DELETE /api/habits/:id`)
+- [x] Implement habit archiving/activation (`POST /api/habits/:id/archive`, `POST /api/habits/:id/activate`)
+- [x] Create database models for habits with flexible metric types
+- [x] Handle errors and edge cases for habit APIs
+- [x] Implement habit categories and tags system (via category field)
 
-### 2.2 Frontend
+### 2.2 Frontend ✅
 
-- [ ] Create UI for adding new habits with metric selection
-- [ ] Create UI for displaying habit list with status indicators
-- [ ] Create UI for editing habit details and settings
-- [ ] Implement habit deletion and archiving functionality
-- [ ] Create habit category and tag management
-- [ ] Implement API calls for habit management
-- [ ] Handle API requests and responses with proper error handling
-- [ ] Create habit settings and preferences UI
+- [x] Create UI for adding new habits with metric selection
+- [x] Create UI for displaying habit list with status indicators
+- [x] Create UI for editing habit details and settings
+- [x] Implement habit deletion and archiving functionality
+- [x] Create habit category and tag management
+- [x] Implement API calls for habit management
+- [x] Handle API requests and responses with proper error handling
+- [x] Create habit settings and preferences UI
 
 ## 3. Daily Logging System
 

@@ -124,14 +124,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var habit = await _habitService.GetByIdAsync(id);
-                if (habit == null)
-                {
-                    return NotFound(new { message = $"Habit with ID {id} not found." });
-                }
-
-                habit.IsActive = false;
-                await _habitService.UpdateAsync(habit);
+                await _habitService.ArchiveAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -145,14 +138,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var habit = await _habitService.GetByIdAsync(id);
-                if (habit == null)
-                {
-                    return NotFound(new { message = $"Habit with ID {id} not found." });
-                }
-
-                habit.IsActive = true;
-                await _habitService.UpdateAsync(habit);
+                await _habitService.ActivateAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

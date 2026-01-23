@@ -11,7 +11,7 @@ namespace TasksTrack.Services
         Task DeleteAsync(int id);
         Task<IEnumerable<Habit>> GetActiveAsync();
         Task<IEnumerable<Habit>> GetByCategoryAsync(string category);
-        Task ArchiveAsync(int id);
-        Task ActivateAsync(int id);
+        Task ArchiveAsync(int id, string? updatedBy = null);
+        Task ActivateAsync(int id, string? updatedBy = null);
     }
 }

@@ -1,8 +1,7 @@
 import { IHabit, IHabitCreateRequest, IHabitUpdateRequest } from './habit.types';
 import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
-
-export const getHabitKey = (query = '') => ['habits', query];
+import { getHabitKey } from '@/hooks/queryKeys';
 
 /**
  * Gets habit data.

@@ -6,7 +6,6 @@ import { PomodoroDialog } from '../Pomodoro/PomodoroDialog';
 
 export const Habits = () => {
     const { data: habits } = useHabitData('');
-    console.log('habits data', habits);
     return (
         <section>
             <div className="flex-1 overflow-auto p-6">

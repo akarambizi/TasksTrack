@@ -25,6 +25,7 @@ namespace TasksTrack.Services
         public async Task AddAsync(Habit habit)
         {
             habit.CreatedDate = DateTime.UtcNow;
+            habit.IsActive = true;
             await _repository.AddAsync(habit);
         }
 
@@ -67,24 +68,26 @@ namespace TasksTrack.Services
             return await _repository.GetByCategoryAsync(category);
         }
 
-        public async Task ArchiveAsync(int id)
+        public async Task ArchiveAsync(int id, string? updatedBy = null)
         {
             var habit = await _repository.GetByIdAsync(id);
             if (habit != null)
             {
                 habit.IsActive = false;
                 habit.UpdatedDate = DateTime.UtcNow;
+                habit.UpdatedBy = updatedBy;
                 await _repository.UpdateAsync(habit);
             }
         }
 
-        public async Task ActivateAsync(int id)
+        public async Task ActivateAsync(int id, string? updatedBy = null)
         {
             var habit = await _repository.GetByIdAsync(id);
             if (habit != null)
             {
                 habit.IsActive = true;
                 habit.UpdatedDate = DateTime.UtcNow;
+                habit.UpdatedBy = updatedBy;
                 await _repository.UpdateAsync(habit);
             }
         }

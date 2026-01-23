@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings, Archive, Play, Trash2, Edit, Plus } from "lucide-react";
 import { IHabit, deleteHabit, archiveHabit, activateHabit } from "@/api";
+import { getHabitKey } from "@/hooks/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface HabitOptionsMenuProps {
@@ -21,21 +22,21 @@ export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsM
   const deleteHabitMutation = useMutation({
     mutationFn: deleteHabit,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['habits'] });
+      queryClient.invalidateQueries({ queryKey: getHabitKey('') });
     },
   });
 
   const archiveHabitMutation = useMutation({
     mutationFn: archiveHabit,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['habits'] });
+      queryClient.invalidateQueries({ queryKey: getHabitKey('') });
     },
   });
 
   const activateHabitMutation = useMutation({
     mutationFn: activateHabit,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['habits'] });
+      queryClient.invalidateQueries({ queryKey: getHabitKey('') });
     },
   });
 

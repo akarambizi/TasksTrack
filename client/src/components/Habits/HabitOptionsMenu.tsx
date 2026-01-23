@@ -6,9 +6,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings, Archive, Play, Trash2, Edit, Plus } from "lucide-react";
-import { IHabit, deleteHabit, archiveHabit, activateHabit } from "@/api";
-import { getHabitKey } from "@/hooks/queryKeys";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IHabit } from "@/api";
+import { useDeleteHabitMutation, useArchiveHabitMutation, useActivateHabitMutation } from "@/queries";
 
 interface HabitOptionsMenuProps {
   habit: IHabit;
@@ -17,28 +16,9 @@ interface HabitOptionsMenuProps {
 }
 
 export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsMenuProps) => {
-  const queryClient = useQueryClient();
-
-  const deleteHabitMutation = useMutation({
-    mutationFn: deleteHabit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getHabitKey('') });
-    },
-  });
-
-  const archiveHabitMutation = useMutation({
-    mutationFn: archiveHabit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getHabitKey('') });
-    },
-  });
-
-  const activateHabitMutation = useMutation({
-    mutationFn: activateHabit,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getHabitKey('') });
-    },
-  });
+  const deleteHabitMutation = useDeleteHabitMutation();
+  const archiveHabitMutation = useArchiveHabitMutation();
+  const activateHabitMutation = useActivateHabitMutation();
 
   // Determine if any mutation is in progress to disable UI
   const isLoading = deleteHabitMutation.isPending || archiveHabitMutation.isPending || activateHabitMutation.isPending;

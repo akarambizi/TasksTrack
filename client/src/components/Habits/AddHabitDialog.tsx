@@ -7,28 +7,54 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useHabitForm } from "./useHabitForm";
-import { useQueryClient } from "@tanstack/react-query";
-import { getHabitKey } from "@/api";
+import { useCreateHabitMutation } from "@/queries";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IHabit } from "@/api";
+import { useAuthContext } from "@/context/useAuthContext";
 
 export function AddHabitDialog() {
   const [open, setOpen] = useState(false);
-  const { formData, handleChange, handleSubmit, isSubmitting, error } = useHabitForm();
-  const queryClient = useQueryClient();
+  const { formData, handleChange, resetForm, error, setError } = useHabitForm();
+  const createHabitMutation = useCreateHabitMutation();
+  const { user } = useAuthContext();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newHabit = await handleSubmit();
 
-    if (newHabit) {
-      // Optimistically update the cache
-      queryClient.setQueryData(getHabitKey(''), (oldData: IHabit[] | undefined) => {
-        return oldData ? [newHabit, ...oldData] : [newHabit];
-      });
+    // Validate form
+    if (!formData.name) {
+      setError("Name is required");
+      return;
+    }
 
-      // Close the dialog
+    if (!formData.metricType) {
+      setError("Metric type is required");
+      return;
+    }
+
+    setError(null);
+
+    try {
+      // Create a habit object as expected by the backend
+      const habitObject: Partial<IHabit> = {
+        name: formData.name,
+        description: formData.description || undefined,
+        metricType: formData.metricType,
+        unit: formData.unit || undefined,
+        target: formData.target > 0 ? formData.target : undefined,
+        targetFrequency: formData.targetFrequency || undefined,
+        category: formData.category || undefined,
+        color: formData.color || undefined,
+        icon: formData.icon || undefined,
+        isActive: true,
+        createdBy: user?.email || 'unknown'
+      };
+
+      await createHabitMutation.mutateAsync(habitObject);
+      resetForm();
       setOpen(false);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to create habit");
     }
   };
 
@@ -149,8 +175,8 @@ export function AddHabitDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Habit'}
+            <Button type="submit" disabled={createHabitMutation.isPending}>
+              {createHabitMutation.isPending ? 'Creating...' : 'Create Habit'}
             </Button>
           </DialogFooter>
         </form>

@@ -4,26 +4,7 @@ import { loginUser, logoutUser, registerUser, resetPassword } from '../api/userA
 import { IAuthData, IAuthResult } from '../api/userAuth.types';
 import { ToastService } from '../services/toastService';
 import { useAuthContext } from '@/context/useAuthContext';
-
-// Type for API error responses
-interface ApiError extends Error {
-    response?: {
-        data?: {
-            message?: string;
-        };
-    };
-}
-
-/**
- * Authentication API key for React Query
- */
-export const authKeys = {
-    all: ['auth'] as const,
-    login: () => [...authKeys.all, 'login'] as const,
-    register: () => [...authKeys.all, 'register'] as const,
-    logout: () => [...authKeys.all, 'logout'] as const,
-    resetPassword: () => [...authKeys.all, 'reset-password'] as const
-};
+import { authKeys } from './queryKeys';
 
 /**
  * Hook for user registration
@@ -35,13 +16,8 @@ export const useRegister = () => {
         mutationKey: authKeys.register(),
         mutationFn: (userData: IAuthData) => registerUser(userData),
         onSuccess: () => {
-            ToastService.success('Registration successful! Please log in.');
             // Redirect to login page after successful registration
             navigate('/login');
-        },
-        onError: (error: ApiError) => {
-            const errorMessage = error?.response?.data?.message || 'Registration failed. Please try again.';
-            ToastService.error(errorMessage);
         }
     });
 };
@@ -66,15 +42,9 @@ export const useLogin = () => {
                 // Update auth state - invalidate all auth queries
                 queryClient.invalidateQueries({ queryKey: authKeys.all });
 
-                ToastService.success('Login successful!');
-
                 // Redirect to dashboard
                 navigate('/dashboard');
             }
-        },
-        onError: (error: ApiError) => {
-            const errorMessage = error?.response?.data?.message || 'Login failed. Please check your credentials.';
-            ToastService.error(errorMessage);
         }
     });
 };
@@ -97,7 +67,6 @@ export const useLogout = () => {
             // Clear the query cache
             queryClient.clear();
 
-            ToastService.success('Logged out successfully.');
             // Redirect to login page
             navigate('/login');
         },
@@ -123,12 +92,7 @@ export const useResetPassword = () => {
         mutationKey: authKeys.resetPassword(),
         mutationFn: (data: IAuthData) => resetPassword(data),
         onSuccess: () => {
-            ToastService.success('Password reset link has been sent to your email');
             navigate('/login');
-        },
-        onError: (error: ApiError) => {
-            const errorMessage = error?.response?.data?.message || 'Failed to send password reset email. Please try again.';
-            ToastService.error(errorMessage);
         }
     });
 };

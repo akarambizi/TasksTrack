@@ -19,14 +19,14 @@
 ### 1. **Follow Existing Naming Conventions**
 
 **Examine these files to understand the established patterns:**
-- `client/src/api/` - for API interface naming (e.g., `IToDoTask`, `IAuthData`)
+- `client/src/api/` - for API interface naming (e.g., `IHabit`, `IAuthData`)
 - `client/src/hooks/` - for custom hook patterns (e.g., `useAuth.ts`, `useForm.ts`)
 - `client/src/components/` - for component structure and naming
 
 **Key Patterns Already Established:**
-- Interfaces: Start with "I" + PascalCase (`IToDoTask`, `IAuthData`)
+- Interfaces: Start with "I" + PascalCase (`IHabit`, `IAuthData`)
 - Components: PascalCase exports (`Login`, `Tasks`, `TasksContainer`)
-- Custom hooks: camelCase starting with "use" (`useForm`, `useTodoTaskData`)
+- Custom hooks: camelCase starting with "use" (`useForm`, `useHabitData`)
 - Files: PascalCase for components, camelCase for utilities
 
 ### 2. **Follow Existing Project Structure**
@@ -56,9 +56,8 @@ client/src/
 
 **Before creating new interfaces, check these existing files:**
 
-- `client/src/api/toDoTask.types.ts` - for task-related interfaces
-- `client/src/api/userAuth.types.ts` - for authentication interfaces
-- `client/src/hooks/useForm.ts` - for hook return type patterns
+- `client/src/api/*.types.ts` - for all API-related interfaces (habit.types.ts, userAuth.types.ts, etc.)
+- `client/src/components/Habits/useHabitForm.ts` - for form validation and error display
 
 **Always maintain consistency with the established interface patterns:**
 

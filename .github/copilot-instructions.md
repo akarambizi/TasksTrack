@@ -49,24 +49,24 @@ This project has separated instruction files for better readability and focused 
 ### Server (C#/.NET)
 ```csharp
 // Classes: PascalCase
-public class ToDoTaskService
+public class HabitService
 
 // Interfaces: Start with "I"
-public interface IToDoTaskService
+public interface IHabitService
 
 // Methods: PascalCase
 public async Task<bool> UpdateAsync()
 
 // Private fields: camelCase with underscore
-private readonly IToDoTaskRepository _repository;
+private readonly IHabitRepository _repository;
 ```
 
 ### Client (TypeScript/React)
 ```typescript
 // Interfaces: Start with "I" + PascalCase
 interface ITaskCardProps {
-    task: IToDoTask;
-    onUpdate: (task: IToDoTask) => void;
+    task: IHabit;
+    onUpdate: (task: IHabit) => void;
 }
 
 // Components: PascalCase

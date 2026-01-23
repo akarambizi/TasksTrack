@@ -1,29 +1,18 @@
 // useHabitForm.ts
 import { useState } from "react";
-
-interface HabitFormData {
-  name: string;
-  description: string;
-  metricType: string;
-  unit: string;
-  target: number;
-  targetFrequency: string;
-  category: string;
-  color: string;
-  icon: string;
-}
+import { IHabitCreateRequest } from "@/api/habit.types";
 
 interface UseHabitFormReturn {
-  formData: HabitFormData;
-  setFormData: React.Dispatch<React.SetStateAction<HabitFormData>>;
-  handleChange: (field: keyof HabitFormData) => (value: string | number) => void;
+  formData: IHabitCreateRequest;
+  setFormData: React.Dispatch<React.SetStateAction<IHabitCreateRequest>>;
+  handleChange: (field: keyof IHabitCreateRequest) => (value: string | number) => void;
   resetForm: () => void;
   error: string | null;
   setError: (error: string | null) => void;
 }
 
 export function useHabitForm(): UseHabitFormReturn {
-  const [formData, setFormData] = useState<HabitFormData>({
+  const [formData, setFormData] = useState<IHabitCreateRequest>({
     name: '',
     description: '',
     metricType: 'minutes',
@@ -37,7 +26,7 @@ export function useHabitForm(): UseHabitFormReturn {
 
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (field: keyof HabitFormData) => (value: string | number) => {
+  const handleChange = (field: keyof IHabitCreateRequest) => (value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,

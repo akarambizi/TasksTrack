@@ -18,15 +18,15 @@
 
 **Examine these files to understand the established patterns:**
 
-- `server/Controllers/` - for controller naming and structure (e.g., `AuthController.cs`, `ToDoTaskController.cs`)
-- `server/Services/` - for service class patterns (e.g., `AuthService.cs`, `ToDoTaskService.cs`)
-- `server/Models/` - for model and DTO naming (e.g., `ToDoTask.cs`, `AuthResult.cs`)
+- `server/Controllers/` - for controller naming and structure (e.g., `AuthController.cs`)
+- `server/Services/` - for service class patterns (e.g., `AuthService.cs`)
+- `server/Models/` - for model and DTO naming (e.g., `AuthResult.cs`, `User.cs`)
 - `server/Repositories/` - for repository interface and implementation patterns
 
 **Key Patterns Already Established:**
 
-- ✅ Classes: PascalCase (`AuthService`, `ToDoTaskController`)
-- ✅ Interfaces: Start with "I" (`IAuthService`, `IToDoTaskRepository`)
+- Classes: PascalCase (`AuthService`, `AuthController`)
+- Interfaces: Start with "I" (`IAuthService`, `IAuthRepository`)
 - ✅ Methods: PascalCase (`RegisterAsync`, `GetAllAsync`)
 - ✅ Private fields: camelCase with underscore (`_authRepository`, `_jwtSecret`)
 
@@ -36,10 +36,10 @@
 
 ```text
 server/
-├── Controllers/        # API Controllers (AuthController.cs, ToDoTaskController.cs)
-├── Services/          # Business logic layer (AuthService.cs, ToDoTaskService.cs)
-├── Repositories/      # Data access layer (AuthRepository.cs, ToDoTaskRepository.cs)
-├── Models/           # Domain models and DTOs (ToDoTask.cs, AuthResult.cs)
+├── Controllers/        # API Controllers (AuthController.cs)
+├── Services/          # Business logic layer (AuthService.cs)
+├── Repositories/      # Data access layer (AuthRepository.cs)
+├── Models/           # Domain models and DTOs (User.cs, AuthResult.cs)
 ├── Data/             # DbContext and configurations
 ├── Migrations/       # EF Core migrations
 └── Tests/           # Unit and integration tests
@@ -71,7 +71,7 @@ server/
 
 - `server/Repositories/IAuthRepository.cs` - for repository interface patterns
 - `server/Repositories/AuthRepository.cs` - for repository implementation patterns
-- `server/Repositories/ToDoTaskRepository.cs` - for data access patterns
+- `server/Repositories/AuthRepository.cs` - for data access patterns
 
 **Maintain consistency with:**
 
@@ -84,7 +84,7 @@ server/
 **Reference the service implementations in:**
 
 - `server/Services/AuthService.cs` - for business logic and validation patterns
-- `server/Services/ToDoTaskService.cs` - for CRUD operation patterns
+- `server/Services/AuthService.cs` - for business logic patterns
 - `server/Services/IAuthService.cs` - for service interface definitions
 
 **Key patterns to maintain:**
@@ -99,7 +99,7 @@ server/
 **Study the controller implementations in:**
 
 - `server/Controllers/AuthController.cs` - for authentication endpoints and response patterns
-- `server/Controllers/ToDoTaskController.cs` - for CRUD operations and error handling
+- `server/Controllers/AuthController.cs` - for API endpoint patterns and error handling
 - `server/Controllers/UsersController.cs` - for additional API patterns
 
 **Key patterns to maintain:**
@@ -113,7 +113,7 @@ server/
 
 **Reference the model definitions in:**
 
-- `server/Models/ToDoTask.cs` - for entity model patterns and validation attributes
+- `server/Models/User.cs` - for entity model patterns and validation attributes
 - `server/Models/User.cs` - for user model structure
 - `server/Models/AuthResult.cs` - for response model patterns
 - `server/Models/` - for request/response DTOs (LoginRequest, RegisterRequest, etc.)

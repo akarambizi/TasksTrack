@@ -2,7 +2,7 @@
 
 ## Follow Existing Project Patterns
 
-**🎯 IMPORTANT: Always examine and follow the patterns already established in the existing server codebase rather than creating new ones.**
+**IMPORTANT: Always examine and follow the patterns already established in the existing server codebase rather than creating new ones.**
 
 ### Project Architecture
 

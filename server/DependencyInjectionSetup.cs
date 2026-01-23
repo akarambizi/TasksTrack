@@ -9,8 +9,10 @@ public static class DependencyInjectionSetup
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IToDoTaskService, ToDoTaskService>();
-        services.AddScoped<IToDoTaskRepository, ToDoTaskRepository>();
+
+        // Habit services
+        services.AddScoped<IHabitService, HabitService>();
+        services.AddScoped<IHabitRepository, HabitRepository>();
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAuthRepository, AuthRepository>();

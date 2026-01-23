@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Clock } from 'lucide-react';
-import { IToDoTask } from '@/api';
+import { IHabit } from '@/api';
 import { Pomodoro } from '@/components/Pomodoro/Pomodoro';
 
 interface PomodoroDialogProps {
-  task: IToDoTask;
+  habit: IHabit;
 }
 
-export const PomodoroDialog = ({ task }: PomodoroDialogProps) => {
+export const PomodoroDialog = ({ habit }: PomodoroDialogProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -22,10 +22,10 @@ export const PomodoroDialog = ({ task }: PomodoroDialogProps) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-0">
-          <DialogTitle>Focus on task: {task.title}</DialogTitle>
+          <DialogTitle>Focus on habit: {habit.name}</DialogTitle>
         </DialogHeader>
 
-        <Pomodoro task={task} />
+        <Pomodoro habit={habit} />
 
         <DialogFooter className="px-6 pb-6">
           <Button onClick={() => setOpen(false)}>Close</Button>

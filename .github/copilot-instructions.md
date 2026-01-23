@@ -15,19 +15,19 @@ TasksTrack is a full-stack productivity application built with:
 
 This project has separated instruction files for better readability and focused guidance:
 
-### 📋 **Main Instructions** (this file)
+### **Main Instructions** (this file)
 - Project overview and general guidelines
 - Development workflow and best practices
 - Git workflow and code review guidelines
 
-### 🖥️ **Server Instructions** (`.github/copilot-instructions-server.md`)
+### **Server Instructions** (`.github/copilot-instructions-server.md`)
 - References to existing ASP.NET Core 8 patterns in your codebase
 - Guides Copilot to follow your established C# conventions and architecture
 - Points to actual implementations (AuthController.cs, AuthService.cs, etc.)
 - Emphasizes learning through understanding existing patterns
 - Focuses on consistency with your Repository Pattern and JWT authentication
 
-### 🌐 **Client Instructions** (`.github/copilot-instructions-client.md`)
+### **Client Instructions** (`.github/copilot-instructions-client.md`)
 - References to existing React 18 + TypeScript patterns in your codebase
 - Guides Copilot to follow your established component and hook patterns
 - Points to actual implementations (useAuth.ts, Login.tsx, etc.)
@@ -36,38 +36,37 @@ This project has separated instruction files for better readability and focused 
 
 ## General Guidelines
 
-**🎯 IMPORTANT: Always examine and follow the patterns already established in your existing codebase rather than creating new ones.**
+**IMPORTANT: Always examine and follow the patterns already established in your existing codebase rather than creating new ones.**
 
 - **Reference existing files first** before writing new code
 - **Study established patterns** in your Controllers, Services, Components, and Hooks
 - **Maintain consistency** with your existing naming conventions and architecture
 - **Follow your established error handling** and validation approaches
 - **Use the same libraries and patterns** already implemented in your project
-- **Focus on learning** - understand the "why" behind existing patterns, not just the "how"
-
+- **Focus on learning** - understand the "why" behind existing patterns, not just the "how"- **Avoid unnecessary emojis** in code, comments, or documentation - keep content clean and professional
 ## Key Naming Conventions Summary
 
 ### Server (C#/.NET)
 ```csharp
 // Classes: PascalCase
-public class ToDoTaskService
+public class HabitService
 
 // Interfaces: Start with "I"
-public interface IToDoTaskService
+public interface IHabitService
 
 // Methods: PascalCase
 public async Task<bool> UpdateAsync()
 
 // Private fields: camelCase with underscore
-private readonly IToDoTaskRepository _repository;
+private readonly IHabitRepository _repository;
 ```
 
 ### Client (TypeScript/React)
 ```typescript
 // Interfaces: Start with "I" + PascalCase
 interface ITaskCardProps {
-    task: IToDoTask;
-    onUpdate: (task: IToDoTask) => void;
+    task: IHabit;
+    onUpdate: (task: IHabit) => void;
 }
 
 // Components: PascalCase
@@ -111,6 +110,7 @@ TasksTrack/
 ### 1. Git Workflow
 - Create feature branches from main
 - Use conventional commit messages
+- Keep commit messages short and descriptive (under 50 characters for the title)
 - Write meaningful pull request descriptions
 - Test thoroughly before merging
 
@@ -174,20 +174,20 @@ make down                    # Alternative using Makefile
 
 For detailed implementation guidance, refer to the specific instruction files:
 
-- **📖 Server Development**: See `.github/copilot-instructions-server.md` for C#/.NET pattern references
-- **🎨 Client Development**: See `.github/copilot-instructions-client.md` for React/TypeScript pattern references
+- **Server Development**: See `.github/copilot-instructions-server.md` for C#/.NET pattern references
+- **Client Development**: See `.github/copilot-instructions-client.md` for React/TypeScript pattern references
 
 ## Key Learning Philosophy
 
 **This is a learning project designed to help you master full-stack development through hands-on experience.**
 
-### 🎯 **Learning Approach**
+### **Learning Approach**
 - **Study existing code first** - Your codebase contains real, working implementations
 - **Understand patterns before extending** - Learn why certain approaches were chosen
 - **Build incrementally** - Each new feature should build upon established foundations
 - **Ask questions** - Always seek to understand the reasoning behind patterns and practices
 
-### 🚀 **Growth Areas**
+### **Growth Areas**
 - **Backend**: C# language features, .NET ecosystem, Entity Framework, API design, security
 - **Frontend**: React patterns, TypeScript advanced features, state management, performance optimization
 - **Full-Stack**: Integration patterns, testing strategies, deployment, architecture decisions

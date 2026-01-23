@@ -1,8 +1,8 @@
 // Authentication queries
 export * from './auth';
 
-// Task queries
-export * from './tasks';
+// Habit queries and mutations
+export * from './habits';
 
-// Todo task queries
-export * from './todoTasks';
+// Query keys
+export * from './queryKeys';

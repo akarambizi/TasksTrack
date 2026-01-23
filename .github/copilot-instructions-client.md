@@ -2,7 +2,7 @@
 
 ## Follow Existing Project Patterns
 
-**🎯 IMPORTANT: Always examine and follow the patterns already established in the existing codebase rather than creating new ones.**
+**IMPORTANT: Always examine and follow the patterns already established in the existing codebase rather than creating new ones.**
 
 ### Project Architecture
 
@@ -19,15 +19,15 @@
 ### 1. **Follow Existing Naming Conventions**
 
 **Examine these files to understand the established patterns:**
-- `client/src/api/` - for API interface naming (e.g., `IToDoTask`, `IAuthData`)
+- `client/src/api/` - for API interface naming (e.g., `IHabit`, `IAuthData`)
 - `client/src/hooks/` - for custom hook patterns (e.g., `useAuth.ts`, `useForm.ts`)
 - `client/src/components/` - for component structure and naming
 
 **Key Patterns Already Established:**
-- ✅ Interfaces: Start with "I" + PascalCase (`IToDoTask`, `IAuthData`)
-- ✅ Components: PascalCase exports (`Login`, `Tasks`, `TasksContainer`)
-- ✅ Custom hooks: camelCase starting with "use" (`useForm`, `useTodoTaskData`)
-- ✅ Files: PascalCase for components, camelCase for utilities
+- Interfaces: Start with "I" + PascalCase (`IHabit`, `IAuthData`)
+- Components: PascalCase exports (`Login`, `Tasks`, `TasksContainer`)
+- Custom hooks: camelCase starting with "use" (`useForm`, `useHabitData`)
+- Files: PascalCase for components, camelCase for utilities
 
 ### 2. **Follow Existing Project Structure**
 
@@ -36,12 +36,14 @@
 ```text
 client/src/
 ├── api/                    # API service functions and types
+├── assets/                 # Static assets (images, icons, etc.)
 ├── components/            # UI components organized by feature
 ├── context/              # React Context providers
 ├── hooks/                # Custom React hooks
-├── services/             # Business logic services
 ├── lib/                  # Utility functions
-└── mock-server/          # Development mock server
+├── mock-server/          # Development mock server
+├── queries/              # TanStack Query hooks (useQuery, useMutation)
+└── services/             # Business logic services
 ```
 
 **When creating new files, examine existing files in the same directory to match:**
@@ -54,9 +56,8 @@ client/src/
 
 **Before creating new interfaces, check these existing files:**
 
-- `client/src/api/toDoTask.types.ts` - for task-related interfaces
-- `client/src/api/userAuth.types.ts` - for authentication interfaces
-- `client/src/hooks/useForm.ts` - for hook return type patterns
+- `client/src/api/*.types.ts` - for all API-related interfaces (habit.types.ts, userAuth.types.ts, etc.)
+- `client/src/components/Habits/useHabitForm.ts` - for form validation and error display
 
 **Always maintain consistency with the established interface patterns:**
 
@@ -69,8 +70,8 @@ client/src/
 **Study these component examples to understand the established patterns:**
 
 - `client/src/components/Auth/Login.tsx` - for form components and validation
-- `client/src/components/Tasks/Tasks.tsx` - for data fetching and rendering patterns
-- `client/src/components/Tasks/TasksContainer.tsx` - for container component structure
+- `client/src/components/Habits/Habits.tsx` - for data fetching and rendering patterns
+- `client/src/components/Habits/HabitsContainer.tsx` - for container component structure
 
 **Key patterns to follow:**
 
@@ -85,7 +86,7 @@ client/src/
 **Reference these existing hooks before creating new ones:**
 
 - `client/src/hooks/useAuth.ts` - for authentication-related hooks
-- `client/src/hooks/useTasks.ts` - for task management hooks
+- `client/src/components/Habits/useHabitForm.ts` - for form management hooks
 - `client/src/hooks/useForm.ts` - for form handling patterns
 
 **Key patterns to maintain:**
@@ -96,13 +97,88 @@ client/src/
 - Type definitions and return patterns
 - JSDoc comment style for hook documentation
 
-### 6. **Follow Existing API Service Patterns**
+### 6. **Follow Existing TanStack Query Organization**
+
+**IMPORTANT: All TanStack Query hooks (useQuery, useMutation) must be centralized in the `queries/` folder.**
+
+**Study the established query organization in:**
+
+- `client/src/queries/habits.ts` - for all habit queries and mutations (useHabitData, useCreateHabitMutation, useDeleteHabitMutation, etc.)
+- `client/src/queries/auth.ts` - for authentication queries
+- `client/src/queries/queryKeys.ts` - for centralized query key management
+- `client/src/queries/index.ts` - for centralized exports
+
+**Key patterns to maintain:**
+
+- **Centralized Queries**: All `useQuery` hooks belong in `queries/` folder, NOT in components
+- **Centralized Mutations**: All `useMutation` hooks belong in `queries/` folder, NOT in components
+- **Naming Convention**: Use descriptive names like `useCreateHabitMutation`, `useDeleteHabitMutation`
+- **Query Key Management**: Import query keys from `@/queries/queryKeys` and use consistently
+- **Cache Management**: Handle optimistic updates and cache invalidation in mutation hooks
+- **Export Structure**: Export all queries through `queries/index.ts` for easy imports
+- **Toast Notifications**:
+  - **ALL features**: Handle toast notifications in API layer for consistent user feedback
+  - **Query hooks**: Focus only on cache management and navigation - no toast handling
+- **Error Handling**: Use consistent error handling pattern in API layer with try/catch and throw
+
+**NEVER do this in components:**
+```tsx
+// DON'T: Define mutations directly in components
+const deleteMutation = useMutation({
+  mutationFn: deleteHabit,
+  onSuccess: () => queryClient.invalidateQueries()
+});
+```
+
+**ALWAYS do this instead:**
+```tsx
+// DO: Use centralized mutation hooks from queries folder
+import { useDeleteHabitMutation } from "@/queries";
+const deleteMutation = useDeleteHabitMutation();
+```
+
+**Toast Notification Pattern:**
+```tsx
+// ALL FEATURES: Handle toasts in API layer - no onError needed in queries
+export const createHabit = async (habitData: IHabitCreateRequest): Promise<IHabit> => {
+    try {
+        const response = await apiPost<IHabit>(endpoint, habitData);
+        ToastService.success('Habit created successfully');
+        return response;
+    } catch (error) {
+        ToastService.error('Failed to create habit');
+        throw error; // Query will naturally fail, no onError needed
+    }
+};
+
+// Query layer - clean and focused on cache/navigation
+export const useCreateHabitMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: createHabit,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: getHabitKey('') });
+            // Handle navigation or other side effects
+        }
+        // No onError needed - API layer handles all user feedback
+    });
+};
+```
+
+**Benefits of this approach:**
+- Consistent toast messaging across the entire application
+- Query hooks focus on their core responsibility (cache management)
+- No duplicate error handling between API and query layers
+- Easier to maintain and debug user feedback
+
+### 7. **Follow Existing API Service Patterns**
 
 **Study the established API patterns in:**
 
-- `client/src/api/toDoTask.ts` - for task-related API functions
+- `client/src/api/habit.ts` - for habit-related API functions
 - `client/src/api/userAuth.ts` - for authentication API functions
-- `client/src/hooks/useQueryHooks.ts` - for query key patterns
+- `client/src/queries/queryKeys.ts` - for query key patterns
 
 **Maintain consistency with:**
 
@@ -112,7 +188,7 @@ client/src/
 - Request/response structure patterns
 - Export patterns used in API files
 
-### 7. **Reference Existing Form Patterns**
+### 8. **Reference Existing Form Patterns**
 
 **Study the form handling approach in:**
 
@@ -127,7 +203,7 @@ client/src/
 - Form submission and error display patterns
 - Input handling and form field structure
 
-### 8. **Follow Existing Context Patterns**
+### 9. **Follow Existing Context Patterns**
 
 **Reference the established context implementation:**
 
@@ -148,32 +224,32 @@ client/src/
 
 **Study the existing query patterns in:**
 
-- `client/src/hooks/useQueryHooks.ts` - for query key management and data fetching
-- `client/src/hooks/useAuth.ts` - for mutation patterns and error handling
-- `client/src/hooks/useTasks.ts` - for optimistic updates and cache management
+- `client/src/queries/habits.ts` - for query key management and data fetching patterns
+- `client/src/queries/auth.ts` - for authentication query patterns
+- `client/src/hooks/useAuth.ts` - for context-based state management
 
 ### 2. **Error Handling Patterns**
 
 **Reference existing error handling in:**
 
-- `client/src/hooks/useAuth.ts` - for API error handling and user feedback
+- `client/src/api/habit.ts` - for API error handling and user feedback
 - `client/src/services/toastService.ts` - for user notification patterns
-- `client/src/hooks/useForm.ts` - for form validation and error display
+- `client/src/components/Habits/useHabitForm.ts` - for form validation and error display
 
 ### 3. **Loading and Error State Patterns**
 
 **Study how loading and error states are handled in:**
 
-- `client/src/components/Tasks/Tasks.tsx` - for data loading and empty states
+- `client/src/components/Habits/Habits.tsx` - for data loading and empty states
 - `client/src/components/Auth/Login.tsx` - for form loading states
-- `client/src/hooks/useAuth.ts` - for mutation loading indicators
+- `client/src/queries/habits.ts` - for mutation loading indicators
 
 ### 4. **Styling and UI Patterns**
 
 **Follow the established styling approach in:**
 
 - `client/src/components/ui/` - for shadcn/ui component usage
-- `client/src/components/Tasks/Tasks.tsx` - for Tailwind CSS class patterns
+- `client/src/components/Habits/Habits.tsx` - for Tailwind CSS class patterns
 - `client/src/components/Auth/Login.tsx` - for form styling consistency
 
 ### 5. **Routing Patterns**
@@ -199,7 +275,7 @@ client/src/
 
 ## Development Best Practices
 
-### ✅ **Do This: Follow Existing Patterns**
+### **Do This: Follow Existing Patterns**
 
 - **Before writing new code**, examine similar existing files in the codebase
 - **Maintain consistency** with established naming conventions and structure
@@ -207,7 +283,7 @@ client/src/
 - **Follow existing TypeScript patterns** for interfaces, types, and component props
 - **Reference existing error handling** and loading state patterns
 
-### ❌ **Don't Do This: Create New Patterns**
+### **Don't Do This: Create New Patterns**
 
 - **Don't introduce new libraries** without checking if similar functionality exists
 - **Don't create new conventions** that differ from existing code patterns
@@ -218,24 +294,55 @@ client/src/
 
 When working on client-side code, always reference these key files first:
 
-### 📁 **Core Patterns**
+### **Core Patterns**
 
 - `client/src/hooks/useAuth.ts` - Authentication and mutations
-- `client/src/hooks/useForm.ts` - Form handling and validation
-- `client/src/hooks/useTasks.ts` - Data fetching and state management
+- `client/src/components/Habits/useHabitForm.ts` - Form handling and validation
+- `client/src/queries/habits.ts` - Data fetching and state management
 - `client/src/api/` - API interfaces and function patterns
 
-### 🎨 **Component Patterns**
+### **Component Patterns**
 
 - `client/src/components/Auth/Login.tsx` - Form components
-- `client/src/components/Tasks/Tasks.tsx` - Data display components
+- `client/src/components/Habits/Habits.tsx` - Data display components
+- `client/src/components/Habits/HabitsContainer.tsx` - Container component patterns
 - `client/src/components/` - General component structure
 
-### 🔧 **Configuration**
+### **Configuration**
 
 - `client/package.json` - Available scripts and dependencies
 - `client/src/App.tsx` - Route structure and app organization
 
 **Remember: Consistency with existing patterns is more important than following external conventions. Always examine the current codebase first!**
+
+## Additional Important Guidelines
+
+### **State Management Best Practices**
+
+- **Server State**: Always use TanStack Query for server state management (API data)
+- **Client State**: Use React's built-in state (useState, useContext) for UI-only state
+- **Form State**: Use custom form hooks like `useHabitForm` for form management
+- **Global State**: Use React Context for authentication and global UI state
+
+### **Performance Optimization Patterns**
+
+- **Query Caching**: Leverage TanStack Query's caching with appropriate staleTime
+- **Optimistic Updates**: Implement optimistic updates in mutation hooks for better UX
+- **Code Splitting**: Use React.lazy() for route-based code splitting when needed
+- **Memoization**: Use React.memo, useMemo, useCallback judiciously for expensive operations
+
+### **UI/UX Consistency Patterns**
+
+- **Design System**: Always use shadcn/ui components for consistent styling
+- **Loading States**: Show loading indicators during async operations
+- **Error Handling**: Display user-friendly error messages with toast notifications
+- **Empty States**: Provide meaningful empty states with calls-to-action
+
+### **Security and Error Handling**
+
+- **Input Validation**: Always validate user inputs both client-side and server-side
+- **Error Boundaries**: Use error boundaries for graceful error recovery
+- **Type Safety**: Leverage TypeScript strictly - avoid `any` types
+- **Authentication**: Protect routes and handle authentication states properly
 
 Remember: Focus on understanding the "why" behind each pattern, not just the "how." Frontend development is constantly evolving with new patterns, hooks, and optimization techniques - there's always room to learn and improve your React, TypeScript, and state management skills as you build this project.

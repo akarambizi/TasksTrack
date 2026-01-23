@@ -249,7 +249,7 @@ private string GenerateRefreshToken()
 **Database Migration:**
 
 ```bash
-dotnet ef migrations add AddRefreshTokenFields
+dotnet ef migrations add AddRefreshTokenToUsers
 dotnet ef database update
 ```
 

@@ -1,12 +1,12 @@
 import { Play, Pause, RefreshCw } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { IToDoTask } from '@/api';
+import { IHabit } from '@/api';
 
 interface PomodoroProps {
-    task?: IToDoTask; // Optional task - makes the component reusable
+    habit?: IHabit; // Optional habit - makes the component reusable
 }
 
-export const Pomodoro = ({ task }: PomodoroProps) => {
+export const Pomodoro = ({ habit }: PomodoroProps) => {
     const [timerRunning, setTimerRunning] = useState(false);
     const [minutes, setMinutes] = useState(25);
     const [seconds, setSeconds] = useState(0);
@@ -93,10 +93,10 @@ export const Pomodoro = ({ task }: PomodoroProps) => {
                         </div>
                     </div>
 
-                    {task && (
+                    {habit && (
                         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                            <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Current Task</h4>
-                            <p className="text-blue-700 dark:text-blue-300">{task.title}</p>
+                            <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Current Habit</h4>
+                            <p className="text-blue-700 dark:text-blue-300">{habit.name}</p>
                         </div>
                     )}
 

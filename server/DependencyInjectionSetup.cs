@@ -14,6 +14,10 @@ public static class DependencyInjectionSetup
         services.AddScoped<IHabitService, HabitService>();
         services.AddScoped<IHabitRepository, HabitRepository>();
 
+        // HabitLog services
+        services.AddScoped<IHabitLogService, HabitLogService>();
+        services.AddScoped<IHabitLogRepository, HabitLogRepository>();
+
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAuthRepository, AuthRepository>();
 

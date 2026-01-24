@@ -106,26 +106,6 @@ export const deleteHabit = async (id: number): Promise<void> => {
     }
 };
 
-<<<<<<< HEAD
-=======
-/**
- * Gets a single habit by ID.
- * @param {number} id - The ID of the habit to retrieve.
- * @returns {Promise<IHabit>} The requested habit.
- */
-export const getHabitById = async (id: number): Promise<IHabit> => {
-    try {
-        const endpoint = `/api/habits/${id}`;
-        const response = await apiGet<IHabit>(endpoint);
-        return response;
-    } catch (error) {
-        console.error(`Failed to fetch habit with ID ${id}:`, error);
-        ToastService.error(`Failed to fetch habit #${id}`);
-        throw error;
-    }
-};
->>>>>>> origin/main
-
 /**
  * Archives a habit (sets IsActive to false).
  * @param {number} id - The ID of the habit to archive.

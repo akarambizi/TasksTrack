@@ -144,15 +144,14 @@ Run these commands before considering any feature complete:
 **Frontend:**
 ```bash
 npm run build        # Must succeed with no errors
-npm run test         # Must show ≥80% coverage and 100% pass rate
+npm run test -- --run --coverage  # Must show ≥80% coverage and 100% pass rate
 npm run lint         # Must pass with no errors
 ```
 
 **Backend:**
 ```bash
-dotnet build                           # Must succeed with no warnings/errors
-cd server && make test-coverage        # Run backend tests with coverage
-cd server && make test-coverage-summary  # Must show ≥80% coverage and 100% pass rate
+dotnet build         # Must succeed with no warnings/errors
+dotnet test          # Must show 100% test pass rate
 ```
 
 **Quality Gate:** If any of these commands fail or show insufficient coverage, the feature is **not ready** for merge.

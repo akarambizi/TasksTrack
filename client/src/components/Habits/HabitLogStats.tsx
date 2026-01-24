@@ -1,4 +1,4 @@
-import { useHabitLogsByDateRange } from '@/queries';
+import { useHabitLogsByHabitAndDateRange } from '@/queries';
 import { IHabit } from '@/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,14 +14,16 @@ export const HabitLogStats: React.FC<IHabitLogStatsProps> = ({ habit }) => {
     const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 }); // Sunday
 
-    // Get today's logs
-    const { data: todayLogs } = useHabitLogsByDateRange(
+    // Get today's logs for this specific habit
+    const { data: todayLogs } = useHabitLogsByHabitAndDateRange(
+        habit.id,
         format(startOfDay(today), 'yyyy-MM-dd'),
         format(endOfDay(today), 'yyyy-MM-dd')
     );
 
-    // Get this week's logs
-    const { data: weekLogs } = useHabitLogsByDateRange(
+    // Get this week's logs for this specific habit
+    const { data: weekLogs } = useHabitLogsByHabitAndDateRange(
+        habit.id,
         format(weekStart, 'yyyy-MM-dd'),
         format(weekEnd, 'yyyy-MM-dd')
     );

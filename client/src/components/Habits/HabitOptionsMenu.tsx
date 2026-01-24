@@ -5,9 +5,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, Archive, Play, Trash2, Edit, Plus } from "lucide-react";
+import { Settings, Archive, Play, Trash2, Edit, Plus, Eye } from "lucide-react";
 import { IHabit } from "@/api";
 import { useDeleteHabitMutation, useArchiveHabitMutation, useActivateHabitMutation } from "@/queries";
+import { useNavigate } from "react-router-dom";
 
 interface HabitOptionsMenuProps {
   habit: IHabit;
@@ -16,6 +17,7 @@ interface HabitOptionsMenuProps {
 }
 
 export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsMenuProps) => {
+  const navigate = useNavigate();
   const deleteHabitMutation = useDeleteHabitMutation();
   const archiveHabitMutation = useArchiveHabitMutation();
   const activateHabitMutation = useActivateHabitMutation();
@@ -28,6 +30,11 @@ export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsM
     if (onLogActivity) {
       onLogActivity(habit);
     }
+  };
+
+  // Handler for viewing habit details
+  const handleViewDetails = () => {
+    navigate(`/habits/${habit.id}`);
   };
 
   // Handler for editing habit
@@ -59,6 +66,11 @@ export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsM
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleViewDetails} disabled={isLoading}>
+          <Eye className="mr-2 h-4 w-4" />
+          View Details
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogActivity} disabled={isLoading || !habit.isActive}>
           <Plus className="mr-2 h-4 w-4" />
           Log Activity

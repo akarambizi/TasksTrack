@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useHabitData } from '@/queries';
 import { CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AddHabitDialog } from './AddHabitDialog';
 import { AddHabitLogDialog } from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
@@ -48,7 +49,14 @@ export const Habits = () => {
                                         {habit.isActive && <CheckCircle size={14} />}
                                     </div>
                                     <div>
-                                        <h4 className={`font-medium ${!habit.isActive ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>{habit.name}</h4>
+                                        <Link 
+                                            to={`/habits/${habit.id}`}
+                                            className="hover:underline"
+                                        >
+                                            <h4 className={`font-medium ${!habit.isActive ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400'}`}>
+                                                {habit.name}
+                                            </h4>
+                                        </Link>
                                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                                             Target: {habit.target} {habit.unit} {habit.targetFrequency}
                                         </p>

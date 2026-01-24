@@ -1,4 +1,4 @@
-import { Container, Dashboard, Login, Pomodoro, ResetPassword, Sessions, SignUp, HabitsContainer } from '@/components';
+import { Container, Dashboard, Login, Pomodoro, ResetPassword, Sessions, SignUp, HabitsContainer, HabitDetailPage } from '@/components';
 import { QueryClientProvider } from '@/components/providers';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context';
@@ -22,6 +22,7 @@ const App = () => {
                                         <Routes>
                                             <Route path="/dashboard" element={<Dashboard />} />
                                             <Route path="/habits" element={<HabitsContainer />} />
+                                            <Route path="/habits/:habitId" element={<HabitDetailPage />} />
                                             <Route path="/pomodoro" element={<Pomodoro />} />
                                             <Route path="/history" element={<Sessions />} />
                                             <Route path="/analytics" element={<>analytics</>} />

@@ -4,6 +4,7 @@ export * from './Auth/ResetPassword';
 export * from './Header/Header';
 export * from './Sidebar/SideBarNav';
 export * from './Habits/HabitsContainer';
+export * from './Habits/HabitDetailPage';
 export * from './Container';
 export * from './Pomodoro/Pomodoro';
 export * from './Sessions/Sessions';

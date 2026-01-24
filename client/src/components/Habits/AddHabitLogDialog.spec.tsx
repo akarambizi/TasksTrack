@@ -20,21 +20,6 @@ vi.mock('../../hooks/useHabitLogForm', () => ({
         formData: {
             habitId: 1,
             value: 0,
-            date: new Date().toISOString().split('T')[0],
-            notes: ''
-        },
-        setFormData: vi.fn(),
-        handleChange: vi.fn(),
-        validateForm: vi.fn(() => ({ isValid: true, errors: {} })),
-        resetForm: vi.fn()
-    })),
-}));
-
-vi.mock('../../hooks/useHabitLogForm', () => ({
-    useHabitLogForm: vi.fn(() => ({
-        formData: {
-            habitId: 1,
-            value: 0,
             date: '2024-01-23',
             notes: '',
         },

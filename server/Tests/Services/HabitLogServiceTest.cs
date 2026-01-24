@@ -347,11 +347,11 @@ namespace TasksTrack.Tests.Services
                 CreatedDate = DateTime.Now
             };
 
-            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue)))
+            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateAsync(habitId, targetDate))
                 .ReturnsAsync(expectedLog);
 
             // Act
-            var log = await _service.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue));
+            var log = await _service.GetByHabitAndDateAsync(habitId, targetDate);
 
             // Assert
             Assert.NotNull(log);
@@ -390,11 +390,11 @@ namespace TasksTrack.Tests.Services
                 }
             };
 
-            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateRangeAsync(habitId, startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue)))
+            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateRangeAsync(habitId, startDate, endDate))
                 .ReturnsAsync(expectedLogs);
 
             // Act
-            var logs = await _service.GetByHabitAndDateRangeAsync(habitId, startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue));
+            var logs = await _service.GetByHabitAndDateRangeAsync(habitId, startDate, endDate);
 
             // Assert
             Assert.NotNull(logs);

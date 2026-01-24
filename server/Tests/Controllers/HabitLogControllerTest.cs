@@ -228,6 +228,7 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1, 
                 HabitId = 1, 
                 Value = 30.0m, 
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -238,19 +239,23 @@ namespace TasksTrack.Tests.Controllers
 
             // Assert
             Assert.IsType<NoContentResult>(result);
+            _mockService.Verify(service => service.GetByIdAsync(1), Times.Once);
             _mockService.Verify(service => service.DeleteAsync(1), Times.Once);
         }
 
         [Fact]
-        public async Task Delete_ReturnsNoContent_Always()
+        public async Task Delete_ReturnsNotFound_WhenHabitLogDoesNotExist()
         {
-            // Arrange - Delete always returns NoContent regardless of whether item exists
+            // Arrange - Delete now returns NotFound when resource doesn't exist
+            _mockService.Setup(service => service.GetByIdAsync(999)).ReturnsAsync((HabitLog?)null);
+
             // Act
             var result = await _controller.Delete(999);
 
             // Assert
-            Assert.IsType<NoContentResult>(result);
-            _mockService.Verify(service => service.DeleteAsync(999), Times.Once);
+            Assert.IsType<NotFoundObjectResult>(result);
+            _mockService.Verify(service => service.GetByIdAsync(999), Times.Once);
+            _mockService.Verify(service => service.DeleteAsync(999), Times.Never);
         }
 
         [Fact]
@@ -388,7 +393,7 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTime.Now
             };
 
-            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue)))
+            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate))
                 .ReturnsAsync(habitLog);
 
             // Act
@@ -407,7 +412,7 @@ namespace TasksTrack.Tests.Controllers
             // Arrange
             var habitId = 1;
             var targetDate = DateOnly.FromDateTime(DateTime.Today);
-            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue)))
+            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate))
                 .ReturnsAsync((HabitLog?)null);
 
             // Act
@@ -430,7 +435,7 @@ namespace TasksTrack.Tests.Controllers
                 { 
                     Id = 1, 
                     HabitId = habitId, 
-                    Date = DateOnly.FromDateTime(startDate), 
+                    Date = startDate, 
                     Value = 30, 
                     CreatedBy = "test@example.com" 
                 },
@@ -438,17 +443,17 @@ namespace TasksTrack.Tests.Controllers
                 { 
                     Id = 2, 
                     HabitId = habitId, 
-                    Date = DateOnly.FromDateTime(endDate), 
+                    Date = endDate, 
                     Value = 45, 
                     CreatedBy = "test@example.com" 
                 }
             };
 
-            _mockService.Setup(service => service.GetByHabitAndDateRangeAsync(habitId, DateOnly.FromDateTime(startDate), DateOnly.FromDateTime(endDate)))
+            _mockService.Setup(service => service.GetByHabitAndDateRangeAsync(habitId, startDate, endDate))
                 .ReturnsAsync(habitLogs);
 
             // Act
-            var result = await _controller.GetByHabitAndDateRange(habitId, startDate, endDate);
+            var result = await _controller.GetByHabitAndDateRange(habitId, startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue));
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedLogs = Assert.IsAssignableFrom<IEnumerable<HabitLog>>(okResult.Value);
 
@@ -466,11 +471,11 @@ namespace TasksTrack.Tests.Controllers
             var endDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLogs = new List<HabitLog>();
 
-            _mockService.Setup(service => service.GetByHabitAndDateRangeAsync(habitId, DateOnly.FromDateTime(startDate), DateOnly.FromDateTime(endDate)))
+            _mockService.Setup(service => service.GetByHabitAndDateRangeAsync(habitId, startDate, endDate))
                 .ReturnsAsync(habitLogs);
 
             // Act
-            var result = await _controller.GetByHabitAndDateRange(habitId, startDate, endDate);
+            var result = await _controller.GetByHabitAndDateRange(habitId, startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue));
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedLogs = Assert.IsAssignableFrom<IEnumerable<HabitLog>>(okResult.Value);
 

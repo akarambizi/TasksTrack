@@ -110,7 +110,7 @@ TasksTrack/
 ### 1. Git Workflow
 - Create feature branches from main
 - Use conventional commit messages
-- Keep commit messages short and descriptive (under 50 characters for the title)
+- **Keep commit messages concise** - Under 50 characters for the title, be descriptive but brief
 - **Separate frontend and backend PRs** - Create separate pull requests for client and server changes to keep PRs smaller and more focused
 - Write meaningful pull request descriptions
 - Test thoroughly before merging

@@ -33,7 +33,7 @@ namespace TasksTrack.Tests.Controllers
                     Id = 1,
                     HabitId = 1,
                     Value = 30.5m,
-                    Date = DateTime.Today,
+                    Date = DateOnly.FromDateTime(DateTime.Today),
                     Notes = "Good session",
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
@@ -43,7 +43,7 @@ namespace TasksTrack.Tests.Controllers
                     Id = 2,
                     HabitId = 2,
                     Value = 15.0m,
-                    Date = DateTime.Today.AddDays(-1),
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                     Notes = "Short session",
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
@@ -71,7 +71,7 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 Value = 45.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "Excellent workout session",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -112,7 +112,7 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 Value = 30.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "First log entry",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -137,7 +137,7 @@ namespace TasksTrack.Tests.Controllers
             { 
                 HabitId = 999, 
                 Value = 30.0m, 
-                Date = DateTime.Today, 
+                Date = DateOnly.FromDateTime(DateTime.Today), 
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -163,7 +163,7 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 Value = 35.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "Updated session notes",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -265,7 +265,7 @@ namespace TasksTrack.Tests.Controllers
                     Id = 1, 
                     HabitId = habitId, 
                     Value = 30.0m, 
-                    Date = DateTime.Today, 
+                    Date = DateOnly.FromDateTime(DateTime.Today), 
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
@@ -274,7 +274,7 @@ namespace TasksTrack.Tests.Controllers
                     Id = 2, 
                     HabitId = habitId, 
                     Value = 25.0m, 
-                    Date = DateTime.Today.AddDays(-1), 
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), 
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -296,7 +296,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetByDate_ReturnsLogsForSpecificDate()
         {
             // Arrange
-            var targetDate = DateTime.Today;
+            var targetDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLogs = new List<HabitLog>
             {
                 new HabitLog 
@@ -322,7 +322,7 @@ namespace TasksTrack.Tests.Controllers
             _mockService.Setup(service => service.GetByDateAsync(targetDate)).ReturnsAsync(habitLogs);
 
             // Act
-            var result = await _controller.GetByDate(targetDate);
+            var result = await _controller.GetByDate(targetDate.ToDateTime(TimeOnly.MinValue));
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedLogs = Assert.IsAssignableFrom<IEnumerable<HabitLog>>(okResult.Value);
 
@@ -335,8 +335,8 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetByDateRange_ReturnsLogsInDateRange()
         {
             // Arrange
-            var startDate = DateTime.Today.AddDays(-7);
-            var endDate = DateTime.Today;
+            var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var endDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLogs = new List<HabitLog>
             {
                 new HabitLog 
@@ -344,7 +344,7 @@ namespace TasksTrack.Tests.Controllers
                     Id = 1, 
                     HabitId = 1, 
                     Value = 30.0m, 
-                    Date = DateTime.Today.AddDays(-3), 
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-3)), 
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
@@ -353,7 +353,7 @@ namespace TasksTrack.Tests.Controllers
                     Id = 2, 
                     HabitId = 1, 
                     Value = 25.0m, 
-                    Date = DateTime.Today.AddDays(-1), 
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), 
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -362,7 +362,7 @@ namespace TasksTrack.Tests.Controllers
             _mockService.Setup(service => service.GetByDateRangeAsync(startDate, endDate)).ReturnsAsync(habitLogs);
 
             // Act
-            var result = await _controller.GetByDateRange(startDate, endDate);
+            var result = await _controller.GetByDateRange(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue));
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedLogs = Assert.IsAssignableFrom<IEnumerable<HabitLog>>(okResult.Value);
 
@@ -376,7 +376,7 @@ namespace TasksTrack.Tests.Controllers
         {
             // Arrange
             var habitId = 1;
-            var targetDate = DateTime.Today;
+            var targetDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLog = new HabitLog
             {
                 Id = 1,
@@ -388,11 +388,11 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTime.Now
             };
 
-            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate))
+            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue)))
                 .ReturnsAsync(habitLog);
 
             // Act
-            var result = await _controller.GetByHabitAndDate(habitId, targetDate);
+            var result = await _controller.GetByHabitAndDate(habitId, targetDate.ToDateTime(TimeOnly.MinValue));
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedLog = Assert.IsType<HabitLog>(okResult.Value);
 
@@ -406,15 +406,76 @@ namespace TasksTrack.Tests.Controllers
         {
             // Arrange
             var habitId = 1;
-            var targetDate = DateTime.Today;
-            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate))
+            var targetDate = DateOnly.FromDateTime(DateTime.Today);
+            _mockService.Setup(service => service.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue)))
                 .ReturnsAsync((HabitLog?)null);
 
             // Act
-            var result = await _controller.GetByHabitAndDate(habitId, targetDate);
+            var result = await _controller.GetByHabitAndDate(habitId, targetDate.ToDateTime(TimeOnly.MinValue));
 
             // Assert
             Assert.IsType<NotFoundObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetByHabitAndDateRange_ReturnsListOfHabitLogs()
+        {
+            // Arrange
+            var habitId = 1;
+            var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var endDate = DateOnly.FromDateTime(DateTime.Today);
+            var habitLogs = new List<HabitLog>
+            {
+                new HabitLog 
+                { 
+                    Id = 1, 
+                    HabitId = habitId, 
+                    Date = DateOnly.FromDateTime(startDate), 
+                    Value = 30, 
+                    CreatedBy = "test@example.com" 
+                },
+                new HabitLog 
+                { 
+                    Id = 2, 
+                    HabitId = habitId, 
+                    Date = DateOnly.FromDateTime(endDate), 
+                    Value = 45, 
+                    CreatedBy = "test@example.com" 
+                }
+            };
+
+            _mockService.Setup(service => service.GetByHabitAndDateRangeAsync(habitId, DateOnly.FromDateTime(startDate), DateOnly.FromDateTime(endDate)))
+                .ReturnsAsync(habitLogs);
+
+            // Act
+            var result = await _controller.GetByHabitAndDateRange(habitId, startDate, endDate);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedLogs = Assert.IsAssignableFrom<IEnumerable<HabitLog>>(okResult.Value);
+
+            // Assert
+            Assert.Equal(2, returnedLogs.Count());
+            Assert.All(returnedLogs, log => Assert.Equal(habitId, log.HabitId));
+        }
+
+        [Fact]
+        public async Task GetByHabitAndDateRange_ReturnsEmptyList_WhenNoLogsInRange()
+        {
+            // Arrange
+            var habitId = 1;
+            var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var endDate = DateOnly.FromDateTime(DateTime.Today);
+            var habitLogs = new List<HabitLog>();
+
+            _mockService.Setup(service => service.GetByHabitAndDateRangeAsync(habitId, DateOnly.FromDateTime(startDate), DateOnly.FromDateTime(endDate)))
+                .ReturnsAsync(habitLogs);
+
+            // Act
+            var result = await _controller.GetByHabitAndDateRange(habitId, startDate, endDate);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedLogs = Assert.IsAssignableFrom<IEnumerable<HabitLog>>(okResult.Value);
+
+            // Assert
+            Assert.Empty(returnedLogs);
         }
     }
 }

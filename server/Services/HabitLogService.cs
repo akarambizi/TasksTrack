@@ -32,7 +32,7 @@ namespace TasksTrack.Services
                 throw new ArgumentException($"Habit with ID {habitLog.HabitId} not found");
 
             habitLog.CreatedDate = DateTime.UtcNow;
-            habitLog.Date = habitLog.Date.Date; // Ensure we store only the date part
+            // No need to normalize Date since DateOnly is already date-only
 
             await _repository.AddAsync(habitLog);
         }
@@ -54,7 +54,7 @@ namespace TasksTrack.Services
             // Update fields
             existing.HabitId = habitLog.HabitId;
             existing.Value = habitLog.Value;
-            existing.Date = habitLog.Date.Date; // Ensure we store only the date part
+            existing.Date = habitLog.Date; // DateOnly is already date-only
             existing.Notes = habitLog.Notes;
             existing.UpdatedDate = DateTime.UtcNow;
             existing.UpdatedBy = habitLog.UpdatedBy;
@@ -73,22 +73,22 @@ namespace TasksTrack.Services
             return await _repository.GetByHabitIdAsync(habitId);
         }
 
-        public async Task<IEnumerable<HabitLog>> GetByDateAsync(DateTime date)
+        public async Task<IEnumerable<HabitLog>> GetByDateAsync(DateOnly date)
         {
             return await _repository.GetByDateAsync(date);
         }
 
-        public async Task<IEnumerable<HabitLog>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<HabitLog>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate)
         {
             return await _repository.GetByDateRangeAsync(startDate, endDate);
         }
 
-        public async Task<IEnumerable<HabitLog>> GetByHabitAndDateRangeAsync(int habitId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<HabitLog>> GetByHabitAndDateRangeAsync(int habitId, DateOnly startDate, DateOnly endDate)
         {
             return await _repository.GetByHabitAndDateRangeAsync(habitId, startDate, endDate);
         }
 
-        public async Task<HabitLog?> GetByHabitAndDateAsync(int habitId, DateTime date)
+        public async Task<HabitLog?> GetByHabitAndDateAsync(int habitId, DateOnly date)
         {
             return await _repository.GetByHabitAndDateAsync(habitId, date);
         }

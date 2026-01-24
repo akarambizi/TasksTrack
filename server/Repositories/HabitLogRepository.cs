@@ -60,47 +60,39 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<HabitLog>> GetByDateAsync(DateTime date)
+        public async Task<IEnumerable<HabitLog>> GetByDateAsync(DateOnly date)
         {
-            var dateOnly = date.Date;
             return await _context.HabitLogs
                 .Include(hl => hl.Habit)
-                .Where(hl => hl.Date.Date == dateOnly)
+                .Where(hl => hl.Date == date)
                 .OrderBy(hl => hl.Habit != null ? hl.Habit.Name : "")
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<HabitLog>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<HabitLog>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate)
         {
-            var startDateOnly = startDate.Date;
-            var endDateOnly = endDate.Date;
-
             return await _context.HabitLogs
                 .Include(hl => hl.Habit)
-                .Where(hl => hl.Date.Date >= startDateOnly && hl.Date.Date <= endDateOnly)
+                .Where(hl => hl.Date >= startDate && hl.Date <= endDate)
                 .OrderByDescending(hl => hl.Date)
                 .ThenBy(hl => hl.Habit != null ? hl.Habit.Name : "")
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<HabitLog>> GetByHabitAndDateRangeAsync(int habitId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<HabitLog>> GetByHabitAndDateRangeAsync(int habitId, DateOnly startDate, DateOnly endDate)
         {
-            var startDateOnly = startDate.Date;
-            var endDateOnly = endDate.Date;
-
             return await _context.HabitLogs
                 .Include(hl => hl.Habit)
-                .Where(hl => hl.HabitId == habitId && hl.Date.Date >= startDateOnly && hl.Date.Date <= endDateOnly)
+                .Where(hl => hl.HabitId == habitId && hl.Date >= startDate && hl.Date <= endDate)
                 .OrderByDescending(hl => hl.Date)
                 .ToListAsync();
         }
 
-        public async Task<HabitLog?> GetByHabitAndDateAsync(int habitId, DateTime date)
+        public async Task<HabitLog?> GetByHabitAndDateAsync(int habitId, DateOnly date)
         {
-            var dateOnly = date.Date;
             return await _context.HabitLogs
                 .Include(hl => hl.Habit)
-                .FirstOrDefaultAsync(hl => hl.HabitId == habitId && hl.Date.Date == dateOnly);
+                .FirstOrDefaultAsync(hl => hl.HabitId == habitId && hl.Date == date);
         }
     }
 }

@@ -26,7 +26,9 @@ namespace TasksTrack.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving habit logs.", error = ex.Message });
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
         }
 
@@ -46,7 +48,9 @@ namespace TasksTrack.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the habit log.", error = ex.Message });
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while retrieving the habit log." });
             }
         }
 
@@ -69,7 +73,9 @@ namespace TasksTrack.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while creating the habit log.", error = ex.Message });
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while creating the habit log." });
             }
         }
 
@@ -102,7 +108,9 @@ namespace TasksTrack.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the habit log.", error = ex.Message });
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while updating the habit log." });
             }
         }
 
@@ -111,12 +119,21 @@ namespace TasksTrack.Controllers
         {
             try
             {
+                var existingHabitLog = await _habitLogService.GetByIdAsync(id);
+
+                if (existingHabitLog == null)
+                {
+                    return NotFound(new { message = $"Habit log with ID {id} not found." });
+                }
+
                 await _habitLogService.DeleteAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while deleting the habit log.", error = ex.Message });
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while deleting the habit log." });
             }
         }
 
@@ -130,7 +147,9 @@ namespace TasksTrack.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving habit logs.", error = ex.Message });
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
         }
 
@@ -139,12 +158,13 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var result = await _habitLogService.GetByDateAsync(date);
+                var dateOnly = DateOnly.FromDateTime(date);
+                var result = await _habitLogService.GetByDateAsync(dateOnly);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving habit logs.", error = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
         }
 
@@ -153,12 +173,14 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var result = await _habitLogService.GetByDateRangeAsync(startDate, endDate);
+                var startDateOnly = DateOnly.FromDateTime(startDate);
+                var endDateOnly = DateOnly.FromDateTime(endDate);
+                var result = await _habitLogService.GetByDateRangeAsync(startDateOnly, endDateOnly);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving habit logs.", error = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
         }
 
@@ -167,12 +189,14 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var result = await _habitLogService.GetByHabitAndDateRangeAsync(habitId, startDate, endDate);
+                var startDateOnly = DateOnly.FromDateTime(startDate);
+                var endDateOnly = DateOnly.FromDateTime(endDate);
+                var result = await _habitLogService.GetByHabitAndDateRangeAsync(habitId, startDateOnly, endDateOnly);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving habit logs.", error = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
         }
 
@@ -181,16 +205,17 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var result = await _habitLogService.GetByHabitAndDateAsync(habitId, date);
+                var dateOnly = DateOnly.FromDateTime(date);
+                var result = await _habitLogService.GetByHabitAndDateAsync(habitId, dateOnly);
                 if (result == null)
                 {
-                    return NotFound(new { message = $"No habit log found for habit {habitId} on {date:yyyy-MM-dd}." });
+                    return NotFound(new { message = $"No habit log found for habit {habitId} on {dateOnly:yyyy-MM-dd}." });
                 }
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the habit log.", error = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while retrieving the habit log." });
             }
         }
     }

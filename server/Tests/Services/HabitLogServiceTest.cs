@@ -34,7 +34,7 @@ namespace TasksTrack.Tests.Services
                     Id = 1,
                     HabitId = 1,
                     Value = 30.5m,
-                    Date = DateTime.Today,
+                    Date = DateOnly.FromDateTime(DateTime.Today),
                     Notes = "Good session",
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
@@ -44,7 +44,7 @@ namespace TasksTrack.Tests.Services
                     Id = 2,
                     HabitId = 2,
                     Value = 15.0m,
-                    Date = DateTime.Today.AddDays(-1),
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                     Notes = "Short session",
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
@@ -71,7 +71,7 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 Value = 45.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "Great workout session",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -107,7 +107,7 @@ namespace TasksTrack.Tests.Services
             {
                 HabitId = 1,
                 Value = 30.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "Test log",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -132,7 +132,7 @@ namespace TasksTrack.Tests.Services
             {
                 HabitId = 999,
                 Value = 30.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -153,7 +153,7 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 Value = 25.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "Original notes",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -164,7 +164,7 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 Value = 35.0m,
-                Date = DateTime.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 Notes = "Updated notes",
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -230,7 +230,7 @@ namespace TasksTrack.Tests.Services
                     Id = 1, 
                     HabitId = habitId, 
                     Value = 30.0m, 
-                    Date = DateTime.Today,
+                    Date = DateOnly.FromDateTime(DateTime.Today),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
@@ -239,7 +239,7 @@ namespace TasksTrack.Tests.Services
                     Id = 2, 
                     HabitId = habitId, 
                     Value = 25.0m, 
-                    Date = DateTime.Today.AddDays(-1),
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -259,7 +259,7 @@ namespace TasksTrack.Tests.Services
         public async Task GetByDateAsync_ShouldReturnLogsForSpecificDate()
         {
             // Arrange
-            var targetDate = DateTime.Today;
+            var targetDate = DateOnly.FromDateTime(DateTime.Today);
             var expectedLogs = new List<HabitLog>
             {
                 new HabitLog 
@@ -296,8 +296,8 @@ namespace TasksTrack.Tests.Services
         public async Task GetByDateRangeAsync_ShouldReturnLogsInRange()
         {
             // Arrange
-            var startDate = DateTime.Today.AddDays(-7);
-            var endDate = DateTime.Today;
+            var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var endDate = DateOnly.FromDateTime(DateTime.Today);
             var expectedLogs = new List<HabitLog>
             {
                 new HabitLog 
@@ -305,7 +305,7 @@ namespace TasksTrack.Tests.Services
                     Id = 1, 
                     HabitId = 1, 
                     Value = 30.0m, 
-                    Date = DateTime.Today.AddDays(-3),
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-3)),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
@@ -314,7 +314,7 @@ namespace TasksTrack.Tests.Services
                     Id = 2, 
                     HabitId = 1, 
                     Value = 25.0m, 
-                    Date = DateTime.Today.AddDays(-1),
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -335,7 +335,7 @@ namespace TasksTrack.Tests.Services
         {
             // Arrange
             var habitId = 1;
-            var targetDate = DateTime.Today;
+            var targetDate = DateOnly.FromDateTime(DateTime.Today);
             var expectedLog = new HabitLog
             {
                 Id = 1,
@@ -347,16 +347,61 @@ namespace TasksTrack.Tests.Services
                 CreatedDate = DateTime.Now
             };
 
-            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateAsync(habitId, targetDate))
+            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue)))
                 .ReturnsAsync(expectedLog);
 
             // Act
-            var log = await _service.GetByHabitAndDateAsync(habitId, targetDate);
+            var log = await _service.GetByHabitAndDateAsync(habitId, targetDate.ToDateTime(TimeOnly.MinValue));
 
             // Assert
             Assert.NotNull(log);
             Assert.Equal(habitId, log.HabitId);
             Assert.Equal(targetDate, log.Date);
+        }
+
+        [Fact]
+        public async Task GetByHabitAndDateRangeAsync_ShouldReturnHabitLogsForHabitAndDateRange()
+        {
+            // Arrange
+            var habitId = 1;
+            var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var endDate = DateOnly.FromDateTime(DateTime.Today);
+            var expectedLogs = new List<HabitLog>
+            {
+                new HabitLog
+                {
+                    Id = 1,
+                    HabitId = habitId,
+                    Value = 30.5m,
+                    Date = startDate,
+                    Notes = "First session",
+                    CreatedBy = "testuser",
+                    CreatedDate = DateTime.Now
+                },
+                new HabitLog
+                {
+                    Id = 2,
+                    HabitId = habitId,
+                    Value = 45.0m,
+                    Date = endDate,
+                    Notes = "Last session",
+                    CreatedBy = "testuser",
+                    CreatedDate = DateTime.Now
+                }
+            };
+
+            _habitLogRepositoryMock.Setup(repo => repo.GetByHabitAndDateRangeAsync(habitId, startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue)))
+                .ReturnsAsync(expectedLogs);
+
+            // Act
+            var logs = await _service.GetByHabitAndDateRangeAsync(habitId, startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MinValue));
+
+            // Assert
+            Assert.NotNull(logs);
+            Assert.Equal(2, logs.Count());
+            Assert.All(logs, log => Assert.Equal(habitId, log.HabitId));
+            Assert.Contains(logs, log => log.Date == startDate);
+            Assert.Contains(logs, log => log.Date == endDate);
         }
     }
 }

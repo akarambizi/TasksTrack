@@ -15,7 +15,8 @@ namespace TasksTrack.Models
         public decimal Value { get; set; } // Amount logged (e.g., 30 minutes, 2 miles, 10 reps)
 
         [Required(ErrorMessage = "Date is required")]
-        public DateTime Date { get; set; } // Date of the log entry (date only, no time)
+        [Column(TypeName = "date")]
+        public DateOnly Date { get; set; } // Date of the log entry (date only, no time)
 
         [StringLength(1000, ErrorMessage = "Notes cannot exceed 1000 characters")]
         public string? Notes { get; set; }

@@ -10,9 +10,9 @@ namespace TasksTrack.Services
         Task<bool> UpdateAsync(HabitLog habitLog);
         Task DeleteAsync(int id);
         Task<IEnumerable<HabitLog>> GetByHabitIdAsync(int habitId);
-        Task<IEnumerable<HabitLog>> GetByDateAsync(DateTime date);
-        Task<IEnumerable<HabitLog>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
-        Task<IEnumerable<HabitLog>> GetByHabitAndDateRangeAsync(int habitId, DateTime startDate, DateTime endDate);
-        Task<HabitLog?> GetByHabitAndDateAsync(int habitId, DateTime date);
+        Task<IEnumerable<HabitLog>> GetByDateAsync(DateOnly date);
+        Task<IEnumerable<HabitLog>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate);
+        Task<IEnumerable<HabitLog>> GetByHabitAndDateRangeAsync(int habitId, DateOnly startDate, DateOnly endDate);
+        Task<HabitLog?> GetByHabitAndDateAsync(int habitId, DateOnly date);
     }
 }

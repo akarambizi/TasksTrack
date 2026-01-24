@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { IHabitLogCreateRequest } from '@/api/habit.types';
+import { useAuthContext } from '@/context/useAuthContext';
 
 interface IUseHabitLogFormReturn {
     formData: IHabitLogCreateRequest;
@@ -11,12 +12,17 @@ interface IUseHabitLogFormReturn {
 }
 
 export function useHabitLogForm(habitId?: number): IUseHabitLogFormReturn {
-    const [formData, setFormData] = useState<IHabitLogCreateRequest>({
+    const { user } = useAuthContext();
+    
+    const getInitialFormData = () => ({
         habitId: habitId || 0,
         value: 0,
         date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
-        notes: ''
+        notes: '',
+        createdBy: user?.email || 'unknown'
     });
+
+    const [formData, setFormData] = useState<IHabitLogCreateRequest>(getInitialFormData());
 
     const [error, setError] = useState<string | null>(null);
 
@@ -28,12 +34,7 @@ export function useHabitLogForm(habitId?: number): IUseHabitLogFormReturn {
     };
 
     const resetForm = () => {
-        setFormData({
-            habitId: habitId || 0,
-            value: 0,
-            date: new Date().toISOString().split('T')[0],
-            notes: ''
-        });
+        setFormData(getInitialFormData());
         setError(null);
     };
 

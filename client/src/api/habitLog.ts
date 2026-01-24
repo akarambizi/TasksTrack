@@ -136,7 +136,13 @@ export const getHabitLogByHabitAndDate = async (habitId: number, date: string): 
 export const createHabitLog = async (logData: IHabitLogCreateRequest): Promise<IHabitLog> => {
     try {
         const endpoint = '/api/habit-logs';
-        const response = await apiPost<IHabitLog>(endpoint, logData);
+        // Ensure date is in correct format and add current timestamp fields
+        const payload = {
+            ...logData,
+            date: logData.date, // Keep as string, backend will parse
+            createdDate: new Date().toISOString(),
+        };
+        const response = await apiPost<IHabitLog>(endpoint, payload);
         ToastService.success('Habit log created successfully');
         return response;
     } catch (error) {

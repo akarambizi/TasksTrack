@@ -29,7 +29,8 @@ describe('habitLog API', () => {
                 habitId: 1,
                 value: 30.5,
                 date: '2024-01-15',
-                notes: 'Great session today!'
+                notes: 'Great session today!',
+                createdBy: 'test@example.com'
             };
             const mockResponse = { id: 1, ...mockRequest };
 
@@ -37,7 +38,15 @@ describe('habitLog API', () => {
 
             const result = await createHabitLog(mockRequest);
 
-            expect(mockApiPost).toHaveBeenCalledWith('/api/habit-logs', mockRequest);
+            // The API function adds createdDate, so we expect that in the call
+            expect(mockApiPost).toHaveBeenCalledWith('/api/habit-logs', expect.objectContaining({
+                habitId: 1,
+                value: 30.5,
+                date: '2024-01-15',
+                notes: 'Great session today!',
+                createdBy: 'test@example.com',
+                createdDate: expect.any(String)
+            }));
             expect(ToastService.success).toHaveBeenCalledWith('Habit log created successfully');
             expect(result).toEqual(mockResponse);
         });

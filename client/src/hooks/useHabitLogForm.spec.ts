@@ -2,6 +2,23 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useHabitLogForm } from './useHabitLogForm';
 
+// Mock the useAuthContext hook
+vi.mock('@/context/useAuthContext', () => ({
+    useAuthContext: () => ({
+        user: {
+            id: 1,
+            email: 'test@example.com',
+            firstName: 'John',
+            lastName: 'Doe',
+        },
+        isAuthenticated: true,
+        token: 'mock-token',
+        login: vi.fn(),
+        logout: vi.fn(),
+        register: vi.fn()
+    })
+}));
+
 describe('useHabitLogForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();

@@ -50,6 +50,7 @@ export interface IHabitLogCreateRequest {
     value: number;
     date: string;
     notes?: string;
+    createdBy: string;
 }
 
 export interface IHabitLogUpdateRequest extends Partial<IHabitLogCreateRequest> {

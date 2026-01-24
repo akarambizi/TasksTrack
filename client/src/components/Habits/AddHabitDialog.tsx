@@ -41,7 +41,7 @@ export function AddHabitDialog() {
         description: formData.description || undefined,
         metricType: formData.metricType,
         unit: formData.unit || undefined,
-        target: formData.target > 0 ? formData.target : undefined,
+        target: formData.target && formData.target > 0 ? formData.target : undefined,
         targetFrequency: formData.targetFrequency || undefined,
         category: formData.category || undefined,
         color: formData.color || undefined,

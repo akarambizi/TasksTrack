@@ -1,4 +1,4 @@
-import { getHabitData, deleteHabit, archiveHabit, activateHabit, createHabitDirect, updateHabit, IHabit, IHabitUpdateRequest } from '@/api';
+import { getHabitData, getHabitById, deleteHabit, archiveHabit, activateHabit, createHabitDirect, updateHabit, IHabit, IHabitUpdateRequest } from '@/api';
 import { getHabitKey } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -14,6 +14,22 @@ export const useHabitData = (query: string, options?: UseQueryOptions<IHabit[], 
         queryKey: getHabitKey(query),
         queryFn: () => getHabitData(query),
         staleTime: 5 * 60 * 1000, // 5 minutes
+        ...options,
+    });
+};
+
+/**
+ * Custom hook for fetching a single habit by ID.
+ * @param {number} habitId - The ID of the habit to fetch.
+ * @param {UseQueryOptions} options - Additional options for the query.
+ * @returns {QueryObserverResult<IHabit, AxiosError>} The result of the `useQuery` hook.
+ */
+export const useHabitById = (habitId: number, options?: UseQueryOptions<IHabit, AxiosError, IHabit, string[]>) => {
+    return useQuery({
+        queryKey: ['habit', habitId.toString()],
+        queryFn: () => getHabitById(habitId),
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        enabled: !!habitId && habitId > 0,
         ...options,
     });
 };

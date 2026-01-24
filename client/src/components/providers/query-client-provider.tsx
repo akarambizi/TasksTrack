@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider as TanstackQueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
+import { AxiosError } from 'axios';
 
 interface QueryClientProviderProps {
   children: React.ReactNode;
@@ -16,9 +17,10 @@ export const QueryClientProvider = ({ children }: QueryClientProviderProps) => {
           queries: {
             staleTime: 60 * 1000, // 1 minute
             refetchOnWindowFocus: false,
-            retry: (failureCount, error: any) => {
+            retry: (failureCount: number, error: Error) => {
               // Don't retry on 401 Unauthorized or 403 Forbidden errors
-              if (error?.response?.status === 401 || error?.response?.status === 403) {
+              const axiosError = error as AxiosError;
+              if (axiosError?.response?.status === 401 || axiosError?.response?.status === 403) {
                 return false;
               }
               // Otherwise retry up to 2 times

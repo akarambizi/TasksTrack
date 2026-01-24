@@ -111,6 +111,7 @@ TasksTrack/
 - Create feature branches from main
 - Use conventional commit messages
 - Keep commit messages short and descriptive (under 50 characters for the title)
+- **Separate frontend and backend PRs** - Create separate pull requests for client and server changes to keep PRs smaller and more focused
 - Write meaningful pull request descriptions
 - Test thoroughly before merging
 
@@ -122,7 +123,40 @@ TasksTrack/
 - [ ] Security considerations are addressed
 - [ ] Performance implications are considered
 
-### 3. Debugging Tips
+### 3. Quality Assurance Requirements
+
+**MANDATORY: Every feature must meet these quality standards before completion:**
+
+#### **Build Quality**
+- [ ] **Zero compilation errors** - All code must compile successfully
+- [ ] **Zero warnings** - Resolve all TypeScript/C# compiler warnings
+- [ ] **Clean builds** - Both `npm run build` (frontend) and `dotnet build` (backend) must succeed
+
+#### **Test Requirements**
+- [ ] **Test coverage ≥ 80%** - Maintain minimum 80% code coverage across the project
+- [ ] **All tests passing** - 100% test pass rate required before merging
+- [ ] **New features have tests** - Every new feature must include comprehensive unit tests
+- [ ] **Edge cases covered** - Test error conditions, null values, and boundary conditions
+
+#### **Validation Commands**
+Run these commands before considering any feature complete:
+
+**Frontend:**
+```bash
+npm run build        # Must succeed with no errors
+npm run test -- --run --coverage  # Must show ≥80% coverage and 100% pass rate
+npm run lint         # Must pass with no errors
+```
+
+**Backend:**
+```bash
+dotnet build         # Must succeed with no warnings/errors
+dotnet test          # Must show 100% test pass rate
+```
+
+**Quality Gate:** If any of these commands fail or show insufficient coverage, the feature is **not ready** for merge.
+
+### 4. Debugging Tips
 - Use Visual Studio/VS Code debugger effectively
 - Set breakpoints in both client and server code
 - Use browser dev tools for frontend debugging

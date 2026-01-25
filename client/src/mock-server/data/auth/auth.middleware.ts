@@ -1,5 +1,6 @@
 import authData from './auth.ts';
 import { IAuthData, IAuthResult } from '../../../api/userAuth.types.ts';
+import { Request, Response, NextFunction } from 'express';
 
 // Response objects for each auth endpoint
 const loginSuccessResponse = (user: IAuthData): IAuthResult & { token: string } => ({ success: true, token: `mock-token-${user.email}`, message: 'Login successful' });
@@ -16,8 +17,6 @@ const logoutResponse: IAuthResult = { success: true, message: 'Logout successful
 function getUsers(): IAuthData[] {
     return authData.auth;
 }
-
-import { Request, Response, NextFunction } from 'express';
 
 export default function authMiddleware(req: Request, res: Response, next: NextFunction) {
     if (req.method === 'POST' && req.path === '/auth/login') {

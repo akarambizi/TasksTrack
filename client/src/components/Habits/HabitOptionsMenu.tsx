@@ -61,7 +61,10 @@ export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsM
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+        <button 
+          className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800" 
+          disabled={isLoading}
+        >
           <Settings size={16} className="text-slate-500 dark:text-slate-400" />
         </button>
       </DropdownMenuTrigger>

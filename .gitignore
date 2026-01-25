@@ -25,4 +25,8 @@ bld/
 
 # Coverage results
 coverage
+coverage/
+TestResults/
+coveragereport/
+*.cobertura.xml
 .DS_Store

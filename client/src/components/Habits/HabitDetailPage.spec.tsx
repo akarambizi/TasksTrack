@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { HabitDetailPage } from './HabitDetailPage';
 import { IHabit } from '../../api';
-import React from 'react';
 import { useHabitById } from '../../queries/habits';
 import { AxiosError } from 'axios';
 
@@ -77,9 +76,9 @@ const mockHabit: IHabit = {
     category: 'Fitness',
     color: '#3b82f6',
     isActive: true,
-    userId: 1,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
+    createdBy: 'test-user',
+    createdDate: '2024-01-01T00:00:00Z',
+    updatedDate: '2024-01-01T00:00:00Z',
 };
 
 describe('HabitDetailPage', () => {
@@ -194,11 +193,11 @@ describe('HabitDetailPage', () => {
     describe('when habit has no optional fields', () => {
         const habitWithoutOptionalFields: IHabit = {
             ...mockHabit,
-            description: undefined,
-            category: undefined,
-            color: undefined,
-            unit: undefined,
-            metricType: undefined,
+            description: '',
+            category: '',
+            color: '',
+            unit: '',
+            metricType: '',
             isActive: false,
         };
 

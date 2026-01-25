@@ -48,5 +48,140 @@ namespace TasksTrack.Tests.Controllers
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("test_token", ((AuthResult?)okResult.Value)?.Token ?? string.Empty);
         }
+
+        [Fact]
+        public async Task Login_ShouldReturnOk_WhenLoginSucceeds()
+        {
+            // Arrange
+            var request = new LoginRequest { Email = "test@example.com", Password = "password123" };
+            var expectedResult = new AuthResult 
+            { 
+                Success = true, 
+                Token = "fake-jwt-token", 
+                RefreshToken = "fake-refresh-token"
+            };
+            
+            _authServiceMock.Setup(service => service.LoginAsync(request)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.Login(request);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var authResult = Assert.IsType<AuthResult>(okResult.Value);
+            Assert.True(authResult.Success);
+            Assert.Equal("fake-jwt-token", authResult.Token);
+        }
+
+        [Fact]
+        public async Task Login_ShouldReturnBadRequest_WhenLoginFails()
+        {
+            // Arrange
+            var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
+            var expectedResult = new AuthResult { Success = false, Message = "Invalid credentials." };
+            
+            _authServiceMock.Setup(service => service.LoginAsync(request)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.Login(request);
+
+            // Assert
+            var badRequestResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal("Invalid credentials.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task Logout_ShouldReturnOk_WhenLogoutSucceeds()
+        {
+            // Arrange
+            var request = new RefreshTokenRequest { RefreshToken = "valid-refresh-token" };
+            var expectedResult = new AuthResult { Success = true, Message = "Logged out successfully" };
+            
+            _authServiceMock.Setup(service => service.LogoutAsync(request.RefreshToken)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.Logout(request);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var authResult = Assert.IsType<AuthResult>(okResult.Value);
+            Assert.True(authResult.Success);
+        }
+
+        [Fact]
+        public async Task RefreshToken_ShouldReturnOk_WhenRefreshSucceeds()
+        {
+            // Arrange
+            var request = new RefreshTokenRequest { RefreshToken = "valid-refresh-token" };
+            var expectedResult = new AuthResult 
+            { 
+                Success = true, 
+                Token = "new-jwt-token", 
+                RefreshToken = "new-refresh-token" 
+            };
+            
+            _authServiceMock.Setup(service => service.RefreshTokenAsync(request)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.RefreshToken(request);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var authResult = Assert.IsType<AuthResult>(okResult.Value);
+            Assert.True(authResult.Success);
+            Assert.Equal("new-jwt-token", authResult.Token);
+        }
+
+        [Fact]
+        public async Task RefreshToken_ShouldReturnBadRequest_WhenRefreshFails()
+        {
+            // Arrange
+            var request = new RefreshTokenRequest { RefreshToken = "invalid-refresh-token" };
+            var expectedResult = new AuthResult { Success = false, Message = "Invalid refresh token." };
+            
+            _authServiceMock.Setup(service => service.RefreshTokenAsync(request)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.RefreshToken(request);
+
+            // Assert
+            var badRequestResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal("Invalid refresh token.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task ResetPassword_ShouldReturnOk_WhenResetSucceeds()
+        {
+            // Arrange
+            var request = new PasswordResetRequest { Email = "test@example.com", NewPassword = "newpassword123" };
+            var expectedResult = new AuthResult { Success = true, Message = "Password reset successfully" };
+            
+            _authServiceMock.Setup(service => service.ResetPasswordAsync(request)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.ResetPassword(request);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var authResult = Assert.IsType<AuthResult>(okResult.Value);
+            Assert.True(authResult.Success);
+        }
+
+        [Fact]
+        public async Task ResetPassword_ShouldReturnBadRequest_WhenResetFails()
+        {
+            // Arrange
+            var request = new PasswordResetRequest { Email = "nonexistent@example.com", NewPassword = "newpassword123" };
+            var expectedResult = new AuthResult { Success = false, Message = "User not found." };
+            
+            _authServiceMock.Setup(service => service.ResetPasswordAsync(request)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await _authController.ResetPassword(request);
+
+            // Assert
+            var badRequestResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("User not found.", badRequestResult.Value);
+        }
     }
 }

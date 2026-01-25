@@ -182,6 +182,143 @@ namespace TasksTrack.Tests.Repositories
             Assert.Null(deletedHabit);
         }
 
+        [Fact]
+        public async Task GetActiveAsync_ShouldReturnOnlyActiveHabits()
+        {
+            // Arrange
+            var activeHabit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            var inactiveHabit = new Habit
+            {
+                Name = "Reading",
+                MetricType = "pages",
+                Target = 10,
+                IsActive = false,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.AddRange(activeHabit, inactiveHabit);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetActiveAsync();
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Exercise", result.First().Name);
+            Assert.True(result.First().IsActive);
+        }
+
+        [Fact]
+        public async Task GetByCategoryAsync_ShouldReturnHabitsInCategory()
+        {
+            // Arrange
+            var fitnessHabit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                Category = "Fitness",
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            var educationHabit = new Habit
+            {
+                Name = "Reading",
+                MetricType = "pages",
+                Target = 10,
+                IsActive = true,
+                Category = "Education",
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            var inactiveFitnessHabit = new Habit
+            {
+                Name = "Yoga",
+                MetricType = "minutes",
+                Target = 20,
+                IsActive = false,
+                Category = "Fitness",
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.AddRange(fitnessHabit, educationHabit, inactiveFitnessHabit);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetByCategoryAsync("Fitness");
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Exercise", result.First().Name);
+            Assert.Equal("Fitness", result.First().Category);
+            Assert.True(result.First().IsActive);
+        }
+
+        [Fact]
+        public async Task GetByCategoryAsync_ShouldReturnEmpty_WhenNoCategoryMatch()
+        {
+            // Arrange
+            var habit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                Category = "Fitness",
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.Add(habit);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetByCategoryAsync("NonExistentCategory");
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldDoNothing_WhenHabitDoesNotExist()
+        {
+            // Arrange
+            var habit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.Add(habit);
+            await _context.SaveChangesAsync();
+            var habitId = habit.Id;
+
+            // Act
+            await _repository.DeleteAsync(999); // Non-existent ID
+
+            // Assert
+            var habitStillExists = await _context.Habits.FindAsync(habitId);
+            Assert.NotNull(habitStillExists); // Original habit should still exist
+        }
+
         public void Dispose()
         {
             _context.Dispose();

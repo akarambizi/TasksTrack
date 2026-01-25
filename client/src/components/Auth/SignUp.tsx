@@ -22,7 +22,7 @@ export const SignUp = () => {
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
+                            <Input id="email" name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
                             {errors.email && <p className="text-red-500">{errors.email}</p>}
                         </div>
                         <div className="grid gap-2">
@@ -32,7 +32,7 @@ export const SignUp = () => {
                                     Forgot your password?
                                 </Link>
                             </div>
-                            <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
+                            <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required />
                             {errors.password && <p className="text-red-500">{errors.password}</p>}
                         </div>
                         <Button type="submit" className="w-full" disabled={isLoading}>

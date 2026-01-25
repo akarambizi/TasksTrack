@@ -316,6 +316,250 @@ namespace TasksTrack.Tests.Repositories
             Assert.Equal(30, result.First().Value);
         }
 
+        [Fact]
+        public async Task GetByDateRangeAsync_ShouldReturnLogsInRange()
+        {
+            // Arrange
+            var habit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.Add(habit);
+            await _context.SaveChangesAsync();
+
+            var startDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-5));
+            var middleDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-3));
+            var endDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
+            var outsideDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-10));
+
+            var log1 = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 30,
+                Date = startDate,
+                CreatedBy = "testuser"
+            };
+
+            var log2 = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 45,
+                Date = middleDate,
+                CreatedBy = "testuser"
+            };
+
+            var log3 = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 60,
+                Date = endDate,
+                CreatedBy = "testuser"
+            };
+
+            var log4 = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 20,
+                Date = outsideDate,
+                CreatedBy = "testuser"
+            };
+
+            _context.HabitLogs.AddRange(log1, log2, log3, log4);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetByDateRangeAsync(startDate, endDate);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(3, result.Count());
+            Assert.DoesNotContain(result, log => log.Date == outsideDate);
+        }
+
+        [Fact]
+        public async Task GetByHabitAndDateRangeAsync_ShouldReturnLogsForSpecificHabitInRange()
+        {
+            // Arrange
+            var habit1 = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            var habit2 = new Habit
+            {
+                Name = "Reading",
+                MetricType = "pages",
+                Target = 10,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.AddRange(habit1, habit2);
+            await _context.SaveChangesAsync();
+
+            var startDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-5));
+            var endDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
+
+            var log1 = new HabitLog
+            {
+                HabitId = habit1.Id,
+                Value = 30,
+                Date = startDate,
+                CreatedBy = "testuser"
+            };
+
+            var log2 = new HabitLog
+            {
+                HabitId = habit2.Id,
+                Value = 10,
+                Date = startDate,
+                CreatedBy = "testuser"
+            };
+
+            var log3 = new HabitLog
+            {
+                HabitId = habit1.Id,
+                Value = 45,
+                Date = endDate,
+                CreatedBy = "testuser"
+            };
+
+            _context.HabitLogs.AddRange(log1, log2, log3);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetByHabitAndDateRangeAsync(habit1.Id, startDate, endDate);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            Assert.All(result, log => Assert.Equal(habit1.Id, log.HabitId));
+        }
+
+        [Fact]
+        public async Task GetByHabitAndDateAsync_ShouldReturnSpecificLogForHabitAndDate()
+        {
+            // Arrange
+            var habit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.Add(habit);
+            await _context.SaveChangesAsync();
+
+            var targetDate = DateOnly.FromDateTime(DateTime.Now);
+            var otherDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
+
+            var targetLog = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 30,
+                Date = targetDate,
+                CreatedBy = "testuser"
+            };
+
+            var otherLog = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 45,
+                Date = otherDate,
+                CreatedBy = "testuser"
+            };
+
+            _context.HabitLogs.AddRange(targetLog, otherLog);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetByHabitAndDateAsync(habit.Id, targetDate);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(targetDate, result.Date);
+            Assert.Equal(30, result.Value);
+            Assert.Equal(habit.Id, result.HabitId);
+        }
+
+        [Fact]
+        public async Task GetByHabitAndDateAsync_ShouldReturnNull_WhenNoMatchingLog()
+        {
+            // Arrange
+            var habit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.Add(habit);
+            await _context.SaveChangesAsync();
+
+            var targetDate = DateOnly.FromDateTime(DateTime.Now);
+
+            // Act
+            var result = await _repository.GetByHabitAndDateAsync(habit.Id, targetDate);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldDoNothing_WhenLogDoesNotExist()
+        {
+            // Arrange
+            var habit = new Habit
+            {
+                Name = "Exercise",
+                MetricType = "minutes",
+                Target = 30,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = "testuser"
+            };
+
+            _context.Habits.Add(habit);
+            await _context.SaveChangesAsync();
+
+            var log = new HabitLog
+            {
+                HabitId = habit.Id,
+                Value = 30,
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                CreatedBy = "testuser"
+            };
+
+            _context.HabitLogs.Add(log);
+            await _context.SaveChangesAsync();
+            var logId = log.Id;
+
+            // Act
+            await _repository.DeleteAsync(999); // Non-existent ID
+
+            // Assert
+            var logStillExists = await _context.HabitLogs.FindAsync(logId);
+            Assert.NotNull(logStillExists); // Original log should still exist
+        }
+
         public void Dispose()
         {
             _context.Dispose();

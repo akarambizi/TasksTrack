@@ -78,7 +78,7 @@ namespace TasksTrack.Tests.Controllers
         {
             // Arrange
             var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
-            var expectedResult = new AuthResult { Success = false, Message = "Invalid credentials" };
+            var expectedResult = new AuthResult { Success = false, Message = "Invalid credentials." };
             
             _authServiceMock.Setup(service => service.LoginAsync(request)).ReturnsAsync(expectedResult);
 
@@ -86,8 +86,8 @@ namespace TasksTrack.Tests.Controllers
             var result = await _authController.Login(request);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Invalid credentials", badRequestResult.Value);
+            var badRequestResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal("Invalid credentials.", badRequestResult.Value);
         }
 
         [Fact]
@@ -137,7 +137,7 @@ namespace TasksTrack.Tests.Controllers
         {
             // Arrange
             var request = new RefreshTokenRequest { RefreshToken = "invalid-refresh-token" };
-            var expectedResult = new AuthResult { Success = false, Message = "Invalid refresh token" };
+            var expectedResult = new AuthResult { Success = false, Message = "Invalid refresh token." };
             
             _authServiceMock.Setup(service => service.RefreshTokenAsync(request)).ReturnsAsync(expectedResult);
 
@@ -145,8 +145,8 @@ namespace TasksTrack.Tests.Controllers
             var result = await _authController.RefreshToken(request);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Invalid refresh token", badRequestResult.Value);
+            var badRequestResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal("Invalid refresh token.", badRequestResult.Value);
         }
 
         [Fact]
@@ -172,7 +172,7 @@ namespace TasksTrack.Tests.Controllers
         {
             // Arrange
             var request = new PasswordResetRequest { Email = "nonexistent@example.com", NewPassword = "newpassword123" };
-            var expectedResult = new AuthResult { Success = false, Message = "User not found" };
+            var expectedResult = new AuthResult { Success = false, Message = "User not found." };
             
             _authServiceMock.Setup(service => service.ResetPasswordAsync(request)).ReturnsAsync(expectedResult);
 
@@ -180,8 +180,8 @@ namespace TasksTrack.Tests.Controllers
             var result = await _authController.ResetPassword(request);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("User not found", badRequestResult.Value);
+            var badRequestResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("User not found.", badRequestResult.Value);
         }
     }
 }

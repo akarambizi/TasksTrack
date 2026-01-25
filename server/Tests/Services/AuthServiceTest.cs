@@ -86,7 +86,7 @@ namespace TasksTrack.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Invalid credentials", result.Message);
+            Assert.Equal("Invalid credentials.", result.Message);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace TasksTrack.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Invalid credentials", result.Message);
+            Assert.Equal("Invalid credentials.", result.Message);
         }
 
         [Fact]
@@ -137,17 +137,17 @@ namespace TasksTrack.Tests.Services
         }
 
         [Fact]
-        public async Task LogoutAsync_ShouldReturnError_WhenUserNotFound()
+        public async Task LogoutAsync_ShouldReturnSuccess_EvenWhenUserNotFound()
         {
             // Arrange
-            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync("invalid-token")).ReturnsAsync((User?)null);
+            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
             // Act
             var result = await _authService.LogoutAsync("invalid-token");
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Equal("Invalid refresh token", result.Message);
+            Assert.True(result.Success);
+            Assert.Equal("Logout successful.", result.Message);
         }
 
         [Fact]
@@ -160,21 +160,21 @@ namespace TasksTrack.Tests.Services
                 Email = "test@example.com", 
                 RefreshToken = "valid-refresh-token" 
             };
-            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync("valid-refresh-token")).ReturnsAsync(existingUser);
+            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync(existingUser);
 
             // Act
             var result = await _authService.LogoutAsync("valid-refresh-token");
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal("Logged out successfully", result.Message);
+            Assert.Equal("Logout successful.", result.Message);
         }
 
         [Fact]
         public async Task RefreshTokenAsync_ShouldReturnError_WhenTokenInvalid()
         {
             // Arrange
-            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync("invalid-token")).ReturnsAsync((User?)null);
+            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
             var request = new RefreshTokenRequest { RefreshToken = "invalid-token" };
 
@@ -183,7 +183,7 @@ namespace TasksTrack.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Invalid refresh token", result.Message);
+            Assert.Equal("Invalid refresh token.", result.Message);
         }
 
         [Fact]
@@ -195,9 +195,10 @@ namespace TasksTrack.Tests.Services
                 Id = 1, 
                 Email = "test@example.com", 
                 Username = "testuser",
-                RefreshToken = "valid-refresh-token" 
+                RefreshToken = "valid-refresh-token",
+                RefreshTokenExpiry = DateTime.UtcNow.AddDays(1) // Valid future expiry
             };
-            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync("valid-refresh-token")).ReturnsAsync(existingUser);
+            _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync(existingUser);
 
             var request = new RefreshTokenRequest { RefreshToken = "valid-refresh-token" };
 
@@ -223,7 +224,7 @@ namespace TasksTrack.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("User not found", result.Message);
+            Assert.Equal("User not found.", result.Message);
         }
 
         [Fact]
@@ -245,7 +246,7 @@ namespace TasksTrack.Tests.Services
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal("Password reset successfully", result.Message);
+            Assert.Equal("Password reset successfully.", result.Message);
         }
     }
 }

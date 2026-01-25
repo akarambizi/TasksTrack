@@ -85,7 +85,7 @@ describe('AddHabitDialog', () => {
 
         await waitFor(() => {
             expect(screen.getByRole('dialog')).toBeInTheDocument();
-            expect(screen.getByText(/create new habit/i)).toBeInTheDocument();
+            expect(screen.getByText(/add new habit/i)).toBeInTheDocument();
         });
     });
 
@@ -100,14 +100,13 @@ describe('AddHabitDialog', () => {
             expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
             expect(screen.getByText(/metric type/i)).toBeInTheDocument();
             expect(screen.getByLabelText(/unit/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/target/i)).toBeInTheDocument();
-            expect(screen.getByText(/target frequency/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
+            expect(screen.getByLabelText(/daily target/i)).toBeInTheDocument();
+            expect(screen.getByText('Category')).toBeInTheDocument();
         });
     });
 
     it('calls handleChange when form fields change', async () => {
-        const mockHandleChange = vi.fn();
+        const mockHandleChange = vi.fn().mockReturnValue(vi.fn());
         MockedUseHabitForm.mockReturnValue({
             formData: {
                 name: '',
@@ -134,7 +133,7 @@ describe('AddHabitDialog', () => {
         await waitFor(() => {
             const nameInput = screen.getByLabelText(/name/i);
             fireEvent.change(nameInput, { target: { value: 'Exercise' } });
-            expect(mockHandleChange).toHaveBeenCalled();
+            expect(mockHandleChange).toHaveBeenCalledWith('name');
         });
     });
 

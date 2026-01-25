@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
@@ -77,87 +78,101 @@ describe('HabitOptionsMenu', () => {
         expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
-    it('opens dropdown menu when trigger is clicked', () => {
+    it('opens dropdown menu when trigger is clicked', async () => {
+        const user = userEvent.setup();
         renderHabitOptionsMenu();
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        expect(screen.getByRole('menu')).toBeInTheDocument();
+        // Wait for the menu content to appear - it may take a moment with Radix UI
+        await waitFor(() => {
+            expect(screen.getByText(/View Details/i)).toBeInTheDocument();
+        });
     });
 
-    it('displays all menu options for active habit', () => {
+    it('displays all menu options for active habit', async () => {
+        const user = userEvent.setup();
         renderHabitOptionsMenu();
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        expect(screen.getByText(/view details/i)).toBeInTheDocument();
-        expect(screen.getByText(/log activity/i)).toBeInTheDocument();
-        expect(screen.getByText(/edit/i)).toBeInTheDocument();
-        expect(screen.getByText(/archive/i)).toBeInTheDocument();
-        expect(screen.getByText(/delete/i)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText(/View Details/i)).toBeInTheDocument();
+            expect(screen.getByText(/Log Activity/i)).toBeInTheDocument();
+            expect(screen.getByText(/Edit Habit/i)).toBeInTheDocument();
+            expect(screen.getByText(/Archive Habit/i)).toBeInTheDocument();
+            expect(screen.getByText(/Delete Habit/i)).toBeInTheDocument();
+        });
     });
 
-    it('displays activate option for archived habit', () => {
+    it('displays activate option for archived habit', async () => {
+        const user = userEvent.setup();
         const archivedHabit = { ...mockHabit, isActive: false };
         renderHabitOptionsMenu({ habit: archivedHabit });
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        expect(screen.getByText(/activate/i)).toBeInTheDocument();
-        expect(screen.queryByText(/archive/i)).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText(/Activate Habit/i)).toBeInTheDocument();
+            expect(screen.queryByText(/Archive Habit/i)).not.toBeInTheDocument();
+        });
     });
 
-    it('calls onLogActivity when log activity is clicked', () => {
+    it('calls onLogActivity when log activity is clicked', async () => {
+        const user = userEvent.setup();
         const mockOnLogActivity = vi.fn();
         renderHabitOptionsMenu({ onLogActivity: mockOnLogActivity });
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        const logActivityOption = screen.getByText(/log activity/i);
-        fireEvent.click(logActivityOption);
+        const logActivityOption = await screen.findByText(/Log Activity/i);
+        await user.click(logActivityOption);
 
         expect(mockOnLogActivity).toHaveBeenCalledWith(mockHabit);
     });
 
-    it('calls onEdit when edit is clicked', () => {
+    it('calls onEdit when edit is clicked', async () => {
+        const user = userEvent.setup();
         const mockOnEdit = vi.fn();
         renderHabitOptionsMenu({ onEdit: mockOnEdit });
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        const editOption = screen.getByText(/edit/i);
-        fireEvent.click(editOption);
+        const editOption = await screen.findByText(/Edit Habit/i);
+        await user.click(editOption);
 
         expect(mockOnEdit).toHaveBeenCalledWith(mockHabit);
     });
 
-    it('calls archive mutation when archive is clicked', () => {
+    it('calls archive mutation when archive is clicked', async () => {
+        const user = userEvent.setup();
         const mockArchiveMutation = vi.fn();
         MockedUseArchiveHabitMutation.mockReturnValue({
-            mutateAsync: mockArchiveMutation,
+            mutate: mockArchiveMutation,
             isPending: false
         });
 
         renderHabitOptionsMenu();
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        const archiveOption = screen.getByText(/archive/i);
-        fireEvent.click(archiveOption);
+        const archiveOption = await screen.findByText(/Archive Habit/i);
+        await user.click(archiveOption);
 
         expect(mockArchiveMutation).toHaveBeenCalledWith(1);
     });
 
-    it('calls activate mutation when activate is clicked', () => {
+    it('calls activate mutation when activate is clicked', async () => {
+        const user = userEvent.setup();
         const mockActivateMutation = vi.fn();
         MockedUseActivateHabitMutation.mockReturnValue({
-            mutateAsync: mockActivateMutation,
+            mutate: mockActivateMutation,
             isPending: false
         });
 
@@ -165,28 +180,29 @@ describe('HabitOptionsMenu', () => {
         renderHabitOptionsMenu({ habit: archivedHabit });
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        const activateOption = screen.getByText(/activate/i);
-        fireEvent.click(activateOption);
+        const activateOption = await screen.findByText(/Activate Habit/i);
+        await user.click(activateOption);
 
         expect(mockActivateMutation).toHaveBeenCalledWith(1);
     });
 
-    it('calls delete mutation when delete is clicked', () => {
+    it('calls delete mutation when delete is clicked', async () => {
+        const user = userEvent.setup();
         const mockDeleteMutation = vi.fn();
         MockedUseDeleteHabitMutation.mockReturnValue({
-            mutateAsync: mockDeleteMutation,
+            mutate: mockDeleteMutation,
             isPending: false
         });
 
         renderHabitOptionsMenu();
         
         const trigger = screen.getByRole('button');
-        fireEvent.click(trigger);
+        await user.click(trigger);
 
-        const deleteOption = screen.getByText(/delete/i);
-        fireEvent.click(deleteOption);
+        const deleteOption = await screen.findByText(/Delete Habit/i);
+        await user.click(deleteOption);
 
         expect(mockDeleteMutation).toHaveBeenCalledWith(1);
     });

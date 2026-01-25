@@ -25,4 +25,5 @@ bld/
 
 # Coverage results
 coverage
+TestResults/
 .DS_Store

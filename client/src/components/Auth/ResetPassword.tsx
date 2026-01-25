@@ -19,7 +19,7 @@ export const ResetPassword = () => {
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
+                            <Input id="email" name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
                             {errors.email && <p className="text-red-500">{errors.email}</p>}
                         </div>
                         <Button type="submit" className="w-full">

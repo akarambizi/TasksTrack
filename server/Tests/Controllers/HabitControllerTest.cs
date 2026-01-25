@@ -196,5 +196,77 @@ namespace TasksTrack.Tests.Controllers
             // Assert
             Assert.IsType<NoContentResult>(result);
         }
+
+        [Fact]
+        public async Task Update_ReturnsNoContent_WhenUpdateSucceeds()
+        {
+            // Arrange
+            var habit = new Habit { Id = 1, Name = "Exercise", MetricType = "minutes", Target = 30, IsActive = true, CreatedBy = "testuser" };
+            _mockService.Setup(service => service.UpdateAsync(habit)).ReturnsAsync(true);
+
+            // Act
+            var result = await _controller.Update(1, habit);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+            _mockService.Verify(service => service.UpdateAsync(habit), Times.Once);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsNotFound_WhenHabitDoesNotExist()
+        {
+            // Arrange
+            var habit = new Habit { Id = 1, Name = "Exercise", MetricType = "minutes", Target = 30, IsActive = true, CreatedBy = "testuser" };
+            _mockService.Setup(service => service.UpdateAsync(habit)).ReturnsAsync(false);
+
+            // Act
+            var result = await _controller.Update(1, habit);
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsBadRequest_WhenIdMismatch()
+        {
+            // Arrange
+            var habit = new Habit { Id = 2, Name = "Exercise", MetricType = "minutes", Target = 30, IsActive = true, CreatedBy = "testuser" };
+
+            // Act
+            var result = await _controller.Update(1, habit);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsBadRequest_WhenModelStateInvalid()
+        {
+            // Arrange
+            var habit = new Habit { Id = 1, Name = "", MetricType = "minutes", Target = 30, IsActive = true, CreatedBy = "testuser" }; // Empty name should be invalid
+            _controller.ModelState.AddModelError("Name", "Name is required");
+
+            // Act
+            var result = await _controller.Update(1, habit);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsInternalServerError_WhenServiceThrowsException()
+        {
+            // Arrange
+            var habit = new Habit { Id = 1, Name = "Exercise", MetricType = "minutes", Target = 30, IsActive = true, CreatedBy = "testuser" };
+            _mockService.Setup(service => service.UpdateAsync(habit))
+                .ThrowsAsync(new Exception("Service error"));
+
+            // Act
+            var result = await _controller.Update(1, habit);
+
+            // Assert
+            var statusCodeResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, statusCodeResult.StatusCode);
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -31,8 +31,8 @@ const mockHabit: IHabit = {
     icon: 'dumbbell',
     isActive: true,
     createdBy: 'test@example.com',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString()
 };
 
 const renderHabitOptionsMenu = (props: Partial<React.ComponentProps<typeof HabitOptionsMenu>> = {}) => {

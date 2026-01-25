@@ -23,7 +23,7 @@ vi.mock('date-fns', async () => {
                 const d = new Date(date);
                 return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
             }
-            return actual.format(date, formatStr);
+            return (actual as any).format(date, formatStr);
         }),
     };
 });
@@ -64,9 +64,10 @@ const mockHabit: IHabit = {
     unit: 'minutes',
     metricType: 'duration',
     targetFrequency: 'daily',
-    userId: 1,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
+    isActive: true,
+    createdBy: 'test-user',
+    createdDate: '2024-01-01T00:00:00Z',
+    updatedDate: '2024-01-01T00:00:00Z',
 };
 
 const mockHabitLogs: IHabitLog[] = [
@@ -76,8 +77,9 @@ const mockHabitLogs: IHabitLog[] = [
         value: 15,
         date: '2024-01-01T00:00:00Z',
         notes: 'Test log 1',
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
+        createdBy: 'test-user',
+        createdDate: '2024-01-01T00:00:00Z',
+        updatedDate: '2024-01-01T00:00:00Z',
     },
     {
         id: 2,
@@ -85,8 +87,9 @@ const mockHabitLogs: IHabitLog[] = [
         value: 20,
         date: '2024-01-01T00:00:00Z',
         notes: 'Test log 2',
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
+        createdBy: 'test-user',
+        createdDate: '2024-01-01T00:00:00Z',
+        updatedDate: '2024-01-01T00:00:00Z',
     },
 ];
 
@@ -285,7 +288,7 @@ describe('HabitLogStats', () => {
         });
 
         it('should default to "units" when neither unit nor metricType is available', () => {
-            const habitWithoutUnit = { ...mockHabit, unit: undefined, metricType: undefined };
+            const habitWithoutUnit = { ...mockHabit, unit: '', metricType: '' };
             (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
                 createMockQueryResult(mockHabitLogs)
             );

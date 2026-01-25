@@ -152,6 +152,7 @@ describe('AddHabitLogDialog', () => {
                 value: 0,
                 date: '2024-01-23',
                 notes: '',
+                createdBy: 'test-user'
             },
             setFormData: vi.fn(),
             handleChange: vi.fn((_field: keyof IHabitLogCreateRequest) => (_value: string | number) => {}),
@@ -241,6 +242,7 @@ describe('AddHabitLogDialog', () => {
                 value: 30,
                 date: '2024-01-23',
                 notes: 'Great workout!',
+                createdBy: 'test-user'
             },
             setFormData: vi.fn(),
             handleChange: vi.fn((_field: keyof IHabitLogCreateRequest) => (_value: string | number) => {}),
@@ -270,6 +272,7 @@ describe('AddHabitLogDialog', () => {
                 value: 30,
                 date: '2024-01-23',
                 notes: 'Great workout!',
+                createdBy: 'test-user',
             });
         });
     });

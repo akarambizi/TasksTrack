@@ -24,7 +24,7 @@ namespace TasksTrack.Controllers
                 var result = await _habitLogService.GetAllAsync();
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
@@ -46,7 +46,7 @@ namespace TasksTrack.Controllers
 
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
@@ -71,7 +71,7 @@ namespace TasksTrack.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
@@ -106,7 +106,7 @@ namespace TasksTrack.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
@@ -129,7 +129,7 @@ namespace TasksTrack.Controllers
                 await _habitLogService.DeleteAsync(id);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
@@ -145,7 +145,7 @@ namespace TasksTrack.Controllers
                 var result = await _habitLogService.GetByHabitIdAsync(habitId);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
@@ -162,7 +162,7 @@ namespace TasksTrack.Controllers
                 var result = await _habitLogService.GetByDateAsync(dateOnly);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
@@ -178,7 +178,7 @@ namespace TasksTrack.Controllers
                 var result = await _habitLogService.GetByDateRangeAsync(startDateOnly, endDateOnly);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
@@ -194,7 +194,7 @@ namespace TasksTrack.Controllers
                 var result = await _habitLogService.GetByHabitAndDateRangeAsync(habitId, startDateOnly, endDateOnly);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving habit logs." });
             }
@@ -213,7 +213,7 @@ namespace TasksTrack.Controllers
                 }
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving the habit log." });
             }

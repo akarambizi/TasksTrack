@@ -56,7 +56,8 @@ describe('habitLog API', () => {
                 habitId: 1,
                 value: 30.5,
                 date: '2024-01-15',
-                notes: 'Test'
+                notes: 'Test',
+                createdBy: 'test-user'
             };
             const errorMessage = 'Failed to create log';
 

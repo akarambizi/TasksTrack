@@ -2,6 +2,7 @@ import { getHabitData, getHabitById, deleteHabit, archiveHabit, activateHabit, c
 import { getHabitKey } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { CACHE_TIMES } from './constants';
 
 /**
  * Custom hook for fetching habit data.
@@ -13,7 +14,7 @@ export const useHabitData = (query: string, options?: UseQueryOptions<IHabit[], 
     return useQuery({
         queryKey: getHabitKey(query),
         queryFn: () => getHabitData(query),
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: CACHE_TIMES.LONG, // 5 minutes
         ...options,
     });
 };
@@ -28,7 +29,7 @@ export const useHabitById = (habitId: number, options?: UseQueryOptions<IHabit, 
     return useQuery({
         queryKey: ['habit', habitId.toString()],
         queryFn: () => getHabitById(habitId),
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: CACHE_TIMES.LONG, // 5 minutes
         enabled: !!habitId && habitId > 0,
         ...options,
     });

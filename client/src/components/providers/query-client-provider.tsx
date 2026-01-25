@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider as TanstackQueryClientProvider } from 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { AxiosError } from 'axios';
+import { CACHE_TIMES } from '../../queries/constants';
 
 interface QueryClientProviderProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export const QueryClientProvider = ({ children }: QueryClientProviderProps) => {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000, // 1 minute
+            staleTime: CACHE_TIMES.SHORT, // 1 minute
             refetchOnWindowFocus: false,
             retry: (failureCount: number, error: Error) => {
               // Don't retry on 401 Unauthorized or 403 Forbidden errors

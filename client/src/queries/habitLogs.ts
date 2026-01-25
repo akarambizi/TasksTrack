@@ -14,6 +14,7 @@ import {
 import { habitLogKeys, getHabitKey } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { CACHE_TIMES } from './constants';
 
 interface IUseHabitLogsOptions {
     habitId?: number;
@@ -25,7 +26,7 @@ interface IUseHabitLogsOptions {
  */
 export const useHabitLogs = (options?: IUseHabitLogsOptions, queryOptions?: UseQueryOptions<IHabitLog[], AxiosError>) => {
     const { habitId, limit } = options || {};
-    
+
     return useQuery({
         queryKey: habitId ? habitLogKeys.byHabit(habitId) : habitLogKeys.lists(),
         queryFn: () => {
@@ -34,7 +35,7 @@ export const useHabitLogs = (options?: IUseHabitLogsOptions, queryOptions?: UseQ
             }
             return getHabitLogs();
         },
-        staleTime: 2 * 60 * 1000, // 2 minutes
+        staleTime: CACHE_TIMES.MEDIUM, // 2 minutes
         enabled: habitId ? !!habitId : true,
         ...queryOptions,
     });
@@ -48,7 +49,7 @@ export const useHabitLog = (id: number, options?: UseQueryOptions<IHabitLog, Axi
         queryKey: habitLogKeys.detail(id),
         queryFn: () => getHabitLogById(id),
         enabled: !!id,
-        staleTime: 2 * 60 * 1000,
+        staleTime: CACHE_TIMES.MEDIUM,
         ...options,
     });
 };
@@ -61,7 +62,7 @@ export const useHabitLogsByHabit = (habitId: number, options?: UseQueryOptions<I
         queryKey: habitLogKeys.byHabit(habitId),
         queryFn: () => getHabitLogsByHabitId(habitId),
         enabled: !!habitId,
-        staleTime: 2 * 60 * 1000,
+        staleTime: CACHE_TIMES.MEDIUM,
         ...options,
     });
 };
@@ -74,7 +75,7 @@ export const useHabitLogsByDate = (date: string, options?: UseQueryOptions<IHabi
         queryKey: habitLogKeys.byDate(date),
         queryFn: () => getHabitLogsByDate(date),
         enabled: !!date,
-        staleTime: 2 * 60 * 1000,
+        staleTime: CACHE_TIMES.MEDIUM,
         ...options,
     });
 };
@@ -87,7 +88,7 @@ export const useHabitLogsByDateRange = (startDate: string, endDate: string, opti
         queryKey: habitLogKeys.byDateRange(startDate, endDate),
         queryFn: () => getHabitLogsByDateRange(startDate, endDate),
         enabled: !!startDate && !!endDate,
-        staleTime: 2 * 60 * 1000,
+        staleTime: CACHE_TIMES.MEDIUM,
         ...options,
     });
 };
@@ -100,7 +101,7 @@ export const useHabitLogsByHabitAndDateRange = (habitId: number, startDate: stri
         queryKey: habitLogKeys.byHabitAndDateRange(habitId, startDate, endDate),
         queryFn: () => getHabitLogsByHabitAndDateRange(habitId, startDate, endDate),
         enabled: !!habitId && !!startDate && !!endDate,
-        staleTime: 2 * 60 * 1000,
+        staleTime: CACHE_TIMES.MEDIUM,
         ...options,
     });
 };
@@ -113,7 +114,7 @@ export const useHabitLogByHabitAndDate = (habitId: number, date: string, options
         queryKey: habitLogKeys.byHabitAndDate(habitId, date),
         queryFn: () => getHabitLogByHabitAndDate(habitId, date),
         enabled: !!habitId && !!date,
-        staleTime: 2 * 60 * 1000,
+        staleTime: CACHE_TIMES.MEDIUM,
         ...options,
     });
 };

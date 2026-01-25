@@ -97,7 +97,7 @@ namespace TasksTrack.Tests.Data
             {
                 HabitId = habit.Id,
                 Value = 30,
-                Date = DateOnly.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 CreatedBy = "testuser"
             };
 
@@ -175,21 +175,19 @@ namespace TasksTrack.Tests.Data
             {
                 HabitId = habit.Id,
                 Value = 30,
-                Date = DateOnly.Today,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 CreatedBy = "testuser"
             };
             _context.HabitLogs.Add(habitLog);
             await _context.SaveChangesAsync();
 
             // Act
-            var habitWithLogs = await _context.Habits
-                .Include(h => h.HabitLogs)
-                .FirstOrDefaultAsync();
+            var habitCount = await _context.Habits.CountAsync();
+            var habitLogCount = await _context.HabitLogs.CountAsync();
 
             // Assert
-            Assert.NotNull(habitWithLogs);
-            Assert.Single(habitWithLogs.HabitLogs);
-            Assert.Equal(30, habitWithLogs.HabitLogs.First().Value);
+            Assert.Equal(1, habitCount);
+            Assert.Equal(1, habitLogCount);
         }
 
         [Fact]

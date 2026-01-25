@@ -17,7 +17,6 @@ function getUsers(): IAuthData[] {
     return authData.auth;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { Request, Response, NextFunction } from 'express';
 
 export default function authMiddleware(req: Request, res: Response, next: NextFunction) {

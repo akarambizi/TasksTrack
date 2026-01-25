@@ -1,0 +1,54 @@
+Summary
+  Generated on: 1/24/2026 - 8:36:25 PM
+  Coverage date: 1/24/2026 - 8:36:16 PM
+  Parser: Cobertura
+  Assemblies: 1
+  Classes: 32
+  Files: 39
+  Line coverage: 29%
+  Covered lines: 562
+  Uncovered lines: 1372
+  Coverable lines: 1934
+  Total lines: 2997
+  Branch coverage: 64.7% (57 of 88)
+  Covered branches: 57
+  Total branches: 88
+  Method coverage: 74.8% (134 of 179)
+  Full method coverage: 62.5% (112 of 179)
+  Covered methods: 134
+  Fully covered methods: 112
+  Total methods: 179
+
+server                                                            29%
+  DependencyInjectionSetup                                         0%
+  Program                                                          0%
+  server.Migrations.AddHabitLogTable                               0%
+  server.Migrations.AddRefreshTokenToUsers                         0%
+  server.Migrations.InitialCreate                                  0%
+  server.Migrations.RenameTasksToHabits                            0%
+  server.Migrations.TasksTrackContextModelSnapshot                 0%
+  server.Migrations.UpdateHabitLogDateToDateOnlyAndAddIndexes      0%
+  server.Migrations.UpdateTableMigration                           0%
+  server.Migrations.UpdateToNet9Migration                          0%
+  TasksTrack.Controllers.AuthController                         94.8%
+  TasksTrack.Controllers.HabitController                        50.6%
+  TasksTrack.Controllers.HabitLogController                     68.6%
+  TasksTrack.Controllers.UsersController                         100%
+  TasksTrack.Data.TasksTrackContext                              100%
+  TasksTrack.Models.AuthResult                                   100%
+  TasksTrack.Models.Habit                                        100%
+  TasksTrack.Models.HabitLog                                      90%
+  TasksTrack.Models.LoginRequest                                 100%
+  TasksTrack.Models.PasswordResetRequest                         100%
+  TasksTrack.Models.RefreshTokenRequest                          100%
+  TasksTrack.Models.RegisterRequest                              100%
+  TasksTrack.Models.TokenRequest                                   0%
+  TasksTrack.Models.User                                         100%
+  TasksTrack.Repositories.AuthRepository                         100%
+  TasksTrack.Repositories.HabitLogRepository                    69.6%
+  TasksTrack.Repositories.HabitRepository                       68.4%
+  TasksTrack.Repositories.UserRepository                           0%
+  TasksTrack.Services.AuthService                               87.9%
+  TasksTrack.Services.HabitLogService                           90.9%
+  TasksTrack.Services.HabitService                              95.2%
+  TasksTrack.Services.UserService                                  0%

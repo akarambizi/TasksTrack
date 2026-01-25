@@ -7,6 +7,7 @@ export default mergeConfig(
         test: {
             globals: true, // describe, it, expect, beforeEach, afterEach
             environment: 'happy-dom', // fix document is not defined
+            setupFiles: './src/test-setup.ts',
             coverage: {
                 provider: 'istanbul',
                 include: ['src/components/**/*.{js,jsx,ts,tsx}'],

@@ -25,6 +25,7 @@
     "axios": "^1.12.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.321.0",
     "react": "^18.2.0",
     "react-cookie": "^8.0.1",
@@ -34,6 +35,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^15.0.5",
     "@types/json-server": "^0.14.2",
     "@types/node": "^20.11.16",

@@ -1,5 +1,6 @@
 import authData from './auth.ts';
 import { IAuthData, IAuthResult } from '../../../api/userAuth.types.ts';
+import { Request, Response, NextFunction } from 'express';
 
 // Response objects for each auth endpoint
 const loginSuccessResponse = (user: IAuthData): IAuthResult & { token: string } => ({ success: true, token: `mock-token-${user.email}`, message: 'Login successful' });
@@ -17,8 +18,7 @@ function getUsers(): IAuthData[] {
     return authData.auth;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function authMiddleware(req: any, res: any, next: any) {
+export default function authMiddleware(req: Request, res: Response, next: NextFunction) {
     if (req.method === 'POST' && req.path === '/auth/login') {
         const { email, password } = req.body;
         const users = getUsers();

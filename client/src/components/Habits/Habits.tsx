@@ -1,11 +1,27 @@
+import { useState } from 'react';
 import { useHabitData } from '@/queries';
 import { CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AddHabitDialog } from './AddHabitDialog';
+import { AddHabitLogDialog } from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
 import { PomodoroDialog } from '../Pomodoro/PomodoroDialog';
+import { IHabit } from '@/api';
 
 export const Habits = () => {
     const { data: habits } = useHabitData('');
+    const [selectedHabitForLogging, setSelectedHabitForLogging] = useState<IHabit | null>(null);
+
+    const handleLogActivity = (habit: IHabit) => {
+        setSelectedHabitForLogging(habit);
+    };
+
+    const handleCloseLogDialog = (open: boolean) => {
+        if (!open) {
+            setSelectedHabitForLogging(null);
+        }
+    };
+
     return (
         <section>
             <div className="flex-1 overflow-auto p-6">
@@ -33,7 +49,14 @@ export const Habits = () => {
                                         {habit.isActive && <CheckCircle size={14} />}
                                     </div>
                                     <div>
-                                        <h4 className={`font-medium ${!habit.isActive ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>{habit.name}</h4>
+                                        <Link 
+                                            to={`/habits/${habit.id}`}
+                                            className="hover:underline"
+                                        >
+                                            <h4 className={`font-medium ${!habit.isActive ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400'}`}>
+                                                {habit.name}
+                                            </h4>
+                                        </Link>
                                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                                             Target: {habit.target} {habit.unit} {habit.targetFrequency}
                                         </p>
@@ -45,13 +68,30 @@ export const Habits = () => {
                                     </div>
                                 </div>
                                 <div className="flex space-x-2">
+                                    <AddHabitLogDialog
+                                        habit={habit}
+                                        trigger={
+                                            <button className="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900 text-green-600 dark:text-green-400">
+                                                <CheckCircle size={16} />
+                                            </button>
+                                        }
+                                    />
                                     <PomodoroDialog habit={habit} />
-                                    <HabitOptionsMenu habit={habit} />
+                                    <HabitOptionsMenu habit={habit} onLogActivity={handleLogActivity} />
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+
+                {/* Log Activity Dialog triggered from options menu */}
+                {selectedHabitForLogging && (
+                    <AddHabitLogDialog
+                        habit={selectedHabitForLogging}
+                        isOpen={true}
+                        onOpenChange={handleCloseLogDialog}
+                    />
+                )}
             </div>
         </section>
     );

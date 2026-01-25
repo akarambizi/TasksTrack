@@ -19,6 +19,23 @@ export const getHabitData = async (query = ''): Promise<IHabit[]> => {
 };
 
 /**
+ * Gets a single habit by ID.
+ * @param {number} habitId - The ID of the habit to fetch.
+ * @returns {Promise<IHabit>} The habit with the specified ID.
+ */
+export const getHabitById = async (habitId: number): Promise<IHabit> => {
+    try {
+        const endpoint = `/api/habits/${habitId}`;
+        const response = await apiGet<IHabit>(endpoint);
+        return response;
+    } catch (error) {
+        console.error('Failed to fetch habit:', error);
+        ToastService.error('Failed to fetch habit');
+        throw error;
+    }
+};
+
+/**
  * Creates a new habit using full habit object (temporary fix for backend expecting full object).
  * @param {Partial<IHabit>} habitData - The habit data object.
  * @returns {Promise<IHabit>} The created habit with generated ID.
@@ -85,23 +102,6 @@ export const deleteHabit = async (id: number): Promise<void> => {
     } catch (error) {
         console.error('Failed to delete habit:', error);
         ToastService.error('Failed to delete habit');
-        throw error;
-    }
-};
-
-/**
- * Gets a single habit by ID.
- * @param {number} id - The ID of the habit to retrieve.
- * @returns {Promise<IHabit>} The requested habit.
- */
-export const getHabitById = async (id: number): Promise<IHabit> => {
-    try {
-        const endpoint = `/api/habits/${id}`;
-        const response = await apiGet<IHabit>(endpoint);
-        return response;
-    } catch (error) {
-        console.error(`Failed to fetch habit with ID ${id}:`, error);
-        ToastService.error(`Failed to fetch habit #${id}`);
         throw error;
     }
 };

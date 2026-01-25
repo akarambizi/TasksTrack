@@ -23,7 +23,10 @@ export interface IHabitLog {
     date: string; // Date of the log entry
     notes?: string;
     createdDate: string;
+    updatedDate?: string;
     createdBy: string;
+    updatedBy?: string;
+    habit?: IHabit; // Optional populated habit information
 }
 
 export interface IHabitCreateRequest {
@@ -39,5 +42,17 @@ export interface IHabitCreateRequest {
 }
 
 export interface IHabitUpdateRequest extends Partial<IHabitCreateRequest> {
+    id: number;
+}
+
+export interface IHabitLogCreateRequest {
+    habitId: number;
+    value: number;
+    date: string;
+    notes?: string;
+    createdBy: string;
+}
+
+export interface IHabitLogUpdateRequest extends Partial<IHabitLogCreateRequest> {
     id: number;
 }

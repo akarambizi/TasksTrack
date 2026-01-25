@@ -52,7 +52,33 @@ client/src/
 - Import organization
 - Component structure
 
-### 3. **Reference Existing Interface Patterns**
+### 3. **Testing with Vitest**
+
+**Use Vitest as the test runner with `.spec.ts` or `.spec.tsx` file extensions:**
+
+```typescript
+// Component testing with Vitest + React Testing Library
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+// Note: jest-dom matchers are imported via src/test-setup.ts
+
+// Hook testing
+import { renderHook, act } from '@testing-library/react';
+
+// Test file naming:
+// - useAuth.spec.ts (for hooks)
+// - Login.spec.tsx (for components)
+// - habitLog.spec.ts (for API functions)
+```
+
+**Key Testing Patterns:**
+- Use QueryClient wrapper for components using TanStack Query
+- Mock API functions and services using `vi.mock()`
+- Test user interactions with `fireEvent` and `waitFor`
+- Use descriptive test names that explain the expected behavior
+- jest-dom matchers like `toBeInTheDocument()` are available via test setup
+
+### 4. **Reference Existing Interface Patterns**
 
 **Before creating new interfaces, check these existing files:**
 
@@ -64,6 +90,7 @@ client/src/
 - Use the same property naming conventions as existing interfaces
 - Follow the same optional property patterns (`?:`)
 - Match the data types already established in the codebase
+- **Avoid `any` types** - Use specific interfaces, union types, or `unknown` when the type is truly unknown
 
 ### 4. **Follow Existing Component Patterns**
 
@@ -268,10 +295,26 @@ export const useCreateHabitMutation = () => {
 
 **Follow the established testing patterns for:**
 
-- Test setup and mocking strategies
-- Component rendering and interaction testing
-- Hook testing with React Query
-- Test file naming and organization
+- Test setup and mocking strategies using Vitest (`vi.mock()`, `vi.fn()`)
+- Component rendering and interaction testing with `@testing-library/react`
+- Hook testing with React Query using `renderHook` and QueryClient wrappers
+- Test file naming: `.spec.ts` for utilities/hooks, `.spec.tsx` for components
+- jest-dom matchers available globally through `src/test-setup.ts`
+
+**Quality Requirements:**
+- **Test coverage must be ≥ 80%** - Every new component and hook must include comprehensive tests
+- **All tests must pass** - 100% pass rate required before merge
+- **Zero TypeScript warnings** - All type issues must be resolved
+- **No `any` types** - Avoid using `any` type; use proper TypeScript types, interfaces, or `unknown` when necessary
+- **Test user interactions** - Include tests for loading states, error states, and user actions
+- **Follow existing test patterns** - Use the same mocking and assertion approaches already established
+
+**Before completing any feature, run:**
+```bash
+npm run build        # Must succeed with no errors
+npm run test -- --run --coverage  # Must show ≥80% coverage and 100% pass rate
+npm run lint         # Must pass with no errors
+```
 
 ## Development Best Practices
 
@@ -344,5 +387,78 @@ When working on client-side code, always reference these key files first:
 - **Error Boundaries**: Use error boundaries for graceful error recovery
 - **Type Safety**: Leverage TypeScript strictly - avoid `any` types
 - **Authentication**: Protect routes and handle authentication states properly
+
+## Testing Requirements and Best Practices
+
+### **Test Coverage Standards**
+
+- **Minimum Coverage**: All test suites must maintain **at least 80% code coverage**
+- **Coverage Types**: Monitor statements, branches, functions, and lines coverage
+- **Coverage Reports**: Use `npm test` to generate coverage reports with Istanbul
+- **Failing Tests**: Tests failing to meet 80% coverage should be improved before merging
+
+### **Test File Naming Convention**
+
+- **Unit Tests**: Use `.spec.ts` for TypeScript files without JSX
+- **Component Tests**: Use `.spec.tsx` for React component tests with JSX
+- **Location**: Place test files alongside the source files they test
+- **Examples**:
+  - `useHabitForm.spec.ts` for custom hooks
+  - `AddHabitDialog.spec.tsx` for React components
+  - `habitLog.spec.ts` for API service functions
+
+### **Testing Framework Configuration**
+
+**Vitest Setup** (already configured):
+- Uses Vitest as the test runner with Happy-DOM environment
+- @testing-library/jest-dom matchers available globally via `src/test-setup.ts`
+- Configuration in `vitest.config.ts` with setupFiles pointing to test setup
+- Coverage reporting enabled with Istanbul
+
+### **Component Testing Best Practices**
+
+**Use testid attributes for reliable element selection:**
+
+```tsx
+// Good: Add data-testid for complex selectors
+<Button data-testid="submit-habit-form" onClick={handleSubmit}>
+    Add Habit
+</Button>
+
+// Good: Use testid for dynamic content that's hard to select
+<div data-testid={`habit-${habit.id}`} className="habit-card">
+    <h3 data-testid="habit-title">{habit.title}</h3>
+    <span data-testid="habit-streak">{habit.streak} days</span>
+</div>
+```
+
+**Testing Strategy:**
+- **Render Testing**: Ensure components render without crashing
+- **User Interactions**: Test click events, form submissions, keyboard navigation
+- **Conditional Rendering**: Test different states (loading, error, empty, populated)
+- **Integration**: Test component behavior with real API calls when appropriate
+- **Accessibility**: Verify screen reader compatibility and keyboard navigation
+
+### **Testing Patterns to Follow**
+
+**Study existing test patterns in:**
+- `client/src/hooks/useHabitLogForm.spec.ts` - for custom hook testing
+- `client/src/components/Auth/Login.spec.tsx` - for component testing
+- `client/src/api/habitLog.spec.ts` - for API service testing
+- `client/src/queries/habitLogs.spec.tsx` - for TanStack Query hook testing
+
+**Maintain consistency with:**
+- Mock patterns for API functions and external dependencies
+- Test wrapper setup for QueryClient and providers
+- Assertion patterns and error handling tests
+- Query key testing and cache invalidation verification
+
+### **Coverage Improvement Strategies**
+
+- **Add testid attributes** to interactive elements and dynamic content
+- **Test edge cases** like empty states, error conditions, and loading states
+- **Test user workflows** like form submission, validation, and success/error handling
+- **Mock external dependencies** properly to isolate component logic
+- **Test conditional rendering** based on props and state changes
 
 Remember: Focus on understanding the "why" behind each pattern, not just the "how." Frontend development is constantly evolving with new patterns, hooks, and optimization techniques - there's always room to learn and improve your React, TypeScript, and state management skills as you build this project.

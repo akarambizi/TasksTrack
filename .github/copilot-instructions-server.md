@@ -174,6 +174,18 @@ server/
 - Look for existing test files to understand testing conventions
 - Follow established mocking and assertion patterns
 
+**Quality Requirements:**
+- **Test coverage must be ≥ 80%** - Every new feature must include comprehensive unit tests
+- **All tests must pass** - 100% pass rate required before merge
+- **Test error conditions** - Include tests for null values, exceptions, and edge cases
+- **Follow existing test patterns** - Use the same mocking and assertion approaches already established
+
+**Before completing any feature, run:**
+```bash
+dotnet build         # Must succeed with no warnings/errors
+dotnet test          # Must show 100% test pass rate
+```
+
 ## Development Best Practices
 
 ### ✅ **Do This: Follow Existing Patterns**

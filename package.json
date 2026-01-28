@@ -1,0 +1,24 @@
+{
+  "name": "taskstrack",
+  "version": "1.0.0",
+  "description": "Full-stack habit tracking application",
+  "scripts": {
+    "prepare": "husky",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && dotnet build --configuration Release --no-restore --verbosity quiet -p:TreatWarningsAsErrors=true",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "cd client && npm run test -- --run",
+    "test:server": "cd server && dotnet test --no-restore --verbosity quiet",
+    "lint:md": "markdownlint-cli2 **/*.md --config .markdownlint.json",
+    "precommit": "npm run build && npm run lint:md",
+    "install:all": "npm install && cd client && npm install && cd ../server && dotnet restore"
+  },
+  "dependencies": {
+    "markdownlint-cli2": "^0.20.0"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
+  }
+}

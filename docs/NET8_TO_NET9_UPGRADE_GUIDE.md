@@ -2,11 +2,14 @@
 
 ## Overview
 
-This document details the complete process of upgrading TasksTrack from .NET 8 to .NET 9, including all challenges encountered and solutions implemented. This serves as a learning reference for future .NET version upgrades.
+This document details the complete process of upgrading TasksTrack from .NET 8 to .NET 9,
+including all challenges encountered and solutions implemented.
+This serves as a learning reference for future .NET version upgrades.
 
 ## Pre-Upgrade State
 
 **Before the upgrade:**
+
 - Target Framework: `net8.0`
 - .NET SDK: 8.0.403
 - Package versions:
@@ -22,12 +25,14 @@ This document details the complete process of upgrading TasksTrack from .NET 8 t
 ### 1. Install .NET 9 SDK
 
 **What we did:**
+
 ```bash
 # Downloaded and installed .NET 9 SDK
 curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 9.0
 ```
 
 **Verification:**
+
 ```bash
 dotnet --version
 # Output: 9.0.306
@@ -38,6 +43,7 @@ dotnet --version
 ### 2. Update Target Framework
 
 **Files modified:**
+
 - `/server/server.csproj`
 - `/server/Tests/Tests.csproj`
 
@@ -50,7 +56,8 @@ dotnet --version
 <TargetFramework>net9.0</TargetFramework>
 ```
 
-**Learning Point:** All projects in the solution must use the same target framework version to avoid compatibility issues.
+**Learning Point:** All projects in the solution must use the same target framework version
+to avoid compatibility issues.
 
 ### 3. Update Package References
 
@@ -100,7 +107,8 @@ dotnet add package Microsoft.IdentityModel.Tokens
 warning MSB3277: Found conflicts between different versions of "Microsoft.EntityFrameworkCore.Relational"
 ```
 
-**Root cause:** Test project was missing EntityFramework packages, causing version conflicts between main project and test project.
+**Root cause:** Test project was missing EntityFramework packages,
+causing version conflicts between main project and test project.
 
 **Solution applied:**
 Added missing packages to test project (`Tests.csproj`):
@@ -109,7 +117,8 @@ Added missing packages to test project (`Tests.csproj`):
 <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 ```
 
-**Learning Point:** When upgrading packages, ensure all projects in the solution have compatible package references, especially for shared dependencies.
+**Learning Point:** When upgrading packages, ensure all projects in the solution have compatible package references,
+especially for shared dependencies.
 
 ### 5. Update Infrastructure Files
 
@@ -123,7 +132,7 @@ Added missing packages to test project (`Tests.csproj`):
   with:
     dotnet-version: '8.0.x'
 
-# After  
+# After
 - name: Setup .NET
   uses: actions/setup-dotnet@v4
   with:
@@ -143,7 +152,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0
 RUN dotnet tool install --global dotnet-ef --version 9.0.*
 ```
 
-**Learning Point:** Infrastructure files (CI/CD, Docker) must be updated alongside application code to maintain consistency.
+**Learning Point:** Infrastructure files (CI/CD, Docker) must be updated alongside application code
+to maintain consistency.
 
 ### 6. Handle Database Migration Issues
 
@@ -193,25 +203,26 @@ protected override void Up(MigrationBuilder migrationBuilder)
 {
     // Convert string date columns to proper timestamp with time zone
     migrationBuilder.Sql(@"
-        ALTER TABLE ""Tasks"" 
-        ALTER COLUMN ""UpdatedDate"" TYPE timestamp with time zone 
-        USING CASE 
-            WHEN ""UpdatedDate"" IS NULL THEN NULL 
-            ELSE ""UpdatedDate""::timestamp with time zone 
+        ALTER TABLE ""Tasks""
+        ALTER COLUMN ""UpdatedDate"" TYPE timestamp with time zone
+        USING CASE
+            WHEN ""UpdatedDate"" IS NULL THEN NULL
+            ELSE ""UpdatedDate""::timestamp with time zone
         END;
     ");
 
     migrationBuilder.Sql(@"
-        ALTER TABLE ""Tasks"" 
-        ALTER COLUMN ""CreatedDate"" TYPE timestamp with time zone 
+        ALTER TABLE ""Tasks""
+        ALTER COLUMN ""CreatedDate"" TYPE timestamp with time zone
         USING ""CreatedDate""::timestamp with time zone;
     ");
-    
+
     // Other column updates...
 }
 ```
 
-**Learning Point:** When upgrading EF Core versions, be prepared for data type mapping changes that may require custom migration SQL.
+**Learning Point:** When upgrading EF Core versions, be prepared for data type mapping changes
+that may require custom migration SQL.
 
 ## Verification Steps
 
@@ -245,6 +256,7 @@ dotnet test
 ### 1. Version Compatibility Matrix
 
 **Always check compatibility between:**
+
 - .NET SDK version
 - Target framework version
 - Package versions
@@ -268,6 +280,7 @@ dotnet test
 ### 4. CI/CD Pipeline Updates
 
 **Remember to update:**
+
 - GitHub Actions workflow files
 - Docker Compose files
 - Build scripts

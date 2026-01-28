@@ -2,7 +2,8 @@
 
 ## Overview
 
-This guide helps new developers get up and running with the TasksTrack project quickly. It covers the essential setup steps, key concepts, and common development workflows.
+This guide helps new developers get up and running with the TasksTrack project quickly.
+It covers the essential setup steps, key concepts, and common development workflows.
 
 ## Prerequisites Checklist
 

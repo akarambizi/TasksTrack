@@ -30,7 +30,7 @@ const renderAddHabitDialog = () => {
             mutations: { retry: false }
         }
     });
-    
+
     return render(
         <QueryClientProvider client={queryClient}>
             <AddHabitDialog />
@@ -41,11 +41,11 @@ const renderAddHabitDialog = () => {
 describe('AddHabitDialog', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         MockedUseAuthContext.mockReturnValue({
             user: { email: 'test@example.com' }
         });
-        
+
         MockedUseHabitForm.mockReturnValue({
             formData: {
                 name: '',
@@ -63,7 +63,7 @@ describe('AddHabitDialog', () => {
             error: null,
             setError: vi.fn()
         });
-        
+
         MockedUseCreateHabitMutation.mockReturnValue({
             mutateAsync: vi.fn(),
             isPending: false,
@@ -73,13 +73,13 @@ describe('AddHabitDialog', () => {
 
     it('renders add habit button', () => {
         renderAddHabitDialog();
-        
+
         expect(screen.getByRole('button', { name: /add habit/i })).toBeInTheDocument();
     });
 
     it('opens dialog when add habit button is clicked', async () => {
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -91,7 +91,7 @@ describe('AddHabitDialog', () => {
 
     it('displays all form fields in dialog', async () => {
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -126,7 +126,7 @@ describe('AddHabitDialog', () => {
         });
 
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -158,7 +158,7 @@ describe('AddHabitDialog', () => {
         });
 
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -190,7 +190,7 @@ describe('AddHabitDialog', () => {
         });
 
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -221,7 +221,7 @@ describe('AddHabitDialog', () => {
         });
 
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -238,7 +238,7 @@ describe('AddHabitDialog', () => {
         });
 
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 
@@ -250,7 +250,7 @@ describe('AddHabitDialog', () => {
     it('calls mutateAsync when form is submitted with valid data', async () => {
         const mockMutateAsync = vi.fn().mockResolvedValue({});
         const mockResetForm = vi.fn();
-        
+
         MockedUseCreateHabitMutation.mockReturnValue({
             mutateAsync: mockMutateAsync,
             isPending: false,
@@ -276,7 +276,7 @@ describe('AddHabitDialog', () => {
         });
 
         renderAddHabitDialog();
-        
+
         const addButton = screen.getByRole('button', { name: /add habit/i });
         fireEvent.click(addButton);
 

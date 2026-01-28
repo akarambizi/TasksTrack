@@ -95,18 +95,22 @@
 ## Common Issues and Solutions
 
 ### Package Version Conflicts
+
 - **Solution**: Ensure all projects reference compatible package versions
 - **Command**: `dotnet list package --outdated`
 
 ### Docker Build Failures
+
 - **Solution**: Use `--no-cache` flag when rebuilding images
 - **Command**: `docker-compose build --no-cache`
 
 ### Database Migration Errors
+
 - **Solution**: Use explicit SQL for complex type conversions
 - **Example**: Add `USING` clauses for PostgreSQL type changes
 
 ### EF Core Model Changes
+
 - **Solution**: Create new migration and review changes carefully
 - **Command**: `dotnet ef migrations add UpdateModelForNetX`
 

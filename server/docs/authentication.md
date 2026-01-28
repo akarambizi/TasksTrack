@@ -131,7 +131,8 @@ graph TD;
 
 #### Refresh Tokens
 
-Refresh tokens provide a secure way to maintain user sessions without requiring frequent re-authentication. Our implementation uses a **dual-token strategy** combining short-lived access tokens with long-lived refresh tokens.
+Refresh tokens provide a secure way to maintain user sessions without requiring frequent re-authentication.
+Our implementation uses a **dual-token strategy** combining short-lived access tokens with long-lived refresh tokens.
 
 **Why Two Different Token Types?**
 
@@ -151,7 +152,8 @@ Understanding the fundamental difference between access tokens and refresh token
 - **Structure**: Random cryptographic string with no embedded data
 - **Validation**: Stateful - requires database lookup to validate
 - **Lifespan**: Long (7 days) - provides user convenience
-- **Format**: Base64-encoded random bytes ([Learn about refresh token security](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/))
+- **Format**: Base64-encoded random bytes
+  ([Learn about refresh token security](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/))
 
 **Security Benefits of This Approach:**
 
@@ -229,8 +231,10 @@ private string GenerateRefreshToken()
 **Additional Resources:**
 
 - [OAuth 2.0 RFC 6749 - Refresh Tokens](https://tools.ietf.org/html/rfc6749#section-1.5)
-- [OWASP JWT Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
-- [Microsoft's Token Refresh Best Practices](https://docs.microsoft.com/en-us/azure/active-directory/develop/refresh-tokens)
+- [OWASP JWT Security Cheat Sheet](
+  https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
+- [Microsoft's Token Refresh Best Practices](
+  https://docs.microsoft.com/en-us/azure/active-directory/develop/refresh-tokens)
 
 ### Database Schema
 
@@ -263,11 +267,14 @@ dotnet ef database update
 
 #### Rate Limiting
 
-Add rate limiting to the login endpoint to protect against brute-force attacks. This will limit the number of login attempts a user can make within a certain time period, reducing the risk of an attacker guessing a user's password through repeated attempts.
+Add rate limiting to the login endpoint to protect against brute-force attacks.
+This will limit the number of login attempts a user can make within a certain time period,
+reducing the risk of an attacker guessing a user's password through repeated attempts.
 
 #### Password Policy
 
-Enforce a strong password policy for better security. This policy will require passwords to be a certain length and include a mix of uppercase and lowercase letters, numbers, and special characters.
+Enforce a strong password policy for better security. This policy will require passwords to be a certain length
+and include a mix of uppercase and lowercase letters, numbers, and special characters.
 
 #### Email Verification
 
@@ -276,7 +283,8 @@ Add email verification after registration to confirm the user's email address.
 #### Key Updates
 
 1. **JWT Secret Configuration**:
-   - Added a `Jwt:Secret` configuration in `appsettings.Development.json` to ensure a secure key is used for token generation.
+   - Added a `Jwt:Secret` configuration in `appsettings.Development.json`
+     to ensure a secure key is used for token generation.
    - The secret must be at least 256 bits (32 characters) to comply with HMAC-SHA256 requirements.
 
 2. **Password Security**:

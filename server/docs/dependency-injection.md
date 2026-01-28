@@ -2,15 +2,18 @@
 
 ## Overview
 
-Dependency Injection (DI) is a design pattern that implements Inversion of Control (IoC) for resolving dependencies. This document explains how DI is implemented in TasksTrack and why it's crucial for maintainable, testable applications.
+Dependency Injection (DI) is a design pattern that implements Inversion of Control (IoC) for resolving dependencies.
+This document explains how DI is implemented in TasksTrack and why it's crucial for maintainable, testable applications.
 
 ## What is Dependency Injection?
 
-Dependency Injection is a technique where objects receive their dependencies from an external source rather than creating them internally. Instead of a class creating its dependencies, the dependencies are "injected" into the class.
+Dependency Injection is a technique where objects receive their dependencies from an external source rather than
+creating them internally. Instead of a class creating its dependencies, the dependencies are "injected" into the class.
 
 ## DI Container in ASP.NET Core
 
-ASP.NET Core has a built-in DI container that manages object creation and lifetime. The container is configured in `Program.cs` and `DependencyInjectionSetup.cs`.
+ASP.NET Core has a built-in DI container that manages object creation and lifetime.
+The container is configured in `Program.cs` and `DependencyInjectionSetup.cs`.
 
 ## Implementation in TasksTrack
 
@@ -21,7 +24,8 @@ Located in `DependencyInjectionSetup.cs`:
 ```csharp
 public static class DependencyInjectionSetup
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
+        WebApplicationBuilder builder)
     {
         // Service registrations
         services.AddScoped<IUserService, UserService>();
@@ -458,5 +462,6 @@ public class SingletonService
 ## References
 
 - [ASP.NET Core Dependency Injection](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection)
-- [Service Lifetimes](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0#service-lifetimes)
+- [Service Lifetimes](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?
+  view=aspnetcore-6.0#service-lifetimes)
 - The existing DI configuration in `DependencyInjectionSetup.cs` and `Program.cs`

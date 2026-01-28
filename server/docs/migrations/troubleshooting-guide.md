@@ -154,6 +154,7 @@ Cannot add foreign key constraint
 **Solutions:**
 
 **Option A: Drop and recreate constraints**
+
 ```csharp
 protected override void Up(MigrationBuilder migrationBuilder)
 {
@@ -173,6 +174,7 @@ protected override void Up(MigrationBuilder migrationBuilder)
 ```
 
 **Option B: Use raw SQL for complex scenarios**
+
 ```csharp
 migrationBuilder.Sql(@"
     ALTER TABLE ""Table""
@@ -186,10 +188,12 @@ migrationBuilder.Sql(@"
 ### Issue 5: Model Snapshot Out of Sync
 
 **Symptoms:**
+
 - Unexpected columns in migrations
 - Missing tables in snapshot
 
 **Solution:**
+
 ```bash
 # Remove all migrations (CAUTION: Development only)
 rm -rf Migrations/
@@ -395,13 +399,13 @@ dotnet ef migrations list --verbose
 
 ## Quick Reference Card
 
-| Problem | Quick Fix | Command |
-|---------|-----------|---------|
-| Migration failed | Check logs | `docker logs container-name` |
-| Table exists | Conditional creation | Use `IF NOT EXISTS` in SQL |
-| Type mismatch | Manual migration | Create custom migration |
-| Dependency issue | Apply in order | `dotnet ef database update` |
-| Corrupted state | Nuclear reset | `dotnet ef database drop --force` |
+| Problem            | Quick Fix              | Command                              |
+|--------------------|------------------------|--------------------------------------|
+| Migration failed   | Check logs             | `docker logs container-name`        |
+| Table exists       | Conditional creation   | Use `IF NOT EXISTS` in SQL          |
+| Type mismatch      | Manual migration       | Create custom migration              |
+| Dependency issue   | Apply in order         | `dotnet ef database update`         |
+| Corrupted state    | Nuclear reset          | `dotnet ef database drop --force`   |
 
 ---
 
@@ -409,4 +413,5 @@ dotnet ef migrations list --verbose
 **Version:** 1.0
 **Maintained by:** TasksTrack Development Team
 
-For specific issues not covered here, consult the [case studies](./case-studies/) folder or create a new issue documentation.
+For specific issues not covered here, consult the [case studies](./case-studies/) folder
+or create a new issue documentation.

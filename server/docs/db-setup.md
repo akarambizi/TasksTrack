@@ -13,7 +13,8 @@
 dotnet tool update --global dotnet-ef --version 7.0.3
 ```
 
-This command updates the dotnet-ef tool globally to version 7.0.3, allowing you to use Entity Framework Core commands from the command line.
+This command updates the dotnet-ef tool globally to version 7.0.3,
+allowing you to use Entity Framework Core commands from the command line.
 
 ### 2. Add the Microsoft.EntityFrameworkCore.Design package
 
@@ -21,7 +22,8 @@ This command updates the dotnet-ef tool globally to version 7.0.3, allowing you 
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 7.0.3
 ```
 
-This command adds the necessary design-time components to the project, allowing you to use Entity Framework Core commands like migrations.
+This command adds the necessary design-time components to the project,
+allowing you to use Entity Framework Core commands like migrations.
 
 ### 3.Create the initial migration
 
@@ -29,7 +31,8 @@ This command adds the necessary design-time components to the project, allowing 
  dotnet ef migrations add InitialCreate
 ```
 
-This command creates an initial migration named `InitialCreate`. Migrations are a way to incrementally update the database schema based on changes to your data model.
+This command creates an initial migration named `InitialCreate`. Migrations are a way to incrementally
+update the database schema based on changes to your data model.
 
 ### 4.Apply the initial migration to the database
 

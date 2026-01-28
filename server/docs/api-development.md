@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document provides comprehensive guidance for developing and maintaining the TasksTrack API. It covers endpoint design patterns, request/response structures, error handling, and best practices based on the existing codebase.
+This document provides comprehensive guidance for developing and maintaining the TasksTrack API.
+It covers endpoint design patterns, request/response structures, error handling, and best practices
+based on the existing codebase.
 
 ## API Architecture
 

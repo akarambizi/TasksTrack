@@ -2,7 +2,8 @@
 
 ## Follow Existing Project Patterns
 
-**IMPORTANT: Always examine and follow the patterns already established in the existing codebase rather than creating new ones.**
+**IMPORTANT: Always examine and follow the patterns already established in the existing codebase rather than creating
+new ones.**
 
 ### Project Architecture
 
@@ -19,11 +20,13 @@
 ### 1. **Follow Existing Naming Conventions**
 
 **Examine these files to understand the established patterns:**
+
 - `client/src/api/` - for API interface naming (e.g., `IHabit`, `IAuthData`)
 - `client/src/hooks/` - for custom hook patterns (e.g., `useAuth.ts`, `useForm.ts`)
 - `client/src/components/` - for component structure and naming
 
 **Key Patterns Already Established:**
+
 - Interfaces: Start with "I" + PascalCase (`IHabit`, `IAuthData`)
 - Components: PascalCase exports (`Login`, `Tasks`, `TasksContainer`)
 - Custom hooks: camelCase starting with "use" (`useForm`, `useHabitData`)
@@ -47,6 +50,7 @@ client/src/
 ```
 
 **When creating new files, examine existing files in the same directory to match:**
+
 - File naming conventions
 - Export patterns
 - Import organization
@@ -72,6 +76,7 @@ import { renderHook, act } from '@testing-library/react';
 ```
 
 **Key Testing Patterns:**
+
 - Use QueryClient wrapper for components using TanStack Query
 - Mock API functions and services using `vi.mock()`
 - Test user interactions with `fireEvent` and `waitFor`
@@ -130,7 +135,8 @@ import { renderHook, act } from '@testing-library/react';
 
 **Study the established query organization in:**
 
-- `client/src/queries/habits.ts` - for all habit queries and mutations (useHabitData, useCreateHabitMutation, useDeleteHabitMutation, etc.)
+- `client/src/queries/habits.ts` - for all habit queries and mutations (useHabitData, useCreateHabitMutation,
+  useDeleteHabitMutation, etc.)
 - `client/src/queries/auth.ts` - for authentication queries
 - `client/src/queries/queryKeys.ts` - for centralized query key management
 - `client/src/queries/index.ts` - for centralized exports
@@ -149,6 +155,7 @@ import { renderHook, act } from '@testing-library/react';
 - **Error Handling**: Use consistent error handling pattern in API layer with try/catch and throw
 
 **NEVER do this in components:**
+
 ```tsx
 // DON'T: Define mutations directly in components
 const deleteMutation = useMutation({
@@ -158,6 +165,7 @@ const deleteMutation = useMutation({
 ```
 
 **ALWAYS do this instead:**
+
 ```tsx
 // DO: Use centralized mutation hooks from queries folder
 import { useDeleteHabitMutation } from "@/queries";
@@ -165,6 +173,7 @@ const deleteMutation = useDeleteHabitMutation();
 ```
 
 **Toast Notification Pattern:**
+
 ```tsx
 // ALL FEATURES: Handle toasts in API layer - no onError needed in queries
 export const createHabit = async (habitData: IHabitCreateRequest): Promise<IHabit> => {
@@ -194,6 +203,7 @@ export const useCreateHabitMutation = () => {
 ```
 
 **Benefits of this approach:**
+
 - Consistent toast messaging across the entire application
 - Query hooks focus on their core responsibility (cache management)
 - No duplicate error handling between API and query layers
@@ -302,6 +312,7 @@ export const useCreateHabitMutation = () => {
 - jest-dom matchers available globally through `src/test-setup.ts`
 
 **Quality Requirements:**
+
 - **Test coverage must be ≥ 80%** - Every new component and hook must include comprehensive tests
 - **All tests must pass** - 100% pass rate required before merge
 - **Zero TypeScript warnings** - All type issues must be resolved
@@ -310,6 +321,7 @@ export const useCreateHabitMutation = () => {
 - **Follow existing test patterns** - Use the same mocking and assertion approaches already established
 
 **Before completing any feature, run:**
+
 ```bash
 npm run build        # Must succeed with no errors
 npm run test -- --run --coverage  # Must show ≥80% coverage and 100% pass rate
@@ -356,7 +368,8 @@ When working on client-side code, always reference these key files first:
 - `client/package.json` - Available scripts and dependencies
 - `client/src/App.tsx` - Route structure and app organization
 
-**Remember: Consistency with existing patterns is more important than following external conventions. Always examine the current codebase first!**
+**Remember: Consistency with existing patterns is more important than following external conventions.
+Always examine the current codebase first!**
 
 ## Additional Important Guidelines
 
@@ -410,6 +423,7 @@ When working on client-side code, always reference these key files first:
 ### **Testing Framework Configuration**
 
 **Vitest Setup** (already configured):
+
 - Uses Vitest as the test runner with Happy-DOM environment
 - @testing-library/jest-dom matchers available globally via `src/test-setup.ts`
 - Configuration in `vitest.config.ts` with setupFiles pointing to test setup
@@ -433,6 +447,7 @@ When working on client-side code, always reference these key files first:
 ```
 
 **Testing Strategy:**
+
 - **Render Testing**: Ensure components render without crashing
 - **User Interactions**: Test click events, form submissions, keyboard navigation
 - **Conditional Rendering**: Test different states (loading, error, empty, populated)
@@ -442,12 +457,14 @@ When working on client-side code, always reference these key files first:
 ### **Testing Patterns to Follow**
 
 **Study existing test patterns in:**
+
 - `client/src/hooks/useHabitLogForm.spec.ts` - for custom hook testing
 - `client/src/components/Auth/Login.spec.tsx` - for component testing
 - `client/src/api/habitLog.spec.ts` - for API service testing
 - `client/src/queries/habitLogs.spec.tsx` - for TanStack Query hook testing
 
 **Maintain consistency with:**
+
 - Mock patterns for API functions and external dependencies
 - Test wrapper setup for QueryClient and providers
 - Assertion patterns and error handling tests
@@ -461,4 +478,6 @@ When working on client-side code, always reference these key files first:
 - **Mock external dependencies** properly to isolate component logic
 - **Test conditional rendering** based on props and state changes
 
-Remember: Focus on understanding the "why" behind each pattern, not just the "how." Frontend development is constantly evolving with new patterns, hooks, and optimization techniques - there's always room to learn and improve your React, TypeScript, and state management skills as you build this project.
+Remember: Focus on understanding the "why" behind each pattern, not just the "how." Frontend development is
+constantly evolving with new patterns, hooks, and optimization techniques - there's always room to learn and improve
+your React, TypeScript, and state management skills as you build this project.

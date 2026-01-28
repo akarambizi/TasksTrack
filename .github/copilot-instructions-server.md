@@ -2,7 +2,8 @@
 
 ## Follow Existing Project Patterns
 
-**IMPORTANT: Always examine and follow the patterns already established in the existing server codebase rather than creating new ones.**
+**IMPORTANT: Always examine and follow the patterns already established in the existing server codebase
+rather than creating new ones.**
 
 ### Project Architecture
 
@@ -175,6 +176,7 @@ server/
 - Follow established mocking and assertion patterns
 
 **Quality Requirements:**
+
 - **Test coverage must be ≥ 80%** - Every new feature must include comprehensive unit tests
 - **All tests must pass** - 100% pass rate required before merge
 - **Test error conditions** - Include tests for null values, exceptions, and edge cases
@@ -228,7 +230,8 @@ dotnet list package                        # List packages
 
 ### 📚 **Project Documentation Folder**: `server/docs/`
 
-**This folder is crucial for your learning journey and future reference. Always document your learning and decisions here.**
+**This folder is crucial for your learning journey and future reference.
+Always document your learning and decisions here.**
 
 ### **When to Create Documentation:**
 
@@ -303,7 +306,10 @@ Links to external resources that helped
 For comprehensive .NET learning:
 
 - Microsoft Learn: [https://learn.microsoft.com/en-us/dotnet/](https://learn.microsoft.com/en-us/dotnet/)
-- ASP.NET Core documentation: [https://docs.microsoft.com/en-us/aspnet/core/](https://docs.microsoft.com/en-us/aspnet/core/)
+- ASP.NET Core documentation:
+  [https://docs.microsoft.com/en-us/aspnet/core/](https://docs.microsoft.com/en-us/aspnet/core/)
 - Entity Framework Core: [https://docs.microsoft.com/en-us/ef/core/](https://docs.microsoft.com/en-us/ef/core/)
 
-Remember: Focus on understanding the "why" behind each pattern, not just the "how." This will help you make better architectural decisions as you learn C# and .NET development. **Document your learning journey in the `server/docs/` folder for future reference and deeper understanding.**
+Remember: Focus on understanding the "why" behind each pattern, not just the "how."
+This will help you make better architectural decisions as you learn C# and .NET development.
+**Document your learning journey in the `server/docs/` folder for future reference and deeper understanding.**

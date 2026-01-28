@@ -42,7 +42,7 @@ const renderHabitOptionsMenu = (props: Partial<React.ComponentProps<typeof Habit
             mutations: { retry: false }
         }
     });
-    
+
     return render(
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
@@ -55,17 +55,17 @@ const renderHabitOptionsMenu = (props: Partial<React.ComponentProps<typeof Habit
 describe('HabitOptionsMenu', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         MockedUseDeleteHabitMutation.mockReturnValue({
             mutateAsync: vi.fn(),
             isPending: false
         });
-        
+
         MockedUseArchiveHabitMutation.mockReturnValue({
             mutateAsync: vi.fn(),
             isPending: false
         });
-        
+
         MockedUseActivateHabitMutation.mockReturnValue({
             mutateAsync: vi.fn(),
             isPending: false
@@ -74,14 +74,14 @@ describe('HabitOptionsMenu', () => {
 
     it('renders options menu trigger button', () => {
         renderHabitOptionsMenu();
-        
+
         expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
     it('opens dropdown menu when trigger is clicked', async () => {
         const user = userEvent.setup();
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -94,7 +94,7 @@ describe('HabitOptionsMenu', () => {
     it('displays all menu options for active habit', async () => {
         const user = userEvent.setup();
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -111,7 +111,7 @@ describe('HabitOptionsMenu', () => {
         const user = userEvent.setup();
         const archivedHabit = { ...mockHabit, isActive: false };
         renderHabitOptionsMenu({ habit: archivedHabit });
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -125,7 +125,7 @@ describe('HabitOptionsMenu', () => {
         const user = userEvent.setup();
         const mockOnLogActivity = vi.fn();
         renderHabitOptionsMenu({ onLogActivity: mockOnLogActivity });
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -139,7 +139,7 @@ describe('HabitOptionsMenu', () => {
         const user = userEvent.setup();
         const mockOnEdit = vi.fn();
         renderHabitOptionsMenu({ onEdit: mockOnEdit });
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -158,7 +158,7 @@ describe('HabitOptionsMenu', () => {
         });
 
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -178,7 +178,7 @@ describe('HabitOptionsMenu', () => {
 
         const archivedHabit = { ...mockHabit, isActive: false };
         renderHabitOptionsMenu({ habit: archivedHabit });
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -197,7 +197,7 @@ describe('HabitOptionsMenu', () => {
         });
 
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         await user.click(trigger);
 
@@ -214,7 +214,7 @@ describe('HabitOptionsMenu', () => {
         });
 
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         expect(trigger).toBeDisabled();
     });
@@ -226,7 +226,7 @@ describe('HabitOptionsMenu', () => {
         });
 
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         expect(trigger).toBeDisabled();
     });
@@ -238,7 +238,7 @@ describe('HabitOptionsMenu', () => {
         });
 
         renderHabitOptionsMenu();
-        
+
         const trigger = screen.getByRole('button');
         expect(trigger).toBeDisabled();
     });

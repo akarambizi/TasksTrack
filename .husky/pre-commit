@@ -1,0 +1,42 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "\033[34mRunning pre-commit checks...\033[0m"
+
+# Check markdown files for linting issues
+echo "\033[36mChecking markdown files...\033[0m"
+if ! npm run lint:md; then
+    echo "\033[31mMarkdown linting failed! Please fix the issues above.\033[0m"
+    exit 1
+fi
+
+# Build frontend
+echo "\033[33mBuilding frontend...\033[0m"
+if ! npm run build:client > /dev/null 2>&1; then
+    echo "\033[31mFrontend build failed!\033[0m"
+    npm run build:client
+    exit 1
+fi
+
+# Build backend  
+echo "\033[33mBuilding backend...\033[0m"
+if ! npm run build:server; then
+    echo "\033[31mBackend build failed! Please fix warnings/errors above.\033[0m"
+    exit 1
+fi
+
+# Run frontend tests
+echo "\033[35mRunning frontend tests...\033[0m"
+if ! npm run test:client; then
+    echo "\033[31mFrontend tests failed!\033[0m"
+    exit 1
+fi
+
+# Run backend tests
+echo "\033[35mRunning backend tests...\033[0m"
+if ! npm run test:server; then
+    echo "\033[31mBackend tests failed!\033[0m"
+    exit 1
+fi
+
+echo "\033[92m✓ All pre-commit checks passed!\033[0m"

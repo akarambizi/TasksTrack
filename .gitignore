@@ -30,3 +30,6 @@ TestResults/
 coveragereport/
 *.cobertura.xml
 .DS_Store
+
+# Node.js
+node_modules/

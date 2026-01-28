@@ -7,14 +7,16 @@
 
 ## Problem Summary
 
-When implementing refresh token functionality, the auto-generated EF Core migration failed with PostgreSQL type casting errors, preventing database schema updates.
+When implementing refresh token functionality, the auto-generated EF Core migration failed
+with PostgreSQL type casting errors, preventing database schema updates.
 
 ## Error Details
 
 ### Primary Error
 
 ```
-Npgsql.PostgresException (0x80004005): 42804: column "UpdatedDate" cannot be cast automatically to type timestamp with time zone
+Npgsql.PostgresException (0x80004005): 42804: column "UpdatedDate" cannot be cast automatically
+to type timestamp with time zone
 ```
 
 ### Full Stack Trace

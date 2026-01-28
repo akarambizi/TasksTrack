@@ -2,13 +2,15 @@
 
 ## Overview
 
-This documentation collection provides comprehensive learning resources for developing and understanding the TasksTrack server application. Each document focuses on specific aspects of the architecture and development process.
+This documentation collection provides comprehensive learning resources for developing and understanding
+the TasksTrack server application. Each document focuses on specific aspects of the architecture and development process.
 
 ## Documentation Structure
 
 ### 🚀 **Getting Started**
 
 **[getting-started.md](./getting-started.md)**
+
 - Complete setup guide for new developers
 - Prerequisites and installation steps
 - Development workflow overview
@@ -18,18 +20,21 @@ This documentation collection provides comprehensive learning resources for deve
 ### 🏗️ **Architecture Guides**
 
 **[clean-architecture.md](./clean-architecture.md)**
+
 - Understanding Clean Architecture implementation
 - Layer responsibilities and separation of concerns
 - Dependency flow and architectural patterns
 - Benefits and practical examples from the codebase
 
 **[repository-pattern.md](./repository-pattern.md)**
+
 - Repository Pattern implementation details
 - Interface design and data access abstraction
 - Integration with Entity Framework
 - Testing strategies and best practices
 
 **[dependency-injection.md](./dependency-injection.md)**
+
 - Dependency Injection concepts and implementation
 - Service registration and lifetime management
 - Constructor injection patterns
@@ -38,6 +43,7 @@ This documentation collection provides comprehensive learning resources for deve
 ### 🔧 **Development Guides**
 
 **[api-development.md](./api-development.md)**
+
 - RESTful API design patterns
 - Request/response model structures
 - Authentication and authorization implementation
@@ -47,18 +53,22 @@ This documentation collection provides comprehensive learning resources for deve
 ### 🗃️ **Data and Infrastructure**
 
 **[db-setup.md](./db-setup.md)**
+
 - PostgreSQL database setup with Entity Framework Core
 - Migration commands and workflows
 - User secrets configuration
 - Database management best practices
 
 **[Migrations Documentation](./migrations/)**
-- **[troubleshooting-guide.md](./migrations/troubleshooting-guide.md)** - Comprehensive EF Core migration troubleshooting
+
+- **[troubleshooting-guide.md](./migrations/troubleshooting-guide.md)** -
+  Comprehensive EF Core migration troubleshooting
 - **[case-studies/](./migrations/case-studies/)** - Real-world migration issue solutions and analysis
 - Migration best practices and emergency procedures
 - Common error patterns and solutions
 
 **[authentication.md](./authentication.md)**
+
 - JWT authentication implementation
 - Security measures and password handling
 - Authentication flow diagrams
@@ -67,12 +77,14 @@ This documentation collection provides comprehensive learning resources for deve
 ### 🧪 **Testing and Quality**
 
 **[unit-tests.md](./unit-tests.md)**
+
 - Testing framework setup and configuration
 - Test project structure and organization
 - Coverage reporting and analysis
 - Testing tools and commands
 
 **[todos.md](./todos.md)**
+
 - Development roadmap and learning objectives
 - Planned features and architectural improvements
 - Areas for skill development
@@ -80,6 +92,7 @@ This documentation collection provides comprehensive learning resources for deve
 ### 📚 **Learning Resources**
 
 **[learning-notes.md](./learning-notes.md)**
+
 - Personal development insights and observations
 - Architecture implementation lessons learned
 - Best practices discovered during development
@@ -133,8 +146,10 @@ This documentation is designed around the principle of **learning through unders
 These files provide context-specific guidance:
 
 - **[.github/copilot-instructions.md](../../.github/copilot-instructions.md)** - Main project overview
-- **[.github/copilot-instructions-server.md](../../.github/copilot-instructions-server.md)** - Server development patterns
-- **[.github/copilot-instructions-client.md](../../.github/copilot-instructions-client.md)** - Client development patterns
+- **[.github/copilot-instructions-server.md](../../.github/copilot-instructions-server.md)** -
+  Server development patterns
+- **[.github/copilot-instructions-client.md](../../.github/copilot-instructions-client.md)** -
+  Client development patterns
 
 ### External Documentation
 
@@ -170,4 +185,6 @@ This documentation is a **living resource** that should evolve with the project:
 
 ---
 
-*This documentation collection is designed to support learning in full-stack development. Each document builds upon the others to create a comprehensive understanding of the TasksTrack architecture and development patterns.*
+*This documentation collection is designed to support learning in full-stack development.
+Each document builds upon the others to create a comprehensive understanding of the TasksTrack
+architecture and development patterns.*

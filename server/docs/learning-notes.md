@@ -2,7 +2,8 @@
 
 ## Purpose
 
-This document captures key learning insights, patterns discovered, and development notes from building TasksTrack. It serves as a learning reference and guide for future development decisions.
+This document captures key learning insights, patterns discovered, and development notes from building TasksTrack.
+It serves as a learning reference and guide for future development decisions.
 
 ## Architecture Insights
 
@@ -44,7 +45,8 @@ This document captures key learning insights, patterns discovered, and developme
 
 ### Error Handling Strategy
 
-**Current Approach**: Let Entity Framework exceptions bubble up to service layer, handle business logic errors with result patterns.
+**Current Approach**: Let Entity Framework exceptions bubble up to service layer,
+handle business logic errors with result patterns.
 
 ```csharp
 // Service layer handles business errors

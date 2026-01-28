@@ -4,8 +4,10 @@ TasksTrack is a task tracking app with integrated Pomodoro timer functionality t
 
 ## About This Project
 
-This is a **personal learning project** designed to explore and master full-stack development concepts using modern technologies. The project demonstrates Clean Architecture principles, repository patterns, JWT authentication, and modern React development practices.
-
+This is a **personal learning project** designed to explore and master full-stack development concepts
+using modern technologies.
+The project demonstrates Clean Architecture principles, repository patterns, JWT authentication,
+and modern React development practices.
 
 ## Documentation
 

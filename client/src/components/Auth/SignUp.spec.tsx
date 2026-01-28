@@ -37,7 +37,7 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         expect(screen.getByRole('heading', { name: /sign up/i })).toBeInTheDocument();
         expect(screen.getByText(/enter your information to create an account/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         expect(screen.getByDisplayValue('test@example.com')).toBeInTheDocument();
         expect(screen.getByDisplayValue('password123')).toBeInTheDocument();
     });
@@ -65,7 +65,7 @@ describe('SignUp', () => {
     it('displays validation errors', () => {
         MockedUseForm.mockReturnValue({
             formData: { email: '', password: '' },
-            errors: { 
+            errors: {
                 email: 'Email is required',
                 password: 'Password must be at least 8 characters'
             },
@@ -75,7 +75,7 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         expect(screen.getByText('Email is required')).toBeInTheDocument();
         expect(screen.getByText('Password must be at least 8 characters')).toBeInTheDocument();
     });
@@ -91,7 +91,7 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         const emailInput = screen.getByLabelText(/email/i);
         const passwordInput = screen.getByLabelText(/password/i);
 
@@ -99,7 +99,7 @@ describe('SignUp', () => {
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
         expect(mockHandleChange).toHaveBeenCalledTimes(2);
-        
+
         // Verify the events were fired with the correct input elements
         expect(mockHandleChange).toHaveBeenNthCalledWith(1, expect.objectContaining({
             target: expect.objectContaining({ name: 'email' })
@@ -120,10 +120,10 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         const form = document.querySelector('form');
         expect(form).toBeInTheDocument();
-        
+
         fireEvent.submit(form!);
 
         await waitFor(() => {
@@ -141,7 +141,7 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         const submitButton = screen.getByRole('button', { name: /creating/i });
         expect(submitButton).toBeInTheDocument();
         expect(submitButton).toBeDisabled();
@@ -157,7 +157,7 @@ describe('SignUp', () => {
         });
 
         renderSignUp();
-        
+
         const signInLink = screen.getByRole('link', { name: /sign in/i });
         expect(signInLink).toHaveAttribute('href', '/login');
     });

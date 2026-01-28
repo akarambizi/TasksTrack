@@ -3,6 +3,7 @@
 ## Project Overview
 
 TasksTrack is a full-stack productivity application built with:
+
 - **Backend**: ASP.NET Core 8 Web API with PostgreSQL
 - **Frontend**: React 18 + TypeScript + Vite
 - **Architecture**: Clean Architecture with Repository Pattern
@@ -36,14 +37,16 @@ This project has separated instruction files for better readability and focused 
 
 ## General Guidelines
 
-**IMPORTANT: Always examine and follow the patterns already established in your existing codebase rather than creating new ones.**
+**IMPORTANT: Always examine and follow the patterns already established in your existing codebase
+rather than creating new ones.**
 
 - **Reference existing files first** before writing new code
 - **Study established patterns** in your Controllers, Services, Components, and Hooks
 - **Maintain consistency** with your existing naming conventions and architecture
 - **Follow your established error handling** and validation approaches
 - **Use the same libraries and patterns** already implemented in your project
-- **Focus on learning** - understand the "why" behind existing patterns, not just the "how"- **Avoid unnecessary emojis** in code, comments, or documentation - keep content clean and professional
+- **Focus on learning** - understand the "why" behind existing patterns, not just the "how"
+- **Avoid unnecessary emojis** in code, comments, or documentation - keep content clean and professional
 ## Key Naming Conventions Summary
 
 ### Server (C#/.NET)
@@ -62,6 +65,7 @@ private readonly IHabitRepository _repository;
 ```
 
 ### Client (TypeScript/React)
+
 ```typescript
 // Interfaces: Start with "I" + PascalCase
 interface ITaskCardProps {
@@ -108,14 +112,17 @@ TasksTrack/
 ## Development Workflow
 
 ### 1. Git Workflow
+
 - Create feature branches from main
 - Use conventional commit messages
 - **Keep commit messages concise** - Under 50 characters for the title, be descriptive but brief
-- **Separate frontend and backend PRs** - Create separate pull requests for client and server changes to keep PRs smaller and more focused
+- **Separate frontend and backend PRs** - Create separate pull requests for client and server changes
+  to keep PRs smaller and more focused
 - Write meaningful pull request descriptions
 - Test thoroughly before merging
 
 ### 2. Code Review Checklist
+
 - [ ] Code follows established patterns
 - [ ] Includes appropriate error handling
 - [ ] Has unit tests for new functionality
@@ -128,17 +135,20 @@ TasksTrack/
 **MANDATORY: Every feature must meet these quality standards before completion:**
 
 #### **Build Quality**
+
 - [ ] **Zero compilation errors** - All code must compile successfully
 - [ ] **Zero warnings** - Resolve all TypeScript/C# compiler warnings
 - [ ] **Clean builds** - Both `npm run build` (frontend) and `dotnet build` (backend) must succeed
 
 #### **Test Requirements**
+
 - [ ] **Test coverage ≥ 80%** - Maintain minimum 80% code coverage across the project
 - [ ] **All tests passing** - 100% test pass rate required before merging
 - [ ] **New features have tests** - Every new feature must include comprehensive unit tests
 - [ ] **Edge cases covered** - Test error conditions, null values, and boundary conditions
 
 #### **Validation Commands**
+
 Run these commands before considering any feature complete:
 
 **Frontend:**
@@ -157,6 +167,7 @@ dotnet test          # Must show 100% test pass rate
 **Quality Gate:** If any of these commands fail or show insufficient coverage, the feature is **not ready** for merge.
 
 ### 4. Debugging Tips
+
 - Use Visual Studio/VS Code debugger effectively
 - Set breakpoints in both client and server code
 - Use browser dev tools for frontend debugging
@@ -166,6 +177,7 @@ dotnet test          # Must show 100% test pass rate
 ## Key Commands and Tools
 
 ### .NET CLI Commands
+
 ```bash
 # Project management
 dotnet new webapi -n MyProject
@@ -186,6 +198,7 @@ dotnet list package
 ```
 
 ### Node.js/NPM Commands
+
 ```bash
 # Client development
 npm run dev          # Start dev server
@@ -196,6 +209,7 @@ npm run lint         # Run ESLint
 ```
 
 ### Docker Commands
+
 ```bash
 # Full stack development
 docker-compose up --build    # Start all services
@@ -226,4 +240,6 @@ For detailed implementation guidance, refer to the specific instruction files:
 - **Frontend**: React patterns, TypeScript advanced features, state management, performance optimization
 - **Full-Stack**: Integration patterns, testing strategies, deployment, architecture decisions
 
-Remember: Both frontend and backend development have endless learning opportunities. The patterns in your codebase are your foundation - understanding them deeply will make you a better developer as you continue to grow and evolve your skills.
+Remember: Both frontend and backend development have endless learning opportunities.
+The patterns in your codebase are your foundation - understanding them deeply will make you
+a better developer as you continue to grow and evolve your skills.

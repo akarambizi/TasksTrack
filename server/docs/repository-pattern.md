@@ -2,11 +2,14 @@
 
 ## Overview
 
-The Repository Pattern provides an abstraction layer between business logic and data access logic. This document explains how it's implemented in TasksTrack and why it's beneficial for learning and maintainability.
+The Repository Pattern provides an abstraction layer between business logic and data access logic.
+This document explains how it's implemented in TasksTrack and why it's beneficial for learning and maintainability.
 
 ## What is the Repository Pattern?
 
-The Repository Pattern encapsulates the logic needed to access data sources. It centralizes common data access functionality, providing better maintainability and decoupling the infrastructure or technology used to access databases from the domain model layer.
+The Repository Pattern encapsulates the logic needed to access data sources. It centralizes common data access functionality,
+providing better maintainability and decoupling the infrastructure or technology used to access databases
+from the domain model layer.
 
 ## Implementation in TasksTrack
 
@@ -26,6 +29,7 @@ public interface IAuthRepository
 ```
 
 **Key Characteristics:**
+
 - Async methods with `Task<T>` return types
 - Clear, descriptive method names
 - Domain-focused operations (not CRUD-focused)
@@ -55,6 +59,7 @@ public class AuthRepository : IAuthRepository
 ```
 
 **Key Patterns:**
+
 - Dependency injection of `TasksTrackContext`
 - Entity Framework operations encapsulated
 - Async/await throughout
@@ -122,6 +127,7 @@ var authService = new AuthService(mockRepository.Object);
 ### 3. **Flexibility**
 
 Can swap data access implementations without changing business logic:
+
 - Switch from Entity Framework to Dapper
 - Change from SQL Server to PostgreSQL
 - Add caching layer
@@ -130,6 +136,7 @@ Can swap data access implementations without changing business logic:
 ### 4. **Maintainability**
 
 Centralized data access logic makes changes easier:
+
 - Query optimization in one place
 - Consistent error handling
 - Standardized async patterns
@@ -141,6 +148,7 @@ Centralized data access logic makes changes easier:
 **Purpose**: Handle user authentication data operations
 
 **Key Methods:**
+
 - `GetUserByEmailAsync()` - Find user by email
 - `CreateUserAsync()` - Create new user
 - `UserExistsAsync()` - Check if user exists
@@ -152,6 +160,7 @@ Centralized data access logic makes changes easier:
 **Purpose**: Handle task management data operations
 
 **Key Methods:**
+
 - `GetAllAsync()` - Retrieve all tasks
 - `GetByIdAsync()` - Find specific task
 - `CreateAsync()` - Create new task
@@ -164,8 +173,11 @@ Centralized data access logic makes changes easier:
 
 **Purpose**: Handle general user data operations
 
-**Key Methods:**
+### Key Methods
+
 - User profile management
+- Authentication state handling
+- User settings management
 - User settings and preferences
 - General user operations
 
@@ -174,6 +186,7 @@ Centralized data access logic makes changes easier:
 Follow these established patterns in the codebase:
 
 ### Query Operations
+
 ```csharp
 Task<User> GetUserByEmailAsync(string email);
 Task<User> GetByIdAsync(int id);
@@ -182,6 +195,7 @@ Task<bool> ExistsAsync(int id);
 ```
 
 ### Command Operations
+
 ```csharp
 Task<User> CreateAsync(User user);
 Task<User> UpdateAsync(User user);
@@ -189,6 +203,7 @@ Task<bool> DeleteAsync(int id);
 ```
 
 ### Business-Specific Operations
+
 ```csharp
 Task<bool> UserExistsAsync(string email, string username);
 Task<IEnumerable<ToDoTask>> GetTasksByStatusAsync(TaskStatus status);
@@ -240,6 +255,7 @@ public async Task<User> GetUserByEmailAsync(string email)
 ### 1. **Trace Data Flow**
 
 Follow a complete data operation:
+
 1. Controller receives request
 2. Service calls repository interface
 3. Repository implementation queries database
@@ -248,6 +264,7 @@ Follow a complete data operation:
 ### 2. **Understand Abstractions**
 
 Ask these questions:
+
 - Why does the service depend on `IAuthRepository` instead of `AuthRepository`?
 - How does dependency injection resolve the interface to implementation?
 - What happens during testing when we mock the interface?
@@ -255,6 +272,7 @@ Ask these questions:
 ### 3. **Identify Responsibilities**
 
 For each repository:
+
 - What domain area does it handle?
 - What operations does it provide?
 - How does it encapsulate data access complexity?

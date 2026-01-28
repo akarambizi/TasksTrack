@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document explains how Clean Architecture principles are implemented in the TasksTrack server, providing a learning reference for understanding the architectural decisions and patterns used.
+This document explains how Clean Architecture principles are implemented in the TasksTrack server,
+providing a learning reference for understanding the architectural decisions and patterns used.
 
 ## Architecture Layers
 
@@ -217,5 +218,6 @@ public interface IAuthRepository
 ## References
 
 - [Clean Architecture by Robert Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [ASP.NET Core Architecture](https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures)
+- [ASP.NET Core Architecture](
+  https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures)
 - The existing codebase in `/Controllers`, `/Services`, and `/Repositories`

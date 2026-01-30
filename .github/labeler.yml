@@ -6,6 +6,10 @@ frontend:
     - changed-files:
           - any-glob-to-any-file: ['client/**/*']
 
+configuration:
+    - changed-files:
+          - any-glob-to-any-file: ['package.json', 'client/package.json', 'server/*.csproj', '**/*.csproj', 'appsettings*.json', 'tsconfig*.json', '.nvmrc', 'client/.nvmrc', '**/.nvmrc', 'components.json', '*.config.js', '*.config.ts', '*.config.json', 'client/*.config.js', 'client/*.config.ts', 'client/*.config.json']
+
 docker:
     - changed-files:
           - any-glob-to-any-file: ['docker-compose.yml', 'client/Dockerfile', 'server/Dockerfile']

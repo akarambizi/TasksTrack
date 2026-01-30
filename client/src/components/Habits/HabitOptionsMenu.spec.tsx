@@ -137,6 +137,7 @@ describe('HabitOptionsMenu', () => {
 
     it('calls onEdit when edit is clicked', async () => {
         const user = userEvent.setup();
+        
         const mockOnEdit = vi.fn();
         renderHabitOptionsMenu({ onEdit: mockOnEdit });
 
@@ -151,6 +152,7 @@ describe('HabitOptionsMenu', () => {
 
     it('calls archive mutation when archive is clicked', async () => {
         const user = userEvent.setup();
+        
         const mockArchiveMutation = vi.fn();
         MockedUseArchiveHabitMutation.mockReturnValue({
             mutate: mockArchiveMutation,
@@ -170,6 +172,7 @@ describe('HabitOptionsMenu', () => {
 
     it('calls activate mutation when activate is clicked', async () => {
         const user = userEvent.setup();
+        
         const mockActivateMutation = vi.fn();
         MockedUseActivateHabitMutation.mockReturnValue({
             mutate: mockActivateMutation,
@@ -190,6 +193,7 @@ describe('HabitOptionsMenu', () => {
 
     it('calls delete mutation when delete is clicked', async () => {
         const user = userEvent.setup();
+        
         const mockDeleteMutation = vi.fn();
         MockedUseDeleteHabitMutation.mockReturnValue({
             mutate: mockDeleteMutation,

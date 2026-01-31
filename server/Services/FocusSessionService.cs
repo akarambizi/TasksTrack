@@ -42,7 +42,8 @@ namespace TasksTrack.Services
                 StartTime = DateTime.UtcNow,
                 Status = FocusSessionStatus.Active.ToStringValue(),
                 PlannedDurationMinutes = request.PlannedDurationMinutes,
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.UtcNow,
+                Habit = habit // Set the habit object for proper response mapping
             };
 
             await _focusSessionRepository.AddAsync(focusSession);
@@ -188,7 +189,6 @@ namespace TasksTrack.Services
             {
                 Id = session.Id,
                 HabitId = session.HabitId,
-                HabitName = habitName ?? string.Empty,
                 CreatedBy = session.CreatedBy,
                 StartTime = session.StartTime,
                 PauseTime = session.PauseTime,
@@ -199,7 +199,8 @@ namespace TasksTrack.Services
                 ActualDurationSeconds = session.ActualDurationSeconds ?? 0,
                 PausedDurationSeconds = session.PausedDurationSeconds ?? 0,
                 Notes = session.Notes,
-                CreatedDate = session.CreatedDate
+                CreatedDate = session.CreatedDate,
+                Habit = session.Habit // Include the full habit object
             };
         }
     }

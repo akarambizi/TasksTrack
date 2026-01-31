@@ -33,11 +33,11 @@ export const useLogin = () => {
     return useMutation({
         mutationKey: authKeys.login(),
         mutationFn: (userData: IAuthData) => loginUser(userData),
-        onSuccess: (data: IAuthResult, userData: IAuthData) => {
+        onSuccess: (data: IAuthResult) => {
             // If login is successful and token is provided
             if (data.success && data.token) {
                 // Update auth state via context
-                login(data.token, userData.email);
+                login(data.token, data.userEmail, data.userId);
 
                 // Update auth state - invalidate all auth queries
                 queryClient.invalidateQueries({ queryKey: authKeys.all });

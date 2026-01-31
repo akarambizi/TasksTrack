@@ -22,10 +22,10 @@ namespace TasksTrack.Tests.Controllers
         {
             _mockService = new Mock<IFocusSessionService>();
             _mockCurrentUserService = new Mock<ICurrentUserService>();
-            
+
             // Mock the GetUserId method to return test user ID
             _mockCurrentUserService.Setup(x => x.GetUserId()).Returns(_testUserId);
-            
+
             _controller = new FocusController(_mockService.Object, _mockCurrentUserService.Object);
 
             // Mock the HttpContext and User claims

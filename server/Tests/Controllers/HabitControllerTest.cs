@@ -19,10 +19,10 @@ namespace TasksTrack.Tests.Controllers
         {
             _mockService = new Mock<IHabitService>();
             _mockCurrentUserService = new Mock<ICurrentUserService>();
-            
+
             // Mock the GetUserId method to return test user ID
             _mockCurrentUserService.Setup(x => x.GetUserId()).Returns("test-user-id");
-            
+
             _controller = new HabitController(_mockService.Object, _mockCurrentUserService.Object);
         }
 

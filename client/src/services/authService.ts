@@ -1,5 +1,6 @@
 export interface UserData {
   email?: string;
+  id?: string;
 }
 
 /**
@@ -8,6 +9,7 @@ export interface UserData {
 export class AuthService {
   private static readonly TOKEN_KEY = 'authToken';
   private static readonly USER_EMAIL_KEY = 'userEmail';
+  private static readonly USER_ID_KEY = 'userId';
 
   /**
    * Get the stored authentication token
@@ -19,10 +21,15 @@ export class AuthService {
   /**
    * Store authentication token and user data
    */
-  static setToken(token: string, userEmail?: string): void {
+  static setToken(token: string, userEmail?: string, userId?: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
+
     if (userEmail) {
       localStorage.setItem(this.USER_EMAIL_KEY, userEmail);
+    }
+
+    if (userId) {
+      localStorage.setItem(this.USER_ID_KEY, userId);
     }
   }
 
@@ -32,6 +39,7 @@ export class AuthService {
   static clearAuth(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_EMAIL_KEY);
+    localStorage.removeItem(this.USER_ID_KEY);
   }
 
   /**
@@ -39,6 +47,12 @@ export class AuthService {
    */
   static getUserData(): UserData | null {
     const email = localStorage.getItem(this.USER_EMAIL_KEY);
-    return email ? { email } : null;
+    const id = localStorage.getItem(this.USER_ID_KEY);
+
+    if (email || id) {
+      return { email: email || undefined, id: id || undefined };
+    }
+
+    return null;
   }
 }

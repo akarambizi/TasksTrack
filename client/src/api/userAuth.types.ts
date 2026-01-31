@@ -10,4 +10,6 @@ export interface IAuthResult {
     success: boolean;
     message?: string;
     token?: string;
+    userId?: string;
+    userEmail?: string;
 }

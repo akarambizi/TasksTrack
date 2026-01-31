@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TasksTrack.Data;
@@ -11,9 +12,11 @@ using TasksTrack.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(TasksTrackContext))]
-    partial class TasksTrackContextModelSnapshot : ModelSnapshot
+    [Migration("20260131074309_AddFocusSessionTable")]
+    partial class AddFocusSessionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

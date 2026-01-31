@@ -5,6 +5,7 @@ namespace TasksTrack.Services
     public interface IHabitService
     {
         Task<IEnumerable<Habit>> GetAllAsync();
+        Task<IEnumerable<Habit>> GetByUserIdAsync(string userId);
         Task<Habit?> GetByIdAsync(int id);
         Task AddAsync(Habit habit);
         Task<bool> UpdateAsync(Habit habit);

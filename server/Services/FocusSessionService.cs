@@ -46,14 +46,14 @@ namespace TasksTrack.Services
             };
 
             await _focusSessionRepository.AddAsync(focusSession);
-            
+
             return MapToResponse(focusSession, habit.Name);
         }
 
         public async Task<FocusSessionResponse> PauseSessionAsync(string userId)
         {
             var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
-            
+
             if (session == null)
             {
                 throw new InvalidOperationException("No active session found to pause.");
@@ -70,14 +70,14 @@ namespace TasksTrack.Services
             session.UpdatedBy = userId;
 
             await _focusSessionRepository.UpdateAsync(session);
-            
+
             return MapToResponse(session, session.Habit?.Name);
         }
 
         public async Task<FocusSessionResponse> ResumeSessionAsync(string userId)
         {
             var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
-            
+
             if (session == null)
             {
                 throw new InvalidOperationException("No paused session found to resume.");
@@ -101,14 +101,14 @@ namespace TasksTrack.Services
             session.UpdatedBy = userId;
 
             await _focusSessionRepository.UpdateAsync(session);
-            
+
             return MapToResponse(session, session.Habit?.Name);
         }
 
         public async Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request, string userId)
         {
             var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
-            
+
             if (session == null)
             {
                 throw new InvalidOperationException("No active session found to complete.");
@@ -131,7 +131,37 @@ namespace TasksTrack.Services
             session.ActualDurationSeconds = totalSeconds - (session.PausedDurationSeconds ?? 0);
 
             await _focusSessionRepository.UpdateAsync(session);
-            
+
+            return MapToResponse(session, session.Habit?.Name);
+        }
+
+        public async Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request, string userId)
+        {
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+
+            if (session == null)
+            {
+                throw new InvalidOperationException("No active session found to cancel.");
+            }
+
+            if (session.Status != FocusSessionStatus.Active.ToStringValue() && session.Status != FocusSessionStatus.Paused.ToStringValue())
+            {
+                throw new InvalidOperationException("Session is not in an active or paused state.");
+            }
+
+            var endTime = DateTime.UtcNow;
+            session.Status = FocusSessionStatus.Interrupted.ToStringValue();
+            session.EndTime = endTime;
+            session.Notes = request.Notes;
+            session.UpdatedDate = endTime;
+            session.UpdatedBy = userId;
+
+            // Calculate actual duration up to cancellation
+            var totalSeconds = (int)(endTime - session.StartTime).TotalSeconds;
+            session.ActualDurationSeconds = totalSeconds - (session.PausedDurationSeconds ?? 0);
+
+            await _focusSessionRepository.UpdateAsync(session);
+
             return MapToResponse(session, session.Habit?.Name);
         }
 

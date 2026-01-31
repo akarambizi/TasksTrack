@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TasksTrackContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Add HTTP context accessor for CurrentUserService
+builder.Services.AddHttpContextAccessor();
+
 // DependencyInjectionSetup: Add services to the container.
 builder.Services.AddApplicationServices(builder);
 

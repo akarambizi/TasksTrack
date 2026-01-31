@@ -14,14 +14,20 @@ namespace TasksTrack.Tests.Controllers
     public class FocusControllerTest
     {
         private readonly Mock<IFocusSessionService> _mockService;
+        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly FocusController _controller;
         private readonly string _testUserId = "test-user-123";
 
         public FocusControllerTest()
         {
             _mockService = new Mock<IFocusSessionService>();
-            _controller = new FocusController(_mockService.Object);
+            _mockCurrentUserService = new Mock<ICurrentUserService>();
             
+            // Mock the GetUserId method to return test user ID
+            _mockCurrentUserService.Setup(x => x.GetUserId()).Returns(_testUserId);
+            
+            _controller = new FocusController(_mockService.Object, _mockCurrentUserService.Object);
+
             // Mock the HttpContext and User claims
             var claims = new List<Claim>
             {
@@ -29,7 +35,7 @@ namespace TasksTrack.Tests.Controllers
             };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext

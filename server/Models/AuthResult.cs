@@ -8,5 +8,7 @@ namespace TasksTrack.Models
         public string? RefreshToken { get; set; } = string.Empty;
         public DateTime? TokenExpiry { get; set; }
         public DateTime? RefreshTokenExpiry { get; set; }
+        public string? UserId { get; set; }
+        public string? UserEmail { get; set; }
     }
 }

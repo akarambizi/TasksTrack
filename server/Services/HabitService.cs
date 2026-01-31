@@ -17,6 +17,11 @@ namespace TasksTrack.Services
             return await _repository.GetAllAsync();
         }
 
+        public async Task<IEnumerable<Habit>> GetByUserIdAsync(string userId)
+        {
+            return await _repository.GetByUserIdAsync(userId);
+        }
+
         public async Task<Habit?> GetByIdAsync(int id)
         {
             return await _repository.GetByIdAsync(id);

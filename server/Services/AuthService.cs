@@ -227,6 +227,8 @@ namespace TasksTrack.Services
                 RefreshToken = refreshToken,
                 TokenExpiry = DateTime.UtcNow.AddHours(1),
                 RefreshTokenExpiry = refreshTokenExpiry,
+                UserId = user.Id.ToString(),
+                UserEmail = user.Email,
                 Message = "Tokens generated successfully."
             };
         }

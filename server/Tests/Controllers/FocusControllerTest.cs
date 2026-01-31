@@ -59,7 +59,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow,
                 Status = "active",
@@ -133,7 +132,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-10),
                 PauseTime = DateTime.UtcNow,
@@ -176,7 +174,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-15),
                 PauseTime = DateTime.UtcNow.AddMinutes(-5),
@@ -211,7 +208,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-25),
                 EndTime = DateTime.UtcNow,
@@ -245,7 +241,6 @@ namespace TasksTrack.Tests.Controllers
                 {
                     Id = 1,
                     HabitId = 1,
-                    HabitName = "Reading",
                     CreatedBy = _testUserId,
                     StartTime = DateTime.UtcNow.AddDays(-1),
                     EndTime = DateTime.UtcNow.AddDays(-1).AddMinutes(25),
@@ -258,7 +253,6 @@ namespace TasksTrack.Tests.Controllers
                 {
                     Id = 2,
                     HabitId = 2,
-                    HabitName = "Exercise",
                     CreatedBy = _testUserId,
                     StartTime = DateTime.UtcNow.AddHours(-1),
                     Status = "active",
@@ -287,7 +281,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-10),
                 Status = "active",
@@ -330,8 +323,8 @@ namespace TasksTrack.Tests.Controllers
             var expectedAnalytics = new FocusSessionAnalytics
             {
                 TotalSessions = 5,
-                TotalFocusTimeMinutes = 125,
-                AverageDurationMinutes = 25.0,
+                TotalMinutes = 125,
+                AverageSessionMinutes = 25.0,
                 CompletedSessions = 4,
                 CompletionRate = 0.8
             };
@@ -346,7 +339,7 @@ namespace TasksTrack.Tests.Controllers
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var analytics = Assert.IsType<FocusSessionAnalytics>(okResult.Value);
             Assert.Equal(5, analytics.TotalSessions);
-            Assert.Equal(125, analytics.TotalFocusTimeMinutes);
+            Assert.Equal(125, analytics.TotalMinutes);
             Assert.Equal(0.8, analytics.CompletionRate);
         }
 
@@ -357,8 +350,8 @@ namespace TasksTrack.Tests.Controllers
             var expectedAnalytics = new FocusSessionAnalytics
             {
                 TotalSessions = 10,
-                TotalFocusTimeMinutes = 250,
-                AverageDurationMinutes = 25.0,
+                TotalMinutes = 250,
+                AverageSessionMinutes = 25.0,
                 CompletedSessions = 8,
                 CompletionRate = 0.8
             };

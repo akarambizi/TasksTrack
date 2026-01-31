@@ -170,7 +170,7 @@ namespace TasksTrack.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetActiveSessionByUserAsync_WithActiveSession_ShouldReturnSession()
+        public async Task GetActiveOrPausedSessionByUserAsync_WithActiveSession_ShouldReturnSession()
         {
             // Arrange
             var activeSession = new FocusSession
@@ -197,7 +197,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveSessionByUserAsync(_testUserId);
+            var result = await _repository.GetActiveOrPausedSessionByUserAsync(_testUserId);
 
             // Assert
             Assert.NotNull(result);
@@ -206,7 +206,7 @@ namespace TasksTrack.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetActiveSessionByUserAsync_WithPausedSession_ShouldReturnSession()
+        public async Task GetActiveOrPausedSessionByUserAsync_WithPausedSession_ShouldReturnSession()
         {
             // Arrange
             var pausedSession = new FocusSession
@@ -223,7 +223,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveSessionByUserAsync(_testUserId);
+            var result = await _repository.GetActiveOrPausedSessionByUserAsync(_testUserId);
 
             // Assert
             Assert.NotNull(result);
@@ -232,7 +232,7 @@ namespace TasksTrack.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetActiveSessionByUserAsync_WithNoActiveSession_ShouldReturnNull()
+        public async Task GetActiveOrPausedSessionByUserAsync_WithNoActiveSession_ShouldReturnNull()
         {
             // Arrange
             var completedSession = new FocusSession
@@ -249,7 +249,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveSessionByUserAsync(_testUserId);
+            var result = await _repository.GetActiveOrPausedSessionByUserAsync(_testUserId);
 
             // Assert
             Assert.Null(result);

@@ -8,14 +8,14 @@ using System;
 
 namespace TasksTrack.Tests.Services
 {
-    public class FocusSessionServiceTests
+    public class FocusSessionServiceTest
     {
         private readonly Mock<IFocusSessionRepository> _mockFocusSessionRepository;
         private readonly Mock<IHabitRepository> _mockHabitRepository;
         private readonly FocusSessionService _service;
         private readonly string _testUserId = "test-user-123";
 
-        public FocusSessionServiceTests()
+        public FocusSessionServiceTest()
         {
             _mockFocusSessionRepository = new Mock<IFocusSessionRepository>();
             _mockHabitRepository = new Mock<IHabitRepository>();
@@ -52,7 +52,7 @@ namespace TasksTrack.Tests.Services
                 Habit = habit
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync((FocusSession?)null);
             _mockHabitRepository.Setup(r => r.GetByIdAsync(1))
                                .ReturnsAsync(habit);
@@ -90,7 +90,7 @@ namespace TasksTrack.Tests.Services
                 Status = "active"
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync(existingSession);
 
             // Act & Assert
@@ -108,7 +108,7 @@ namespace TasksTrack.Tests.Services
                 PlannedDurationMinutes = 25
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync((FocusSession?)null);
             _mockHabitRepository.Setup(r => r.GetByIdAsync(999))
                                .ReturnsAsync((Habit?)null);
@@ -136,7 +136,7 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "other-user"
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync((FocusSession?)null);
             _mockHabitRepository.Setup(r => r.GetByIdAsync(1))
                                .ReturnsAsync(habit);
@@ -161,7 +161,7 @@ namespace TasksTrack.Tests.Services
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync(activeSession);
             _mockFocusSessionRepository.Setup(r => r.UpdateAsync(It.IsAny<FocusSession>()))
                                      .ReturnsAsync(true);
@@ -179,7 +179,7 @@ namespace TasksTrack.Tests.Services
         public async Task PauseSessionAsync_NoActiveSession_ThrowsInvalidOperationException()
         {
             // Arrange
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync((FocusSession?)null);
 
             // Act & Assert
@@ -204,7 +204,7 @@ namespace TasksTrack.Tests.Services
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync(pausedSession);
             _mockFocusSessionRepository.Setup(r => r.UpdateAsync(It.IsAny<FocusSession>()))
                                      .ReturnsAsync(true);
@@ -239,7 +239,7 @@ namespace TasksTrack.Tests.Services
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync(activeSession);
             _mockFocusSessionRepository.Setup(r => r.UpdateAsync(It.IsAny<FocusSession>()))
                                      .ReturnsAsync(true);
@@ -311,7 +311,7 @@ namespace TasksTrack.Tests.Services
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync(activeSession);
 
             // Act
@@ -327,7 +327,7 @@ namespace TasksTrack.Tests.Services
         public async Task GetActiveSessionAsync_NoActiveSession_ReturnsNull()
         {
             // Arrange
-            _mockFocusSessionRepository.Setup(r => r.GetActiveSessionByUserAsync(_testUserId))
+            _mockFocusSessionRepository.Setup(r => r.GetActiveOrPausedSessionByUserAsync(_testUserId))
                                      .ReturnsAsync((FocusSession?)null);
 
             // Act

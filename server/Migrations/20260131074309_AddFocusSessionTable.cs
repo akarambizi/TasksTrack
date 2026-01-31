@@ -48,6 +48,21 @@ namespace server.Migrations
                 name: "IX_FocusSessions_HabitId",
                 table: "FocusSessions",
                 column: "HabitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FocusSessions_CreatedBy",
+                table: "FocusSessions",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FocusSessions_CreatedBy_Status",
+                table: "FocusSessions",
+                columns: new[] { "CreatedBy", "Status" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FocusSessions_CreatedBy_StartTime",
+                table: "FocusSessions",
+                columns: new[] { "CreatedBy", "StartTime" });
         }
 
         /// <inheritdoc />

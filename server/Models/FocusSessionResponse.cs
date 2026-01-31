@@ -8,9 +8,6 @@ namespace TasksTrack.Models
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int PlannedDurationMinutes { get; set; }
-        public int? ActualDurationMinutes { get; set; }
-        public bool IsActive { get; set; }
-        public bool WasCompleted { get; set; }
         public string? Notes { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? PauseTime { get; set; }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TasksTrack.Models
 {
@@ -35,6 +36,7 @@ namespace TasksTrack.Models
         public string? UpdatedBy { get; set; }
 
         // Navigation properties
+        [ForeignKey("HabitId")]
         public Habit? Habit { get; set; }
     }
 }

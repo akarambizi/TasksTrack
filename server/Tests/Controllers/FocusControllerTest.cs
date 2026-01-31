@@ -11,13 +11,13 @@ using System;
 
 namespace TasksTrack.Tests.Controllers
 {
-    public class FocusControllerTests
+    public class FocusControllerTest
     {
         private readonly Mock<IFocusSessionService> _mockService;
         private readonly FocusController _controller;
         private readonly string _testUserId = "test-user-123";
 
-        public FocusControllerTests()
+        public FocusControllerTest()
         {
             _mockService = new Mock<IFocusSessionService>();
             _controller = new FocusController(_mockService.Object);
@@ -115,6 +115,8 @@ namespace TasksTrack.Tests.Controllers
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.NotNull(badRequestResult.Value);
+            Assert.Contains("Habit not found.", badRequestResult.Value.ToString());
         }
 
         [Fact]

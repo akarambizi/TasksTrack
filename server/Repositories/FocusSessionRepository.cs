@@ -38,7 +38,7 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<FocusSession?> GetActiveSessionByUserAsync(string userId)
+        public async Task<FocusSession?> GetActiveOrPausedSessionByUserAsync(string userId)
         {
             return await _context.FocusSessions
                 .Include(fs => fs.Habit)
@@ -86,7 +86,7 @@ namespace TasksTrack.Repositories
             var completedSessions = sessions.Count(fs => fs.Status == FocusSessionStatus.Completed.ToStringValue());
             var totalFocusTimeMinutes = sessions
                 .Where(fs => fs.ActualDurationSeconds.HasValue)
-                .Sum(fs => fs.ActualDurationSeconds!.Value) / (int)FocusSessionConstants.SECONDS_TO_MINUTES;
+                .Sum(fs => fs.ActualDurationSeconds!.Value) / 60;
 
             var averageDurationMinutes = totalSessions > 0 
                 ? sessions.Where(fs => fs.ActualDurationSeconds.HasValue)

@@ -17,7 +17,7 @@ namespace TasksTrack.Services
         public async Task<FocusSessionResponse> StartSessionAsync(FocusSessionStartRequest request, string userId)
         {
             // Check if user already has an active session
-            var existingSession = await _focusSessionRepository.GetActiveSessionByUserAsync(userId);
+            var existingSession = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
             if (existingSession != null)
             {
                 throw new InvalidOperationException("User already has an active focus session. Complete or interrupt the current session first.");
@@ -50,9 +50,9 @@ namespace TasksTrack.Services
             return MapToResponse(focusSession, habit.Name);
         }
 
-        public async Task<FocusSessionResponse?> PauseSessionAsync(string userId)
+        public async Task<FocusSessionResponse> PauseSessionAsync(string userId)
         {
-            var session = await _focusSessionRepository.GetActiveSessionByUserAsync(userId);
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
             
             if (session == null)
             {
@@ -74,9 +74,9 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public async Task<FocusSessionResponse?> ResumeSessionAsync(string userId)
+        public async Task<FocusSessionResponse> ResumeSessionAsync(string userId)
         {
-            var session = await _focusSessionRepository.GetActiveSessionByUserAsync(userId);
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
             
             if (session == null)
             {
@@ -105,9 +105,9 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public async Task<FocusSessionResponse?> CompleteSessionAsync(FocusSessionCompleteRequest request, string userId)
+        public async Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request, string userId)
         {
-            var session = await _focusSessionRepository.GetActiveSessionByUserAsync(userId);
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
             
             if (session == null)
             {
@@ -143,7 +143,7 @@ namespace TasksTrack.Services
 
         public async Task<FocusSessionResponse?> GetActiveSessionAsync(string userId)
         {
-            var session = await _focusSessionRepository.GetActiveSessionByUserAsync(userId);
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
             return session != null ? MapToResponse(session, session.Habit?.Name) : null;
         }
 

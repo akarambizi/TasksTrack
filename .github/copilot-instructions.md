@@ -47,6 +47,8 @@ rather than creating new ones.**
 - **Use the same libraries and patterns** already implemented in your project
 - **Focus on learning** - understand the "why" behind existing patterns, not just the "how"
 - **Avoid unnecessary emojis** in code, comments, or documentation - keep content clean and professional
+- **Use date-fns for all date operations** - For parsing, formatting, calculations, and comparisons. Prefer date-fns functions over manual Date operations for consistency and reliability
+
 ## Key Naming Conventions Summary
 
 ### Server (C#/.NET)

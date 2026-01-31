@@ -14,13 +14,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   /**
    * Login function - stores token and user data
    */
-  const login = (newToken: string, userEmail?: string) => {
-    AuthService.setToken(newToken, userEmail);
+  const login = (newToken: string, userEmail?: string, userId?: string) => {
+    AuthService.setToken(newToken, userEmail, userId);
     setIsAuthenticated(true);
 
-    if (userEmail) {
-      setUser({ email: userEmail });
-    }
+    setUser({
+      email: userEmail,
+      id: userId
+    });
   };
 
   /**

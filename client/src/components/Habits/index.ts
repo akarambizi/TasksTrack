@@ -9,4 +9,3 @@ export * from './HabitOptionsMenu';
 export * from './HabitsContainer';
 export * from './HabitsEmpty';
 export * from './HabitsTable';
-export * from '../Pomodoro/PomodoroDialog';

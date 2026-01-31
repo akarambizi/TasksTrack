@@ -4,7 +4,6 @@ namespace TasksTrack.Models
     {
         public int Id { get; set; }
         public int HabitId { get; set; }
-        public string HabitName { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int PlannedDurationMinutes { get; set; }
@@ -16,5 +15,6 @@ namespace TasksTrack.Models
         public int ActualDurationSeconds { get; set; }
         public int PausedDurationSeconds { get; set; }
         public DateTime CreatedDate { get; set; }
+        public Habit? Habit { get; set; } // Nested habit object for client compatibility
     }
 }

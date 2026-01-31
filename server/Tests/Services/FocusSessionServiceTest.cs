@@ -66,7 +66,7 @@ namespace TasksTrack.Tests.Services
             // Assert
             Assert.NotNull(result);
             Assert.Equal(1, result.HabitId);
-            Assert.Equal("Reading", result.HabitName);
+            Assert.Equal("Reading", result.Habit!.Name);
             Assert.Equal("active", result.Status);
             Assert.Equal(25, result.PlannedDurationMinutes);
             Assert.Equal(_testUserId, result.CreatedBy);
@@ -320,7 +320,7 @@ namespace TasksTrack.Tests.Services
             // Assert
             Assert.NotNull(result);
             Assert.Equal("active", result.Status);
-            Assert.Equal("Reading", result.HabitName);
+            Assert.Equal("Reading", result.Habit!.Name);
         }
 
         [Fact]
@@ -347,8 +347,8 @@ namespace TasksTrack.Tests.Services
             {
                 TotalSessions = 5,
                 CompletedSessions = 4,
-                TotalFocusTimeMinutes = 125,
-                AverageDurationMinutes = 25.0,
+                TotalMinutes = 125,
+                AverageSessionMinutes = 25.0,
                 CompletionRate = 0.8
             };
 
@@ -362,8 +362,8 @@ namespace TasksTrack.Tests.Services
             Assert.NotNull(result);
             Assert.Equal(5, result.TotalSessions);
             Assert.Equal(4, result.CompletedSessions);
-            Assert.Equal(125, result.TotalFocusTimeMinutes);
-            Assert.Equal(25.0, result.AverageDurationMinutes);
+            Assert.Equal(125, result.TotalMinutes);
+            Assert.Equal(25, result.AverageSessionMinutes);
             Assert.Equal(0.8, result.CompletionRate);
         }
     }

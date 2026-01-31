@@ -7,6 +7,9 @@ public static class DependencyInjectionSetup
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, WebApplicationBuilder builder)
     {
+        // User context service
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
 

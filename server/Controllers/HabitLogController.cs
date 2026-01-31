@@ -6,7 +6,7 @@ using TasksTrack.Services;
 namespace TasksTrack.Controllers
 {
     [ApiController]
-    [Authorize] // Require authentication for all habit log operations
+    [Authorize]
     public class HabitLogController : ControllerBase
     {
         private readonly IHabitLogService _habitLogService;

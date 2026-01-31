@@ -42,8 +42,8 @@ namespace TasksTrack.Repositories
         {
             return await _context.FocusSessions
                 .Include(fs => fs.Habit)
-                .FirstOrDefaultAsync(fs => fs.CreatedBy == userId && 
-                                        (fs.Status == FocusSessionStatus.Active.ToStringValue() || 
+                .FirstOrDefaultAsync(fs => fs.CreatedBy == userId &&
+                                        (fs.Status == FocusSessionStatus.Active.ToStringValue() ||
                                          fs.Status == FocusSessionStatus.Paused.ToStringValue()));
         }
 
@@ -80,29 +80,67 @@ namespace TasksTrack.Repositories
             if (endDate.HasValue)
                 query = query.Where(fs => fs.StartTime <= endDate.Value);
 
-            var sessions = await query.ToListAsync();
+            var sessions = await query.OrderBy(fs => fs.StartTime).ToListAsync();
 
             var totalSessions = sessions.Count;
             var completedSessions = sessions.Count(fs => fs.Status == FocusSessionStatus.Completed.ToStringValue());
-            var totalFocusTimeMinutes = sessions
+
+            // Calculate total minutes from actual duration
+            var totalMinutes = sessions
                 .Where(fs => fs.ActualDurationSeconds.HasValue)
                 .Sum(fs => fs.ActualDurationSeconds!.Value) / 60;
 
-            var averageDurationMinutes = totalSessions > 0 
-                ? sessions.Where(fs => fs.ActualDurationSeconds.HasValue)
-                         .Average(fs => fs.ActualDurationSeconds!.Value / FocusSessionConstants.SECONDS_TO_MINUTES)
+            // Calculate average session minutes (only for sessions with actual duration)
+            var sessionsWithDuration = sessions.Where(fs => fs.ActualDurationSeconds.HasValue).ToList();
+            var averageSessionMinutes = sessionsWithDuration.Any()
+                ? sessionsWithDuration.Average(fs => fs.ActualDurationSeconds!.Value / FocusSessionConstants.SECONDS_TO_MINUTES)
                 : 0;
 
-            var completionRate = totalSessions > 0 
+            // Calculate longest session
+            var longestSessionMinutes = sessionsWithDuration.Any()
+                ? sessionsWithDuration.Max(fs => fs.ActualDurationSeconds!.Value / FocusSessionConstants.SECONDS_TO_MINUTES)
+                : 0;
+
+            // Calculate completion rate
+            var completionRate = totalSessions > 0
                 ? (double)completedSessions / totalSessions * FocusSessionConstants.PERCENTAGE_MULTIPLIER
                 : 0;
+
+            // Calculate current streak (consecutive completed sessions from the end)
+            var currentStreak = 0;
+            for (int i = sessions.Count - 1; i >= 0; i--)
+            {
+                if (sessions[i].Status == FocusSessionStatus.Completed.ToStringValue())
+                    currentStreak++;
+                else
+                    break;
+            }
+
+            // Calculate longest streak
+            var longestStreak = 0;
+            var tempStreak = 0;
+            foreach (var session in sessions)
+            {
+                if (session.Status == FocusSessionStatus.Completed.ToStringValue())
+                {
+                    tempStreak++;
+                    longestStreak = Math.Max(longestStreak, tempStreak);
+                }
+                else
+                {
+                    tempStreak = 0;
+                }
+            }
 
             return new FocusSessionAnalytics
             {
                 TotalSessions = totalSessions,
+                TotalMinutes = totalMinutes,
                 CompletedSessions = completedSessions,
-                TotalFocusTimeMinutes = totalFocusTimeMinutes,
-                AverageDurationMinutes = averageDurationMinutes,
+                AverageSessionMinutes = averageSessionMinutes,
+                LongestSessionMinutes = longestSessionMinutes,
+                CurrentStreak = currentStreak,
+                LongestStreak = longestStreak,
                 CompletionRate = completionRate
             };
         }

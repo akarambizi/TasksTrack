@@ -47,7 +47,7 @@ export function AddHabitDialog() {
         color: formData.color || undefined,
         icon: formData.icon || undefined,
         isActive: true,
-        createdBy: user?.email || 'unknown'
+        createdBy: user?.id || 'unknown'
       };
 
       await createHabitMutation.mutateAsync(habitObject);

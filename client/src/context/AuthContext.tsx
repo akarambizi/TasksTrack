@@ -2,6 +2,7 @@ import { createContext } from 'react';
 
 export interface UserData {
   email?: string;
+  id?: string;
 }
 
 // Export for use in the useAuthContext hook
@@ -9,7 +10,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: UserData | null;
-  login: (token: string, userEmail?: string) => void;
+  login: (token: string, userEmail?: string, userId?: string) => void;
   logout: () => void;
 }
 

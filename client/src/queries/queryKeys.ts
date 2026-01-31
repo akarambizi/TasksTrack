@@ -1,6 +1,23 @@
 export const getHabitKey = (query: string) => ['HabitData', query];
 
 /**
+ * Focus Session API keys for React Query
+ */
+export const focusSessionKeys = {
+    all: ['focusSessions'] as const,
+    lists: () => [...focusSessionKeys.all, 'list'] as const,
+    list: (filters: Record<string, any>) => [...focusSessionKeys.lists(), { filters }] as const,
+    details: () => [...focusSessionKeys.all, 'detail'] as const,
+    detail: (id: number) => [...focusSessionKeys.details(), id] as const,
+    active: () => [...focusSessionKeys.all, 'active'] as const,
+    analytics: () => [...focusSessionKeys.all, 'analytics'] as const,
+    analyticsWithFilters: (filters: Record<string, any>) => [...focusSessionKeys.analytics(), { filters }] as const,
+    byHabit: (habitId: number) => [...focusSessionKeys.all, 'byHabit', habitId] as const,
+    byStatus: (status: string) => [...focusSessionKeys.all, 'byStatus', status] as const,
+    byDateRange: (startDate: string, endDate: string) => [...focusSessionKeys.all, 'byDateRange', { startDate, endDate }] as const,
+};
+
+/**
  * Habit Log API keys for React Query
  */
 export const habitLogKeys = {

@@ -17,6 +17,9 @@ new ones.**
 
 ## Key Principles for Code Generation
 
+- **Use date-fns for all date operations** - For parsing, formatting, calculations, and comparisons.
+  Always prefer date-fns functions over manual Date operations for consistency and reliability
+
 ### 1. **Follow Existing Naming Conventions**
 
 **Examine these files to understand the established patterns:**

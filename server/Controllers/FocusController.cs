@@ -2,26 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TasksTrack.Models;
 using TasksTrack.Services;
-using System.Security.Claims;
 
 namespace TasksTrack.Controllers
 {
     [ApiController]
-    [Authorize] // Require authentication for all focus session operations
+    [Authorize]
     public class FocusController : ControllerBase
     {
         private readonly IFocusSessionService _focusSessionService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public FocusController(IFocusSessionService focusSessionService)
+        public FocusController(IFocusSessionService focusSessionService, ICurrentUserService currentUserService)
         {
             _focusSessionService = focusSessionService;
+            _currentUserService = currentUserService;
         }
 
-        private string GetUserId()
-        {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? 
-                throw new UnauthorizedAccessException("User ID not found in token claims.");
-        }
+        private string GetUserId() => _currentUserService.GetUserId();
 
         [HttpPost("api/focus/start")]
         public async Task<ActionResult<FocusSessionResponse>> StartSession([FromBody] FocusSessionStartRequest request)
@@ -125,6 +122,32 @@ namespace TasksTrack.Controllers
             }
         }
 
+        [HttpPost("api/focus/cancel")]
+        public async Task<ActionResult<FocusSessionResponse>> CancelSession([FromBody] FocusSessionCompleteRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var userId = GetUserId();
+                var result = await _focusSessionService.CancelSessionAsync(request, userId);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                // Log the exception details server-side
+                // TODO: Add proper logging
+                return StatusCode(500, new { message = "An error occurred while cancelling the focus session." });
+            }
+        }
+
         [HttpGet("api/focus/sessions")]
         public async Task<ActionResult<IEnumerable<FocusSessionResponse>>> GetSessions()
         {
@@ -149,12 +172,12 @@ namespace TasksTrack.Controllers
             {
                 var userId = GetUserId();
                 var result = await _focusSessionService.GetActiveSessionAsync(userId);
-                
+
                 if (result == null)
                 {
                     return NoContent(); // No active session
                 }
-                
+
                 return Ok(result);
             }
             catch (Exception)

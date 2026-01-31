@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useHabitData } from '@/queries';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AddHabitDialog } from './AddHabitDialog';
 import { AddHabitLogDialog } from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
-import { PomodoroDialog } from '../Pomodoro/PomodoroDialog';
+import { FocusSessionDialog } from '../FocusSession';
 import { IHabit } from '@/api';
 
 export const Habits = () => {
@@ -49,7 +49,7 @@ export const Habits = () => {
                                         {habit.isActive && <CheckCircle size={14} />}
                                     </div>
                                     <div>
-                                        <Link 
+                                        <Link
                                             to={`/habits/${habit.id}`}
                                             className="hover:underline"
                                         >
@@ -76,7 +76,14 @@ export const Habits = () => {
                                             </button>
                                         }
                                     />
-                                    <PomodoroDialog habit={habit} />
+                                    <FocusSessionDialog
+                                        habit={habit}
+                                        trigger={
+                                            <button className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+                                                <Clock size={16} className="text-blue-500 dark:text-blue-400" />
+                                            </button>
+                                        }
+                                    />
                                     <HabitOptionsMenu habit={habit} onLogActivity={handleLogActivity} />
                                 </div>
                             </div>

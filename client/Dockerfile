@@ -2,14 +2,17 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files first for better caching
 COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install --network-timeout 1000000
+# Install dependencies with network timeout and retry
+RUN yarn install --network-timeout 1000000 --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
+
+# Verify all dependencies are properly installed
+RUN yarn install --check-files
 
 # Set environment variables
 ENV NODE_ENV=development

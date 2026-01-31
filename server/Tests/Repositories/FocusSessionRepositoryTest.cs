@@ -390,9 +390,9 @@ namespace TasksTrack.Tests.Repositories
             // Assert
             Assert.Equal(3, result.TotalSessions);
             Assert.Equal(2, result.CompletedSessions);
-            Assert.Equal(65, result.TotalFocusTimeMinutes); // 25 + 30 + 10
+            Assert.Equal(65, result.TotalMinutes); // 25 + 30 + 10
             Assert.Equal(66.67, Math.Round(result.CompletionRate, 2)); // 2/3 * 100
-            Assert.Equal(21.67, Math.Round(result.AverageDurationMinutes, 2)); // Average of 25, 30, 10
+            Assert.Equal(21.67, Math.Round(result.AverageSessionMinutes, 2)); // Average of 25, 30, 10
         }
 
         [Fact]
@@ -433,9 +433,9 @@ namespace TasksTrack.Tests.Repositories
             // Assert
             Assert.Equal(1, result.TotalSessions); // Only recent session
             Assert.Equal(1, result.CompletedSessions);
-            Assert.Equal(30, result.TotalFocusTimeMinutes);
+            Assert.Equal(30, result.TotalMinutes); // 1800 seconds = 30 minutes
             Assert.Equal(100, result.CompletionRate);
-            Assert.Equal(30, result.AverageDurationMinutes);
+            Assert.Equal(30, result.AverageSessionMinutes); // Only 1 session with 30 minutes
         }
 
         [Fact]
@@ -447,9 +447,9 @@ namespace TasksTrack.Tests.Repositories
             // Assert
             Assert.Equal(0, result.TotalSessions);
             Assert.Equal(0, result.CompletedSessions);
-            Assert.Equal(0, result.TotalFocusTimeMinutes);
+            Assert.Equal(0, result.TotalMinutes); // No sessions = 0 minutes
             Assert.Equal(0, result.CompletionRate);
-            Assert.Equal(0, result.AverageDurationMinutes);
+            Assert.Equal(0, result.AverageSessionMinutes); // No sessions = 0 average
         }
 
         public void Dispose()

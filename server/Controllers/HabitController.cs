@@ -6,22 +6,28 @@ using TasksTrack.Services;
 namespace TasksTrack.Controllers
 {
     [ApiController]
-    [Authorize] // Require authentication for all habit operations
+    [Authorize]
     public class HabitController : ControllerBase
     {
         private readonly IHabitService _habitService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public HabitController(IHabitService habitService)
+        public HabitController(IHabitService habitService, ICurrentUserService currentUserService)
         {
             _habitService = habitService;
+            _currentUserService = currentUserService;
         }
+
+        private string GetUserId() => _currentUserService.GetUserId();
 
         [HttpGet("api/habits")]
         public async Task<ActionResult<IEnumerable<Habit>>> GetAll()
         {
             try
             {
-                var result = await _habitService.GetAllAsync();
+                var userId = GetUserId();
+
+                var result = await _habitService.GetByUserIdAsync(userId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -59,6 +65,10 @@ namespace TasksTrack.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                // Set the creator based on the authenticated user
+                var userId = GetUserId();
+                habit.CreatedBy = userId;
 
                 await _habitService.AddAsync(habit);
                 return CreatedAtAction(nameof(GetById), new { id = habit.Id }, habit);

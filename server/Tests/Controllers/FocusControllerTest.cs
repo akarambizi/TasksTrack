@@ -14,14 +14,20 @@ namespace TasksTrack.Tests.Controllers
     public class FocusControllerTest
     {
         private readonly Mock<IFocusSessionService> _mockService;
+        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly FocusController _controller;
         private readonly string _testUserId = "test-user-123";
 
         public FocusControllerTest()
         {
             _mockService = new Mock<IFocusSessionService>();
-            _controller = new FocusController(_mockService.Object);
-            
+            _mockCurrentUserService = new Mock<ICurrentUserService>();
+
+            // Mock the GetUserId method to return test user ID
+            _mockCurrentUserService.Setup(x => x.GetUserId()).Returns(_testUserId);
+
+            _controller = new FocusController(_mockService.Object, _mockCurrentUserService.Object);
+
             // Mock the HttpContext and User claims
             var claims = new List<Claim>
             {
@@ -29,7 +35,7 @@ namespace TasksTrack.Tests.Controllers
             };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
-            
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -53,7 +59,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow,
                 Status = "active",
@@ -127,7 +132,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-10),
                 PauseTime = DateTime.UtcNow,
@@ -170,7 +174,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-15),
                 PauseTime = DateTime.UtcNow.AddMinutes(-5),
@@ -205,7 +208,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-25),
                 EndTime = DateTime.UtcNow,
@@ -239,7 +241,6 @@ namespace TasksTrack.Tests.Controllers
                 {
                     Id = 1,
                     HabitId = 1,
-                    HabitName = "Reading",
                     CreatedBy = _testUserId,
                     StartTime = DateTime.UtcNow.AddDays(-1),
                     EndTime = DateTime.UtcNow.AddDays(-1).AddMinutes(25),
@@ -252,7 +253,6 @@ namespace TasksTrack.Tests.Controllers
                 {
                     Id = 2,
                     HabitId = 2,
-                    HabitName = "Exercise",
                     CreatedBy = _testUserId,
                     StartTime = DateTime.UtcNow.AddHours(-1),
                     Status = "active",
@@ -281,7 +281,6 @@ namespace TasksTrack.Tests.Controllers
             {
                 Id = 1,
                 HabitId = 1,
-                HabitName = "Reading",
                 CreatedBy = _testUserId,
                 StartTime = DateTime.UtcNow.AddMinutes(-10),
                 Status = "active",
@@ -324,8 +323,8 @@ namespace TasksTrack.Tests.Controllers
             var expectedAnalytics = new FocusSessionAnalytics
             {
                 TotalSessions = 5,
-                TotalFocusTimeMinutes = 125,
-                AverageDurationMinutes = 25.0,
+                TotalMinutes = 125,
+                AverageSessionMinutes = 25.0,
                 CompletedSessions = 4,
                 CompletionRate = 0.8
             };
@@ -340,7 +339,7 @@ namespace TasksTrack.Tests.Controllers
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var analytics = Assert.IsType<FocusSessionAnalytics>(okResult.Value);
             Assert.Equal(5, analytics.TotalSessions);
-            Assert.Equal(125, analytics.TotalFocusTimeMinutes);
+            Assert.Equal(125, analytics.TotalMinutes);
             Assert.Equal(0.8, analytics.CompletionRate);
         }
 
@@ -351,8 +350,8 @@ namespace TasksTrack.Tests.Controllers
             var expectedAnalytics = new FocusSessionAnalytics
             {
                 TotalSessions = 10,
-                TotalFocusTimeMinutes = 250,
-                AverageDurationMinutes = 25.0,
+                TotalMinutes = 250,
+                AverageSessionMinutes = 25.0,
                 CompletedSessions = 8,
                 CompletionRate = 0.8
             };

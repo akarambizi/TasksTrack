@@ -481,3 +481,78 @@ Always examine the current codebase first!**
 Remember: Focus on understanding the "why" behind each pattern, not just the "how." Frontend development is
 constantly evolving with new patterns, hooks, and optimization techniques - there's always room to learn and improve
 your React, TypeScript, and state management skills as you build this project.
+
+## Code Quality Standards
+
+### **Enums/Constants for Status Values**
+
+**Avoid string literals for status values:**
+```typescript
+const status = "active";  // BAD: String literal
+if (session.status === "completed") { }  // BAD: Magic string
+```
+
+**Use enums or constants:**
+```typescript
+// Define enum or constants
+export enum FocusSessionStatus {
+  Active = "active",
+  Paused = "paused",
+  Completed = "completed",
+  Interrupted = "interrupted"
+}
+
+// Or use constants object
+export const FOCUS_SESSION_STATUS = {
+  ACTIVE: "active",
+  PAUSED: "paused",
+  COMPLETED: "completed",
+  INTERRUPTED: "interrupted"
+} as const;
+
+// Use enum/constants
+const status = FocusSessionStatus.Active;
+if (session.status === FocusSessionStatus.Completed) { }
+```
+
+### **Constants for Magic Numbers**
+
+**Avoid magic numbers in code:**
+```typescript
+const minutes = seconds / 60;  // BAD: Magic number
+const defaultDuration = 25;   // BAD: Hardcoded value
+```
+
+**Use named constants:**
+```typescript
+// Define constants
+export const TIME_CONSTANTS = {
+  SECONDS_TO_MINUTES: 60,
+  DEFAULT_POMODORO_MINUTES: 25,
+  MILLISECONDS_TO_SECONDS: 1000
+} as const;
+
+// Use constants
+const minutes = seconds / TIME_CONSTANTS.SECONDS_TO_MINUTES;
+const defaultDuration = TIME_CONSTANTS.DEFAULT_POMODORO_MINUTES;
+```
+
+### **Test Coverage Requirements**
+
+- **Minimum 80% line coverage** for all new components and hooks
+- **100% test pass rate** before merging
+- **Test user interactions** and accessibility requirements
+- **Use descriptive test names** that explain user scenarios
+
+**Example test naming:**
+```typescript
+describe('FocusTimer', () => {
+  it('should start timer when start button is clicked', () => {
+    // Test implementation
+  });
+
+  it('should show error message when starting with invalid habit', () => {
+    // Test implementation
+  });
+});
+```

@@ -18,6 +18,10 @@ public static class DependencyInjectionSetup
         services.AddScoped<IHabitLogService, HabitLogService>();
         services.AddScoped<IHabitLogRepository, HabitLogRepository>();
 
+        // FocusSession services
+        services.AddScoped<IFocusSessionService, FocusSessionService>();
+        services.AddScoped<IFocusSessionRepository, FocusSessionRepository>();
+
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAuthRepository, AuthRepository>();
 

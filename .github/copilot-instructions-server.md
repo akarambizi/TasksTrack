@@ -313,3 +313,58 @@ For comprehensive .NET learning:
 Remember: Focus on understanding the "why" behind each pattern, not just the "how."
 This will help you make better architectural decisions as you learn C# and .NET development.
 **Document your learning journey in the `server/docs/` folder for future reference and deeper understanding.**
+
+## Code Quality Standards
+
+### **Enums for Status Values**
+
+**Avoid string literals for status values:**
+```csharp
+session.Status = "active";  // BAD: String literal
+if (session.Status == "completed") { }  // BAD: Magic string
+```
+
+**Use enums with extension methods:**
+```csharp
+// Define enum with extensions (see FocusSessionStatus.cs)
+public enum FocusSessionStatus { Active, Paused, Completed, Interrupted }
+
+// Use enum values
+session.Status = FocusSessionStatus.Active.ToStringValue();
+if (session.Status == FocusSessionStatus.Completed.ToStringValue()) { }
+```
+
+### **Constants for Magic Numbers**
+
+**Avoid magic numbers in code:**
+```csharp
+var minutes = seconds / 60.0;  // BAD: Magic number
+session.PlannedDurationMinutes = 25;  // BAD: Hardcoded default
+```
+
+**Use named constants:**
+```csharp
+// Define constants (see FocusSessionConstants.cs)
+public const double SECONDS_TO_MINUTES = 60.0;
+public const int DEFAULT_POMODORO_MINUTES = 25;
+
+// Use constants
+var minutes = seconds / FocusSessionConstants.SECONDS_TO_MINUTES;
+session.PlannedDurationMinutes = FocusSessionConstants.DEFAULT_POMODORO_MINUTES;
+```
+
+### **Test Coverage Requirements**
+
+- **Minimum 80% line coverage** for all new features
+- **100% test pass rate** before merging
+- **Cover edge cases** and error scenarios in tests
+- **Use descriptive test method names** that explain the scenario and expected outcome
+
+**Example test naming:**
+```csharp
+[Fact]
+public async Task GetByIdAsync_WithValidId_ShouldReturnFocusSession()
+
+[Fact]
+public async Task StartSession_ActiveSessionExists_ReturnsConflict()
+```

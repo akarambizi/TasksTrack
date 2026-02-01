@@ -1,6 +1,6 @@
 # TasksTrack Development Makefile
 
-.PHONY: help build up down restart logs logs-client logs-server clean rebuild stop fresh fresh-client fresh-server
+.PHONY: help build up down restart logs logs-client logs-server clean rebuild stop fresh fresh-wipe fresh-client fresh-server
 
 # Helper function to show ready message
 define show_ready_message
@@ -25,7 +25,9 @@ help:
 	@echo "  make logs        - Show logs with timestamps"
 	@echo "  make logs-client - Show only client logs"
 	@echo "  make logs-server - Show only server logs"
-	@echo "  make fresh       - Fresh build with no cache (use after adding dependencies)"
+	@echo "  make fresh       - Fresh build with no cache (keeps database)"
+	@echo "  make fresh-wipe  - Fresh build with no cache (DELETES DATABASE)"
+	@echo "  make fresh-keep-data - Fresh build keeping database data"
 	@echo "  make fresh-client - Rebuild only client with no cache"
 	@echo "  make fresh-server - Rebuild only server with no cache"
 	@echo "  make clean       - Nuclear option: remove all containers and volumes"
@@ -94,15 +96,26 @@ dev: up
 # Quick restart when things break
 fix: down up
 
-# Fresh build - use after adding dependencies or major changes
+# Fresh build - use after adding dependencies or major changes (SAFE - keeps data)
 fresh:
-	@echo "Performing fresh build with no cache..."
+	@echo "Performing fresh build with no cache (keeping database)..."
+	@docker compose down
+	@docker compose build --no-cache
+	@docker compose up -d
+	@sleep 5
+	$(call show_ready_message)
+	@echo "Fresh build complete (database preserved)!"
+
+# Fresh build with complete wipe (DESTRUCTIVE - deletes database)
+fresh-wipe:
+	@echo "Performing DESTRUCTIVE fresh build with no cache..."
+	@echo "WARNING: This will delete your database!"
 	@docker compose down -v
 	@docker compose build --no-cache
 	@docker compose up -d
 	@sleep 5
 	$(call show_ready_message)
-	@echo "Fresh build complete!"
+	@echo "Fresh build complete (database wiped)!"
 
 # Rebuild only client (for frontend dependency changes)
 fresh-client:

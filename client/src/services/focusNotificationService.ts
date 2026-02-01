@@ -1,10 +1,11 @@
 import { ToastService } from './toastService';
 import { Howl } from 'howler';
 
-// Simple notification sounds using system beep sound URLs
+// Simple notification sound using clean embedded audio
 const sound = new Howl({
-    src: ['https://www.soundjay.com/misc/sounds/bell-ringing-05.wav', '/notification.mp3'],
-    html5: true
+    src: ['data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Dyvnc+BSWN2PTjgSYEC3bN6d2QQgwVXajk4qpXFwY9kNLz2YJJBxN/yOByhzEJEXLH8+OVSA0RXKfb56xdIAVIjdz1x4w2ChN5v+R6kzwLH2O76+KyaB4CMHu96YM'],
+    html5: true,
+    volume: 0.3
 });
 
 /**

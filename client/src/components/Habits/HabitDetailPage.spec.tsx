@@ -118,7 +118,7 @@ describe('HabitDetailPage', () => {
             renderWithProviders();
 
             // Check for loading skeleton elements
-            const skeletons = screen.getAllByRole('generic').filter(el => 
+            const skeletons = screen.getAllByRole('generic').filter(el =>
                 el.classList.contains('animate-pulse')
             );
             expect(skeletons.length).toBeGreaterThan(0);

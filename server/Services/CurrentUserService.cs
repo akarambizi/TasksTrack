@@ -23,7 +23,7 @@ namespace TasksTrack.Services
         {
             var user = _httpContextAccessor.HttpContext?.User;
 
-            if (user == null || !user.Identity?.IsAuthenticated == true)
+            if (user?.Identity?.IsAuthenticated != true)
             {
                 throw new UnauthorizedAccessException("User is not authenticated.");
             }

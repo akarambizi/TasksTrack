@@ -232,7 +232,7 @@ namespace TasksTrack.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetSessions_ReturnsListOfSessions()
+        public void GetSessions_ReturnsListOfSessions()
         {
             // Arrange
             var expectedSessions = new List<FocusSessionResponse>
@@ -261,15 +261,15 @@ namespace TasksTrack.Tests.Controllers
                 }
             };
 
-            _mockService.Setup(s => s.GetSessionsAsync(_testUserId))
-                       .ReturnsAsync(expectedSessions);
+            _mockService.Setup(s => s.GetSessions(_testUserId))
+                       .Returns(expectedSessions.AsQueryable());
 
             // Act
-            var result = await _controller.GetSessions();
+            var result = _controller.GetSessions();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var sessions = Assert.IsAssignableFrom<IEnumerable<FocusSessionResponse>>(okResult.Value);
+            var sessions = Assert.IsAssignableFrom<IQueryable<FocusSessionResponse>>(okResult.Value);
             Assert.Equal(2, sessions.Count());
         }
 
@@ -473,14 +473,14 @@ namespace TasksTrack.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetSessions_ServiceThrowsException_ReturnsInternalServerError()
+        public void GetSessions_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.GetSessionsAsync(_testUserId))
-                       .ThrowsAsync(new Exception("Unexpected error"));
+            _mockService.Setup(s => s.GetSessions(_testUserId))
+                       .Throws(new Exception("Unexpected error"));
 
             // Act
-            var result = await _controller.GetSessions();
+            var result = _controller.GetSessions();
 
             // Assert
             var statusResult = Assert.IsType<ObjectResult>(result.Result);

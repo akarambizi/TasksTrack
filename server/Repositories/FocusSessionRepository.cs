@@ -20,13 +20,11 @@ namespace TasksTrack.Repositories
                 .FirstOrDefaultAsync(fs => fs.Id == id);
         }
 
-        public async Task<IEnumerable<FocusSession>> GetByUserAsync(string userId)
+        public IQueryable<FocusSession> GetByUser(string userId)
         {
-            return await _context.FocusSessions
+            return _context.FocusSessions
                 .Include(fs => fs.Habit)
-                .Where(fs => fs.CreatedBy == userId)
-                .OrderByDescending(fs => fs.StartTime)
-                .ToListAsync();
+                .Where(fs => fs.CreatedBy == userId);
         }
 
         public async Task<IEnumerable<FocusSession>> GetByHabitAsync(int habitId)

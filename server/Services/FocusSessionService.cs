@@ -166,10 +166,26 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public async Task<IEnumerable<FocusSessionResponse>> GetSessionsAsync(string userId)
+        public IQueryable<FocusSessionResponse> GetSessions(string userId)
         {
-            var sessions = await _focusSessionRepository.GetByUserAsync(userId);
-            return sessions.Select(session => MapToResponse(session, session.Habit?.Name)).ToList();
+            var sessions = _focusSessionRepository.GetByUser(userId);
+            return sessions.Select(session => new FocusSessionResponse
+            {
+                Id = session.Id,
+                HabitId = session.HabitId,
+                CreatedBy = session.CreatedBy,
+                StartTime = session.StartTime,
+                PauseTime = session.PauseTime,
+                ResumeTime = session.ResumeTime,
+                EndTime = session.EndTime,
+                Status = session.Status,
+                PlannedDurationMinutes = session.PlannedDurationMinutes,
+                ActualDurationSeconds = session.ActualDurationSeconds ?? 0,
+                PausedDurationSeconds = session.PausedDurationSeconds ?? 0,
+                Notes = session.Notes,
+                CreatedDate = session.CreatedDate,
+                Habit = session.Habit
+            });
         }
 
         public async Task<FocusSessionResponse?> GetActiveSessionAsync(string userId)

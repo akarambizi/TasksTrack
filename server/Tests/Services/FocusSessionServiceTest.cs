@@ -256,7 +256,7 @@ namespace TasksTrack.Tests.Services
         }
 
         [Fact]
-        public async Task GetSessionsAsync_ReturnsUserSessions()
+        public void GetSessions_ReturnsUserSessions()
         {
             // Arrange
             var sessions = new List<FocusSession>
@@ -285,11 +285,11 @@ namespace TasksTrack.Tests.Services
                 }
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetByUserAsync(_testUserId))
-                                     .ReturnsAsync(sessions);
+            _mockFocusSessionRepository.Setup(r => r.GetByUser(_testUserId))
+                                     .Returns(sessions.AsQueryable());
 
             // Act
-            var result = await _service.GetSessionsAsync(_testUserId);
+            var result = _service.GetSessions(_testUserId);
 
             // Assert
             Assert.NotNull(result);

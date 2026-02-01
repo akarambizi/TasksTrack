@@ -5,7 +5,7 @@ namespace TasksTrack.Repositories
     public interface IFocusSessionRepository
     {
         Task<FocusSession?> GetByIdAsync(int id);
-        Task<IEnumerable<FocusSession>> GetByUserAsync(string userId);
+        IQueryable<FocusSession> GetByUser(string userId);
         Task<IEnumerable<FocusSession>> GetByHabitAsync(int habitId);
         Task<FocusSession?> GetActiveOrPausedSessionByUserAsync(string userId);
         Task AddAsync(FocusSession focusSession);

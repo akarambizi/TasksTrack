@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.OData.Query;
 using TasksTrack.Models;
 using TasksTrack.Services;
 
@@ -149,12 +150,13 @@ namespace TasksTrack.Controllers
         }
 
         [HttpGet("api/focus/sessions")]
-        public async Task<ActionResult<IEnumerable<FocusSessionResponse>>> GetSessions()
+        [EnableQuery]
+        public ActionResult<IQueryable<FocusSessionResponse>> GetSessions()
         {
             try
             {
                 var userId = GetUserId();
-                var result = await _focusSessionService.GetSessionsAsync(userId);
+                var result = _focusSessionService.GetSessions(userId);
                 return Ok(result);
             }
             catch (Exception)
@@ -189,7 +191,9 @@ namespace TasksTrack.Controllers
         }
 
         [HttpGet("api/focus/analytics")]
-        public async Task<ActionResult<FocusSessionAnalytics>> GetAnalytics([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        public async Task<ActionResult<FocusSessionAnalytics>> GetAnalytics(
+            [FromQuery] DateTime? startDate = null,
+            [FromQuery] DateTime? endDate = null)
         {
             try
             {

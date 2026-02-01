@@ -50,6 +50,14 @@ the TasksTrack server application. Each document focuses on specific aspects of 
 - Error handling and validation strategies
 - Performance considerations and testing
 
+**[odata-implementation.md](./odata-implementation.md)**
+
+- OData query options integration with ASP.NET Core
+- Advanced querying: filtering, sorting, pagination, field selection
+- Architecture decisions and Microsoft's recommended patterns
+- Frontend integration with proper date formatting
+- Performance optimization and security considerations
+
 ### 🗃️ **Data and Infrastructure**
 
 **[db-setup.md](./db-setup.md)**

@@ -6,7 +6,7 @@ import type {
 } from './focusSession.types';
 import { apiGet, apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
-import { buildQueryParams } from './utils';
+import buildQuery from 'odata-query';
 
 /**
  * Starts a new focus session.
@@ -79,7 +79,7 @@ export const completeFocusSession = async (updateData?: IFocusSessionUpdateReque
 };
 
 /**
- * Gets focus sessions with optional filtering and pagination.
+ * Gets focus sessions with optional filtering and pagination using OData.
  * @param {object} params - Query parameters for filtering sessions.
  * @returns {Promise<IFocusSession[]>} Array of focus sessions.
  */
@@ -92,9 +92,20 @@ export const getFocusSessions = async (params?: {
     pageSize?: number;
 }): Promise<IFocusSession[]> => {
     try {
-        const queryParams = buildQueryParams(params);
+        // Build OData query from parameters
+        const odataQuery = buildQuery({
+            filter: {
+                ...(params?.habitId && { habitId: params.habitId }),
+                ...(params?.status && { status: params.status }),
+                ...(params?.startDate && { startTime: { ge: params.startDate } }),
+                ...(params?.endDate && { startTime: { le: params.endDate } })
+            },
+            orderBy: 'startTime desc',
+            ...(params?.pageSize && { top: params.pageSize }),
+            ...(params?.page && params?.pageSize && { skip: (params.page - 1) * params.pageSize })
+        });
 
-        const endpoint = `/api/focus/sessions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+        const endpoint = `/api/focus/sessions${odataQuery}`;
         return await apiGet<IFocusSession[]>(endpoint);
     } catch (error) {
         console.error('Failed to fetch focus sessions:', error);
@@ -129,9 +140,19 @@ export const getFocusSessionAnalytics = async (params?: {
     endDate?: string;
 }): Promise<IFocusSessionAnalytics> => {
     try {
-        const queryParams = buildQueryParams(params);
-
-        const endpoint = `/api/focus/analytics${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+        // Build simple query parameters for analytics endpoint
+        const searchParams = new URLSearchParams();
+        
+        if (params?.startDate) {
+            searchParams.append('startDate', params.startDate);
+        }
+        if (params?.endDate) {
+            searchParams.append('endDate', params.endDate);
+        }
+        
+        const queryString = searchParams.toString();
+        const endpoint = `/api/focus/analytics${queryString ? `?${queryString}` : ''}`;
+        
         return await apiGet<IFocusSessionAnalytics>(endpoint);
     } catch (error) {
         console.error('Failed to fetch focus session analytics:', error);

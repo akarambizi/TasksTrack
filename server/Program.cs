@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TasksTrack.Data;
@@ -35,7 +36,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add Authorization services - enables [Authorize] attributes on controllers
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+// Configure OData - simple, scalable approach (no explicit EDM model needed)
+builder.Services.AddControllers().AddOData(options =>
+{
+    options.Select()
+           .Filter()
+           .OrderBy()
+           .Expand()
+           .Count()
+           .SetMaxTop(null);
+});
 
 // Add CORS services
 builder.Services.AddCors(options =>

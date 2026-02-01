@@ -1,4 +1,4 @@
-import { parseISO, startOfDay, endOfDay } from 'date-fns';
+import { parseISO, startOfDay, endOfDay, isValid } from 'date-fns';
 
 /**
  * Utility functions for OData query building and date formatting
@@ -11,36 +11,14 @@ import { parseISO, startOfDay, endOfDay } from 'date-fns';
  * @returns ISO 8601 formatted string with timezone
  */
 export const formatDateForOData = (date: string | Date, type: 'start' | 'end' = 'start'): string => {
-  try {
-    let dateObj: Date;
+  const dateObj = typeof date === 'string' ? parseISO(date) : date;
 
-    if (typeof date === 'string') {
-      // If it's a date string like '2026-01-31', create it properly in local timezone
-      if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        // Parse YYYY-MM-DD and create as local date (not UTC)
-        const [year, month, day] = date.split('-').map(Number);
-        dateObj = new Date(year, month - 1, day); // month is 0-indexed
-      } else if (date.match(/^[A-Za-z]{3} \d{1,2}, \d{4}$/)) {
-        // Handle 'Jan 31, 2026' format
-        dateObj = new Date(date);
-      } else {
-        // If it's already an ISO string, parse it
-        dateObj = parseISO(date);
-      }
-    } else {
-      dateObj = new Date(date);
-    }
-
-    // Get start or end of day in the user's local timezone, then convert to UTC
-    const adjustedDate = type === 'start' ? startOfDay(dateObj) : endOfDay(dateObj);
-
-    const result = adjustedDate.toISOString();
-
-    return result;
-  } catch (error) {
-    console.error('Error formatting date for OData:', error, 'Input:', date);
+  if (!isValid(dateObj)) {
     throw new Error(`Invalid date format: ${date}`);
   }
+
+  const adjustedDate = type === 'start' ? startOfDay(dateObj) : endOfDay(dateObj);
+  return adjustedDate.toISOString();
 };
 
 /**

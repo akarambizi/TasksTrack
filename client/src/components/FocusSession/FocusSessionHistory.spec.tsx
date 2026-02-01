@@ -20,7 +20,9 @@ vi.mock('date-fns', () => ({
     startOfDay: vi.fn(() => new Date('2026-01-31T00:00:00')),
     endOfDay: vi.fn(() => new Date('2026-01-31T23:59:59')),
     startOfWeek: vi.fn(() => new Date('2026-01-25T00:00:00')),
-    endOfWeek: vi.fn(() => new Date('2026-01-31T23:59:59'))
+    endOfWeek: vi.fn(() => new Date('2026-01-31T23:59:59')),
+    parseISO: vi.fn((dateString) => new Date(dateString)),
+    isValid: vi.fn(() => true)
 }));
 
 const { useFocusSessions, useFocusSessionAnalytics } = await import('@/queries');

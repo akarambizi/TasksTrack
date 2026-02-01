@@ -118,7 +118,7 @@ describe('HabitDetailPage', () => {
             renderWithProviders();
 
             // Check for loading skeleton elements
-            const skeletons = screen.getAllByRole('generic').filter(el => 
+            const skeletons = screen.getAllByRole('generic').filter(el =>
                 el.classList.contains('animate-pulse')
             );
             expect(skeletons.length).toBeGreaterThan(0);
@@ -318,9 +318,10 @@ describe('HabitDetailPage', () => {
             expect(mainHeading).toHaveTextContent('Test Habit');
 
             const subHeadings = screen.getAllByRole('heading', { level: 2 });
-            expect(subHeadings).toHaveLength(2);
+            expect(subHeadings).toHaveLength(3);
             expect(subHeadings[0]).toHaveTextContent('Progress Overview');
             expect(subHeadings[1]).toHaveTextContent('Activity History');
+            expect(subHeadings[2]).toHaveTextContent('Focus Sessions');
         });
 
         it('should have accessible buttons', () => {

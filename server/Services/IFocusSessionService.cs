@@ -8,8 +8,9 @@ namespace TasksTrack.Services
         Task<FocusSessionResponse> PauseSessionAsync(string userId);
         Task<FocusSessionResponse> ResumeSessionAsync(string userId);
         Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request, string userId);
-        Task<IEnumerable<FocusSessionResponse>> GetSessionsAsync(string userId);
+        Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request, string userId);
+        IQueryable<FocusSessionResponse> GetSessions(string userId);
         Task<FocusSessionResponse?> GetActiveSessionAsync(string userId);
-        Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId, DateTime? startDate = null, DateTime? endDate = null);
+        Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId);
     }
 }

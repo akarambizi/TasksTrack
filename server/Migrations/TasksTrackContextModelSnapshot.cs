@@ -37,10 +37,10 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTimeOffset?>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("HabitId")
@@ -50,7 +50,7 @@ namespace server.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<DateTime?>("PauseTime")
+                    b.Property<DateTimeOffset?>("PauseTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("PausedDurationSeconds")
@@ -59,10 +59,10 @@ namespace server.Migrations
                     b.Property<int>("PlannedDurationMinutes")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("ResumeTime")
+                    b.Property<DateTimeOffset?>("ResumeTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
@@ -73,7 +73,7 @@ namespace server.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedDate")
+                    b.Property<DateTimeOffset?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -103,7 +103,7 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -140,7 +140,7 @@ namespace server.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedDate")
+                    b.Property<DateTimeOffset?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -160,7 +160,7 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateOnly>("Date")
@@ -176,7 +176,7 @@ namespace server.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedDate")
+                    b.Property<DateTimeOffset?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Value")
@@ -197,7 +197,7 @@ namespace server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -211,10 +211,10 @@ namespace server.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("RefreshTokenExpiry")
+                    b.Property<DateTimeOffset?>("RefreshTokenExpiry")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Username")

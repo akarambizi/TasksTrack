@@ -13,8 +13,8 @@ export const SideBarLinks = () => {
                     Habits
                     <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">6</Badge>
                 </NavItem>
-                <NavItem to="/pomodoro" icon={<Clock size={18} />}>
-                    Pomodoro
+                <NavItem to="/focus-sessions" icon={<Clock size={18} />}>
+                    Focus Sessions
                 </NavItem>
                 <NavItem to="/history" icon={<Calendar size={18} />}>
                     History

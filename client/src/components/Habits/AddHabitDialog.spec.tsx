@@ -43,7 +43,7 @@ describe('AddHabitDialog', () => {
         vi.clearAllMocks();
 
         MockedUseAuthContext.mockReturnValue({
-            user: { email: 'test@example.com' }
+            user: { email: 'test@example.com', id: 'test-user-id' }
         });
 
         MockedUseHabitForm.mockReturnValue({
@@ -297,7 +297,7 @@ describe('AddHabitDialog', () => {
                 color: '#blue',
                 icon: 'dumbbell',
                 isActive: true,
-                createdBy: 'test@example.com'
+                createdBy: 'test-user-id'
             }));
         });
     });

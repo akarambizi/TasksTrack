@@ -30,7 +30,7 @@ describe('habitLog API', () => {
                 value: 30.5,
                 date: '2024-01-15',
                 notes: 'Great session today!',
-                createdBy: 'test@example.com'
+                createdBy: 'test-user-id'
             };
             const mockResponse = { id: 1, ...mockRequest };
 
@@ -44,7 +44,7 @@ describe('habitLog API', () => {
                 value: 30.5,
                 date: '2024-01-15',
                 notes: 'Great session today!',
-                createdBy: 'test@example.com',
+                createdBy: 'test-user-id',
                 createdDate: expect.any(String)
             }));
             expect(ToastService.success).toHaveBeenCalledWith('Habit log created successfully');
@@ -57,7 +57,7 @@ describe('habitLog API', () => {
                 value: 30.5,
                 date: '2024-01-15',
                 notes: 'Test',
-                createdBy: 'test-user'
+                createdBy: 'test-user-id'
             };
             const errorMessage = 'Failed to create log';
 

@@ -133,11 +133,11 @@ namespace TasksTrack.Tests.Controllers
         public async Task Add_ReturnsBadRequest_WhenServiceThrowsArgumentException()
         {
             // Arrange
-            var habitLog = new HabitLog 
-            { 
-                HabitId = 999, 
-                Value = 30.0m, 
-                Date = DateOnly.FromDateTime(DateTime.Today), 
+            var habitLog = new HabitLog
+            {
+                HabitId = 999,
+                Value = 30.0m,
+                Date = DateOnly.FromDateTime(DateTime.Today),
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -182,11 +182,11 @@ namespace TasksTrack.Tests.Controllers
         public async Task Update_ReturnsBadRequest_WhenIdMismatch()
         {
             // Arrange
-            var habitLog = new HabitLog 
-            { 
-                Id = 2, 
-                HabitId = 1, 
-                Value = 30.0m, 
+            var habitLog = new HabitLog
+            {
+                Id = 2,
+                HabitId = 1,
+                Value = 30.0m,
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -202,11 +202,11 @@ namespace TasksTrack.Tests.Controllers
         public async Task Update_ReturnsNotFound_WhenUpdateFails()
         {
             // Arrange
-            var habitLog = new HabitLog 
-            { 
-                Id = 999, 
-                HabitId = 1, 
-                Value = 30.0m, 
+            var habitLog = new HabitLog
+            {
+                Id = 999,
+                HabitId = 1,
+                Value = 30.0m,
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -223,11 +223,11 @@ namespace TasksTrack.Tests.Controllers
         public async Task Delete_ReturnsNoContent_WhenHabitLogExists()
         {
             // Arrange
-            var habitLog = new HabitLog 
-            { 
-                Id = 1, 
-                HabitId = 1, 
-                Value = 30.0m, 
+            var habitLog = new HabitLog
+            {
+                Id = 1,
+                HabitId = 1,
+                Value = 30.0m,
                 Date = DateOnly.FromDateTime(DateTime.Today),
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
@@ -265,21 +265,21 @@ namespace TasksTrack.Tests.Controllers
             var habitId = 1;
             var habitLogs = new List<HabitLog>
             {
-                new HabitLog 
-                { 
-                    Id = 1, 
-                    HabitId = habitId, 
-                    Value = 30.0m, 
-                    Date = DateOnly.FromDateTime(DateTime.Today), 
+                new HabitLog
+                {
+                    Id = 1,
+                    HabitId = habitId,
+                    Value = 30.0m,
+                    Date = DateOnly.FromDateTime(DateTime.Today),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
-                new HabitLog 
-                { 
-                    Id = 2, 
-                    HabitId = habitId, 
-                    Value = 25.0m, 
-                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), 
+                new HabitLog
+                {
+                    Id = 2,
+                    HabitId = habitId,
+                    Value = 25.0m,
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -304,21 +304,21 @@ namespace TasksTrack.Tests.Controllers
             var targetDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLogs = new List<HabitLog>
             {
-                new HabitLog 
-                { 
-                    Id = 1, 
-                    HabitId = 1, 
-                    Value = 30.0m, 
-                    Date = targetDate, 
+                new HabitLog
+                {
+                    Id = 1,
+                    HabitId = 1,
+                    Value = 30.0m,
+                    Date = targetDate,
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
-                new HabitLog 
-                { 
-                    Id = 2, 
-                    HabitId = 2, 
-                    Value = 15.0m, 
-                    Date = targetDate, 
+                new HabitLog
+                {
+                    Id = 2,
+                    HabitId = 2,
+                    Value = 15.0m,
+                    Date = targetDate,
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -344,21 +344,21 @@ namespace TasksTrack.Tests.Controllers
             var endDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLogs = new List<HabitLog>
             {
-                new HabitLog 
-                { 
-                    Id = 1, 
-                    HabitId = 1, 
-                    Value = 30.0m, 
-                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-3)), 
+                new HabitLog
+                {
+                    Id = 1,
+                    HabitId = 1,
+                    Value = 30.0m,
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-3)),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 },
-                new HabitLog 
-                { 
-                    Id = 2, 
-                    HabitId = 1, 
-                    Value = 25.0m, 
-                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), 
+                new HabitLog
+                {
+                    Id = 2,
+                    HabitId = 1,
+                    Value = 25.0m,
+                    Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                     CreatedBy = "testuser",
                     CreatedDate = DateTime.Now
                 }
@@ -431,21 +431,21 @@ namespace TasksTrack.Tests.Controllers
             var endDate = DateOnly.FromDateTime(DateTime.Today);
             var habitLogs = new List<HabitLog>
             {
-                new HabitLog 
-                { 
-                    Id = 1, 
-                    HabitId = habitId, 
-                    Date = startDate, 
-                    Value = 30, 
-                    CreatedBy = "test@example.com" 
+                new HabitLog
+                {
+                    Id = 1,
+                    HabitId = habitId,
+                    Date = startDate,
+                    Value = 30,
+                    CreatedBy = "test@example.com"
                 },
-                new HabitLog 
-                { 
-                    Id = 2, 
-                    HabitId = habitId, 
-                    Date = endDate, 
-                    Value = 45, 
-                    CreatedBy = "test@example.com" 
+                new HabitLog
+                {
+                    Id = 2,
+                    HabitId = habitId,
+                    Date = endDate,
+                    Value = 45,
+                    CreatedBy = "test@example.com"
                 }
             };
 

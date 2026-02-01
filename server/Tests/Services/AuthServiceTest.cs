@@ -196,7 +196,7 @@ namespace TasksTrack.Tests.Services
                 Email = "test@example.com", 
                 Username = "testuser",
                 RefreshToken = "valid-refresh-token",
-                RefreshTokenExpiry = DateTime.UtcNow.AddDays(1) // Valid future expiry
+                RefreshTokenExpiry = DateTimeOffset.UtcNow.AddDays(1) // Valid future expiry
             };
             _authRepositoryMock.Setup(repo => repo.GetUserByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync(existingUser);
 

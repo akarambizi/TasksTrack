@@ -13,13 +13,13 @@ interface IUseHabitLogFormReturn {
 
 export function useHabitLogForm(habitId?: number): IUseHabitLogFormReturn {
     const { user } = useAuthContext();
-    
+
     const getInitialFormData = () => ({
         habitId: habitId || 0,
         value: 0,
         date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
         notes: '',
-        createdBy: user?.email || 'unknown'
+        createdBy: user?.id || 'unknown'
     });
 
     const [formData, setFormData] = useState<IHabitLogCreateRequest>(getInitialFormData());

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace TasksTrack.Controllers
 {
     [ApiController]
-    [Authorize] // Require authentication for all user operations
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;

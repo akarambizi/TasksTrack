@@ -6,8 +6,8 @@ import { useHabitLogForm } from './useHabitLogForm';
 vi.mock('@/context/useAuthContext', () => ({
     useAuthContext: () => ({
         user: {
-            id: 1,
             email: 'test@example.com',
+            id: 'test-user-id',
             firstName: 'John',
             lastName: 'Doe',
         },

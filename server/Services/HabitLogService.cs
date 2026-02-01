@@ -31,7 +31,7 @@ namespace TasksTrack.Services
             if (habit == null)
                 throw new ArgumentException($"Habit with ID {habitLog.HabitId} not found");
 
-            habitLog.CreatedDate = DateTime.UtcNow;
+            habitLog.CreatedDate = DateTimeOffset.UtcNow;
             // No need to normalize Date since DateOnly is already date-only
 
             await _repository.AddAsync(habitLog);
@@ -56,7 +56,7 @@ namespace TasksTrack.Services
             existing.Value = habitLog.Value;
             existing.Date = habitLog.Date; // DateOnly is already date-only
             existing.Notes = habitLog.Notes;
-            existing.UpdatedDate = DateTime.UtcNow;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
             existing.UpdatedBy = habitLog.UpdatedBy;
 
             await _repository.UpdateAsync(existing);

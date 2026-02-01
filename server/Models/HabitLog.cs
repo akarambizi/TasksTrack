@@ -21,8 +21,8 @@ namespace TasksTrack.Models
         [StringLength(1000, ErrorMessage = "Notes cannot exceed 1000 characters")]
         public string? Notes { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
 
         [Required(ErrorMessage = "CreatedBy is required")]
         public required string CreatedBy { get; set; }

@@ -440,18 +440,15 @@ namespace TasksTrack.Tests.Repositories
             _context.FocusSessions.AddRange(oldSession, recentSession);
             await _context.SaveChangesAsync();
 
-            var startDate = DateTime.Now.AddDays(-5);
-            var endDate = DateTime.Now;
-
             // Act
-            var result = await _repository.GetAnalyticsAsync(_testUserId, startDate, endDate);
+            var result = await _repository.GetAnalyticsAsync(_testUserId);
 
             // Assert
-            Assert.Equal(1, result.TotalSessions); // Only recent session
-            Assert.Equal(1, result.CompletedSessions);
-            Assert.Equal(30, result.TotalMinutes); // 1800 seconds = 30 minutes
-            Assert.Equal(100, result.CompletionRate);
-            Assert.Equal(30, result.AverageSessionMinutes); // Only 1 session with 30 minutes
+            Assert.Equal(2, result.TotalSessions); // Both sessions since we removed date filtering
+            Assert.Equal(2, result.CompletedSessions);
+            Assert.Equal(60, result.TotalMinutes); // 3600 seconds total = 60 minutes
+            Assert.Equal(1.0, result.CompletionRate); // 2/2 = 100%
+            Assert.Equal(30, result.AverageSessionMinutes); // Average of 30 minutes each
         }
 
         [Fact]

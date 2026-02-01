@@ -39,10 +39,10 @@ namespace TasksTrack.Services
             {
                 HabitId = request.HabitId,
                 CreatedBy = userId,
-                StartTime = DateTime.UtcNow,
+                StartTime = DateTimeOffset.UtcNow,
                 Status = FocusSessionStatus.Active.ToStringValue(),
                 PlannedDurationMinutes = request.PlannedDurationMinutes,
-                CreatedDate = DateTime.UtcNow,
+                CreatedDate = DateTimeOffset.UtcNow,
                 Habit = habit // Set the habit object for proper response mapping
             };
 
@@ -66,8 +66,8 @@ namespace TasksTrack.Services
             }
 
             session.Status = FocusSessionStatus.Paused.ToStringValue();
-            session.PauseTime = DateTime.UtcNow;
-            session.UpdatedDate = DateTime.UtcNow;
+            session.PauseTime = DateTimeOffset.UtcNow;
+            session.UpdatedDate = DateTimeOffset.UtcNow;
             session.UpdatedBy = userId;
 
             await _focusSessionRepository.UpdateAsync(session);
@@ -92,13 +92,13 @@ namespace TasksTrack.Services
             // Calculate paused duration if this is a resume action
             if (session.PauseTime.HasValue)
             {
-                var pausedSeconds = (int)(DateTime.UtcNow - session.PauseTime.Value).TotalSeconds;
+                var pausedSeconds = (int)(DateTimeOffset.UtcNow - session.PauseTime.Value).TotalSeconds;
                 session.PausedDurationSeconds = (session.PausedDurationSeconds ?? 0) + pausedSeconds;
             }
 
             session.Status = FocusSessionStatus.Active.ToStringValue();
-            session.ResumeTime = DateTime.UtcNow;
-            session.UpdatedDate = DateTime.UtcNow;
+            session.ResumeTime = DateTimeOffset.UtcNow;
+            session.UpdatedDate = DateTimeOffset.UtcNow;
             session.UpdatedBy = userId;
 
             await _focusSessionRepository.UpdateAsync(session);
@@ -120,7 +120,7 @@ namespace TasksTrack.Services
                 throw new InvalidOperationException("Session is not in an active or paused state.");
             }
 
-            var endTime = DateTime.UtcNow;
+            var endTime = DateTimeOffset.UtcNow;
             session.Status = FocusSessionStatus.Completed.ToStringValue();
             session.EndTime = endTime;
             session.Notes = request.Notes;
@@ -150,7 +150,7 @@ namespace TasksTrack.Services
                 throw new InvalidOperationException("Session is not in an active or paused state.");
             }
 
-            var endTime = DateTime.UtcNow;
+            var endTime = DateTimeOffset.UtcNow;
             session.Status = FocusSessionStatus.Interrupted.ToStringValue();
             session.EndTime = endTime;
             session.Notes = request.Notes;
@@ -194,9 +194,9 @@ namespace TasksTrack.Services
             return session != null ? MapToResponse(session, session.Habit?.Name) : null;
         }
 
-        public async Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId, DateTime? startDate = null, DateTime? endDate = null)
+        public async Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId)
         {
-            return await _focusSessionRepository.GetAnalyticsAsync(userId, startDate, endDate);
+            return await _focusSessionRepository.GetAnalyticsAsync(userId);
         }
 
         private static FocusSessionResponse MapToResponse(FocusSession session, string? habitName)

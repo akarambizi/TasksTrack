@@ -4,17 +4,17 @@ namespace TasksTrack.Models
     {
         public int Id { get; set; }
         public int HabitId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public DateTimeOffset StartTime { get; set; }
+        public DateTimeOffset? EndTime { get; set; }
         public int PlannedDurationMinutes { get; set; }
         public string? Notes { get; set; }
         public string? CreatedBy { get; set; }
-        public DateTime? PauseTime { get; set; }
-        public DateTime? ResumeTime { get; set; }
+        public DateTimeOffset? PauseTime { get; set; }
+        public DateTimeOffset? ResumeTime { get; set; }
         public string Status { get; set; } = string.Empty;
         public int ActualDurationSeconds { get; set; }
         public int PausedDurationSeconds { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
         public Habit? Habit { get; set; } // Nested habit object for client compatibility
     }
 }

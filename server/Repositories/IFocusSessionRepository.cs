@@ -11,6 +11,6 @@ namespace TasksTrack.Repositories
         Task AddAsync(FocusSession focusSession);
         Task<bool> UpdateAsync(FocusSession focusSession);
         Task DeleteAsync(int id);
-        Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId, DateTime? startDate = null, DateTime? endDate = null);
+        Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId);
     }
 }

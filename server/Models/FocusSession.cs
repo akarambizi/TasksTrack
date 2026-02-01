@@ -14,11 +14,11 @@ namespace TasksTrack.Models
         public required string CreatedBy { get; set; }
 
         [Required(ErrorMessage = "StartTime is required")]
-        public DateTime StartTime { get; set; }
+        public DateTimeOffset StartTime { get; set; }
 
-        public DateTime? PauseTime { get; set; }
-        public DateTime? ResumeTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public DateTimeOffset? PauseTime { get; set; }
+        public DateTimeOffset? ResumeTime { get; set; }
+        public DateTimeOffset? EndTime { get; set; }
 
         [Required(ErrorMessage = "Status is required")]
         [StringLength(FocusSessionConstants.MAX_STATUS_LENGTH, ErrorMessage = "Status cannot exceed {1} characters")]
@@ -31,8 +31,8 @@ namespace TasksTrack.Models
         [StringLength(FocusSessionConstants.MAX_NOTES_LENGTH, ErrorMessage = "Notes cannot exceed {1} characters")]
         public string? Notes { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
         public string? UpdatedBy { get; set; }
 
         // Navigation properties

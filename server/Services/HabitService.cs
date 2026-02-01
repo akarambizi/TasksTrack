@@ -29,7 +29,7 @@ namespace TasksTrack.Services
 
         public async Task AddAsync(Habit habit)
         {
-            habit.CreatedDate = DateTime.UtcNow;
+            habit.CreatedDate = DateTimeOffset.UtcNow;
             habit.IsActive = true;
             await _repository.AddAsync(habit);
         }
@@ -51,7 +51,7 @@ namespace TasksTrack.Services
             existing.IsActive = habit.IsActive;
             existing.Color = habit.Color;
             existing.Icon = habit.Icon;
-            existing.UpdatedDate = DateTime.UtcNow;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
             existing.UpdatedBy = habit.UpdatedBy;
 
             await _repository.UpdateAsync(existing);
@@ -79,7 +79,7 @@ namespace TasksTrack.Services
             if (habit != null)
             {
                 habit.IsActive = false;
-                habit.UpdatedDate = DateTime.UtcNow;
+                habit.UpdatedDate = DateTimeOffset.UtcNow;
                 habit.UpdatedBy = updatedBy;
                 await _repository.UpdateAsync(habit);
             }
@@ -91,7 +91,7 @@ namespace TasksTrack.Services
             if (habit != null)
             {
                 habit.IsActive = true;
-                habit.UpdatedDate = DateTime.UtcNow;
+                habit.UpdatedDate = DateTimeOffset.UtcNow;
                 habit.UpdatedBy = updatedBy;
                 await _repository.UpdateAsync(habit);
             }

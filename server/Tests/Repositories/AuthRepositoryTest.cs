@@ -31,7 +31,7 @@ namespace TasksTrack.Tests.Repositories
                 Email = "test@example.com",
                 Username = "testuser",
                 PasswordHash = "hashedpassword",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             _context.Users.Add(user);
@@ -65,7 +65,7 @@ namespace TasksTrack.Tests.Repositories
                 Email = "test@example.com",
                 Username = "testuser",
                 PasswordHash = "hashedpassword",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             _context.Users.Add(user);
@@ -99,7 +99,7 @@ namespace TasksTrack.Tests.Repositories
                 Email = "newuser@example.com",
                 Username = "newuser",
                 PasswordHash = "hashedpassword",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             // Act
@@ -125,7 +125,7 @@ namespace TasksTrack.Tests.Repositories
                 Username = "testuser",
                 PasswordHash = "hashedpassword",
                 RefreshToken = "valid-refresh-token",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             _context.Users.Add(user);
@@ -149,7 +149,7 @@ namespace TasksTrack.Tests.Repositories
                 Email = "test@example.com",
                 Username = "testuser",
                 PasswordHash = "hashedpassword",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             _context.Users.Add(user);

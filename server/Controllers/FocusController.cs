@@ -151,6 +151,9 @@ namespace TasksTrack.Controllers
 
         [HttpGet("api/focus/sessions")]
         [EnableQuery]
+        [ProducesResponseType(typeof(IQueryable<FocusSessionResponse>), 200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         public ActionResult<IQueryable<FocusSessionResponse>> GetSessions()
         {
             try
@@ -191,21 +194,20 @@ namespace TasksTrack.Controllers
         }
 
         [HttpGet("api/focus/analytics")]
-        public async Task<ActionResult<FocusSessionAnalytics>> GetAnalytics(
-            [FromQuery] DateTime? startDate = null,
-            [FromQuery] DateTime? endDate = null)
+        [EnableQuery]
+        public async Task<ActionResult<FocusSessionAnalytics>> GetAnalyticsData()
         {
             try
             {
                 var userId = GetUserId();
-                var result = await _focusSessionService.GetAnalyticsAsync(userId, startDate, endDate);
+                var result = await _focusSessionService.GetAnalyticsAsync(userId);
                 return Ok(result);
             }
             catch (Exception)
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
-                return StatusCode(500, new { message = "An error occurred while retrieving focus session analytics." });
+                return StatusCode(500, new { message = "An error occurred while retrieving analytics summary." });
             }
         }
     }

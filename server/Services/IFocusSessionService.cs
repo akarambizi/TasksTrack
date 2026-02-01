@@ -11,6 +11,6 @@ namespace TasksTrack.Services
         Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request, string userId);
         IQueryable<FocusSessionResponse> GetSessions(string userId);
         Task<FocusSessionResponse?> GetActiveSessionAsync(string userId);
-        Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId, DateTime? startDate = null, DateTime? endDate = null);
+        Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId);
     }
 }

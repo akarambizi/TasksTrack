@@ -68,79 +68,120 @@ namespace TasksTrack.Repositories
             }
         }
 
-        public async Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId, DateTime? startDate = null, DateTime? endDate = null)
+        public async Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId)
         {
-            var query = _context.FocusSessions.Where(fs => fs.CreatedBy == userId);
-
-            if (startDate.HasValue)
-                query = query.Where(fs => fs.StartTime >= startDate.Value);
-
-            if (endDate.HasValue)
-                query = query.Where(fs => fs.StartTime <= endDate.Value);
-
-            var sessions = await query.OrderBy(fs => fs.StartTime).ToListAsync();
+            var sessions = await _context.FocusSessions
+                .Where(fs => fs.CreatedBy == userId)
+                .ToListAsync();
 
             var totalSessions = sessions.Count;
-            var completedSessions = sessions.Count(fs => fs.Status == FocusSessionStatus.Completed.ToStringValue());
+            var completedSessions = sessions.Count(s => s.Status == FocusSessionStatus.Completed.ToStringValue());
+            var completionRate = totalSessions > 0 ? (double)completedSessions / totalSessions : 0.0;
 
-            // Calculate total minutes from actual duration
             var totalMinutes = sessions
-                .Where(fs => fs.ActualDurationSeconds.HasValue)
-                .Sum(fs => fs.ActualDurationSeconds!.Value) / 60;
+                .Where(s => s.ActualDurationSeconds.HasValue)
+                .Sum(s => s.ActualDurationSeconds!.Value / 60.0);
 
-            // Calculate average session minutes (only for sessions with actual duration)
-            var sessionsWithDuration = sessions.Where(fs => fs.ActualDurationSeconds.HasValue).ToList();
-            var averageSessionMinutes = sessionsWithDuration.Any()
-                ? sessionsWithDuration.Average(fs => fs.ActualDurationSeconds!.Value / FocusSessionConstants.SECONDS_TO_MINUTES)
-                : 0;
+            var averageSessionMinutes = completedSessions > 0
+                ? sessions
+                    .Where(s => s.Status == FocusSessionStatus.Completed.ToStringValue() && s.ActualDurationSeconds.HasValue)
+                    .Average(s => s.ActualDurationSeconds!.Value / 60.0)
+                : 0.0;
 
-            // Calculate longest session
-            var longestSessionMinutes = sessionsWithDuration.Any()
-                ? sessionsWithDuration.Max(fs => fs.ActualDurationSeconds!.Value / FocusSessionConstants.SECONDS_TO_MINUTES)
-                : 0;
+            var longestSessionMinutes = sessions
+                .Where(s => s.ActualDurationSeconds.HasValue)
+                .Max(s => (double?)s.ActualDurationSeconds!.Value / 60.0) ?? 0.0;
 
-            // Calculate completion rate
-            var completionRate = totalSessions > 0
-                ? (double)completedSessions / totalSessions * FocusSessionConstants.PERCENTAGE_MULTIPLIER
-                : 0;
-
-            // Calculate current streak (consecutive completed sessions from the end)
-            var currentStreak = 0;
-            for (int i = sessions.Count - 1; i >= 0; i--)
-            {
-                if (sessions[i].Status == FocusSessionStatus.Completed.ToStringValue())
-                    currentStreak++;
-                else
-                    break;
-            }
-
-            // Calculate longest streak
-            var longestStreak = 0;
-            var tempStreak = 0;
-            foreach (var session in sessions)
-            {
-                if (session.Status == FocusSessionStatus.Completed.ToStringValue())
-                {
-                    tempStreak++;
-                    longestStreak = Math.Max(longestStreak, tempStreak);
-                }
-                else
-                {
-                    tempStreak = 0;
-                }
-            }
+            // Calculate current and longest streaks
+            var currentStreak = CalculateCurrentStreak(sessions);
+            var longestStreak = CalculateLongestStreak(sessions);
 
             return new FocusSessionAnalytics
             {
                 TotalSessions = totalSessions,
-                TotalMinutes = totalMinutes,
                 CompletedSessions = completedSessions,
+                CompletionRate = completionRate,
+                TotalMinutes = (int)Math.Round(totalMinutes),
                 AverageSessionMinutes = averageSessionMinutes,
                 LongestSessionMinutes = longestSessionMinutes,
                 CurrentStreak = currentStreak,
-                LongestStreak = longestStreak,
-                CompletionRate = completionRate
+                LongestStreak = longestStreak
             };
+        }
+
+        private int CalculateCurrentStreak(List<FocusSession> sessions)
+        {
+            if (!sessions.Any())
+                return 0;
+
+            var completedSessions = sessions
+                .Where(s => s.Status == FocusSessionStatus.Completed.ToStringValue())
+                .OrderByDescending(s => s.StartTime.Date)
+                .GroupBy(s => s.StartTime.Date)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (!completedSessions.Any())
+                return 0;
+
+            var streak = 0;
+            var currentDate = DateTimeOffset.UtcNow.Date;
+
+            // Check if there's a session today or yesterday to start the streak
+            if (!completedSessions.Contains(currentDate) && !completedSessions.Contains(currentDate.AddDays(-1)))
+                return 0;
+
+            // Start from today or yesterday
+            var checkDate = completedSessions.Contains(currentDate) ? currentDate : currentDate.AddDays(-1);
+
+            foreach (var sessionDate in completedSessions)
+            {
+                if (sessionDate == checkDate)
+                {
+                    streak++;
+                    checkDate = checkDate.AddDays(-1);
+                }
+                else if (sessionDate < checkDate)
+                {
+                    break; // Gap found, streak ends
+                }
+            }
+
+            return streak;
+        }
+
+        private int CalculateLongestStreak(List<FocusSession> sessions)
+        {
+            if (!sessions.Any())
+                return 0;
+
+            var completedSessions = sessions
+                .Where(s => s.Status == FocusSessionStatus.Completed.ToStringValue())
+                .OrderBy(s => s.StartTime.Date)
+                .GroupBy(s => s.StartTime.Date)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (!completedSessions.Any())
+                return 0;
+
+            var longestStreak = 0;
+            var currentStreak = 1;
+
+            for (int i = 1; i < completedSessions.Count; i++)
+            {
+                if (completedSessions[i] == completedSessions[i - 1].AddDays(1))
+                {
+                    currentStreak++;
+                }
+                else
+                {
+                    longestStreak = Math.Max(longestStreak, currentStreak);
+                    currentStreak = 1;
+                }
+            }
+
+            return Math.Max(longestStreak, currentStreak);
         }
     }
 }

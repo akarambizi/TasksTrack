@@ -45,10 +45,10 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow,
+                StartTime = DateTimeOffset.UtcNow,
                 Status = "active",
                 PlannedDurationMinutes = 25,
-                CreatedDate = DateTime.UtcNow,
+                CreatedDate = DateTimeOffset.UtcNow,
                 Habit = habit
             };
 
@@ -155,7 +155,7 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-10),
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-10),
                 Status = "active",
                 PlannedDurationMinutes = 25,
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
@@ -196,8 +196,8 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-15),
-                PauseTime = DateTime.UtcNow.AddMinutes(-5),
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-15),
+                PauseTime = DateTimeOffset.UtcNow.AddMinutes(-5),
                 Status = "paused",
                 PlannedDurationMinutes = 25,
                 PausedDurationSeconds = 300, // 5 minutes already paused
@@ -233,7 +233,7 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-25),
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-25),
                 Status = "active",
                 PlannedDurationMinutes = 25,
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
@@ -266,8 +266,8 @@ namespace TasksTrack.Tests.Services
                     Id = 1,
                     HabitId = 1,
                     CreatedBy = _testUserId,
-                    StartTime = DateTime.UtcNow.AddDays(-1),
-                    EndTime = DateTime.UtcNow.AddDays(-1).AddMinutes(25),
+                    StartTime = DateTimeOffset.UtcNow.AddDays(-1),
+                    EndTime = DateTimeOffset.UtcNow.AddDays(-1).AddMinutes(25),
                     Status = "completed",
                     PlannedDurationMinutes = 25,
                     ActualDurationSeconds = 1500,
@@ -278,7 +278,7 @@ namespace TasksTrack.Tests.Services
                     Id = 2,
                     HabitId = 2,
                     CreatedBy = _testUserId,
-                    StartTime = DateTime.UtcNow.AddHours(-1),
+                    StartTime = DateTimeOffset.UtcNow.AddHours(-1),
                     Status = "active",
                     PlannedDurationMinutes = 30,
                     Habit = new Habit { Name = "Exercise", MetricType = "minutes", CreatedBy = "test" }
@@ -305,7 +305,7 @@ namespace TasksTrack.Tests.Services
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-10),
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-10),
                 Status = "active",
                 PlannedDurationMinutes = 25,
                 Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = "test" }
@@ -341,8 +341,8 @@ namespace TasksTrack.Tests.Services
         public async Task GetAnalyticsAsync_ValidDateRange_ReturnsAnalytics()
         {
             // Arrange
-            var startDate = DateTime.UtcNow.AddDays(-7);
-            var endDate = DateTime.UtcNow;
+            var startDate = DateTimeOffset.UtcNow.AddDays(-7);
+            var endDate = DateTimeOffset.UtcNow;
             var expectedAnalytics = new FocusSessionAnalytics
             {
                 TotalSessions = 5,
@@ -352,11 +352,11 @@ namespace TasksTrack.Tests.Services
                 CompletionRate = 0.8
             };
 
-            _mockFocusSessionRepository.Setup(r => r.GetAnalyticsAsync(_testUserId, startDate, endDate))
+            _mockFocusSessionRepository.Setup(r => r.GetAnalyticsAsync(_testUserId))
                                      .ReturnsAsync(expectedAnalytics);
 
             // Act
-            var result = await _service.GetAnalyticsAsync(_testUserId, startDate, endDate);
+            var result = await _service.GetAnalyticsAsync(_testUserId);
 
             // Assert
             Assert.NotNull(result);

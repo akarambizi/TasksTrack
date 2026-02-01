@@ -27,8 +27,8 @@ namespace TasksTrack.Models
         public string? Category { get; set; } // "Health", "Learning", "Creative", etc.
 
         public bool IsActive { get; set; } = true;
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
 
         [Required(ErrorMessage = "CreatedBy is required")]
         public required string CreatedBy { get; set; }

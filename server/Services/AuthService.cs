@@ -97,9 +97,16 @@ namespace TasksTrack.Services
                 return new AuthResult { Success = false, Message = "Invalid email format. Please provide a valid email in the format: example@domain.com." };
             }
 
-            // Get user by email
+            // Get user by email (case-insensitive search)
             var user = await _authRepository.GetUserByEmailAsync(request.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+
+            if (user == null)
+            {
+                return new AuthResult { Success = false, Message = "Invalid credentials." };
+            }
+
+            var passwordVerified = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+            if (!passwordVerified)
             {
                 return new AuthResult { Success = false, Message = "Invalid credentials." };
             }
@@ -131,13 +138,14 @@ namespace TasksTrack.Services
             // Hash the refresh token before searching (since we store hashed tokens)
             var hashedRefreshToken = HashRefreshToken(request.RefreshToken);
             var user = await _authRepository.GetUserByRefreshTokenAsync(hashedRefreshToken);
+
             if (user == null)
             {
                 return new AuthResult { Success = false, Message = "Invalid refresh token." };
             }
 
             // Check if refresh token is expired
-            if (user.RefreshTokenExpiry == null || user.RefreshTokenExpiry <= DateTime.UtcNow)
+            if (user.RefreshTokenExpiry == null || user.RefreshTokenExpiry <= DateTimeOffset.UtcNow)
             {
                 return new AuthResult { Success = false, Message = "Refresh token has expired." };
             }
@@ -156,17 +164,20 @@ namespace TasksTrack.Services
             // Hash the refresh token before searching (since we store hashed tokens)
             var hashedRefreshToken = HashRefreshToken(refreshToken);
             var user = await _authRepository.GetUserByRefreshTokenAsync(hashedRefreshToken);
-            if (user != null)
+
+            if (user == null)
             {
-                user.RefreshToken = null;
-                user.RefreshTokenExpiry = null;
-                await _authRepository.UpdateUserAsync(user);
+                return new AuthResult { Success = true, Message = "Logout successful." };
             }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiry = null;
+            await _authRepository.UpdateUserAsync(user);
 
             return new AuthResult { Success = true, Message = "Logout successful." };
         }
 
-        private string GenerateJwtToken(User user, DateTime expirationTime)
+        private string GenerateJwtToken(User user, DateTimeOffset expirationTime)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
@@ -179,7 +190,7 @@ namespace TasksTrack.Services
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Email, user.Email)
                 }),
-                Expires = expirationTime,
+                Expires = expirationTime.DateTime, // Convert DateTimeOffset to DateTime for JWT
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -208,7 +219,7 @@ namespace TasksTrack.Services
         private async Task<AuthResult> GenerateTokensAsync(User user)
         {
             // Use consistent timestamp for both tokens to prevent timing attacks
-            var now = DateTime.UtcNow;
+            var now = DateTimeOffset.UtcNow;
             var jwtExpiry = now.AddHours(1);
             var refreshTokenExpiry = now.AddDays(7); // 7 days expiry
 
@@ -225,7 +236,7 @@ namespace TasksTrack.Services
                 Success = true,
                 Token = accessToken,
                 RefreshToken = refreshToken,
-                TokenExpiry = DateTime.UtcNow.AddHours(1),
+                TokenExpiry = DateTimeOffset.UtcNow.AddHours(1),
                 RefreshTokenExpiry = refreshTokenExpiry,
                 UserId = user.Id.ToString(),
                 UserEmail = user.Email,

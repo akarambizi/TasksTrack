@@ -60,10 +60,10 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow,
+                StartTime = DateTimeOffset.UtcNow,
                 Status = "active",
                 PlannedDurationMinutes = 25,
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTimeOffset.UtcNow
             };
 
             _mockService.Setup(s => s.StartSessionAsync(request, _testUserId))
@@ -133,11 +133,11 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-10),
-                PauseTime = DateTime.UtcNow,
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-10),
+                PauseTime = DateTimeOffset.UtcNow,
                 Status = "paused",
                 PlannedDurationMinutes = 25,
-                CreatedDate = DateTime.UtcNow.AddMinutes(-10)
+                CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-10)
             };
 
             _mockService.Setup(s => s.PauseSessionAsync(_testUserId))
@@ -175,12 +175,12 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-15),
-                PauseTime = DateTime.UtcNow.AddMinutes(-5),
-                ResumeTime = DateTime.UtcNow,
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-15),
+                PauseTime = DateTimeOffset.UtcNow.AddMinutes(-5),
+                ResumeTime = DateTimeOffset.UtcNow,
                 Status = "active",
                 PlannedDurationMinutes = 25,
-                CreatedDate = DateTime.UtcNow.AddMinutes(-15)
+                CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-15)
             };
 
             _mockService.Setup(s => s.ResumeSessionAsync(_testUserId))
@@ -209,13 +209,13 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-25),
-                EndTime = DateTime.UtcNow,
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-25),
+                EndTime = DateTimeOffset.UtcNow,
                 Status = "completed",
                 PlannedDurationMinutes = 25,
                 ActualDurationSeconds = 1500, // 25 minutes
                 Notes = "Great focus session!",
-                CreatedDate = DateTime.UtcNow.AddMinutes(-25)
+                CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-25)
             };
 
             _mockService.Setup(s => s.CompleteSessionAsync(request, _testUserId))
@@ -242,22 +242,22 @@ namespace TasksTrack.Tests.Controllers
                     Id = 1,
                     HabitId = 1,
                     CreatedBy = _testUserId,
-                    StartTime = DateTime.UtcNow.AddDays(-1),
-                    EndTime = DateTime.UtcNow.AddDays(-1).AddMinutes(25),
+                    StartTime = DateTimeOffset.UtcNow.AddDays(-1),
+                    EndTime = DateTimeOffset.UtcNow.AddDays(-1).AddMinutes(25),
                     Status = "completed",
                     PlannedDurationMinutes = 25,
                     ActualDurationSeconds = 1500,
-                    CreatedDate = DateTime.UtcNow.AddDays(-1)
+                    CreatedDate = DateTimeOffset.UtcNow.AddDays(-1)
                 },
                 new FocusSessionResponse
                 {
                     Id = 2,
                     HabitId = 2,
                     CreatedBy = _testUserId,
-                    StartTime = DateTime.UtcNow.AddHours(-1),
+                    StartTime = DateTimeOffset.UtcNow.AddHours(-1),
                     Status = "active",
                     PlannedDurationMinutes = 30,
-                    CreatedDate = DateTime.UtcNow.AddHours(-1)
+                    CreatedDate = DateTimeOffset.UtcNow.AddHours(-1)
                 }
             };
 
@@ -282,10 +282,10 @@ namespace TasksTrack.Tests.Controllers
                 Id = 1,
                 HabitId = 1,
                 CreatedBy = _testUserId,
-                StartTime = DateTime.UtcNow.AddMinutes(-10),
+                StartTime = DateTimeOffset.UtcNow.AddMinutes(-10),
                 Status = "active",
                 PlannedDurationMinutes = 25,
-                CreatedDate = DateTime.UtcNow.AddMinutes(-10)
+                CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-10)
             };
 
             _mockService.Setup(s => s.GetActiveSessionAsync(_testUserId))
@@ -318,8 +318,8 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetAnalytics_ValidDateRange_ReturnsAnalytics()
         {
             // Arrange
-            var startDate = DateTime.UtcNow.AddDays(-7);
-            var endDate = DateTime.UtcNow;
+            var startDate = DateTimeOffset.UtcNow.AddDays(-7);
+            var endDate = DateTimeOffset.UtcNow;
             var expectedAnalytics = new FocusSessionAnalytics
             {
                 TotalSessions = 5,
@@ -329,11 +329,11 @@ namespace TasksTrack.Tests.Controllers
                 CompletionRate = 0.8
             };
 
-            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId, startDate, endDate))
+            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId))
                        .ReturnsAsync(expectedAnalytics);
 
             // Act
-            var result = await _controller.GetAnalytics(startDate, endDate);
+            var result = await _controller.GetAnalyticsData();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -356,11 +356,11 @@ namespace TasksTrack.Tests.Controllers
                 CompletionRate = 0.8
             };
 
-            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId, null, null))
+            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId))
                        .ReturnsAsync(expectedAnalytics);
 
             // Act
-            var result = await _controller.GetAnalytics(null, null);
+            var result = await _controller.GetAnalyticsData();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -506,11 +506,11 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetAnalytics_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId, null, null))
+            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId))
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
-            var result = await _controller.GetAnalytics(null, null);
+            var result = await _controller.GetAnalyticsData();
 
             // Assert
             var statusResult = Assert.IsType<ObjectResult>(result.Result);

@@ -16,7 +16,8 @@ namespace TasksTrack.Repositories
 
         public async Task<User?> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            return user;
         }
 
         public async Task<User?> GetUserByUsernameAsync(string username)

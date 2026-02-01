@@ -39,13 +39,6 @@ export const FocusSessionHistory = ({
     const startDate = useWeeklyView ? format(currentWeekStart, 'yyyy-MM-dd') : format(thirtyDaysAgo, 'yyyy-MM-dd');
     const endDate = useWeeklyView ? format(weekEnd, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd');
 
-    console.log('🚀 FocusSessionHistory - Date calculations:');
-    console.log('🚀 Current date:', new Date());
-    console.log('🚀 Thirty days ago:', thirtyDaysAgo);
-    console.log('🚀 Start date string:', startDate);
-    console.log('🚀 End date string:', endDate);
-    console.log('🚀 Use weekly view:', useWeeklyView);
-
     // Build OData query using the query builder
     const queryString = useMemo(() => {
         return new ODataQueryBuilder()

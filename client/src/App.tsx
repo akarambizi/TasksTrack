@@ -23,7 +23,7 @@ const App = () => {
                                             <Route path="/dashboard" element={<Dashboard />} />
                                             <Route path="/habits" element={<HabitsContainer />} />
                                             <Route path="/habits/:habitId" element={<HabitDetailPage />} />
-                                            <Route path="/pomodoro" element={<FocusSessions />} />
+                                            <Route path="/focus-sessions" element={<FocusSessions />} />
                                             <Route path="/history" element={<Sessions />} />
                                             <Route path="/analytics" element={<>analytics</>} />
                                             <Route path="*" element={<div>Not found</div>} />

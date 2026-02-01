@@ -154,16 +154,16 @@ export const FocusTimer = ({ habit, className }: IFocusTimerProps) => {
                 </div>
 
                 {/* Control Buttons */}
-                <div className="flex justify-center space-x-3">
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
                     {!activeSession ? (
                         <Button
                             onClick={() => handleStart(25)}
                             disabled={!habit || isLoading}
-                            size="lg"
-                            className="flex items-center gap-2"
+                            size="sm"
+                            className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-3 sm:px-4"
                             data-testid="start-session-button"
                         >
-                            <Play className="h-4 w-4" />
+                            <Play className="h-3 w-3 sm:h-4 sm:w-4" />
                             Start Focus
                         </Button>
                     ) : (
@@ -172,23 +172,23 @@ export const FocusTimer = ({ habit, className }: IFocusTimerProps) => {
                                 <Button
                                     onClick={handlePause}
                                     disabled={isLoading}
-                                    size="lg"
+                                    size="sm"
                                     variant="secondary"
-                                    className="flex items-center gap-2"
+                                    className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-3 sm:px-4"
                                     data-testid="pause-session-button"
                                 >
-                                    <Pause className="h-4 w-4" />
+                                    <Pause className="h-3 w-3 sm:h-4 sm:w-4" />
                                     Pause
                                 </Button>
                             ) : (
                                 <Button
                                     onClick={handleResume}
                                     disabled={isLoading}
-                                    size="lg"
-                                    className="flex items-center gap-2"
+                                    size="sm"
+                                    className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-3 sm:px-4"
                                     data-testid="resume-session-button"
                                 >
-                                    <Play className="h-4 w-4" />
+                                    <Play className="h-3 w-3 sm:h-4 sm:w-4" />
                                     Resume
                                 </Button>
                             )}
@@ -196,12 +196,12 @@ export const FocusTimer = ({ habit, className }: IFocusTimerProps) => {
                             <Button
                                 onClick={handleComplete}
                                 disabled={isLoading}
-                                size="lg"
+                                size="sm"
                                 variant="default"
-                                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                                className="flex items-center gap-1 sm:gap-2 bg-green-600 hover:bg-green-700 text-sm sm:text-base px-3 sm:px-4"
                                 data-testid="complete-session-button"
                             >
-                                <Square className="h-4 w-4" />
+                                <Square className="h-3 w-3 sm:h-4 sm:w-4" />
                                 Complete
                             </Button>
                         </>
@@ -210,12 +210,12 @@ export const FocusTimer = ({ habit, className }: IFocusTimerProps) => {
                     <Button
                         onClick={activeSession ? handleCancel : () => {}}
                         disabled={isLoading}
-                        size="lg"
+                        size="sm"
                         variant="outline"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-3 sm:px-4"
                         data-testid="cancel-session-button"
                     >
-                        <RotateCcw className="h-4 w-4" />
+                        <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4" />
                         {activeSession ? 'Cancel' : 'Reset'}
                     </Button>
                 </div>

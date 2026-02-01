@@ -16,27 +16,21 @@ import { focusSessionKeys } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { CACHE_TIMES } from './constants';
+import { ODataQueryBuilder } from '@/utils/odataQueryBuilder';
 
 /**
- * Custom hook for fetching focus sessions with optional filtering.
- * @param {object} params - Query parameters for filtering sessions.
+ * Custom hook for fetching focus sessions with a pre-built query string.
+ * @param {string} queryString - Pre-built OData query string.
  * @param {UseQueryOptions} options - Additional options for the query.
  * @returns The result of the `useQuery` hook.
  */
 export const useFocusSessions = (
-    params?: {
-        habitId?: number;
-        status?: string;
-        startDate?: string;
-        endDate?: string;
-        page?: number;
-        pageSize?: number;
-    },
+    queryString?: string,
     options?: UseQueryOptions<IFocusSession[], AxiosError>
 ) => {
     return useQuery({
-        queryKey: focusSessionKeys.list(params || {}),
-        queryFn: () => getFocusSessions(params),
+        queryKey: focusSessionKeys.list({ queryString: queryString || '' }),
+        queryFn: () => getFocusSessions(queryString),
         staleTime: CACHE_TIMES.SHORT, // 1 minute - focus sessions change frequently
         ...options,
     });
@@ -58,22 +52,18 @@ export const useActiveFocusSession = (options?: UseQueryOptions<IFocusSession | 
 };
 
 /**
- * Custom hook for fetching focus session analytics.
- * @param {object} params - Optional parameters for analytics filtering.
+ * Custom hook for fetching focus session analytics with query string support.
+ * @param {string} queryString - Pre-built OData query string.
  * @param {UseQueryOptions} options - Additional options for the query.
  * @returns The result of the `useQuery` hook.
  */
 export const useFocusSessionAnalytics = (
-    params?: {
-        habitId?: number;
-        startDate?: string;
-        endDate?: string;
-    },
+    queryString?: string,
     options?: UseQueryOptions<IFocusSessionAnalytics, AxiosError>
 ) => {
     return useQuery({
-        queryKey: focusSessionKeys.analyticsWithFilters(params || {}),
-        queryFn: () => getFocusSessionAnalytics(params),
+        queryKey: focusSessionKeys.analyticsWithFilters({ queryString: queryString || '' }),
+        queryFn: () => getFocusSessionAnalytics(queryString),
         staleTime: CACHE_TIMES.MEDIUM, // 2 minutes
         ...options,
     });
@@ -171,9 +161,15 @@ export const useFocusSessionsByHabit = (
     habitId: number,
     options?: UseQueryOptions<IFocusSession[], AxiosError>
 ) => {
+    // Build query for specific habit
+    const queryString = new ODataQueryBuilder()
+        .filter(`habitId eq ${habitId}`)
+        .orderBy('startTime desc')
+        .build();
+
     return useQuery({
         queryKey: focusSessionKeys.byHabit(habitId),
-        queryFn: () => getFocusSessions({ habitId }),
+        queryFn: () => getFocusSessions(queryString),
         staleTime: CACHE_TIMES.MEDIUM, // 2 minutes
         enabled: !!habitId && habitId > 0,
         ...options,

@@ -15,6 +15,82 @@ rather than creating new ones.**
 
 ## Key Principles for Code Generation
 
+## MANDATORY: OData Endpoint Pattern
+
+**CRITICAL: For ANY endpoint that returns collections or needs filtering - ALWAYS use OData with [EnableQuery].**
+
+### When to Use OData
+- GET endpoints that return collections
+- Endpoints needing filtering, sorting, pagination
+- Analytics endpoints
+- Any endpoint where clients need flexible querying
+
+### Required Controller Pattern
+
+```csharp
+[HttpGet("api/myresource")]
+[EnableQuery]  // REQUIRED for OData support
+public ActionResult<IQueryable<MyResourceResponse>> GetMyResources()
+{
+    try
+    {
+        var userId = GetUserId();
+        var result = _myService.GetResources(userId); // Must return IQueryable<T>
+        return Ok(result);
+    }
+    catch (Exception)
+    {
+        // Log the exception details server-side
+        return StatusCode(500, new { message = "Error occurred" });
+    }
+}
+```
+
+### Required Service Pattern
+
+```csharp
+// Service MUST return IQueryable<T> for OData to work
+public IQueryable<MyResourceResponse> GetResources(string userId)
+{
+    return _repository.GetByUserId(userId)
+        .Select(entity => new MyResourceResponse
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            CreatedAt = entity.CreatedAt
+            // Map other properties
+        });
+}
+
+// Interface
+IQueryable<MyResourceResponse> GetResources(string userId);
+```
+
+### Reference Implementation
+- **Controller**: `server/Controllers/FocusController.cs` → `GetSessions()`
+- **Service**: `server/Services/FocusSessionService.cs` → `GetSessions()`
+- **Interface**: `server/Services/IFocusSessionService.cs`
+
+### DON'T
+- Return `List<T>` or materialized collections from services
+- Add manual filtering logic in controllers
+- Use custom query parameter parsing
+- Forget the `[EnableQuery]` attribute
+
+### DO
+- Always add `[EnableQuery]` attribute
+- Return `IQueryable<T>` from services
+- Use proper response DTOs (not domain entities)
+- Follow the established error handling pattern
+- Let OData handle the query execution
+
+### When NOT to Use OData
+- Single item retrieval (`GET /api/item/{id}`)
+- Create/Update/Delete operations
+- Authentication endpoints
+- File upload/download
+- Simple lookup data
+
 ### 1. **Follow Existing Naming Conventions**
 
 **Examine these files to understand the established patterns:**

@@ -6,7 +6,6 @@ import type {
 } from './focusSession.types';
 import { apiGet, apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
-import buildQuery from 'odata-query';
 
 /**
  * Starts a new focus session.
@@ -79,33 +78,14 @@ export const completeFocusSession = async (updateData?: IFocusSessionUpdateReque
 };
 
 /**
- * Gets focus sessions with optional filtering and pagination using OData.
- * @param {object} params - Query parameters for filtering sessions.
+ * Gets focus sessions using a pre-built OData query string.
+ * @param {string} queryString - Pre-built OData query string (e.g., from ODataQueryBuilder)
  * @returns {Promise<IFocusSession[]>} Array of focus sessions.
  */
-export const getFocusSessions = async (params?: {
-    habitId?: number;
-    status?: string;
-    startDate?: string;
-    endDate?: string;
-    page?: number;
-    pageSize?: number;
-}): Promise<IFocusSession[]> => {
+export const getFocusSessions = async (queryString?: string): Promise<IFocusSession[]> => {
     try {
-        // Build OData query from parameters
-        const odataQuery = buildQuery({
-            filter: {
-                ...(params?.habitId && { habitId: params.habitId }),
-                ...(params?.status && { status: params.status }),
-                ...(params?.startDate && { startTime: { ge: params.startDate } }),
-                ...(params?.endDate && { startTime: { le: params.endDate } })
-            },
-            orderBy: 'startTime desc',
-            ...(params?.pageSize && { top: params.pageSize }),
-            ...(params?.page && params?.pageSize && { skip: (params.page - 1) * params.pageSize })
-        });
+        const endpoint = `/api/focus/sessions${queryString || ''}`;
 
-        const endpoint = `/api/focus/sessions${odataQuery}`;
         return await apiGet<IFocusSession[]>(endpoint);
     } catch (error) {
         console.error('Failed to fetch focus sessions:', error);
@@ -124,35 +104,19 @@ export const getActiveFocusSession = async (): Promise<IFocusSession | null> => 
         return await apiGet<IFocusSession>(endpoint);
     } catch (error) {
         // Don't show toast for this call as it's expected to fail when no active session
-        console.log('No active focus session found');
         return null;
     }
 };
 
 /**
- * Gets focus session analytics for the current user.
- * @param {object} params - Optional parameters for analytics filtering.
- * @returns {Promise<IFocusSessionAnalytics>} The focus session analytics data.
+ * Gets focus session analytics using a pre-built OData query string.
+ * @param {string} queryString - Pre-built OData query string (e.g., from ODataQueryBuilder)
+ * @returns {Promise<IFocusSessionAnalytics>} Focus session analytics object.
  */
-export const getFocusSessionAnalytics = async (params?: {
-    habitId?: number;
-    startDate?: string;
-    endDate?: string;
-}): Promise<IFocusSessionAnalytics> => {
+export const getFocusSessionAnalytics = async (queryString?: string): Promise<IFocusSessionAnalytics> => {
     try {
-        // Build simple query parameters for analytics endpoint
-        const searchParams = new URLSearchParams();
-        
-        if (params?.startDate) {
-            searchParams.append('startDate', params.startDate);
-        }
-        if (params?.endDate) {
-            searchParams.append('endDate', params.endDate);
-        }
-        
-        const queryString = searchParams.toString();
-        const endpoint = `/api/focus/analytics${queryString ? `?${queryString}` : ''}`;
-        
+        const endpoint = `/api/focus/analytics${queryString || ''}`;
+
         return await apiGet<IFocusSessionAnalytics>(endpoint);
     } catch (error) {
         console.error('Failed to fetch focus session analytics:', error);

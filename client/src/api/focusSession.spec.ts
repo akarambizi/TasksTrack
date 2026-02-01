@@ -172,9 +172,9 @@ describe('Focus Session API Functions', () => {
 
             mockApiGet.mockResolvedValue(mockSessions);
 
-            const result = await getFocusSessions({ habitId: 1, status: 'completed' });
+            const result = await getFocusSessions('?$filter=habitId eq 1 and status eq completed');
 
-            expect(mockApiGet).toHaveBeenCalledWith('/api/focus/sessions?habitId=1&status=completed');
+            expect(mockApiGet).toHaveBeenCalledWith('/api/focus/sessions?$filter=habitId eq 1 and status eq completed');
             expect(result).toEqual(mockSessions);
         });
 
@@ -243,9 +243,9 @@ describe('Focus Session API Functions', () => {
 
             mockApiGet.mockResolvedValue(mockAnalytics);
 
-            const result = await getFocusSessionAnalytics({ habitId: 1 });
+            const result = await getFocusSessionAnalytics('?$filter=habitId eq 1');
 
-            expect(mockApiGet).toHaveBeenCalledWith('/api/focus/analytics?habitId=1');
+            expect(mockApiGet).toHaveBeenCalledWith('/api/focus/analytics?$filter=habitId eq 1');
             expect(result).toEqual(mockAnalytics);
         });
 

@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { Play, TrendingUp, Calendar, Square } from 'lucide-react';
+import { Play, TrendingUp, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FocusTimer, FocusSessionHistory } from '@/components/FocusSession';
-import { useHabitData, useActiveFocusSession, useFocusSessionAnalytics, useResumeFocusSessionMutation, useCancelFocusSessionMutation } from '@/queries';
+import { useHabitData, useActiveFocusSession, useFocusSessionAnalytics } from '@/queries';
 import { IHabit } from '@/api';
 import { FocusTimerProvider } from '@/context/FocusTimerContext';
-import { focusNotificationService } from '@/services/focusNotificationService';
 
 export const FocusSessions = () => {
     const [selectedHabit, setSelectedHabit] = useState<IHabit | null>(null);
@@ -16,10 +14,6 @@ export const FocusSessions = () => {
     const { data: habits = [] } = useHabitData('');
     const { data: activeSession } = useActiveFocusSession();
     const { data: analytics } = useFocusSessionAnalytics();
-
-    // Mutation hooks for session management
-    const resumeMutation = useResumeFocusSessionMutation();
-    const cancelMutation = useCancelFocusSessionMutation();
 
     const handleHabitChange = (habitId: string) => {
         const habit = habits.find(h => h.id === parseInt(habitId));
@@ -36,14 +30,14 @@ export const FocusSessions = () => {
     ];
 
     return (
-        <div className="container mx-auto py-6 space-y-6">
+        <div className="container mx-auto py-4 space-y-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
+                    <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                         Focus Sessions
                     </h1>
-                    <p className="text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
                         Build deep focus with timed work sessions
                     </p>
                 </div>
@@ -51,7 +45,7 @@ export const FocusSessions = () => {
 
             {/* Analytics Cards */}
             {analytics && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
@@ -113,86 +107,45 @@ export const FocusSessions = () => {
             {/* Active Session Management */}
             {activeSession && (
                 <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
                             <Play className="h-5 w-5 text-blue-600" />
                             Active Focus Session
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            <div>
-                                <p className="font-medium text-lg">{activeSession.habit?.name}</p>
-                                <div className="flex items-center gap-4 mt-2">
-                                    <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                        activeSession.status === 'active'
-                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                            : activeSession.status === 'paused'
-                                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                                    }`}>
-                                        {activeSession.status.charAt(0).toUpperCase() + activeSession.status.slice(1)}
+                    <CardContent className="pt-0">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <div>
+                                    <p className="font-medium text-lg">{activeSession.habit?.name}</p>
+                                    <div className="flex items-center gap-3 mt-1">
+                                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                            activeSession.status === 'active'
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                                                : activeSession.status === 'paused'
+                                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                                        }`}>
+                                            {activeSession.status.charAt(0).toUpperCase() + activeSession.status.slice(1)}
+                                        </div>
+                                        <span className="text-sm text-muted-foreground">
+                                            {activeSession.plannedDurationMinutes} min planned
+                                        </span>
                                     </div>
-                                    <span className="text-sm text-muted-foreground">
-                                        {activeSession.plannedDurationMinutes} min planned
-                                    </span>
                                 </div>
-
-                                {/* Session Actions for Paused State */}
-                                {activeSession.status === 'paused' && (
-                                    <div className="flex items-center gap-2 mt-4">
-                                        <Button
-                                            size="sm"
-                                            className="flex items-center gap-2"
-                                            disabled={resumeMutation.isPending}
-                                            onClick={async () => {
-                                                try {
-                                                    await resumeMutation.mutateAsync();
-                                                    if (activeSession?.habit) {
-                                                        focusNotificationService.notifySessionResumed(activeSession.habit.name);
-                                                    }
-                                                } catch (error) {
-                                                    console.error('Failed to resume session:', error);
-                                                }
-                                            }}
-                                        >
-                                            <Play className="h-4 w-4" />
-                                            {resumeMutation.isPending ? 'Resuming...' : 'Resume Session'}
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex items-center gap-2"
-                                            disabled={cancelMutation.isPending}
-                                            onClick={async () => {
-                                                try {
-                                                    await cancelMutation.mutateAsync({});
-                                                    if (activeSession?.habit) {
-                                                        focusNotificationService.notifySessionCancelled(activeSession.habit.name);
-                                                    }
-                                                } catch (error) {
-                                                    console.error('Failed to cancel session:', error);
-                                                }
-                                            }}
-                                        >
-                                            <Square className="h-4 w-4" />
-                                            {cancelMutation.isPending ? 'Cancelling...' : 'Cancel Session'}
-                                        </Button>
-                                    </div>
-                                )}
 
                                 {/* Status Message for Better User Feedback */}
                                 {activeSession.status === 'paused' && (
-                                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                                        <p className="text-sm text-yellow-800 dark:text-yellow-300">
+                                    <div className="p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                                        <p className="text-xs text-yellow-800 dark:text-yellow-300">
                                             🛈 Session is paused. You can resume it anytime or cancel if you're done.
                                         </p>
                                     </div>
                                 )}
 
                                 {activeSession.status === 'active' && (
-                                    <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                                        <p className="text-sm text-green-800 dark:text-green-300">
+                                    <div className="p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+                                        <p className="text-xs text-green-800 dark:text-green-300">
                                             ✅ Session is running. Stay focused!
                                         </p>
                                     </div>
@@ -212,7 +165,7 @@ export const FocusSessions = () => {
             )}
 
             {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Timer Section - Only show when no active session */}
                 {!activeSession && (
                     <div className="space-y-4">

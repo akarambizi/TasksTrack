@@ -76,7 +76,7 @@ namespace TasksTrack.Repositories
 
             var totalSessions = sessions.Count;
             var completedSessions = sessions.Count(s => s.Status == FocusSessionStatus.Completed.ToStringValue());
-            var completionRate = totalSessions > 0 ? (double)completedSessions / totalSessions : 0.0;
+            var completionRate = totalSessions > 0 ? ((double)completedSessions / totalSessions) * 100.0 : 0.0;
 
             var totalMinutes = sessions
                 .Where(s => s.ActualDurationSeconds.HasValue)

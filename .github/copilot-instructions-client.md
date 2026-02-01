@@ -20,6 +20,74 @@ new ones.**
 - **Use date-fns for all date operations** - For parsing, formatting, calculations, and comparisons.
   Always prefer date-fns functions over manual Date operations for consistency and reliability
 
+## MANDATORY: OData Query Pattern
+
+**CRITICAL: For ANY filtering, sorting, pagination, or complex querying - ALWAYS use the established OData pattern.**
+
+### When to Use OData
+- Listing/filtering collections (sessions, habits, logs)
+- Analytics endpoints with flexible querying
+- Paginated data views
+- Search and filter functionality
+- Date range queries
+
+### Required Pattern
+
+```typescript
+// 1. Import the ODataQueryBuilder
+import { ODataQueryBuilder } from '@/utils/odataQueryBuilder';
+
+// 2. Build query using fluent API in useMemo
+const queryString = useMemo(() => {
+    return new ODataQueryBuilder()
+        .dateRangeFilter({
+            field: 'startTime',
+            startDate,
+            endDate
+        })
+        .filter(habitId ? `habitId eq ${habitId}` : '')
+        .filter(status !== 'all' ? `status eq '${status}'` : '')
+        .orderBy('createdAt desc')
+        .top(pageSize || 0)
+        .build();
+}, [startDate, endDate, habitId, status, pageSize]);
+
+// 3. Pass query string to API hook
+const { data } = useMyDataHook(queryString);
+```
+
+### Reference Implementation
+- **Component**: `client/src/components/FocusSession/FocusSessionHistory.tsx`
+- **API**: `client/src/api/focusSession.ts`
+- **Hook**: `client/src/queries/focusSessions.ts`
+
+### OData Query Builder Methods
+```typescript
+// Filtering
+.filter(condition: string)                    // Single condition
+.dateRangeFilter({field, startDate, endDate}) // Timezone-aware dates
+.filterConditions(conditions, 'and'|'or')     // Multiple conditions
+
+// Sorting & Pagination
+.orderBy(fields: string | string[])           // Sort fields
+.top(count: number)                           // Limit results
+.paginate(page: number, pageSize: number)     // Page-based pagination
+
+// Build
+.build(): string                              // Generate query string
+```
+
+### DON'T Create Custom Query Logic
+- Don't use URLSearchParams manually
+- Don't create custom filter builders
+- Don't use different patterns for different endpoints
+
+### DO Follow the Pattern
+- Always use `ODataQueryBuilder`
+- Use `useMemo` for query string generation
+- Chain methods fluently for readability
+- Use `.dateRangeFilter()` for date-based queries (handles timezones automatically)
+
 ### 1. **Follow Existing Naming Conventions**
 
 **Examine these files to understand the established patterns:**

@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/select';
 import { useFocusSessions } from '@/queries';
 import { IFocusSession, FocusSessionStatus } from '@/api';
-import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
+import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, subDays } from 'date-fns';
+import { ODataQueryBuilder } from '@/utils/odataQueryBuilder';
 
 interface IFocusSessionHistoryProps {
     habitId?: number;
@@ -29,18 +30,38 @@ export const FocusSessionHistory = ({
 }: IFocusSessionHistoryProps) => {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date()));
+    const [useWeeklyView, setUseWeeklyView] = useState(false);
 
+    // For weekly view, use the current week. For default view, show last 30 days
     const weekEnd = endOfWeek(currentWeekStart);
-    const startDate = format(currentWeekStart, 'yyyy-MM-dd');
-    const endDate = format(weekEnd, 'yyyy-MM-dd');
+    const thirtyDaysAgo = subDays(new Date(), 30);
 
-    const { data: sessions = [], isLoading, error } = useFocusSessions({
-        habitId,
-        status: statusFilter === 'all' ? undefined : statusFilter,
-        startDate,
-        endDate,
-        pageSize: maxSessions
-    });
+    const startDate = useWeeklyView ? format(currentWeekStart, 'yyyy-MM-dd') : format(thirtyDaysAgo, 'yyyy-MM-dd');
+    const endDate = useWeeklyView ? format(weekEnd, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd');
+
+    console.log('🚀 FocusSessionHistory - Date calculations:');
+    console.log('🚀 Current date:', new Date());
+    console.log('🚀 Thirty days ago:', thirtyDaysAgo);
+    console.log('🚀 Start date string:', startDate);
+    console.log('🚀 End date string:', endDate);
+    console.log('🚀 Use weekly view:', useWeeklyView);
+
+    // Build OData query using the query builder
+    const queryString = useMemo(() => {
+        return new ODataQueryBuilder()
+            .dateRangeFilter({
+                field: 'startTime',
+                startDate,
+                endDate
+            })
+            .filter(habitId ? `habitId eq ${habitId}` : '')
+            .filter(statusFilter !== 'all' ? `status eq '${statusFilter}'` : '')
+            .orderBy('startTime desc')
+            .top(maxSessions || 0)
+            .build();
+    }, [startDate, endDate, habitId, statusFilter, maxSessions]);
+
+    const { data: sessions = [], isLoading, error } = useFocusSessions(queryString);
 
     const filteredSessions = useMemo(() => {
         let filtered = [...sessions];
@@ -152,7 +173,10 @@ export const FocusSessionHistory = ({
                     </div>
                     {!maxSessions && (
                         <Badge variant="secondary">
-                            {format(currentWeekStart, 'MMM d')} - {format(weekEnd, 'MMM d')}
+                            {useWeeklyView
+                                ? `${format(currentWeekStart, 'MMM d')} - ${format(weekEnd, 'MMM d')}`
+                                : `Last 30 days`
+                            }
                         </Badge>
                     )}
                 </CardTitle>
@@ -175,7 +199,16 @@ export const FocusSessionHistory = ({
                             </Select>
                         </div>
 
-                        {!maxSessions && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setUseWeeklyView(!useWeeklyView)}
+                            className="h-8"
+                        >
+                            {useWeeklyView ? 'Show All' : 'Weekly View'}
+                        </Button>
+
+                        {!maxSessions && useWeeklyView && (
                             <div className="flex items-center gap-1">
                                 <Button
                                     variant="outline"

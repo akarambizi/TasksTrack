@@ -64,7 +64,7 @@ describe('Focus Session Query Hooks', () => {
             mockGetFocusSessions.mockResolvedValue(mockSessions);
 
             const { result } = renderHook(
-                () => useFocusSessions({ habitId: 1 }),
+                () => useFocusSessions('?$filter=habitId eq 1'),
                 { wrapper: createWrapper() }
             );
 
@@ -72,7 +72,7 @@ describe('Focus Session Query Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockGetFocusSessions).toHaveBeenCalledWith({ habitId: 1 });
+            expect(mockGetFocusSessions).toHaveBeenCalledWith('?$filter=habitId eq 1');
             expect(result.current.data).toEqual(mockSessions);
         });
 
@@ -141,21 +141,19 @@ describe('Focus Session Query Hooks', () => {
         it('should fetch analytics data', async () => {
             const mockAnalytics = {
                 totalSessions: 10,
-                totalMinutes: 250,
                 completedSessions: 8,
+                totalMinutes: 200,
                 averageSessionMinutes: 25,
-                longestSessionMinutes: 30,
+                longestSessionMinutes: 45,
                 currentStreak: 3,
                 longestStreak: 5,
-                completionRate: 80,
-                weeklyStats: [],
-                monthlyStats: []
+                completionRate: 0.8
             };
 
             mockGetFocusSessionAnalytics.mockResolvedValue(mockAnalytics);
 
             const { result } = renderHook(
-                () => useFocusSessionAnalytics({ habitId: 1 }),
+                () => useFocusSessionAnalytics('?$filter=habitId eq 1'),
                 { wrapper: createWrapper() }
             );
 
@@ -163,7 +161,7 @@ describe('Focus Session Query Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockGetFocusSessionAnalytics).toHaveBeenCalledWith({ habitId: 1 });
+            expect(mockGetFocusSessionAnalytics).toHaveBeenCalledWith('?$filter=habitId eq 1');
             expect(result.current.data).toEqual(mockAnalytics);
         });
     });

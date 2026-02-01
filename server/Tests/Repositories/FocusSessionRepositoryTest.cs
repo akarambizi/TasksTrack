@@ -408,7 +408,7 @@ namespace TasksTrack.Tests.Repositories
             Assert.Equal(2, result.CompletedSessions);
             Assert.Equal(65, result.TotalMinutes); // 25 + 30 + 10
             Assert.Equal(66.67, Math.Round(result.CompletionRate, 2)); // 2/3 * 100
-            Assert.Equal(21.67, Math.Round(result.AverageSessionMinutes, 2)); // Average of 25, 30, 10
+            Assert.Equal(27.5, Math.Round(result.AverageSessionMinutes, 2)); // Average of completed sessions: (25 + 30) / 2
         }
 
         [Fact]
@@ -446,9 +446,9 @@ namespace TasksTrack.Tests.Repositories
             // Assert
             Assert.Equal(2, result.TotalSessions); // Both sessions since we removed date filtering
             Assert.Equal(2, result.CompletedSessions);
-            Assert.Equal(60, result.TotalMinutes); // 3600 seconds total = 60 minutes
-            Assert.Equal(1.0, result.CompletionRate); // 2/2 = 100%
-            Assert.Equal(30, result.AverageSessionMinutes); // Average of 30 minutes each
+            Assert.Equal(55, result.TotalMinutes); // 1500 + 1800 seconds = 3300 seconds = 55 minutes
+            Assert.Equal(100.0, result.CompletionRate); // 2/2 * 100 = 100%
+            Assert.Equal(27.5, result.AverageSessionMinutes); // Average of completed sessions: (25 + 30) / 2 = 27.5
         }
 
         [Fact]

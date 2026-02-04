@@ -9,3 +9,19 @@ export * from './toast-container';
 export * from './toast-test-button';
 export * from './loading';
 export * from './theme-toggle';
+
+// New reusable components
+export * from './common/auth-layout';
+export * from './common/form-field';
+export * from './common/status-badge';
+export * from './common/stats-card';
+export * from './common/page-header';
+export * from './common/loading-skeleton';
+export * from './common/timer-display';
+export * from './common/timer-controls';
+export * from './common/habit-info';
+export * from './common/select-field';
+export * from './common/textarea-field';
+export * from './common/focus-session-card';
+export * from './common/habit-log-item';
+export * from './common/habit-details-card';

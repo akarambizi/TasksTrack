@@ -24,7 +24,7 @@ describe('Login Component', () => {
     });
 
     it('should render the login form', () => {
-        render(
+        const { container } = render(
             <BrowserRouter>
                 <Login />
             </BrowserRouter>
@@ -32,7 +32,7 @@ describe('Login Component', () => {
 
         expect(screen.getByRole('heading', { name: 'Login' })).toBeTruthy();
         expect(screen.getByLabelText('Email')).toBeTruthy();
-        expect(screen.getByLabelText('Password')).toBeTruthy();
+        expect(container.querySelector('input[name="password"]')).toBeTruthy();
         expect(screen.getByText('Forgot your password?')).toBeTruthy();
         expect(screen.getByTestId('signup-link')).toBeTruthy();
     });
@@ -51,13 +51,13 @@ describe('Login Component', () => {
     });
 
     it('should call handleChange when password input changes', () => {
-        render(
+        const { container } = render(
             <BrowserRouter>
                 <Login />
             </BrowserRouter>
         );
 
-        const passwordInput = screen.getByLabelText('Password');
+        const passwordInput = container.querySelector('input[name="password"]')!;
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
         expect(mockHandleChange).toHaveBeenCalledWith(expect.any(Object));

@@ -10,7 +10,7 @@ import {
 import { Clock, Target } from 'lucide-react';
 import { IHabit } from '@/api';
 import { FocusTimer } from './FocusTimer';
-import { Badge } from '@/components/ui/badge';
+import { HabitInfo } from '@/components/ui';
 import { FocusTimerProvider } from '@/context/FocusTimerContext';
 
 interface IFocusSessionDialogProps {
@@ -48,17 +48,7 @@ export const FocusSessionDialog = ({
                         <Target className="h-5 w-5 text-blue-600" />
                         Focus Session
                     </DialogTitle>
-                    <div className="flex items-center gap-2 pt-2">
-                        <span className="text-sm text-muted-foreground">Working on:</span>
-                        <Badge variant="outline" className="text-sm" data-testid="habit-badge">
-                            {habit.name}
-                        </Badge>
-                    </div>
-                    {habit.target && (
-                        <div className="text-sm text-muted-foreground">
-                            Target: {habit.target} {habit.unit} {habit.targetFrequency}
-                        </div>
-                    )}
+                    <HabitInfo habit={habit} className="pt-2" />
                 </DialogHeader>
 
                 <div className="px-6 pb-6">

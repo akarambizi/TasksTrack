@@ -20,6 +20,40 @@ new ones.**
 - **Use date-fns for all date operations** - For parsing, formatting, calculations, and comparisons.
   Always prefer date-fns functions over manual Date operations for consistency and reliability
 
+## Component Organization Guidelines
+
+**MANDATORY: Follow these component organization rules for all UI development:**
+
+### **Component Location Strategy**
+- **Custom reusable components** → `client/src/components/ui/common/`
+  - Project-specific components like timer-display, habit-info, select-field, etc.
+  - Components built specifically for TasksTrack functionality
+- **shadcn/ui library components** → `client/src/components/ui/`
+  - External library components like button.tsx, dialog.tsx, input.tsx, etc.
+  - Third-party shadcn components imported via CLI
+
+### **Before Creating New Components or Utils**
+1. **Check existing reusable components** in `client/src/components/ui/common/`
+   - Review current components: timer-display, timer-controls, habit-info, select-field,
+     textarea-field, auth-layout, form-field, status-badge, stats-card, page-header, loading-skeleton
+   - Extend or compose existing components instead of creating duplicates
+2. **Check existing utility functions** in `client/src/utils/`
+   - Review focusSession.utils.ts and other utility files
+   - Reuse existing business logic and helper functions
+3. **Follow the barrel export pattern** - All components must be exported through `client/src/components/ui/index.ts`
+
+### **Component Creation Rules**
+- **New reusable component needed?** → Create in `ui/common/` and add to index.ts exports
+- **Need shadcn component?** → Install via shadcn CLI into `ui/` directory
+- **Extending existing component?** → Modify the existing component rather than duplicating
+- **Business logic needed?** → Add to appropriate utility files in `utils/` directory
+
+### **Quality Standards**
+- All components must have proper TypeScript interfaces starting with "I"
+- Include testId props for testing compatibility
+- Follow established naming conventions (PascalCase for components, camelCase for hooks)
+- Maintain consistency with existing component patterns and prop structures
+
 ## MANDATORY: OData Query Pattern
 
 **CRITICAL: For ANY filtering, sorting, pagination, or complex querying - ALWAYS use the established OData pattern.**

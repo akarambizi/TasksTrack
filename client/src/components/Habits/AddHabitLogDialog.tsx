@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { FormField, TextareaField } from '@/components/ui';
 
 import { useState } from 'react';
 import { useHabitLogForm } from '@/hooks/useHabitLogForm';
@@ -83,50 +81,48 @@ export function AddHabitLogDialog({ habit, trigger, isOpen, onOpenChange }: IAdd
                     )}
 
                     <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="value">
-                                Value ({displayUnit})
-                            </Label>
-                            <Input
-                                id="value"
-                                data-testid="value-input"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
-                                value={formData.value || ''}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    handleChange('value')(parseFloat(e.target.value) || 0)
-                                }
-                            />
-                        </div>
+                        <FormField
+                            id="value"
+                            name="value"
+                            type="number"
+                            label={`Value (${displayUnit})`}
+                            placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
+                            value={formData.value?.toString()}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                handleChange('value')(parseFloat(e.target.value) || 0)
+                            }
+                            className=""
+                            testId="value-input"
+                            step="0.01"
+                            min="0"
+                            required
+                        />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="date">Date</Label>
-                            <Input
-                                id="date"
-                                data-testid="date-input"
-                                type="date"
-                                value={formData.date}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    handleChange('date')(e.target.value)
-                                }
-                            />
-                        </div>
+                        <FormField
+                            id="date"
+                            name="date"
+                            type="date"
+                            label="Date"
+                            value={formData.date}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                handleChange('date')(e.target.value)
+                            }
+                            className=""
+                            testId="date-input"
+                            required
+                        />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="notes">Notes (Optional)</Label>
-                            <Textarea
-                                id="notes"
-                                data-testid="notes-input"
-                                placeholder="How did it go? Any observations..."
-                                value={formData.notes || ''}
-                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                                    handleChange('notes')(e.target.value)
-                                }
-                                rows={3}
-                            />
-                        </div>
+                        <TextareaField
+                            id="notes"
+                            label="Notes (Optional)"
+                            placeholder="How did it go? Any observations..."
+                            value={formData.notes}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                handleChange('notes')(e.target.value)
+                            }
+                            rows={3}
+                            testId="notes-input"
+                        />
                     </div>
 
                     <DialogFooter>

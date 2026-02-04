@@ -1,7 +1,6 @@
 import { IHabitLog, IHabitLogCreateRequest, IHabitLogUpdateRequest } from './habit.types';
 import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
-import { AxiosError } from 'axios';
 
 // Re-export types for external use
 export type { IHabitLog, IHabitLogCreateRequest, IHabitLogUpdateRequest };
@@ -18,22 +17,6 @@ export const getHabitLogs = async (): Promise<IHabitLog[]> => {
         console.error('Failed to fetch habit logs:', error);
         ToastService.error('Failed to fetch habit logs');
         return [];
-    }
-};
-
-/**
- * Gets a habit log by ID.
- * @param {number} id - The habit log ID.
- * @returns {Promise<IHabitLog>} The habit log.
- */
-export const getHabitLogById = async (id: number): Promise<IHabitLog> => {
-    try {
-        const endpoint = `/api/habit-logs/${id}`;
-        return await apiGet<IHabitLog>(endpoint);
-    } catch (error) {
-        console.error(`Failed to fetch habit log ${id}:`, error);
-        ToastService.error('Failed to fetch habit log');
-        throw error;
     }
 };
 
@@ -73,23 +56,6 @@ export const getHabitLogsByDate = async (date: string): Promise<IHabitLog[]> => 
 };
 
 /**
- * Gets habit logs for a date range.
- * @param {string} startDate - The start date in YYYY-MM-DD format.
- * @param {string} endDate - The end date in YYYY-MM-DD format.
- * @returns {Promise<IHabitLog[]>} Array of habit logs for the date range.
- */
-export const getHabitLogsByDateRange = async (startDate: string, endDate: string): Promise<IHabitLog[]> => {
-    try {
-        const endpoint = `/api/habit-logs/date-range?startDate=${startDate}&endDate=${endDate}`;
-        return await apiGet<IHabitLog[]>(endpoint);
-    } catch (error) {
-        console.error(`Failed to fetch habit logs for date range ${startDate} to ${endDate}:`, error);
-        ToastService.error('Failed to fetch habit logs');
-        return [];
-    }
-};
-
-/**
  * Gets habit logs for a specific habit and date range.
  * @param {number} habitId - The habit ID.
  * @param {string} startDate - The start date in YYYY-MM-DD format.
@@ -104,27 +70,6 @@ export const getHabitLogsByHabitAndDateRange = async (habitId: number, startDate
         console.error(`Failed to fetch habit logs for habit ${habitId} and date range ${startDate} to ${endDate}:`, error);
         ToastService.error('Failed to fetch habit logs');
         return [];
-    }
-};
-
-/**
- * Gets a habit log for a specific habit and date.
- * @param {number} habitId - The habit ID.
- * @param {string} date - The date in YYYY-MM-DD format.
- * @returns {Promise<IHabitLog | null>} The habit log or null if not found.
- */
-export const getHabitLogByHabitAndDate = async (habitId: number, date: string): Promise<IHabitLog | null> => {
-    try {
-        const endpoint = `/api/habit-logs/habit/${habitId}/date/${date}`;
-        return await apiGet<IHabitLog>(endpoint);
-    } catch (error) {
-        // Return null if not found (404) instead of throwing error
-        if ((error as AxiosError)?.response?.status === 404) {
-            return null;
-        }
-        console.error(`Failed to fetch habit log for habit ${habitId} on date ${date}:`, error);
-        ToastService.error('Failed to fetch habit log');
-        throw error;
     }
 };
 

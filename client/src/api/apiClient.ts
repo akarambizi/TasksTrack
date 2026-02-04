@@ -93,4 +93,4 @@ export const apiDelete = async <T>(endpoint: string, config?: AxiosRequestConfig
   return response.data;
 };
 
-export default apiClient;
+// Default export removed as unused

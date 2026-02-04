@@ -1,5 +1,5 @@
-import { IHabit, IHabitCreateRequest, IHabitUpdateRequest } from './habit.types';
-import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
+import { IHabit } from './habit.types';
+import { apiGet, apiPost, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
 
 /**
@@ -40,7 +40,7 @@ export const getHabitById = async (habitId: number): Promise<IHabit> => {
  * @param {Partial<IHabit>} habitData - The habit data object.
  * @returns {Promise<IHabit>} The created habit with generated ID.
  */
-export const createHabitDirect = async (habitData: Partial<IHabit>): Promise<IHabit> => {
+export const createHabit = async (habitData: Partial<IHabit>): Promise<IHabit> => {
     try {
         const endpoint = '/api/habits';
         const response = await apiPost<IHabit>(endpoint, habitData);
@@ -53,41 +53,6 @@ export const createHabitDirect = async (habitData: Partial<IHabit>): Promise<IHa
     }
 };
 
-/**
- * Creates a new habit.
- * @param {IHabitCreateRequest} habitData - The habit data to create.
- * @returns {Promise<IHabit>} The created habit with generated ID.
- */
-export const createHabit = async (habitData: IHabitCreateRequest): Promise<IHabit> => {
-    try {
-        const endpoint = '/api/habits';
-        const response = await apiPost<IHabit>(endpoint, habitData);
-        ToastService.success('Habit created successfully');
-        return response;
-    } catch (error) {
-        console.error('Failed to create habit:', error);
-        ToastService.error('Failed to create habit');
-        throw error;
-    }
-};
-
-/**
- * Updates an existing habit.
- * @param {IHabitUpdateRequest} habitData - The habit data to update (includes id).
- * @returns {Promise<IHabit>} The updated habit.
- */
-export const updateHabit = async (habitData: IHabitUpdateRequest): Promise<IHabit> => {
-    try {
-        const endpoint = `/api/habits/${habitData.id}`;
-        const response = await apiPut<IHabit>(endpoint, habitData);
-        ToastService.success('Habit updated successfully');
-        return response;
-    } catch (error) {
-        console.error('Failed to update habit:', error);
-        ToastService.error('Failed to update habit');
-        throw error;
-    }
-};
 
 /**
  * Deletes a habit.
@@ -137,20 +102,5 @@ export const activateHabit = async (id: number): Promise<void> => {
         console.error('Failed to activate habit:', error);
         ToastService.error('Failed to activate habit');
         throw error;
-    }
-};
-
-/**
- * Gets active habits only.
- * @returns {Promise<IHabit[]>} Array of active habits.
- */
-export const getActiveHabits = async (): Promise<IHabit[]> => {
-    try {
-        const endpoint = '/api/habits?active=true';
-        return await apiGet<IHabit[]>(endpoint);
-    } catch (error) {
-        console.error('Failed to fetch active habits:', error);
-        ToastService.error('Failed to fetch active habits');
-        return [];
     }
 };

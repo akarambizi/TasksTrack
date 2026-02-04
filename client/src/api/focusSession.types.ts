@@ -18,18 +18,6 @@ export interface IFocusSession {
     habit?: IHabit; // Nested habit object from server
 }
 
-export interface IFocusSessionLog {
-    id: number;
-    habitId: number;
-    startTime: string;
-    endTime?: string;
-    status: FocusSessionStatus;
-    actualDurationSeconds?: number;
-    plannedDurationMinutes: number;
-    notes?: string;
-    habit?: IHabit;
-}
-
 export enum FocusSessionStatus {
     Active = "active",
     Paused = "paused",

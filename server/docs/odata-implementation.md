@@ -143,39 +143,29 @@ public IQueryable<FocusSession> GetByUser(string userId)
 **Challenge**: OData expects ISO 8601 DateTimeOffset format, not simple date strings.
 
 ```typescript
-// Frontend: odata-query integration
-import buildQuery from 'odata-query';
+// Frontend: Custom OData Query Builder
+import { ODataQueryBuilder } from '@/utils/odataQueryBuilder';
 
 // Helper functions for proper date formatting
-export const formatDateForOData = (date: string | Date): string => {
-  if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    return new Date(`${date}T00:00:00.000Z`).toISOString();
-  }
-  return new Date(date).toISOString();
+export const formatDateForOData = (date: string | Date, type: 'start' | 'end' = 'start'): string => {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const adjustedDate = type === 'start' ? startOfDay(dateObj) : endOfDay(dateObj);
+  return adjustedDate.toISOString();
 };
 
-export const formatEndDateForOData = (date: string | Date): string => {
-  if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    return new Date(`${date}T23:59:59.999Z`).toISOString();
-  }
-  return new Date(date).toISOString();
-};
+// Usage in API calls with custom query builder - using method chaining
+const queryBuilder = new ODataQueryBuilder();
 
-// Usage in API calls
-const filter: IODataFilter = {};
-if (params?.startDate) {
-    filter.startTime = { ge: formatDateForOData(params.startDate) };
-}
-if (params?.endDate) {
-    filter.startTime = { ...filter.startTime, le: formatEndDateForOData(params.endDate) };
-}
-
-const odataQuery = buildQuery({
-    filter: Object.keys(filter).length > 0 ? filter : undefined,
-    orderBy: 'startTime desc',
-    top: params?.pageSize,
-    skip: params?.page && params?.pageSize ? (params.page - 1) * params.pageSize : undefined
-});
+const odataQuery = queryBuilder
+    .dateRangeFilter({
+        field: 'startTime',
+        startDate: params?.startDate,
+        endDate: params?.endDate
+    })
+    .orderBy('startTime desc')
+    .top(params?.pageSize || 10)
+    .skip(params?.page && params?.pageSize ? (params.page - 1) * params.pageSize : 0)
+    .build();
 ```
 
 ## How OData Query Processing Works

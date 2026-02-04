@@ -10,6 +10,13 @@ if ! npm run lint:md; then
     exit 1
 fi
 
+# Check for unused code with knip
+echo "\033[36mChecking for unused code...\033[0m"
+if ! npm run find-unused; then
+    echo "\033[31mKnip found unused code! Please remove unused exports, files, or dependencies.\033[0m"
+    exit 1
+fi
+
 # Build frontend
 echo "\033[33mBuilding frontend...\033[0m"
 if ! npm run build:client > /dev/null 2>&1; then
@@ -18,7 +25,7 @@ if ! npm run build:client > /dev/null 2>&1; then
     exit 1
 fi
 
-# Build backend  
+# Build backend
 echo "\033[33mBuilding backend...\033[0m"
 if ! npm run build:server; then
     echo "\033[31mBackend build failed! Please fix warnings/errors above.\033[0m"

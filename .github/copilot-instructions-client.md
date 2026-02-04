@@ -587,6 +587,87 @@ Remember: Focus on understanding the "why" behind each pattern, not just the "ho
 constantly evolving with new patterns, hooks, and optimization techniques - there's always room to learn and improve
 your React, TypeScript, and state management skills as you build this project.
 
+## Code Quality and Maintenance Tools
+
+### **Knip: Automated Code Quality Analysis**
+
+**Why Knip is Essential:**
+- **Automated Dead Code Detection**: Identifies unused exports, functions, components, types, and dependencies
+- **Bundle Size Optimization**: Removes unused code that would otherwise bloat the production build
+- **Maintenance Efficiency**: Prevents accumulation of technical debt from outdated code
+- **Codebase Health**: Ensures only necessary code remains in the project
+
+**When to Use Knip:**
+- **Before Feature Development**: Clean up unused code to understand current codebase state
+- **After Major Refactoring**: Remove obsolete code that may have been left behind
+- **Pre-Release**: Ensure production builds contain only necessary code
+- **Regular Maintenance**: Weekly/monthly cleanup to prevent technical debt accumulation
+
+**How to Use Knip:**
+
+```bash
+# Run full analysis to identify all unused code
+npm run find-unused
+
+# Expected output when codebase is clean
+✓ Excellent, found no issues
+
+# When issues are found, knip will list:
+# - Unused exports and their locations
+# - Unused files that can be removed
+# - Unused dependencies in package.json
+# - Unused types and interfaces
+```
+
+**Knip Configuration (knip.json):**
+
+```json
+{
+  "ignore": [
+    "src/components/ui/**",  // Ignore shadcn/ui library components
+    "!src/components/ui/common/**"  // But analyze custom reusable components
+  ],
+  "ignoreDependencies": [
+    "vite",
+    "@vitejs/*",
+    "vitest",
+    "@testing-library/*"
+  ]
+}
+```
+
+**Configuration Rationale:**
+- **UI Library Exclusion**: shadcn/ui components in `src/components/ui/` are external library code
+  that shouldn't be analyzed for unused exports
+- **Custom Components Inclusion**: Our project-specific components in `src/components/ui/common/` should be analyzed
+- **Development Dependencies**: Build tools and testing frameworks are ignored as they're not part of the application bundle
+
+**Cleanup Workflow:**
+
+1. **Analysis Phase**: Run `npm run find-unused` to identify issues
+2. **Validation Phase**: Review knip output to ensure suggestions are safe to remove
+3. **Cleanup Phase**: Remove unused code systematically (files, exports, types, dependencies)
+4. **Testing Phase**: Run `npm run build` and `npm run test` to ensure no functionality is broken
+5. **Verification Phase**: Re-run knip to confirm all issues are resolved
+
+**Integration with Development Workflow:**
+- **Pre-commit**: Consider running knip as part of quality checks
+- **CI/CD**: Include knip analysis in continuous integration pipeline
+- **Code Reviews**: Use knip results to guide code review discussions
+- **Refactoring**: Always run knip after major component restructuring
+
+**Best Practices:**
+- **Incremental Cleanup**: Remove unused code in small batches to avoid breaking changes
+- **Validate Removals**: Always run tests and builds after removing code
+- **Document Exceptions**: If certain code must be kept despite appearing unused, document why
+- **Regular Maintenance**: Schedule regular knip runs to prevent accumulation of unused code
+
+**Quality Standards:**
+- Maintain knip score of "Excellent, found no issues" for production-ready code
+- Zero unused exports in core business logic components
+- Clean dependency tree with no unused packages
+- Well-organized component exports through index.ts files
+
 ## Code Quality Standards
 
 ### **Enums/Constants for Status Values**

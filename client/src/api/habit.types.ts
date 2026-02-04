@@ -41,10 +41,6 @@ export interface IHabitCreateRequest {
     icon?: string;
 }
 
-export interface IHabitUpdateRequest extends Partial<IHabitCreateRequest> {
-    id: number;
-}
-
 export interface IHabitLogCreateRequest {
     habitId: number;
     value: number;

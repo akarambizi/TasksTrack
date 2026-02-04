@@ -9,3 +9,11 @@ export * from './toast-container';
 export * from './toast-test-button';
 export * from './loading';
 export * from './theme-toggle';
+
+// New reusable components
+export * from './auth-layout';
+export * from './form-field';
+export * from './status-badge';
+export * from './stats-card';
+export * from './page-header';
+export * from './loading-skeleton';

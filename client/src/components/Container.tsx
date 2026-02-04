@@ -14,5 +14,3 @@ export const Container = ({ children }: { children: ReactNode }) => {
         </div>
     );
 };
-
-export default Container;

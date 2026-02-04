@@ -87,19 +87,7 @@ export const getSessionState = (
     };
 };
 
-/**
- * Check if warning should be shown for remaining time
- */
-export const shouldShowWarning = (timeLeft: number, warningThreshold: number = 61): boolean => {
-    return timeLeft === warningThreshold;
-};
 
-/**
- * Check if session should complete
- */
-export const shouldCompleteSession = (timeLeft: number): boolean => {
-    return timeLeft <= 1;
-};
 
 /**
  * Convert minutes to readable string

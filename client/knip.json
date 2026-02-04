@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "src/components/ui/**",
+    "!src/components/ui/common/**"
+  ],
+  "ignoreDependencies": [],
+  "ignoreExportsUsedInFile": true
+}

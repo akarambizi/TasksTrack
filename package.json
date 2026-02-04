@@ -11,6 +11,7 @@
     "test:client": "cd client && npm run test -- --run",
     "test:server": "cd server && dotnet test --no-restore --verbosity quiet",
     "lint:md": "markdownlint-cli2 **/*.md --config .markdownlint.json",
+    "find-unused": "cd client && npm run find-unused",
     "precommit": "npm run build && npm run lint:md",
     "install:all": "npm install && cd client && npm install && cd ../server && dotnet restore"
   },

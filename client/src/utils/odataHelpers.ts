@@ -20,12 +20,3 @@ export const formatDateForOData = (date: string | Date, type: 'start' | 'end' = 
   const adjustedDate = type === 'start' ? startOfDay(dateObj) : endOfDay(dateObj);
   return adjustedDate.toISOString();
 };
-
-/**
- * Converts a date string or Date object to end-of-day OData format
- * @param date - Date string (YYYY-MM-DD) or Date object
- * @returns ISO 8601 formatted string at end of day
- */
-export const formatEndDateForOData = (date: string | Date): string => {
-  return formatDateForOData(date, 'end');
-};

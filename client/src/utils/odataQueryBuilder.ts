@@ -248,27 +248,3 @@ export class ODataQueryBuilder {
     return this;
   }
 }
-
-/**
- * Convenience function for building OData queries with an options object
- *
- * @example
- * ```typescript
- * const query = buildODataQuery({
- *   $filter: "contains(name,'john')",
- *   $orderby: 'name desc',
- *   $top: 10
- * });
- * ```
- */
-export function buildODataQuery(options: IODataQueryOptions): string {
-  return new ODataQueryBuilder()
-    .filter(options.$filter || [])
-    .orderBy(options.$orderby || [])
-    .top(options.$top || 0)
-    .skip(options.$skip || 0)
-    .select(options.$select || [])
-    .expand(options.$expand || [])
-    .count(options.$count || false)
-    .build();
-}

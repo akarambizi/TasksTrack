@@ -11,9 +11,14 @@ export * from './loading';
 export * from './theme-toggle';
 
 // New reusable components
-export * from './auth-layout';
-export * from './form-field';
-export * from './status-badge';
-export * from './stats-card';
-export * from './page-header';
-export * from './loading-skeleton';
+export * from './common/auth-layout';
+export * from './common/form-field';
+export * from './common/status-badge';
+export * from './common/stats-card';
+export * from './common/page-header';
+export * from './common/loading-skeleton';
+export * from './common/timer-display';
+export * from './common/timer-controls';
+export * from './common/habit-info';
+export * from './common/select-field';
+export * from './common/textarea-field';

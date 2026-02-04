@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FormField, SelectField, TextareaField } from "@/components/ui";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useHabitForm } from "./useHabitForm";
@@ -67,7 +64,7 @@ export function AddHabitDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} noValidate>
           <DialogHeader>
             <DialogTitle>Add New Habit</DialogTitle>
             <DialogDescription>
@@ -82,97 +79,85 @@ export function AddHabitDialog() {
           )}
 
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                placeholder="Habit name (e.g., Read books, Exercise)"
-                value={formData.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('name')(e.target.value)}
+            <FormField
+              id="name"
+              name="name"
+              label="Name"
+              placeholder="Habit name (e.g., Read books, Exercise)"
+              value={formData.name}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('name')(e.target.value)}
+              required
+            />
+            <TextareaField
+              id="description"
+              label="Description"
+              placeholder="Describe your habit (optional)"
+              value={formData.description}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('description')(e.target.value)}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <SelectField
+                id="metricType"
+                label="Metric Type"
+                placeholder="Select metric"
+                value={formData.metricType}
+                onValueChange={handleChange('metricType')}
+                options={[
+                  { value: "minutes", label: "Minutes" },
+                  { value: "pages", label: "Pages" },
+                  { value: "reps", label: "Repetitions" },
+                  { value: "miles", label: "Miles" },
+                  { value: "kilometers", label: "Kilometers" },
+                  { value: "steps", label: "Steps" },
+                  { value: "cups", label: "Cups" },
+                  { value: "times", label: "Times" },
+                  { value: "hours", label: "Hours" }
+                ]}
+                required
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Describe your habit (optional)"
-                value={formData.description}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('description')(e.target.value)}
+              <FormField
+                id="unit"
+                name="unit"
+                label="Unit"
+                placeholder="min, pages, reps..."
+                value={formData.unit}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('unit')(e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="metricType">Metric Type</Label>
-                <Select
-                  value={formData.metricType}
-                  onValueChange={handleChange('metricType')}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select metric" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="minutes">Minutes</SelectItem>
-                    <SelectItem value="pages">Pages</SelectItem>
-                    <SelectItem value="reps">Repetitions</SelectItem>
-                    <SelectItem value="miles">Miles</SelectItem>
-                    <SelectItem value="kilometers">Kilometers</SelectItem>
-                    <SelectItem value="steps">Steps</SelectItem>
-                    <SelectItem value="cups">Cups</SelectItem>
-                    <SelectItem value="times">Times</SelectItem>
-                    <SelectItem value="hours">Hours</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="unit">Unit</Label>
-                <Input
-                  id="unit"
-                  placeholder="min, pages, reps..."
-                  value={formData.unit}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('unit')(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="target">Daily Target</Label>
-                <Input
-                  id="target"
-                  type="number"
-                  placeholder="0"
-                  value={formData.target}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('target')(parseInt(e.target.value) || 0)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="category">Category</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={handleChange('category')}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Health">Health</SelectItem>
-                    <SelectItem value="Learning">Learning</SelectItem>
-                    <SelectItem value="Creative">Creative</SelectItem>
-                    <SelectItem value="Social">Social</SelectItem>
-                    <SelectItem value="Work">Work</SelectItem>
-                    <SelectItem value="Personal">Personal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="color">Color</Label>
-              <Input
-                id="color"
-                type="color"
-                value={formData.color}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('color')(e.target.value)}
+              <FormField
+                id="target"
+                name="target"
+                type="number"
+                label="Daily Target"
+                placeholder="0"
+                value={formData.target?.toString()}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('target')(parseInt(e.target.value) || 0)}
+              />
+              <SelectField
+                id="category"
+                label="Category"
+                placeholder="Select category"
+                value={formData.category}
+                onValueChange={handleChange('category')}
+                options={[
+                  { value: "Health", label: "Health" },
+                  { value: "Learning", label: "Learning" },
+                  { value: "Creative", label: "Creative" },
+                  { value: "Social", label: "Social" },
+                  { value: "Work", label: "Work" },
+                  { value: "Personal", label: "Personal" }
+                ]}
               />
             </div>
+            <FormField
+              id="color"
+              name="color"
+              type="color"
+              label="Color"
+              value={formData.color}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('color')(e.target.value)}
+            />
           </div>
           <DialogFooter>
             <Button type="submit" disabled={createHabitMutation.isPending}>

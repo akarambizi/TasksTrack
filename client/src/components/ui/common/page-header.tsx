@@ -31,9 +31,9 @@ export const PageHeader: React.FC<IPageHeaderProps> = ({
     return (
         <div className={`flex items-center justify-between ${className}`}>
             <div className="flex items-center gap-4">
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleBack}
                     className="p-2"
                 >

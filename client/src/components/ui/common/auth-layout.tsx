@@ -41,22 +41,22 @@ export const AuthLayout: React.FC<IAuthLayoutProps> = ({
                         <h1 className="text-3xl font-bold">{title}</h1>
                         <p className="text-balance text-muted-foreground">{subtitle}</p>
                     </div>
-                    
+
                     <div className="grid gap-4">
                         {children}
-                        
-                        <Button 
-                            type="submit" 
-                            className="w-full" 
+
+                        <Button
+                            type="submit"
+                            className="w-full"
                             disabled={isLoading}
                         >
                             {submitButtonText}
                         </Button>
-                        
+
                         {showGoogleButton && (
-                            <Button 
+                            <Button
                                 type="button"
-                                variant="outline" 
+                                variant="outline"
                                 className="w-full"
                                 onClick={handleGoogleAuth}
                             >
@@ -64,13 +64,13 @@ export const AuthLayout: React.FC<IAuthLayoutProps> = ({
                             </Button>
                         )}
                     </div>
-                    
+
                     <div className="mt-4 text-center text-sm" data-testid={title.toLowerCase().includes('sign') ? 'login-link' : 'signup-link'}>
                         {footerContent}
                     </div>
                 </div>
             </div>
-            
+
             <div className="hidden bg-muted lg:block">
                 <img
                     alt={imageAlt}

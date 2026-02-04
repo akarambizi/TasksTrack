@@ -15,17 +15,17 @@ const statusVariants = {
     Stopped: 'destructive'
 } as const;
 
-export const StatusBadge: React.FC<IStatusBadgeProps> = ({ 
-    status, 
-    variant, 
-    size = 'default' 
+export const StatusBadge: React.FC<IStatusBadgeProps> = ({
+    status,
+    variant,
+    size = 'default'
 }) => {
-    const statusString = typeof status === 'number' 
-        ? getStatusLabel(status) 
+    const statusString = typeof status === 'number'
+        ? getStatusLabel(status)
         : status;
-    
+
     const badgeVariant = variant || statusVariants[statusString as keyof typeof statusVariants] || 'outline';
-    
+
     return (
         <Badge variant={badgeVariant} className={size === 'sm' ? 'text-xs' : ''}>
             {statusString}
@@ -37,12 +37,12 @@ export const StatusBadge: React.FC<IStatusBadgeProps> = ({
 function getStatusLabel(statusNumber: number): string {
     const statusMap = {
         0: 'Active',
-        1: 'In Progress', 
+        1: 'In Progress',
         2: 'Paused',
         3: 'Completed',
         4: 'Cancelled',
         5: 'Stopped'
     } as const;
-    
+
     return statusMap[statusNumber as keyof typeof statusMap] || 'Unknown';
 }

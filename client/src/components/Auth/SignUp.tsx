@@ -1,5 +1,5 @@
-import { FormField } from '@/components/ui/form-field';
-import { AuthLayout } from '@/components/ui/auth-layout';
+import { FormField } from '@/components/ui';
+import { AuthLayout } from '@/components/ui';
 import { FormType, useForm } from '@/hooks';
 import { Link } from 'react-router-dom';
 
@@ -37,7 +37,7 @@ export const SignUp = () => {
                 onChange={handleChange}
                 error={errors.email}
             />
-            
+
             <FormField
                 id="password"
                 name="password"

@@ -14,6 +14,10 @@ interface IFormFieldProps {
     required?: boolean;
     className?: string;
     labelAction?: React.ReactNode;
+    testId?: string;
+    min?: string;
+    max?: string;
+    step?: string;
 }
 
 export const FormField: React.FC<IFormFieldProps> = ({
@@ -27,15 +31,22 @@ export const FormField: React.FC<IFormFieldProps> = ({
     error,
     required = false,
     className = "",
-    labelAction
+    labelAction,
+    testId,
+    min,
+    max,
+    step
 }) => {
     return (
         <div className={`grid gap-2 ${className}`}>
             <div className="flex items-center">
-                <Label htmlFor={id}>{label}</Label>
+                <Label htmlFor={id}>
+                    {label}
+                    {required && <span className="text-red-500 ml-1">*</span>}
+                </Label>
                 {labelAction}
             </div>
-            <Input 
+            <Input
                 id={id}
                 name={name}
                 type={type}
@@ -43,6 +54,10 @@ export const FormField: React.FC<IFormFieldProps> = ({
                 value={value || ''}
                 onChange={onChange}
                 required={required}
+                data-testid={testId}
+                min={min}
+                max={max}
+                step={step}
             />
             {error && (
                 <p className="text-red-500 text-sm" role="alert">

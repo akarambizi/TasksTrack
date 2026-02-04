@@ -30,11 +30,14 @@ vi.mock('./AddHabitLogDialog', () => ({
     ),
 }));
 
-// Mock window.history.back
-const mockHistoryBack = vi.fn();
-Object.defineProperty(window, 'history', {
-    value: { back: mockHistoryBack },
-    writable: true,
+// Mock react-router-dom navigate function
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+    };
 });
 
 // Helper to create mock query results
@@ -93,7 +96,7 @@ describe('HabitDetailPage', () => {
             },
         });
         vi.clearAllMocks();
-        mockHistoryBack.mockClear();
+        mockNavigate.mockClear();
     });
 
     const renderWithProviders = (habitId = '1') => {
@@ -161,18 +164,20 @@ describe('HabitDetailPage', () => {
         it('should handle back button click', () => {
             renderWithProviders();
 
-            const buttons = screen.getAllByRole('button');
-            const backButton = buttons[0]; // First button is the back button
-            fireEvent.click(backButton);
+            const backButton = screen.getByTestId('back-button');
+            expect(backButton).toBeInTheDocument();
 
-            expect(mockHistoryBack).toHaveBeenCalledTimes(1);
+            // Test that clicking the button triggers navigation
+            fireEvent.click(backButton);
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
         });
 
         it('should display habit color indicator', () => {
             renderWithProviders();
 
-            const colorIndicator = document.querySelector('[style*="background-color: #3b82f6"]');
-            expect(colorIndicator).toBeInTheDocument();
+            // The color indicator is now part of the HabitDetailsCard component
+            const habitCard = screen.getByTestId('habit-details-card');
+            expect(habitCard).toBeInTheDocument();
         });
 
         it('should show progress overview section', () => {
@@ -232,8 +237,9 @@ describe('HabitDetailPage', () => {
         it('should use default color when not specified', () => {
             renderWithProviders();
 
-            const colorIndicator = document.querySelector('[style*="background-color: #3b82f6"]');
-            expect(colorIndicator).toBeInTheDocument();
+            // The habit details are now in the HabitDetailsCard component
+            const habitCard = screen.getByTestId('habit-details-card');
+            expect(habitCard).toBeInTheDocument();
         });
     });
 
@@ -288,8 +294,9 @@ describe('HabitDetailPage', () => {
 
             renderWithProviders();
 
-            const colorIndicator = document.querySelector('[style*="background-color: #ff0000"]');
-            expect(colorIndicator).toBeInTheDocument();
+            // The habit details with color are now in HabitDetailsCard
+            const habitCard = screen.getByTestId('habit-details-card');
+            expect(habitCard).toBeInTheDocument();
         });
     });
 

@@ -117,7 +117,7 @@ describe('HabitLogStats', () => {
 
     describe('when data is loading', () => {
         beforeEach(() => {
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(undefined, true)
             );
         });
@@ -136,7 +136,7 @@ describe('HabitLogStats', () => {
 
     describe('when data is loaded successfully', () => {
         beforeEach(() => {
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
         });
@@ -155,14 +155,14 @@ describe('HabitLogStats', () => {
             renderWithQueryClient(<HabitLogStats habit={mockHabit} />);
 
             // 35 minutes out of 30 target = 117%
-            expect(screen.getByText('117% of target')).toBeInTheDocument();
+            expect(screen.getByText(/117% of target/)).toBeInTheDocument();
         });
 
         it('should show target achievement badge when target is met', () => {
             renderWithQueryClient(<HabitLogStats habit={mockHabit} />);
 
-            // Should show checkmark for exceeding target
-            expect(screen.getByText('✓')).toBeInTheDocument();
+            // Should show checkmark for exceeding target - it's part of the subtitle
+            expect(screen.getByText(/117% of target ✓/)).toBeInTheDocument();
         });
 
         it('should calculate active days correctly', () => {
@@ -182,7 +182,7 @@ describe('HabitLogStats', () => {
         };
 
         beforeEach(() => {
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
         });
@@ -204,7 +204,7 @@ describe('HabitLogStats', () => {
         };
 
         beforeEach(() => {
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
         });
@@ -220,7 +220,7 @@ describe('HabitLogStats', () => {
 
     describe('when no logs are available', () => {
         beforeEach(() => {
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult([])
             );
         });
@@ -246,7 +246,7 @@ describe('HabitLogStats', () => {
         const mockError = new AxiosError('Failed to fetch');
 
         beforeEach(() => {
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(undefined, false, mockError)
             );
         });
@@ -265,7 +265,7 @@ describe('HabitLogStats', () => {
     describe('display unit handling', () => {
         it('should use habit unit when available', () => {
             const habitWithUnit = { ...mockHabit, unit: 'reps' };
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
 
@@ -277,7 +277,7 @@ describe('HabitLogStats', () => {
 
         it('should use metricType when unit is not available', () => {
             const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'count' };
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
 
@@ -289,7 +289,7 @@ describe('HabitLogStats', () => {
 
         it('should default to "units" when neither unit nor metricType is available', () => {
             const habitWithoutUnit = { ...mockHabit, unit: '', metricType: '' };
-            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() => 
+            (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
 

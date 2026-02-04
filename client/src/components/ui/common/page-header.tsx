@@ -36,6 +36,7 @@ export const PageHeader: React.FC<IPageHeaderProps> = ({
                     size="sm"
                     onClick={handleBack}
                     className="p-2"
+                    data-testid="back-button"
                 >
                     <ArrowLeft className="h-4 w-4" />
                 </Button>

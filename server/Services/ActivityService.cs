@@ -8,11 +8,13 @@ namespace TasksTrack.Services
     {
         private readonly IHabitLogRepository _habitLogRepository;
         private readonly IHabitRepository _habitRepository;
+        private readonly IFocusSessionRepository _focusSessionRepository;
 
-        public ActivityService(IHabitLogRepository habitLogRepository, IHabitRepository habitRepository)
+        public ActivityService(IHabitLogRepository habitLogRepository, IHabitRepository habitRepository, IFocusSessionRepository focusSessionRepository)
         {
             _habitLogRepository = habitLogRepository;
             _habitRepository = habitRepository;
+            _focusSessionRepository = focusSessionRepository;
         }
 
         public async Task<IEnumerable<ActivityGridResponse>> GetActivityGridAsync(string userId, DateOnly startDate, DateOnly endDate)
@@ -30,11 +32,21 @@ namespace TasksTrack.Services
             var habitLogs = await _habitLogRepository.GetByDateRangeAsync(startDate, endDate);
             var userHabitLogs = habitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
 
+            // Get focus sessions for the user in the date range
+            var focusSessions = _focusSessionRepository.GetByUser(userId)
+                .Where(session => session.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue).Date && 
+                                session.StartTime.Date <= endDate.ToDateTime(TimeOnly.MinValue).Date)
+                .Where(session => userHabitIds.Contains(session.HabitId))
+                .ToList();
+
             // Get user statistics for intensity calculation
             var userStats = await GetActivityStatisticsAsync(userId);
 
             // Group logs by date
             var logsByDate = userHabitLogs.GroupBy(log => log.Date).ToList();
+            
+            // Group focus sessions by date
+            var sessionsByDate = focusSessions.GroupBy(session => DateOnly.FromDateTime(session.StartTime.Date)).ToList();
 
             var result = new List<ActivityGridResponse>();
 
@@ -42,27 +54,52 @@ namespace TasksTrack.Services
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
                 var dayLogs = logsByDate.FirstOrDefault(g => g.Key == date)?.ToList() ?? new List<HabitLog>();
-                
+                var daySessions = sessionsByDate.FirstOrDefault(g => g.Key == date)?.ToList() ?? new List<FocusSession>();
+
+                // Combine habit logs and focus sessions for activity count
+                var totalActivityCount = dayLogs.Count + daySessions.Count;
+                var totalValue = dayLogs.Sum(log => log.Value);
+
                 var habitsSummary = dayLogs.GroupBy(log => log.HabitId)
                     .Select(group =>
                     {
                         var habit = userHabits.First(h => h.Id == group.Key);
-                        var totalValue = group.Sum(log => log.Value);
-                        
+                        var habitTotalValue = group.Sum(log => log.Value);
                         return new HabitActivitySummary
                         {
                             HabitId = habit.Id,
                             HabitName = habit.Name,
                             MetricType = habit.MetricType,
                             Unit = habit.Unit,
-                            Value = totalValue,
+                            Value = habitTotalValue,
                             Color = habit.Color,
                             Icon = habit.Icon
                         };
-                    }).ToList();
+                    })
+                    .ToList();
 
-                var activityCount = dayLogs.Count;
-                var totalValue = dayLogs.Sum(log => log.Value);
+                // Add focus session summaries
+                var focusSessionSummary = daySessions.GroupBy(session => session.HabitId)
+                    .Select(group =>
+                    {
+                        var habit = userHabits.First(h => h.Id == group.Key);
+                        var totalMinutes = group.Sum(session => session.ActualDurationSeconds.GetValueOrDefault() / 60);
+                        return new HabitActivitySummary
+                        {
+                            HabitId = habit.Id,
+                            HabitName = habit.Name + " (Focus)",
+                            MetricType = "Time",
+                            Unit = "min",
+                            Value = totalMinutes,
+                            Color = habit.Color,
+                            Icon = "🎯" // Focus icon
+                        };
+                    })
+                    .ToList();
+
+                habitsSummary.AddRange(focusSessionSummary);
+
+                var activityCount = totalActivityCount;
                 var intensityLevel = CalculateActivityIntensity(activityCount, totalValue, userStats);
 
                 result.Add(new ActivityGridResponse
@@ -115,7 +152,7 @@ namespace TasksTrack.Services
 
             // Habit breakdown
             var habitBreakdown = new List<HabitSummary>();
-            
+
             foreach (var habit in userHabits)
             {
                 var habitSpecificLogs = userHabitLogs.Where(log => log.HabitId == habit.Id).ToList();
@@ -171,21 +208,36 @@ namespace TasksTrack.Services
             var allHabitLogs = await _habitLogRepository.GetAllAsync();
             var userHabitLogs = allHabitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
 
-            if (!userHabitLogs.Any())
+            // Get focus sessions for the user
+            var focusSessions = _focusSessionRepository.GetByUser(userId)
+                .Where(session => userHabitIds.Contains(session.HabitId))
+                .ToList();
+
+            if (!userHabitLogs.Any() && !focusSessions.Any())
             {
                 return CreateEmptyActivityStatistics();
             }
 
-            var totalActiveDays = userHabitLogs.GroupBy(log => log.Date).Count();
-            var totalActivities = userHabitLogs.Count;
+            // Combine dates from both habit logs and focus sessions
+            var habitLogDates = userHabitLogs.Select(log => log.Date).Distinct();
+            var focusSessionDates = focusSessions.Select(session => DateOnly.FromDateTime(session.StartTime.Date)).Distinct();
+            var allActiveDates = habitLogDates.Union(focusSessionDates).Distinct().ToList();
+            
+            var totalActiveDays = allActiveDates.Count;
+            var totalActivities = userHabitLogs.Count + focusSessions.Count; // Combined count
             var totalHabits = userHabits.Count();
             var activeHabits = userHabits.Count(h => h.IsActive);
             var totalValue = userHabitLogs.Sum(log => log.Value);
             var averageValue = totalActivities > 0 ? totalValue / totalActivities : 0;
 
-            // Calculate date range
-            var minDate = userHabitLogs.Min(log => log.Date);
-            var maxDate = userHabitLogs.Max(log => log.Date);
+            // Calculate date range using all activity dates
+            if (!allActiveDates.Any())
+            {
+                return CreateEmptyActivityStatistics();
+            }
+            
+            var minDate = allActiveDates.Min();
+            var maxDate = allActiveDates.Max();
             var totalDaysTracked = maxDate.DayNumber - minDate.DayNumber + 1;
             var completionRate = totalDaysTracked > 0 ? (double)totalActiveDays / totalDaysTracked * 100 : 0;
 
@@ -210,7 +262,7 @@ namespace TasksTrack.Services
                     var habitSpecificLogs = userHabitLogs.Where(log => log.HabitId == habit.Id).ToList();
                     var activityCount = habitSpecificLogs.Count;
                     var habitTotalValue = habitSpecificLogs.Sum(log => log.Value);
-                    
+
                     // Simple completion rate based on activity frequency
                     var daysSinceCreation = Math.Max(1, DateOnly.FromDateTime(DateTime.Today).DayNumber - DateOnly.FromDateTime(habit.CreatedDate.Date).DayNumber + 1);
                     var completionRate = (double)activityCount / daysSinceCreation * 100;
@@ -247,14 +299,14 @@ namespace TasksTrack.Services
             // Weekly statistics (last 12 weeks)
             var weeklyStats = new List<WeeklyStatistics>();
             var today = DateOnly.FromDateTime(DateTime.Today);
-            
+
             for (int i = 11; i >= 0; i--)
             {
                 var weekStart = today.AddDays(-(int)today.DayOfWeek - (i * 7));
                 var weekEnd = weekStart.AddDays(6);
-                
+
                 var weekLogs = userHabitLogs.Where(log => log.Date >= weekStart && log.Date <= weekEnd).ToList();
-                
+
                 weeklyStats.Add(new WeeklyStatistics
                 {
                     WeekStartDate = weekStart,
@@ -289,13 +341,13 @@ namespace TasksTrack.Services
         {
             var habitLogs = await _habitLogRepository.GetByHabitIdAsync(habitId);
             var orderedLogs = habitLogs.OrderByDescending(log => log.Date).ToList();
-            
+
             if (!orderedLogs.Any())
                 return 0;
 
             var today = DateOnly.FromDateTime(DateTime.Today);
             var streak = 0;
-            
+
             // Start from today and work backwards
             for (var date = today; ; date = date.AddDays(-1))
             {
@@ -308,7 +360,7 @@ namespace TasksTrack.Services
                     // If we haven't started counting and there's no log today/yesterday, streak is 0
                     if (streak == 0 && date >= today.AddDays(-1))
                         continue;
-                    
+
                     break;
                 }
             }
@@ -320,13 +372,13 @@ namespace TasksTrack.Services
         {
             var habitLogs = await _habitLogRepository.GetByHabitIdAsync(habitId);
             var logDates = habitLogs.Select(log => log.Date).Distinct().OrderBy(d => d).ToList();
-            
+
             if (!logDates.Any())
                 return 0;
 
             var longestStreak = 1;
             var currentStreak = 1;
-            
+
             for (int i = 1; i < logDates.Count; i++)
             {
                 if (logDates[i].DayNumber == logDates[i - 1].DayNumber + 1)
@@ -349,18 +401,18 @@ namespace TasksTrack.Services
                 return 0;
 
             // Use percentile-based approach for intensity calculation
-            var avgActivitiesPerDay = userActivityStats.TotalActiveDays > 0 
-                ? (double)userActivityStats.TotalActivities / userActivityStats.TotalActiveDays 
+            var avgActivitiesPerDay = userActivityStats.TotalActiveDays > 0
+                ? (double)userActivityStats.TotalActivities / userActivityStats.TotalActiveDays
                 : 0;
-            
-            var avgValuePerDay = userActivityStats.TotalActiveDays > 0 
-                ? (double)userActivityStats.TotalValue / userActivityStats.TotalActiveDays 
+
+            var avgValuePerDay = userActivityStats.TotalActiveDays > 0
+                ? (double)userActivityStats.TotalValue / userActivityStats.TotalActiveDays
                 : 0;
 
             // Calculate intensity based on activity count relative to user's average
             var activityRatio = avgActivitiesPerDay > 0 ? activityCount / avgActivitiesPerDay : 1;
             var valueRatio = avgValuePerDay > 0 ? (double)totalValue / avgValuePerDay : 1;
-            
+
             // Combine both ratios with equal weight
             var combinedRatio = (activityRatio + valueRatio) / 2;
 
@@ -382,15 +434,15 @@ namespace TasksTrack.Services
 
             var habitLogs = await _habitLogRepository.GetAllAsync();
             var userHabitLogs = habitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
-            
+
             var activeDates = userHabitLogs.Select(log => log.Date).Distinct().OrderByDescending(d => d).ToList();
-            
+
             if (!activeDates.Any())
                 return 0;
 
             var today = DateOnly.FromDateTime(DateTime.Today);
             var streak = 0;
-            
+
             // Start from today and work backwards
             for (var date = today; ; date = date.AddDays(-1))
             {
@@ -403,7 +455,7 @@ namespace TasksTrack.Services
                     // If we haven't started counting and there's no activity today/yesterday, streak is 0
                     if (streak == 0 && date >= today.AddDays(-1))
                         continue;
-                    
+
                     break;
                 }
             }
@@ -421,15 +473,15 @@ namespace TasksTrack.Services
 
             var habitLogs = await _habitLogRepository.GetAllAsync();
             var userHabitLogs = habitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
-            
+
             var activeDates = userHabitLogs.Select(log => log.Date).Distinct().OrderBy(d => d).ToList();
-            
+
             if (!activeDates.Any())
                 return 0;
 
             var longestStreak = 1;
             var currentStreak = 1;
-            
+
             for (int i = 1; i < activeDates.Count; i++)
             {
                 if (activeDates[i].DayNumber == activeDates[i - 1].DayNumber + 1)
@@ -449,7 +501,7 @@ namespace TasksTrack.Services
         private static IEnumerable<ActivityGridResponse> GenerateEmptyActivityGrid(DateOnly startDate, DateOnly endDate)
         {
             var result = new List<ActivityGridResponse>();
-            
+
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
                 result.Add(new ActivityGridResponse

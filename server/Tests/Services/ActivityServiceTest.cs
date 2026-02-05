@@ -14,13 +14,15 @@ namespace TasksTrack.Tests.Services
     {
         private readonly Mock<IHabitLogRepository> _habitLogRepositoryMock;
         private readonly Mock<IHabitRepository> _habitRepositoryMock;
+        private readonly Mock<IFocusSessionRepository> _focusSessionRepositoryMock;
         private readonly ActivityService _service;
 
         public ActivityServiceTests()
         {
             _habitLogRepositoryMock = new Mock<IHabitLogRepository>();
             _habitRepositoryMock = new Mock<IHabitRepository>();
-            _service = new ActivityService(_habitLogRepositoryMock.Object, _habitRepositoryMock.Object);
+            _focusSessionRepositoryMock = new Mock<IFocusSessionRepository>();
+            _service = new ActivityService(_habitLogRepositoryMock.Object, _habitRepositoryMock.Object, _focusSessionRepositoryMock.Object);
         }
 
         [Fact]
@@ -92,7 +94,7 @@ namespace TasksTrack.Tests.Services
             // Assert
             var gridData = result.ToList();
             Assert.Equal(3, gridData.Count);
-            
+
             var todayData = gridData.FirstOrDefault(g => g.Date == today);
             Assert.NotNull(todayData);
             Assert.Equal(1, todayData.ActivityCount);
@@ -317,18 +319,18 @@ namespace TasksTrack.Tests.Services
                 new HabitLog { Date = today.AddDays(-20), HabitId = habitId, Value = 30, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today.AddDays(-21), HabitId = habitId, Value = 25, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today.AddDays(-22), HabitId = habitId, Value = 35, CreatedBy = userId, CreatedDate = DateTime.Now },
-                
+
                 // Gap (days -19 to -11 have no logs)
-                
+
                 // Second streak (5 days) - longest: days -10, -9, -8, -7, -6
                 new HabitLog { Date = today.AddDays(-10), HabitId = habitId, Value = 30, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today.AddDays(-9), HabitId = habitId, Value = 25, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today.AddDays(-8), HabitId = habitId, Value = 35, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today.AddDays(-7), HabitId = habitId, Value = 20, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today.AddDays(-6), HabitId = habitId, Value = 40, CreatedBy = userId, CreatedDate = DateTime.Now },
-                
+
                 // Gap (days -5 to -2 have no logs)
-                
+
                 // Current streak (2 days): days -1 and today
                 new HabitLog { Date = today.AddDays(-1), HabitId = habitId, Value = 25, CreatedBy = userId, CreatedDate = DateTime.Now },
                 new HabitLog { Date = today, HabitId = habitId, Value = 30, CreatedBy = userId, CreatedDate = DateTime.Now }

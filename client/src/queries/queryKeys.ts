@@ -43,3 +43,18 @@ export const authKeys = {
     logout: () => [...authKeys.all, 'logout'] as const,
     resetPassword: () => [...authKeys.all, 'reset-password'] as const
 };
+
+/**
+ * Activity API keys for React Query
+ */
+export const ACTIVITY_KEYS = {
+    all: ['activity'] as const,
+    grid: (startDate: string, endDate: string) => [...ACTIVITY_KEYS.all, 'grid', { startDate, endDate }] as const,
+    summary: (startDate: string, endDate: string) => [...ACTIVITY_KEYS.all, 'summary', { startDate, endDate }] as const,
+    statistics: () => [...ACTIVITY_KEYS.all, 'statistics'] as const,
+    streaks: () => [...ACTIVITY_KEYS.all, 'streaks'] as const,
+    currentStreak: (habitId: number) => [...ACTIVITY_KEYS.streaks(), 'current', habitId] as const,
+    longestStreak: (habitId: number) => [...ACTIVITY_KEYS.streaks(), 'longest', habitId] as const,
+    currentOverallStreak: () => [...ACTIVITY_KEYS.streaks(), 'currentOverall'] as const,
+    longestOverallStreak: () => [...ACTIVITY_KEYS.streaks(), 'longestOverall'] as const,
+};

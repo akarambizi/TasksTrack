@@ -60,7 +60,7 @@ namespace TasksTrack.Controllers
 
                 var userId = GetUserId();
                 var result = await _activityService.GetActivityGridAsync(userId, parsedStartDate, parsedEndDate);
-                
+
                 return Ok(result.AsQueryable());
             }
             catch (Exception)
@@ -100,7 +100,7 @@ namespace TasksTrack.Controllers
 
                 var userId = GetUserId();
                 var result = await _activityService.GetActivitySummaryAsync(userId, parsedStartDate, parsedEndDate);
-                
+
                 return Ok(result);
             }
             catch (Exception)
@@ -121,7 +121,7 @@ namespace TasksTrack.Controllers
             {
                 var userId = GetUserId();
                 var result = await _activityService.GetActivityStatisticsAsync(userId);
-                
+
                 return Ok(result);
             }
             catch (Exception)
@@ -143,7 +143,7 @@ namespace TasksTrack.Controllers
             {
                 var userId = GetUserId();
                 var streak = await _activityService.GetCurrentStreakAsync(userId, habitId);
-                
+
                 return Ok(streak);
             }
             catch (Exception)
@@ -165,7 +165,7 @@ namespace TasksTrack.Controllers
             {
                 var userId = GetUserId();
                 var streak = await _activityService.GetLongestStreakAsync(userId, habitId);
-                
+
                 return Ok(streak);
             }
             catch (Exception)
@@ -186,7 +186,7 @@ namespace TasksTrack.Controllers
             {
                 var userId = GetUserId();
                 var streak = await _activityService.GetCurrentOverallStreakAsync(userId);
-                
+
                 return Ok(streak);
             }
             catch (Exception)
@@ -207,7 +207,7 @@ namespace TasksTrack.Controllers
             {
                 var userId = GetUserId();
                 var streak = await _activityService.GetLongestOverallStreakAsync(userId);
-                
+
                 return Ok(streak);
             }
             catch (Exception)

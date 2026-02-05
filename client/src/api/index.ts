@@ -2,6 +2,8 @@ export * from './habit';
 export * from './habit.types';
 export * from './focusSession';
 export * from './focusSession.types';
+export * from './activity';
+export * from './activity.types';
 export * from './userAuth';
 export * from './userAuth.types';
 export * from './utils';

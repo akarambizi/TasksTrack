@@ -127,10 +127,16 @@ describe('ActivityGrid', () => {
             const date = subDays(endDate, i);
             gridData.unshift({
                 date: format(date, 'yyyy-MM-dd'),
-                intensity: i % 5,
-                habitCount: (i % 5) * 2,
-                completedHabits: i % 5,
-                categories: i % 5 > 0 ? [{ category: 'Health', count: i % 5 }] : []
+                intensityLevel: i % 5,
+                activityCount: (i % 5) * 2,
+                totalValue: (i % 5) * 10,
+                habitsSummary: i % 5 > 0 ? [{ 
+                    habitId: 1, 
+                    habitName: 'Exercise',
+                    metricType: 'Duration',
+                    value: i % 5,
+                    unit: 'minutes'
+                }] : []
             });
         }
 

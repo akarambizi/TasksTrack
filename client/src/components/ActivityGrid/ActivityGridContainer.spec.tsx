@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { ActivityGridContainer } from './ActivityGridContainer';
 import { useActivityGrid, useActivityStatistics } from '../../queries/activity';
-import { IActivityGridResponse } from '../../api/activity.types';
+import { IActivityGridResponse, IActivityStatisticsResponse } from '../../api/activity.types';
 
 // Mock the activity query hooks
 vi.mock('../../queries/activity', () => ({
@@ -52,7 +52,7 @@ const mockGridData: IActivityGridResponse[] = [
     }
 ];
 
-const mockStatisticsData = {
+const mockStatisticsData: IActivityStatisticsResponse = {
     totalDaysTracked: 365,
     totalActiveDays: 150,
     totalActivities: 450,
@@ -68,9 +68,8 @@ const mockStatisticsData = {
     bestPerformingHabit: {
         habitId: 1,
         habitName: 'Exercise',
-        metricType: 'Count',
-        value: 100,
-        unit: 'times',
+        totalValue: 100,
+        activityCount: 30,
         completionRate: 0.9
     },
     monthlyStats: [
@@ -103,19 +102,7 @@ describe('ActivityGridContainer', () => {
         mockUseActivityStatistics.mockReturnValue({
             data: null,
             isLoading: true,
-            isPending: true,
-            isError: false,
-            isSuccess: false,
-            error: null,
-            status: 'pending',
-            fetchStatus: 'fetching',
-            isLoadingError: false,
-            isRefetchError: false,
-            isStale: false,
-            isFetched: false,
-            isFetchedAfterMount: false,
-            isRefetching: false,
-            refetch: vi.fn(),
+            isError: false
         } as any);
     });
 
@@ -123,19 +110,7 @@ describe('ActivityGridContainer', () => {
         mockUseActivityGrid.mockReturnValue({
             data: undefined,
             isLoading: true,
-            isPending: true,
-            isError: false,
-            isSuccess: false,
-            error: null,
-            status: 'pending',
-            fetchStatus: 'fetching',
-            isLoadingError: false,
-            isRefetchError: false,
-            isStale: false,
-            isFetched: false,
-            isFetchedAfterMount: false,
-            isRefetching: false,
-            refetch: vi.fn(),
+            isError: false
         } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
@@ -152,15 +127,13 @@ describe('ActivityGridContainer', () => {
         mockUseActivityGrid.mockReturnValue({
             data: mockGridData,
             isLoading: false,
-            error: null,
-            isError: false,
-        });
+            isError: false
+        } as any);
         mockUseActivityStatistics.mockReturnValue({
             data: mockStatisticsData,
             isLoading: false,
-            error: null,
-            isError: false,
-        });
+            isError: false
+        } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
@@ -169,40 +142,16 @@ describe('ActivityGridContainer', () => {
     });
 
     it('renders error state when query fails', () => {
-        const errorMessage = 'Failed to load activity data';
         mockUseActivityGrid.mockReturnValue({
             data: undefined,
             isLoading: false,
-            isPending: false,
-            isError: true,
-            isSuccess: false,
             error: new Error('Failed to fetch data'),
-            status: 'error',
-            fetchStatus: 'idle',
-            isLoadingError: false,
-            isRefetchError: false,
-            isStale: false,
-            isFetched: true,
-            isFetchedAfterMount: true,
-            isRefetching: false,
-            refetch: vi.fn(),
+            isError: true
         } as any);
         mockUseActivityStatistics.mockReturnValue({
             data: null,
             isLoading: false,
-            isPending: false,
-            isError: false,
-            isSuccess: true,
-            error: null,
-            status: 'success',
-            fetchStatus: 'idle',
-            isLoadingError: false,
-            isRefetchError: false,
-            isStale: false,
-            isFetched: true,
-            isFetchedAfterMount: true,
-            isRefetching: false,
-            refetch: vi.fn(),
+            isError: false
         } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
@@ -215,36 +164,12 @@ describe('ActivityGridContainer', () => {
         mockUseActivityGrid.mockReturnValue({
             data: [], // empty array means no data available
             isLoading: false,
-            isPending: false,
-            isError: false,
-            isSuccess: true,
-            error: null,
-            status: 'success',
-            fetchStatus: 'idle',
-            isLoadingError: false,
-            isRefetchError: false,
-            isStale: false,
-            isFetched: true,
-            isFetchedAfterMount: true,
-            isRefetching: false,
-            refetch: vi.fn(),
+            isError: false
         } as any);
         mockUseActivityStatistics.mockReturnValue({
             data: null,
             isLoading: false,
-            isPending: false,
-            isError: false,
-            isSuccess: true,
-            error: null,
-            status: 'success',
-            fetchStatus: 'idle',
-            isLoadingError: false,
-            isRefetchError: false,
-            isStale: false,
-            isFetched: true,
-            isFetchedAfterMount: true,
-            isRefetching: false,
-            refetch: vi.fn(),
+            isError: false
         } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
@@ -257,9 +182,8 @@ describe('ActivityGridContainer', () => {
         mockUseActivityGrid.mockReturnValue({
             data: mockGridData,
             isLoading: false,
-            error: null,
-            isError: false,
-        });
+            isError: false
+        } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
@@ -283,15 +207,13 @@ describe('ActivityGridContainer', () => {
         mockUseActivityGrid.mockReturnValue({
             data: mockGridData,
             isLoading: false,
-            error: null,
-            isError: false,
-        });
+            isError: false
+        } as any);
         mockUseActivityStatistics.mockReturnValue({
             data: mockStatisticsData,
             isLoading: false,
-            error: null,
-            isError: false,
-        });
+            isError: false
+        } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 

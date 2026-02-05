@@ -34,7 +34,12 @@ export const ActivityStatistics: React.FC<IActivityStatisticsProps> = ({
 }) => {
     const { data: statistics, isLoading, error } = useActivityStatistics();
 
-    const formatNumber = (value: number) => value.toLocaleString();
+    const formatNumber = (value: number | undefined): string => {
+        if (value === undefined || value === null || isNaN(value)) {
+            return '0';
+        }
+        return value.toLocaleString();
+    };
 
     const renderContent = () => {
         if (isLoading) {

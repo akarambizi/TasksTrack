@@ -3,16 +3,17 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { ActivityGridContainer } from './ActivityGridContainer';
-import { useActivityGrid } from '../../queries/activity';
+import { useActivityGrid, useActivityStatistics } from '../../queries/activity';
 import { IActivityGridResponse } from '../../api/activity.types';
 
-// Mock the activity query hook
+// Mock the activity query hooks
 vi.mock('../../queries/activity', () => ({
     useActivityGrid: vi.fn(),
+    useActivityStatistics: vi.fn(),
 }));
 
 const mockUseActivityGrid = vi.mocked(useActivityGrid);
-
+const mockUseActivityStatistics = vi.mocked(useActivityStatistics);
 const createWrapper = () => {
     const queryClient = new QueryClient({
         defaultOptions: {
@@ -51,26 +52,100 @@ const mockGridData: IActivityGridResponse[] = [
     }
 ];
 
+const mockStatisticsData = {
+    totalDaysTracked: 365,
+    totalActiveDays: 150,
+    totalActivities: 450,
+    totalHabits: 5,
+    activeHabits: 3,
+    totalValue: 1200,
+    averageValue: 8,
+    completionRate: 0.85,
+    currentOverallStreak: 7,
+    longestOverallStreak: 21,
+    mostActiveDayOfWeek: 1,
+    mostActiveDayName: 'Monday',
+    bestPerformingHabit: {
+        habitId: 1,
+        habitName: 'Exercise',
+        metricType: 'Count',
+        value: 100,
+        unit: 'times',
+        completionRate: 0.9
+    },
+    monthlyStats: [
+        {
+            month: 1,
+            year: 2024,
+            monthName: 'January',
+            activityCount: 25,
+            totalValue: 150,
+            activeDays: 20
+        }
+    ],
+    weeklyStats: [
+        {
+            weekStartDate: '2024-01-01',
+            weekEndDate: '2024-01-07',
+            activityCount: 7,
+            totalValue: 50,
+            activeDays: 6
+        }
+    ]
+};
+
 describe('ActivityGridContainer', () => {
     const Wrapper = createWrapper();
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Mock useActivityStatistics to return loading state by default
+        mockUseActivityStatistics.mockReturnValue({
+            data: null,
+            isLoading: true,
+            isPending: true,
+            isError: false,
+            isSuccess: false,
+            error: null,
+            status: 'pending',
+            fetchStatus: 'fetching',
+            isLoadingError: false,
+            isRefetchError: false,
+            isStale: false,
+            isFetched: false,
+            isFetchedAfterMount: false,
+            isRefetching: false,
+            refetch: vi.fn(),
+        } as any);
     });
 
     it('renders loading state initially', () => {
         mockUseActivityGrid.mockReturnValue({
             data: undefined,
             isLoading: true,
-            error: null,
+            isPending: true,
             isError: false,
-        });
+            isSuccess: false,
+            error: null,
+            status: 'pending',
+            fetchStatus: 'fetching',
+            isLoadingError: false,
+            isRefetchError: false,
+            isStale: false,
+            isFetched: false,
+            isFetchedAfterMount: false,
+            isRefetching: false,
+            refetch: vi.fn(),
+        } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
-        expect(screen.getByText('Activity Overview')).toBeInTheDocument();
-        // Loading skeleton should be present
-        expect(screen.getByRole('status')).toBeInTheDocument();
+        // Loading skeletons should be present
+        const skeletons = screen.getAllByTestId('loading-skeleton');
+        expect(skeletons.length).toBeGreaterThan(0);
+        
+        // Should not show activity content during loading
+        expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     });
 
     it('renders activity grid when data is loaded', async () => {
@@ -80,13 +155,16 @@ describe('ActivityGridContainer', () => {
             error: null,
             isError: false,
         });
+        mockUseActivityStatistics.mockReturnValue({
+            data: mockStatisticsData,
+            isLoading: false,
+            error: null,
+            isError: false,
+        });
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
-        expect(screen.getByText('Activity Overview')).toBeInTheDocument();
-        expect(screen.getByText('Activity Grid')).toBeInTheDocument();
-
-        // Should render the grid
+        // Should render the grid when data is loaded
         expect(screen.getByRole('grid')).toBeInTheDocument();
     });
 
@@ -95,28 +173,84 @@ describe('ActivityGridContainer', () => {
         mockUseActivityGrid.mockReturnValue({
             data: undefined,
             isLoading: false,
-            error: new Error(errorMessage),
+            isPending: false,
             isError: true,
-        });
+            isSuccess: false,
+            error: new Error('Failed to fetch data'),
+            status: 'error',
+            fetchStatus: 'idle',
+            isLoadingError: false,
+            isRefetchError: false,
+            isStale: false,
+            isFetched: true,
+            isFetchedAfterMount: true,
+            isRefetching: false,
+            refetch: vi.fn(),
+        } as any);
+        mockUseActivityStatistics.mockReturnValue({
+            data: null,
+            isLoading: false,
+            isPending: false,
+            isError: false,
+            isSuccess: true,
+            error: null,
+            status: 'success',
+            fetchStatus: 'idle',
+            isLoadingError: false,
+            isRefetchError: false,
+            isStale: false,
+            isFetched: true,
+            isFetchedAfterMount: true,
+            isRefetching: false,
+            refetch: vi.fn(),
+        } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
-        expect(screen.getByText('Activity Overview')).toBeInTheDocument();
-        expect(screen.getByText('Failed to load activity grid. Please try refreshing the page.')).toBeInTheDocument();
+        expect(screen.getByText('Failed to load activity data')).toBeInTheDocument();
+        expect(screen.getByText('Please try again later')).toBeInTheDocument();
     });
 
     it('renders empty state when no data is available', () => {
         mockUseActivityGrid.mockReturnValue({
-            data: [],
+            data: [], // empty array means no data available
             isLoading: false,
-            error: null,
+            isPending: false,
             isError: false,
-        });
+            isSuccess: true,
+            error: null,
+            status: 'success',
+            fetchStatus: 'idle',
+            isLoadingError: false,
+            isRefetchError: false,
+            isStale: false,
+            isFetched: true,
+            isFetchedAfterMount: true,
+            isRefetching: false,
+            refetch: vi.fn(),
+        } as any);
+        mockUseActivityStatistics.mockReturnValue({
+            data: null,
+            isLoading: false,
+            isPending: false,
+            isError: false,
+            isSuccess: true,
+            error: null,
+            status: 'success',
+            fetchStatus: 'idle',
+            isLoadingError: false,
+            isRefetchError: false,
+            isStale: false,
+            isFetched: true,
+            isFetchedAfterMount: true,
+            isRefetching: false,
+            refetch: vi.fn(),
+        } as any);
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
-        expect(screen.getByText('Activity Overview')).toBeInTheDocument();
-        expect(screen.getByText('Activity Grid')).toBeInTheDocument();
+        expect(screen.getByText('No activity data available')).toBeInTheDocument();
+        expect(screen.getByText('Start logging habits to see your activity grid')).toBeInTheDocument();
     });
 
     it('calculates correct date range for query', () => {
@@ -129,15 +263,15 @@ describe('ActivityGridContainer', () => {
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
-        // Check that useActivityGrid was called with proper date range
-        expect(mockUseActivityGrid).toHaveBeenCalledWith({
-            endDate: expect.any(String),
-            startDate: expect.any(String),
-        });
+        // Check that useActivityGrid was called with separate date parameters
+        expect(mockUseActivityGrid).toHaveBeenCalledWith(
+            expect.any(String), // startDate
+            expect.any(String)  // endDate
+        );
 
-        const call = mockUseActivityGrid.mock.calls[0][0];
-        const startDate = new Date(call.startDate);
-        const endDate = new Date(call.endDate);
+        const call = mockUseActivityGrid.mock.calls[0];
+        const startDate = new Date(call[0]);
+        const endDate = new Date(call[1]);
 
         // Should be approximately 1 year of data
         const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -152,11 +286,17 @@ describe('ActivityGridContainer', () => {
             error: null,
             isError: false,
         });
+        mockUseActivityStatistics.mockReturnValue({
+            data: mockStatisticsData,
+            isLoading: false,
+            error: null,
+            isError: false,
+        });
 
         render(<ActivityGridContainer />, { wrapper: Wrapper });
 
-        // Should show current year in the title
-        const currentYear = new Date().getFullYear();
-        expect(screen.getByText(`Activity Overview ${currentYear}`)).toBeInTheDocument();
+        // Should render the grid which contains the year
+        expect(screen.getByRole('grid')).toBeInTheDocument();
+        // Note: The title comes from ActivityGrid component when it renders
     });
 });

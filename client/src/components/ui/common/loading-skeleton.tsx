@@ -6,8 +6,10 @@ interface ILoadingSkeletonProps {
 
 export const LoadingSkeleton: React.FC<ILoadingSkeletonProps> = ({ className = '' }) => {
     return (
-        <div className={`flex-1 overflow-auto p-6 ${className}`}>
-            <div className="animate-pulse space-y-6">
+        <div className={`flex-1 overflow-auto p-6 ${className}`} data-testid="loading-skeleton"
+            role="status" aria-label="Loading content">
+            <div className="animate-pulse space-y-6"
+                role="status" aria-label="Loading">
                 {/* Header skeleton */}
                 <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
 

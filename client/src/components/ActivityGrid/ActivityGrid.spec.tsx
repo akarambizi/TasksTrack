@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import React from 'react';
 import { ActivityGrid } from './ActivityGrid';
 import { IActivityGridResponse } from '../../api/activity.types';
 import { format, subDays } from 'date-fns';
@@ -82,10 +81,10 @@ describe('ActivityGrid', () => {
             />
         );
 
-        // Check for abbreviated weekday labels (only shows first letter for odd days)
-        expect(screen.getByText('M')).toBeInTheDocument(); // Monday
-        expect(screen.getByText('W')).toBeInTheDocument(); // Wednesday
-        expect(screen.getByText('F')).toBeInTheDocument(); // Friday
+        // Check for abbreviated weekday labels (only shows Mon, Wed, Fri like GitHub)
+        expect(screen.getByText('Mon')).toBeInTheDocument(); // Monday
+        expect(screen.getByText('Wed')).toBeInTheDocument(); // Wednesday
+        expect(screen.getByText('Fri')).toBeInTheDocument(); // Friday
     });
 
     it('calls onDateSelect when a cell is clicked', () => {
@@ -121,7 +120,7 @@ describe('ActivityGrid', () => {
 
     it('handles data spanning multiple months', () => {
         // Create data for about 3 months
-        const gridData: IActivityGridDay[] = [];
+        const gridData: IActivityGridResponse[] = [];
         const endDate = new Date();
 
         for (let i = 0; i < 90; i++) {

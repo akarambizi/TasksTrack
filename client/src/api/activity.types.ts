@@ -16,42 +16,6 @@ export interface IHabitActivitySummary {
     icon?: string;
 }
 
-export interface IActivitySummaryResponse {
-    startDate: string;
-    endDate: string;
-    totalDays: number;
-    activeDays: number;
-    totalActivities: number;
-    totalValue: number;
-    averageValue: number;
-    longestStreak: number;
-    currentStreak: number;
-    categoryBreakdown: ICategorySummary[];
-    habitBreakdown: IHabitSummary[];
-}
-
-export interface ICategorySummary {
-    category: string;
-    activityCount: number;
-    totalValue: number;
-    percentage: number;
-}
-
-export interface IHabitSummary {
-    habitId: number;
-    habitName: string;
-    metricType: string;
-    unit?: string;
-    activityCount: number;
-    totalValue: number;
-    averageValue: number;
-    longestStreak: number;
-    currentStreak: number;
-    category?: string;
-    color?: string;
-    icon?: string;
-}
-
 export interface IActivityStatisticsResponse {
     totalDaysTracked: number;
     totalActiveDays: number;

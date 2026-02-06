@@ -118,13 +118,15 @@ describe('HabitDetailPage', () => {
         });
 
         it('should render loading skeleton', () => {
-            renderWithProviders();
+            const result = renderWithProviders();
 
-            // Check for loading skeleton elements
-            const skeletons = screen.getAllByRole('generic').filter(el =>
-                el.classList.contains('animate-pulse')
-            );
+            // Check for loading skeleton elements using testid
+            const skeletons = screen.getAllByTestId('loading-skeleton');
             expect(skeletons.length).toBeGreaterThan(0);
+
+            // Also check for animate-pulse class using the container from render result
+            const animatedElements = result.container.querySelectorAll('.animate-pulse');
+            expect(animatedElements.length).toBeGreaterThan(0);
         });
 
         it('should not render habit content while loading', () => {

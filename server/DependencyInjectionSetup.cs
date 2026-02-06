@@ -25,6 +25,9 @@ public static class DependencyInjectionSetup
         services.AddScoped<IFocusSessionService, FocusSessionService>();
         services.AddScoped<IFocusSessionRepository, FocusSessionRepository>();
 
+        // Activity services
+        services.AddScoped<IActivityService, ActivityService>();
+
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAuthRepository, AuthRepository>();
 

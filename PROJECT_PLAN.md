@@ -104,27 +104,29 @@ Build a full-stack habit tracking application that helps users build consistent 
 - [x] Implement background timer functionality
 - [x] Create focus session quick-start from habits
 
-## 5. Activity Grid (GitHub-style)
+## 5. Activity Grid (GitHub-style) ✅
 
-### 4.1 Backend
+### 5.1 Backend ✅
 
-- [ ] Implement activity grid data endpoint (`GET /api/activity/grid`)
-- [ ] Implement activity intensity calculations
-- [ ] Create activity summary by date range (`GET /api/activity/summary`)
-- [ ] Implement streak calculation algorithms
-- [ ] Create activity statistics endpoints
+- [x] Implement activity grid data endpoint (`GET /api/activity/grid`)
+- [x] Implement activity intensity calculations
+- [x] Create activity summary by date range (`GET /api/activity/summary`)
+- [x] Implement streak calculation algorithms
+- [x] Create activity statistics endpoints
 - [ ] Handle timezone considerations for activity tracking
 - [ ] Implement activity goal tracking
 
-### 4.2 Frontend
+### 5.2 Frontend ✅
 
-- [ ] Create GitHub-style activity grid component
-- [ ] Implement color intensity based on activity level
-- [ ] Add hover tooltips with daily activity details
-- [ ] Create interactive date selection from grid
-- [ ] Implement activity grid animations and transitions
-- [ ] Add activity grid filtering options
-- [ ] Create responsive design for mobile devices
+- [x] Create GitHub-style activity grid component
+- [x] Implement color intensity based on activity level
+- [x] Add hover tooltips with daily activity details
+- [x] Create interactive date selection from grid
+- [x] Implement activity grid animations and transitions
+- [x] Add year filtering options (dropdown selector)
+- [x] Create responsive design for mobile devices
+- [x] Implement controlled/uncontrolled component pattern
+- [ ] Add activity grid filtering options (by habit/category)
 - [ ] Create multiple view modes (grid view, list view, detailed view)
 
 ## 6. Timeline & Calendar Views

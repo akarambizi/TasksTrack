@@ -10,5 +10,8 @@ export * from './habitLogs';
 // Focus session queries and mutations
 export * from './focusSessions';
 
+// Activity queries
+export * from './activity';
+
 // Query keys
 export * from './queryKeys';

@@ -106,7 +106,7 @@ export const ActivityStatistics: React.FC<IActivityStatisticsProps> = ({
                     <dl className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <StatItem
                             label="Completion Rate"
-                            value={`${Math.round(statistics.completionRate)}%`}
+                            value={`${Math.round(statistics.completionRate * 100)}%`}
                         />
                         <StatItem
                             label="Active Habits"

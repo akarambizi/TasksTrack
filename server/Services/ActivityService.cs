@@ -34,7 +34,7 @@ namespace TasksTrack.Services
 
             // Get focus sessions for the user in the date range
             var focusSessions = _focusSessionRepository.GetByUser(userId)
-                .Where(session => session.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue).Date && 
+                .Where(session => session.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue).Date &&
                                 session.StartTime.Date <= endDate.ToDateTime(TimeOnly.MinValue).Date)
                 .Where(session => userHabitIds.Contains(session.HabitId))
                 .ToList();
@@ -44,7 +44,7 @@ namespace TasksTrack.Services
 
             // Group logs by date
             var logsByDate = userHabitLogs.GroupBy(log => log.Date).ToList();
-            
+
             // Group focus sessions by date
             var sessionsByDate = focusSessions.GroupBy(session => DateOnly.FromDateTime(session.StartTime.Date)).ToList();
 
@@ -92,7 +92,7 @@ namespace TasksTrack.Services
                             Unit = "min",
                             Value = totalMinutes,
                             Color = habit.Color,
-                            Icon = "🎯" // Focus icon
+                            Icon = "focus" // Focus icon
                         };
                     })
                     .ToList();
@@ -222,7 +222,7 @@ namespace TasksTrack.Services
             var habitLogDates = userHabitLogs.Select(log => log.Date).Distinct();
             var focusSessionDates = focusSessions.Select(session => DateOnly.FromDateTime(session.StartTime.Date)).Distinct();
             var allActiveDates = habitLogDates.Union(focusSessionDates).Distinct().ToList();
-            
+
             var totalActiveDays = allActiveDates.Count;
             var totalActivities = userHabitLogs.Count + focusSessions.Count; // Combined count
             var totalHabits = userHabits.Count();
@@ -235,7 +235,7 @@ namespace TasksTrack.Services
             {
                 return CreateEmptyActivityStatistics();
             }
-            
+
             var minDate = allActiveDates.Min();
             var maxDate = allActiveDates.Max();
             var totalDaysTracked = maxDate.DayNumber - minDate.DayNumber + 1;

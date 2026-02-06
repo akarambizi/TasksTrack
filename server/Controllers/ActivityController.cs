@@ -63,10 +63,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(result.AsQueryable());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while retrieving activity grid data." });
+                return StatusCode(500, new { message = "An error occurred while retrieving activity grid data.", error = ex.Message });
             }
         }
 
@@ -103,10 +103,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while retrieving activity summary." });
+                return StatusCode(500, new { message = "An error occurred while retrieving activity summary.", error = ex.Message });
             }
         }
 
@@ -124,10 +124,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while retrieving activity statistics." });
+                return StatusCode(500, new { message = "An error occurred while retrieving activity statistics.", error = ex.Message });
             }
         }
 
@@ -146,10 +146,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(streak);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while calculating current streak." });
+                return StatusCode(500, new { message = "An error occurred while calculating current streak.", error = ex.Message });
             }
         }
 
@@ -168,10 +168,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(streak);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while calculating longest streak." });
+                return StatusCode(500, new { message = "An error occurred while calculating longest streak.", error = ex.Message });
             }
         }
 
@@ -189,10 +189,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(streak);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while calculating current overall streak." });
+                return StatusCode(500, new { message = "An error occurred while calculating current overall streak.", error = ex.Message });
             }
         }
 
@@ -210,10 +210,10 @@ namespace TasksTrack.Controllers
 
                 return Ok(streak);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception details server-side
-                return StatusCode(500, new { message = "An error occurred while calculating longest overall streak." });
+                return StatusCode(500, new { message = "An error occurred while calculating longest overall streak.", error = ex.Message });
             }
         }
     }

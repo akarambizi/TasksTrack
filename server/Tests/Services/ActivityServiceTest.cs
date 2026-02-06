@@ -405,5 +405,25 @@ namespace TasksTrack.Tests.Services
             // Assert
             Assert.Equal(2, intensity); // Medium activity
         }
+
+        [Fact]
+        public void CalculateActivityIntensity_WithZeroActiveDays_ReturnsDefaultIntensity()
+        {
+            // Arrange
+            var activityCount = 5;
+            var totalValue = 25.0m;
+            var userStats = new ActivityStatisticsResponse
+            {
+                TotalActiveDays = 0, // Zero active days - edge case
+                TotalActivities = 5,
+                TotalValue = 25.0m
+            };
+
+            // Act
+            var intensity = _service.CalculateActivityIntensity(activityCount, totalValue, userStats);
+
+            // Assert
+            Assert.Equal(2, intensity); // Should return medium intensity (2) when TotalActiveDays is 0 due to ternary fallback to 1
+        }
     }
 }

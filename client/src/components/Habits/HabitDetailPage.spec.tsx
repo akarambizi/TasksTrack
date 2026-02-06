@@ -123,7 +123,7 @@ describe('HabitDetailPage', () => {
             // Check for loading skeleton elements using testid
             const skeletons = screen.getAllByTestId('loading-skeleton');
             expect(skeletons.length).toBeGreaterThan(0);
-            
+
             // Also check for animate-pulse class using the container from render result
             const animatedElements = result.container.querySelectorAll('.animate-pulse');
             expect(animatedElements.length).toBeGreaterThan(0);

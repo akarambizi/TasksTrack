@@ -130,8 +130,8 @@ describe('ActivityGrid', () => {
                 intensityLevel: i % 5,
                 activityCount: (i % 5) * 2,
                 totalValue: (i % 5) * 10,
-                habitsSummary: i % 5 > 0 ? [{ 
-                    habitId: 1, 
+                habitsSummary: i % 5 > 0 ? [{
+                    habitId: 1,
                     habitName: 'Exercise',
                     metricType: 'Duration',
                     value: i % 5,

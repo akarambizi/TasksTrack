@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IActivityGridResponse, IActivityStatisticsResponse } from '../../api/activity.types';
 import { cn } from '../../lib/utils';
 import { ChevronDown } from 'lucide-react';
@@ -18,6 +18,7 @@ interface IActivityGridProps {
     showTitle?: boolean;
     title?: string;
     showYearFilter?: boolean;
+    year?: number; // Optional prop for controlled mode
     onYearChange?: (year: number) => void;
 }
 
@@ -42,40 +43,48 @@ export const ActivityGrid: React.FC<IActivityGridProps> = ({
     showTitle = true,
     title,
     showYearFilter = true,
+    year, // Controlled year prop
     onYearChange
 }) => {
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedYear, setSelectedYear] = useState(year ?? new Date().getFullYear());
     const [showTooltip, setShowTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
-    
+
+    // Sync external year changes with internal state (controlled mode)
+    useEffect(() => {
+        if (year !== undefined && year !== selectedYear) {
+            setSelectedYear(year);
+        }
+    }, [year, selectedYear]);
+
     const weeks = createWeeksFromActivityData(data);
     const monthLabels = getMonthLabelsForWeeks(weeks);
-    
+
     // Use backend statistics or fallback to basic calculations
     const totalActivities = statistics?.totalActivities ?? data.reduce((sum, day) => sum + day.activityCount, 0);
     const activeDays = statistics?.totalActiveDays ?? data.filter(day => day.activityCount > 0).length;
     const maxStreak = statistics?.longestOverallStreak ?? 0;
-    
+
     // Generate year options (current year and past 4 years)
     const currentYear = new Date().getFullYear();
     const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - i);
-    
+
     const handleYearChange = (year: number) => {
         setSelectedYear(year);
         onYearChange?.(year);
     };
-    
+
     const handleMouseEnter = (e: React.MouseEvent, dayData: IActivityGridResponse) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const scrollX = window.scrollX || document.documentElement.scrollLeft;
         const scrollY = window.scrollY || document.documentElement.scrollTop;
-        
+
         setShowTooltip({
             x: rect.left + scrollX + rect.width / 2,
             y: rect.top + scrollY - 8, // Much closer to the cell
             content: `${formatActivityTooltipDate(dayData.date)}\n${createActivityTooltipContent(dayData)}`
         });
     };
-    
+
     const handleMouseLeave = () => {
         setShowTooltip(null);
     };
@@ -105,7 +114,7 @@ export const ActivityGrid: React.FC<IActivityGridProps> = ({
                                 </span>
                             </div>
                         </div>
-                        
+
                         {/* Year Filter Dropdown */}
                         {showYearFilter && (
                             <div className="relative">
@@ -122,7 +131,7 @@ export const ActivityGrid: React.FC<IActivityGridProps> = ({
                             </div>
                         )}
                     </div>
-                    
+
                     {/* LeetCode-style statistics */}
                     <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
                         <span>Total active days: <span className="font-medium text-gray-900 dark:text-gray-100">{activeDays}</span></span>
@@ -139,7 +148,7 @@ export const ActivityGrid: React.FC<IActivityGridProps> = ({
                         <div
                             key={index}
                             className="text-xs text-gray-500 dark:text-gray-400 font-medium"
-                            style={{ 
+                            style={{
                                 width: `${month.weeks * 14}px`, // 11px cell + 3px gap
                                 textAlign: 'left',
                                 paddingLeft: month.weeks >= 3 ? '0px' : '4px' // Center short month names
@@ -181,6 +190,8 @@ export const ActivityGrid: React.FC<IActivityGridProps> = ({
                                         <div
                                             key={`${weekIndex}-${dayIndex}`}
                                             role="gridcell"
+                                            tabIndex={0}
+                                            aria-label={`${formatActivityTooltipDate(dayData.date)}: ${createActivityTooltipContent(dayData)}`}
                                             className={cn(
                                                 "w-[11px] h-[11px] rounded-[2px] cursor-pointer transition-all duration-150 relative",
                                                 "hover:ring-1 hover:ring-gray-400 dark:hover:ring-gray-300 hover:ring-offset-1",
@@ -191,6 +202,12 @@ export const ActivityGrid: React.FC<IActivityGridProps> = ({
                                             onMouseEnter={(e) => handleMouseEnter(e, dayData)}
                                             onMouseLeave={handleMouseLeave}
                                             onClick={() => onDateSelect?.(dayData.date, dayData)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    onDateSelect?.(dayData.date, dayData);
+                                                }
+                                            }}
                                         />
                                     );
                                 })}

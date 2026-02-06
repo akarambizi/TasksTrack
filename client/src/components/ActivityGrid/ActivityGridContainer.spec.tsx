@@ -118,7 +118,7 @@ describe('ActivityGridContainer', () => {
         // Loading skeletons should be present
         const skeletons = screen.getAllByTestId('loading-skeleton');
         expect(skeletons.length).toBeGreaterThan(0);
-        
+
         // Should not show activity content during loading
         expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     });

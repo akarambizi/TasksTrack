@@ -126,11 +126,11 @@ export const getMonthLabelsForWeeks = (weeks: IActivityGridResponse[][]): Array<
 
     for (const week of weeks) {
         if (!week.length) continue;
-        
+
         // Get the first day of the week that has data
         const firstDay = week.find(day => day.date) || week[0];
         const monthLabel = format(new Date(firstDay.date), 'MMM');
-        
+
         if (monthLabel !== currentMonth) {
             if (currentMonth) {
                 monthLabels.push({ label: currentMonth, weeks: weekCount });

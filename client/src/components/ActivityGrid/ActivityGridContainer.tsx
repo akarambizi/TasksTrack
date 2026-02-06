@@ -39,23 +39,23 @@ export const ActivityGridContainer: React.FC<IActivityGridContainerProps> = ({
     showYearFilter = true
 }) => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-    
+
     // Calculate date range based on selected year or custom dates
     const calculateDateRange = () => {
         if (customStartDate && customEndDate) {
             return { startDate: customStartDate, endDate: customEndDate };
         }
-        
+
         // Use selected year for date range
         const yearStart = startOfYear(new Date(selectedYear, 0, 1));
         const yearEnd = endOfYear(new Date(selectedYear, 0, 1));
-        
+
         return {
             startDate: format(yearStart, 'yyyy-MM-dd'),
             endDate: format(yearEnd, 'yyyy-MM-dd')
         };
     };
-    
+
     const { startDate, endDate } = calculateDateRange();
 
     // Fetch activity data
@@ -111,18 +111,9 @@ export const ActivityGridContainer: React.FC<IActivityGridContainerProps> = ({
             );
         }
 
-        if (!activityData) {
-            return (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    <p>No activity data available</p>
-                    <p className="text-sm mt-1">Start logging habits to see your activity grid</p>
-                </div>
-            );
-        }
-
         return (
             <ActivityGrid
-                data={activityData}
+                data={activityData || []}
                 statistics={statisticsData}
                 onDateSelect={handleDateClick}
                 className="w-full"

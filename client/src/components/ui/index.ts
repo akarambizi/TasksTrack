@@ -24,3 +24,8 @@ export * from './common/textarea-field';
 export * from './common/focus-session-card';
 export * from './common/habit-log-item';
 export * from './common/habit-details-card';
+
+// Analytics components
+export * from './common/analytics-card';
+export * from './common/chart-card';
+export * from './common/period-selector';

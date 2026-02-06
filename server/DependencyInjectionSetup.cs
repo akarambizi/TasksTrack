@@ -28,6 +28,9 @@ public static class DependencyInjectionSetup
         // Activity services
         services.AddScoped<IActivityService, ActivityService>();
 
+        // Analytics services
+        services.AddScoped<IAnalyticsService, AnalyticsService>();
+
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAuthRepository, AuthRepository>();
 

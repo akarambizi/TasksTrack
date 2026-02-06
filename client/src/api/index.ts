@@ -4,6 +4,8 @@ export * from './focusSession';
 export * from './focusSession.types';
 export * from './activity';
 export * from './activity.types';
+export * from './analytics';
+export * from './analytics.types';
 export * from './userAuth';
 export * from './userAuth.types';
 export * from './utils';

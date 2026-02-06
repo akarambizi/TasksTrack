@@ -10,4 +10,5 @@ export * from './Container';
 export * from './Sessions/Sessions';
 export * from './DashBoard/DashBoard';
 export * from './ActivityGrid';
+export * from './Analytics';
 export * from './ui';

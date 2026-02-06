@@ -58,3 +58,19 @@ export const ACTIVITY_KEYS = {
     currentOverallStreak: () => [...ACTIVITY_KEYS.streaks(), 'currentOverall'] as const,
     longestOverallStreak: () => [...ACTIVITY_KEYS.streaks(), 'longestOverall'] as const,
 };
+
+/**
+ * Analytics API keys for React Query
+ */
+export const ANALYTICS_KEYS = {
+    all: ['analytics'] as const,
+    weekly: (weekOffset: number) => [...ANALYTICS_KEYS.all, 'weekly', weekOffset] as const,
+    monthly: (monthOffset: number) => [...ANALYTICS_KEYS.all, 'monthly', monthOffset] as const,
+    quarterly: (quarterOffset: number) => [...ANALYTICS_KEYS.all, 'quarterly', quarterOffset] as const,
+    yearly: (yearOffset: number) => [...ANALYTICS_KEYS.all, 'yearly', yearOffset] as const,
+    custom: (request: Record<string, any>) => [...ANALYTICS_KEYS.all, 'custom', request] as const,
+    comparison: (period: string, offset: number) => [...ANALYTICS_KEYS.all, 'comparison', { period, offset }] as const,
+    goalProgress: (startDate: string, endDate: string, targetMinutes?: number, targetSessions?: number) => 
+        [...ANALYTICS_KEYS.all, 'goalProgress', { startDate, endDate, targetMinutes, targetSessions }] as const,
+    dashboard: () => [...ANALYTICS_KEYS.all, 'dashboard'] as const,
+};

@@ -1,14 +1,41 @@
+// Re-export API functions
 export * from './habit';
-export * from './habit.types';
 export * from './focusSession';
-export * from './focusSession.types';
 export * from './activity';
-export * from './activity.types';
 export * from './analytics';
-export * from './analytics.types';
 export * from './userAuth';
-export * from './userAuth.types';
 export * from './categories';
-export * from './categories.types';
 export * from './utils';
 export * from './apiClient';
+
+// Re-export types from centralized location for backward compatibility
+export type {
+  ICategory,
+  IHabit,
+  IHabitLog,
+  CategoryFormData,
+  HabitFormData,
+  HabitLogFormData,
+  LoginFormData,
+  RegisterFormData,
+  ResetPasswordFormData,
+  ICategoryCreateRequest,
+  ICategoryUpdateRequest,
+  IHabitCreateRequest,
+  IHabitUpdateRequest,
+  IHabitLogCreateRequest,
+  IHabitLogUpdateRequest,
+  IFocusSession,
+  IFocusSessionCreateRequest,
+  IFocusSessionUpdateRequest,
+  IFocusSessionAnalytics,
+  IAnalyticsData,
+  IActivityGridResponse,
+  ActivityGridResponse,
+  IActivityStatisticsResponse,
+  IAuthData,
+  IAuthResult
+} from '@/types';
+
+// Re-export the FocusSessionStatus constant object for value usage
+export { FocusSessionStatus } from '@/types';

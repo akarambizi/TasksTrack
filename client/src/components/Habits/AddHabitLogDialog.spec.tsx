@@ -1,313 +1,249 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AddHabitLogDialog } from './AddHabitLogDialog';
-import { IHabit, IHabitLogCreateRequest } from '../../api';
 import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { vi } from 'vitest';
+
+import AddHabitLogDialog from './AddHabitLogDialog';
+import { IHabit } from '@/types';
 import { useHabitLogForm } from '../../hooks/useHabitLogForm';
-import { useCreateHabitLogMutation } from '../../queries/habitLogs';
 
-// Mock the API and hooks
-vi.mock('../../queries/habitLogs', () => ({
-    useCreateHabitLogMutation: vi.fn(() => ({
-        mutateAsync: vi.fn(),
-        isPending: false,
-    })),
+// Mock the hook with clean interface
+const mockHandleSubmit = vi.fn();
+const mockRegister = vi.fn();
+const mockWatch = vi.fn();
+const mockSetValue = vi.fn();
+const mockGetValues = vi.fn();
+const mockTrigger = vi.fn();
+const mockReset = vi.fn();
+
+vi.mock('../../hooks/useHabitLogForm');
+
+// Mock Dialog component
+vi.mock('../ui/dialog', () => ({
+  Dialog: ({ children }: { children: React.ReactNode }) => <div data-testid="dialog">{children}</div>,
+  DialogContent: ({ children }: { children: React.ReactNode }) => <div data-testid="dialog-content">{children}</div>,
+  DialogHeader: ({ children }: { children: React.ReactNode }) => <div data-testid="dialog-header">{children}</div>,
+  DialogTitle: ({ children }: { children: React.ReactNode }) => <h2 data-testid="dialog-title">{children}</h2>,
+  DialogDescription: ({ children }: { children: React.ReactNode }) => <div data-testid="dialog-description">{children}</div>,
+  DialogFooter: ({ children }: { children: React.ReactNode }) => <div data-testid="dialog-footer">{children}</div>
 }));
 
-vi.mock('../../hooks/useHabitLogForm', () => ({
-    useHabitLogForm: vi.fn(() => ({
-        formData: {
-            habitId: 1,
-            value: 0,
-            date: '2024-01-23',
-            notes: '',
-        },
-        handleChange: vi.fn((_field: keyof IHabitLogCreateRequest) => (_value: string | number) => {}),
-        resetForm: vi.fn(),
-        error: null,
-        setError: vi.fn(),
-    })),
+// Mock Button component
+vi.mock('../ui/button', () => ({
+  Button: ({ children, onClick, type, variant, disabled }: any) => (
+    <button
+      data-testid={`button-${variant || 'default'}`}
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  )
 }));
 
-const createWrapper = () => {
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: { retry: false },
-            mutations: { retry: false },
-        },
-    });
+// Mock Input component
+vi.mock('../ui/input', () => ({
+  Input: ({ ...props }: any) => <input data-testid="input" {...props} />
+}));
 
-    return ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-    );
-};
+// Mock Textarea component
+vi.mock('../ui/textarea', () => ({
+  Textarea: ({ ...props }: any) => <textarea data-testid="textarea" {...props} />
+}));
 
-const mockHabit: IHabit = {
-    id: 1,
-    name: 'Exercise',
-    target: 30,
-    unit: 'minutes',
-    metricType: 'duration',
-    targetFrequency: 'daily',
-    isActive: true,
-    createdDate: '2024-01-01T00:00:00Z',
-    updatedDate: '2024-01-01T00:00:00Z',
-    createdBy: 'user1',
-    updatedBy: 'user1',
-};
+// Mock Label component
+vi.mock('../ui/label', () => ({
+  Label: ({ children, ...props }: any) => <label data-testid="label" {...props}>{children}</label>
+}));
 
 describe('AddHabitLogDialog', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
+  const mockHabit: IHabit = {
+    id: 1,
+    name: 'Test Habit',
+    description: 'Test Description',
+    metricType: 'count',
+    isActive: true,
+    createdDate: new Date().toISOString(),
+    updatedDate: new Date().toISOString(),
+    target: 10,
+    unit: 'reps',
+    createdBy: 'testuser',
+    targetFrequency: 'daily',
+    category: 'Health',
+    updatedBy: null,
+    color: null,
+    icon: null
+  };
+
+  const mockOnClose = vi.fn();
+  const mockOnSubmitSuccess = vi.fn();
+
+  let queryClient: QueryClient;
+
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false }
+      }
+    });
+    vi.clearAllMocks();
+
+    // Setup default mock return value
+    vi.mocked(useHabitLogForm).mockReturnValue({
+      control: vi.fn() as any,
+      handleSubmit: mockHandleSubmit,
+      formState: {
+        errors: {},
+        isSubmitting: false,
+        isValid: true,
+        isDirty: false,
+        isLoading: false,
+        isSubmitted: false,
+        isSubmitSuccessful: false,
+        submitCount: 0,
+        touchedFields: {},
+        dirtyFields: {},
+        validatingFields: {},
+        defaultValues: {}
+      } as any,
+      reset: mockReset,
+      register: mockRegister,
+      watch: mockWatch,
+      setValue: mockSetValue,
+      getValues: mockGetValues,
+      trigger: mockTrigger,
+    });
+  });
+
+  const renderComponent = (isOpen = true) => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <AddHabitLogDialog
+          isOpen={isOpen}
+          onClose={mockOnClose}
+          habit={mockHabit}
+          onSubmitSuccess={mockOnSubmitSuccess}
+        />
+      </QueryClientProvider>
+    );
+  };
+
+  it('should render dialog when isOpen is true', () => {
+    renderComponent(true);
+
+    expect(screen.getByTestId('dialog')).toBeInTheDocument();
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent('Add Log Entry');
+  });
+
+  it('should not render dialog when isOpen is false', () => {
+    renderComponent(false);
+
+    expect(screen.queryByTestId('dialog')).not.toBeInTheDocument();
+  });
+
+  it('should display habit name in dialog content', () => {
+    renderComponent(true);
+
+    expect(screen.getByText(/Test Habit/)).toBeInTheDocument();
+  });
+
+  it('should call handleSubmit when form is submitted', async () => {
+    const user = userEvent.setup();
+    mockHandleSubmit.mockImplementation((callback) => callback);
+
+    renderComponent(true);
+
+    await user.click(screen.getByTestId('button-default'));
+
+    expect(mockHandleSubmit).toHaveBeenCalled();
+  });
+
+  it('should call onClose when cancel button is clicked', async () => {
+    const user = userEvent.setup();
+    renderComponent(true);
+
+    const cancelButton = screen.getByTestId('button-outline');
+    await user.click(cancelButton);
+
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('should register form fields', () => {
+    renderComponent(true);
+
+    // Verify register is called for expected fields
+    expect(mockRegister).toHaveBeenCalledWith('value');
+    expect(mockRegister).toHaveBeenCalledWith('notes');
+    expect(mockRegister).toHaveBeenCalledWith('date');
+  });
+
+  it('should show form validation errors', () => {
+    // Mock formState with errors
+    vi.mocked(useHabitLogForm).mockReturnValue({
+      control: vi.fn() as any,
+      handleSubmit: mockHandleSubmit,
+      formState: {
+        errors: {
+          value: { message: 'Value is required', type: 'custom' }
+        },
+        isSubmitting: false,
+        isValid: false,
+        isDirty: false,
+        isLoading: false,
+        isSubmitted: false,
+        isSubmitSuccessful: false,
+        submitCount: 0,
+        touchedFields: {},
+        dirtyFields: {},
+        validatingFields: {},
+        defaultValues: {}
+      } as any,
+      reset: vi.fn(),
+      register: vi.fn(),
+      watch: vi.fn(() => ({})) as any,
+      setValue: vi.fn(),
+      getValues: vi.fn(() => ({})) as any,
+      trigger: vi.fn()
     });
 
-    it('renders dialog with habit information', () => {
-        const wrapper = createWrapper();
+    renderComponent(true);
 
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={vi.fn()}
-            />,
-            { wrapper }
-        );
+    expect(screen.getByText('Value is required')).toBeInTheDocument();
+  });
 
-        expect(screen.getByTestId('add-habit-log-dialog')).toBeInTheDocument();
-        expect(screen.getByText('Log Activity: Exercise')).toBeInTheDocument();
-        expect(screen.getByText(/Target: 30 minutes daily/)).toBeInTheDocument();
+  it('should disable submit button when submitting', () => {
+    // Mock submitting state
+    vi.mocked(useHabitLogForm).mockReturnValue({
+      control: vi.fn() as any,
+      handleSubmit: mockHandleSubmit,
+      formState: {
+        errors: {},
+        isSubmitting: true,
+        isValid: true,
+        isDirty: false,
+        isLoading: false,
+        isSubmitted: false,
+        isSubmitSuccessful: false,
+        submitCount: 0,
+        touchedFields: {},
+        dirtyFields: {},
+        validatingFields: {},
+        defaultValues: {}
+      } as any,
+      reset: vi.fn(),
+      register: vi.fn(),
+      watch: vi.fn(() => ({})) as any,
+      setValue: vi.fn(),
+      getValues: vi.fn(() => ({})) as any,
+      trigger: vi.fn()
     });
 
-    it('renders form inputs with correct attributes', () => {
-        const wrapper = createWrapper();
+    renderComponent(true);
 
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={vi.fn()}
-            />,
-            { wrapper }
-        );
-
-        const valueInput = screen.getByTestId('value-input');
-        const dateInput = screen.getByTestId('date-input');
-        const notesInput = screen.getByTestId('notes-input');
-
-        expect(valueInput).toBeInTheDocument();
-        expect(valueInput).toHaveAttribute('type', 'number');
-        expect(valueInput).toHaveAttribute('min', '0');
-
-        expect(dateInput).toBeInTheDocument();
-        expect(dateInput).toHaveAttribute('type', 'date');
-
-        expect(notesInput).toBeInTheDocument();
-        expect(notesInput).toHaveAttribute('rows', '3');
-    });
-
-    it('renders submit and cancel buttons', () => {
-        const wrapper = createWrapper();
-
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={vi.fn()}
-            />,
-            { wrapper }
-        );
-
-        expect(screen.getByTestId('submit-button')).toBeInTheDocument();
-        expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
-        expect(screen.getByText('Log Activity')).toBeInTheDocument();
-        expect(screen.getByText('Cancel')).toBeInTheDocument();
-    });
-
-    it('calls onOpenChange when cancel button is clicked', () => {
-        const wrapper = createWrapper();
-        const onOpenChange = vi.fn();
-
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={onOpenChange}
-            />,
-            { wrapper }
-        );
-
-        fireEvent.click(screen.getByTestId('cancel-button'));
-
-        expect(onOpenChange).toHaveBeenCalledWith(false);
-    });
-
-    it('displays error message when form has error', () => {
-        // Mock the hook to return an error
-        vi.mocked(useHabitLogForm).mockReturnValue({
-            formData: {
-                habitId: 1,
-                value: 0,
-                date: '2024-01-23',
-                notes: '',
-                createdBy: 'test-user'
-            },
-            setFormData: vi.fn(),
-            handleChange: vi.fn((_field: keyof IHabitLogCreateRequest) => (_value: string | number) => {}),
-            resetForm: vi.fn(),
-            error: 'Please enter a valid value',
-            setError: vi.fn(),
-        });
-
-        const wrapper = createWrapper();
-
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={vi.fn()}
-            />,
-            { wrapper }
-        );
-
-        expect(screen.getByTestId('error-alert')).toBeInTheDocument();
-        expect(screen.getByTestId('error-message')).toHaveTextContent('Please enter a valid value');
-    });
-
-    it('shows loading state when mutation is pending', () => {
-        // Mock the mutation to be pending
-        vi.mocked(useCreateHabitLogMutation).mockReturnValue({
-            mutateAsync: vi.fn(),
-            isPending: true,
-            data: undefined,
-            error: null,
-            isError: false,
-            isSuccess: false,
-            isIdle: false,
-            mutate: vi.fn(),
-            reset: vi.fn(),
-            variables: undefined,
-            failureCount: 0,
-            failureReason: null,
-            status: 'pending',
-            submittedAt: 0,
-            isPaused: false,
-        } as any);
-
-        const wrapper = createWrapper();
-
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={vi.fn()}
-            />,
-            { wrapper }
-        );
-
-        const submitButton = screen.getByTestId('submit-button');
-        expect(submitButton).toBeDisabled();
-        expect(screen.getByText('Logging...')).toBeInTheDocument();
-    });
-
-    it('handles form submission', async () => {
-        const mockMutateAsync = vi.fn().mockResolvedValue({ id: 1 });
-        const mockResetForm = vi.fn();
-        const onOpenChange = vi.fn();
-
-        // Mock the hooks
-        vi.mocked(useCreateHabitLogMutation).mockReturnValue({
-            mutateAsync: mockMutateAsync,
-            isPending: false,
-            data: undefined,
-            error: null,
-            isError: false,
-            isSuccess: false,
-            isIdle: true,
-            mutate: vi.fn(),
-            reset: vi.fn(),
-            variables: undefined,
-            failureCount: 0,
-            failureReason: null,
-            status: 'idle',
-            submittedAt: 0,
-            isPaused: false,
-        } as any);
-
-        vi.mocked(useHabitLogForm).mockReturnValue({
-            formData: {
-                habitId: 1,
-                value: 30,
-                date: '2024-01-23',
-                notes: 'Great workout!',
-                createdBy: 'test-user'
-            },
-            setFormData: vi.fn(),
-            handleChange: vi.fn((_field: keyof IHabitLogCreateRequest) => (_value: string | number) => {}),
-            resetForm: mockResetForm,
-            error: null,
-            setError: vi.fn(),
-        });
-
-        const wrapper = createWrapper();
-
-        render(
-            <AddHabitLogDialog
-                habit={mockHabit}
-                isOpen={true}
-                onOpenChange={onOpenChange}
-            />,
-            { wrapper }
-        );
-
-        // Submit the form
-        const form = screen.getByTestId('habit-log-form');
-        fireEvent.submit(form);
-
-        await waitFor(() => {
-            expect(mockMutateAsync).toHaveBeenCalledWith({
-                habitId: 1,
-                value: 30,
-                date: '2024-01-23',
-                notes: 'Great workout!',
-                createdBy: 'test-user',
-            });
-        });
-    });
-
-    it('handles habit with no unit or target', () => {
-        const habitWithoutUnit = {
-            ...mockHabit,
-            unit: undefined,
-            target: undefined,
-        };
-
-        const wrapper = createWrapper();
-
-        render(
-            <AddHabitLogDialog
-                habit={habitWithoutUnit}
-                isOpen={true}
-                onOpenChange={vi.fn()}
-            />,
-            { wrapper }
-        );
-
-        expect(screen.getByText('Log Activity: Exercise')).toBeInTheDocument();
-        expect(screen.getByLabelText(/Value \(duration\)/)).toBeInTheDocument();
-    });
-
-    it('handles internal state when no external state provided', () => {
-        const wrapper = createWrapper();
-
-        render(
-            <AddHabitLogDialog habit={mockHabit} />,
-            { wrapper }
-        );
-
-        // Should render without error even without external state management
-        expect(screen.queryByTestId('add-habit-log-dialog')).not.toBeInTheDocument(); // Dialog closed by default
-    });
+    const submitButton = screen.getByTestId('button-default');
+    expect(submitButton).toBeDisabled();
+  });
 });

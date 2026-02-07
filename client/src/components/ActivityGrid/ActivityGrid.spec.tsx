@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ActivityGrid } from './ActivityGrid';
-import { IActivityGridResponse } from '../../api/activity.types';
+import { IActivityGridResponse } from '@/types';
 import { format, subDays } from 'date-fns';
 
 const mockOnDateSelect = vi.fn();
@@ -18,7 +18,9 @@ const createMockGridData = (intensityPattern: number[]): IActivityGridResponse[]
             habitName: 'Exercise',
             metricType: 'Count',
             value: intensity,
-            unit: 'times'
+            unit: 'times',
+            color: null,
+            icon: null
         }] : []
     }));
 };
@@ -135,7 +137,9 @@ describe('ActivityGrid', () => {
                     habitName: 'Exercise',
                     metricType: 'Duration',
                     value: i % 5,
-                    unit: 'minutes'
+                    unit: null,
+                    color: null,
+                    icon: null
                 }] : []
             });
         }

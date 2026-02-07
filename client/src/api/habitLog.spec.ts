@@ -73,8 +73,11 @@ describe('habitLog API', () => {
             const logId = 1;
             const mockRequest = {
                 id: logId,
+                habitId: 1,
                 value: 45,
-                notes: 'Updated notes'
+                date: '2024-01-15',
+                notes: 'Updated notes',
+                createdBy: 'test-user'
             };
 
 
@@ -88,8 +91,13 @@ describe('habitLog API', () => {
 
         it('should handle update errors with toast', async () => {
             const logId = 1;
-            const mockRequest = { value: 45 };
             const errorMessage = 'Failed to update';
+            const mockRequest = { 
+                habitId: 1,
+                value: 45,
+                date: '2024-01-15',
+                createdBy: 'test-user'
+            };
 
             mockApiPut.mockRejectedValueOnce(new Error(errorMessage));
 

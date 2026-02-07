@@ -1,19 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormField, SelectField, TextareaField } from "@/components/ui";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHabitForm } from "./useHabitForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IHabit } from "@/api";
 import { useActiveCategoriesQuery } from '@/queries/categories';
 import { Badge } from "@/components/ui/badge";
+import { type HabitFormData } from '@/types';
 import {
   METRIC_TYPE_CONFIG,
   type MetricType,
-  type TargetFrequency,
-  type Category,
   type HabitColor,
-  type HabitIcon,
   TARGET_FREQUENCY,
   CATEGORIES,
   HABIT_COLORS,
@@ -27,7 +25,7 @@ interface HabitFormDialogProps {
   habit?: IHabit | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (formData: any) => Promise<void>;
+  onSubmit: (formData: HabitFormData) => Promise<void>;
   isLoading: boolean;
   title: string;
   description: string;
@@ -103,60 +101,42 @@ export function HabitFormDialog({
   submitLabel,
   loadingLabel
 }: HabitFormDialogProps) {
-  const { formData, handleChange, resetForm, error, setError, setFormData } = useHabitForm();
+  const form = useHabitForm();
+  const { control, watch, reset, handleSubmit, setValue } = form;
   const { data: categories = [] } = useActiveCategoriesQuery();
+
+  // Watch specific values for reactive updates
+  const selectedMetricType = watch('metricType');
+  const formData = watch(); // For form preview
 
   // Populate form with habit data when editing
   useEffect(() => {
     if (mode === 'edit' && habit && open) {
-      setFormData({
+      reset({
         name: habit.name,
         description: habit.description || '',
         metricType: habit.metricType,
-        unit: habit.unit || getDefaultUnitForMetricType(habit.metricType),
+        unit: habit.unit || getDefaultUnitForMetricType(habit.metricType as MetricType),
         target: habit.target || 0,
         targetFrequency: habit.targetFrequency || TARGET_FREQUENCY.DAILY,
         category: habit.category || CATEGORIES.HEALTH,
         color: habit.color || HABIT_COLORS.BLUE,
-        icon: habit.icon || HABIT_ICONS.STAR
+        icon: habit.icon || HABIT_ICONS.STAR,
       });
     }
-  }, [mode, habit, open, setFormData]);
+  }, [mode, habit, open, reset]);
 
   // Get suggested units for selected metric type
-  const selectedMetricType = METRIC_TYPE_OPTIONS.find(option => option.value === formData.metricType);
-  const suggestedUnits = getUnitsForMetricType(formData.metricType);
+  const suggestedUnits = getUnitsForMetricType(selectedMetricType as MetricType) || [];
 
-  // Auto-reset unit when metric type changes to ensure consistency
-  useEffect(() => {
-    if (formData.metricType && suggestedUnits.length > 0) {
-      // If current unit is not valid for the selected metric type, reset to default option
-      if (!formData.unit || !suggestedUnits.includes(formData.unit)) {
-        handleChange('unit')(getDefaultUnitForMetricType(formData.metricType));
-      }
-    }
-  }, [formData.metricType, suggestedUnits, formData.unit, handleChange]);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validate form
-    if (!formData.name?.trim()) {
-      setError("Name is required");
-      return;
-    }
-
-    if (!formData.metricType) {
-      setError("Metric type is required");
-      return;
-    }
-
-    setError(null);
-
+  const onFormSubmit = async (data: HabitFormData) => {
     try {
-      await onSubmit(formData);
+      setError(null);
+      await onSubmit(data);
       if (mode === 'create') {
-        resetForm();
+        reset();
       }
       onOpenChange(false);
     } catch (error) {
@@ -166,7 +146,7 @@ export function HabitFormDialog({
 
   const handleClose = () => {
     if (mode === 'create') {
-      resetForm();
+      reset();
     }
     setError(null);
     onOpenChange(false);
@@ -181,13 +161,13 @@ export function HabitFormDialog({
   };
 
   const handleColorChange = (colorValue: string) => {
-    handleChange('color')(colorValue as HabitColor);
+    setValue('color', colorValue as HabitColor);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit(onFormSubmit)} noValidate>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>
@@ -207,21 +187,18 @@ export function HabitFormDialog({
               <h4 className="text-sm font-medium text-muted-foreground">Basic Information</h4>
 
               <FormField
-                id="name"
                 name="name"
+                control={control}
                 label="Habit Name"
                 placeholder="e.g., Read books, Exercise, Drink water"
-                value={formData.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('name')(e.target.value)}
                 required
               />
 
               <TextareaField
-                id="description"
+                name="description"
+                control={control}
                 label="Description (Optional)"
                 placeholder="Describe your habit and why it's important to you..."
-                value={formData.description}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('description')(e.target.value)}
                 rows={3}
               />
             </div>
@@ -232,11 +209,10 @@ export function HabitFormDialog({
 
               <div className="grid grid-cols-1 gap-4">
                 <SelectField
-                  id="metricType"
+                  name="metricType"
+                  control={control}
                   label="Metric Type"
                   placeholder="How do you want to measure this habit?"
-                  value={formData.metricType}
-                  onValueChange={(value) => handleChange('metricType')(value as MetricType)}
                   required
                   options={METRIC_TYPE_OPTIONS.map(option => ({
                     value: option.value,
@@ -248,7 +224,6 @@ export function HabitFormDialog({
                 {selectedMetricType && (
                   <div className="text-xs text-muted-foreground p-3 bg-muted/50 rounded-lg">
                     <p><strong>Available units:</strong> {suggestedUnits.join(', ')}</p>
-                    <p><strong>Examples:</strong> {selectedMetricType.examples}</p>
                     <p className="text-blue-600 dark:text-blue-400 mt-1">
                       <strong>💡 Analytics benefit:</strong> Using standardized units enables precise progress tracking and comparison across habits
                     </p>
@@ -257,11 +232,10 @@ export function HabitFormDialog({
 
                 <div className="grid grid-cols-2 gap-4">
                   <SelectField
-                    id="unit"
+                    name="unit"
+                    control={control}
                     label="Unit"
                     placeholder="Select a unit"
-                    value={formData.unit}
-                    onValueChange={handleChange('unit')}
                     options={suggestedUnits.map(unit => ({
                       value: unit,
                       label: unit
@@ -269,25 +243,19 @@ export function HabitFormDialog({
                   />
 
                   <FormField
-                    id="target"
                     name="target"
+                    control={control}
                     type="number"
                     label="Target Amount"
                     placeholder="0"
-                    value={formData.target?.toString() || ''}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const value = e.target.value ? parseInt(e.target.value, 10) : 0;
-                      handleChange('target')(value);
-                    }}
                   />
                 </div>
 
                 <SelectField
-                  id="targetFrequency"
+                  name="targetFrequency"
+                  control={control}
                   label="Target Frequency"
                   placeholder="How often do you want to achieve this target?"
-                  value={formData.targetFrequency}
-                  onValueChange={(value) => handleChange('targetFrequency')(value as TargetFrequency)}
                   options={FREQUENCY_OPTIONS}
                 />
               </div>
@@ -298,14 +266,10 @@ export function HabitFormDialog({
               <h4 className="text-sm font-medium text-muted-foreground">Organization</h4>
 
               <SelectField
-                id="category"
+                name="category"
+                control={control}
                 label="Category (Optional)"
                 placeholder="Select a category to organize your habit"
-                value={formData.category || 'none'}
-                onValueChange={(value) => {
-                  const actualValue = value === 'none' ? undefined : (value as Category);
-                  handleChange('category')(actualValue);
-                }}
                 options={[
                   { value: 'none', label: 'No Category' },
                   ...categories.map(cat => ({
@@ -359,11 +323,10 @@ export function HabitFormDialog({
                 </div>
 
                 <SelectField
-                  id="icon"
+                  name="icon"
+                  control={control}
                   label="Icon"
                   placeholder="Choose an icon for your habit"
-                  value={formData.icon}
-                  onValueChange={(value) => handleChange('icon')(value as HabitIcon)}
                   options={ICON_OPTIONS}
                 />
               </div>

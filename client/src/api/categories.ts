@@ -4,7 +4,7 @@ import type {
     ICategory,
     ICategoryCreateRequest,
     ICategoryUpdateRequest
-} from './categories.types';
+} from '@/types';
 
 /**
  * Gets all categories.

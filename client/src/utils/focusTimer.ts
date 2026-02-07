@@ -1,4 +1,4 @@
-import { IFocusSession, FocusSessionStatus } from '@/api';
+import { IFocusSession } from '@/api';
 import { differenceInSeconds, parseISO, format, addSeconds } from 'date-fns';
 
 /**
@@ -51,7 +51,7 @@ export const formatTime = (seconds: number): { minutes: number; seconds: number;
  * Check if session is currently running
  */
 export const isSessionRunning = (session: IFocusSession | null): boolean => {
-    return session?.status === FocusSessionStatus.Active;
+    return session?.status === 'active';
 };
 
 /**

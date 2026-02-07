@@ -1,4 +1,4 @@
-import { IHabitLog, IHabitLogCreateRequest, IHabitLogUpdateRequest } from './habit.types';
+import { IHabitLog, IHabitLogCreateRequest, IHabitLogUpdateRequest, HabitLogFormData } from '@/types';
 import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
 
@@ -99,10 +99,10 @@ export const createHabitLog = async (logData: IHabitLogCreateRequest): Promise<I
 
 /**
  * Updates an existing habit log.
- * @param {IHabitLogUpdateRequest} logData - The habit log data to update.
+ * @param {HabitLogFormData & { id: number }} logData - The habit log data to update.
  * @returns {Promise<void>}
  */
-export const updateHabitLog = async (logData: IHabitLogUpdateRequest): Promise<void> => {
+export const updateHabitLog = async (logData: HabitLogFormData & { id: number }): Promise<void> => {
     try {
         const endpoint = `/api/habit-logs/${logData.id}`;
         await apiPut(endpoint, logData);

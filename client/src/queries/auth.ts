@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, logoutUser, registerUser, resetPassword } from '../api/userAuth';
-import { IAuthData, IAuthResult } from '../api/userAuth.types';
+import { RegisterFormData, LoginFormData, IAuthResult, ResetPasswordFormData } from '@/types';
 import { ToastService } from '../services/toastService';
 import { useAuthContext } from '@/context/useAuthContext';
 import { authKeys } from './queryKeys';
@@ -14,7 +14,7 @@ export const useRegister = () => {
 
     return useMutation({
         mutationKey: authKeys.register(),
-        mutationFn: (userData: IAuthData) => registerUser(userData),
+        mutationFn: (userData: RegisterFormData) => registerUser(userData),
         onSuccess: () => {
             // Redirect to login page after successful registration
             navigate('/login');
@@ -32,12 +32,12 @@ export const useLogin = () => {
 
     return useMutation({
         mutationKey: authKeys.login(),
-        mutationFn: (userData: IAuthData) => loginUser(userData),
+        mutationFn: (userData: LoginFormData) => loginUser(userData),
         onSuccess: (data: IAuthResult) => {
-            // If login is successful and token is provided
-            if (data.success && data.token) {
+            // If login is successful and data is provided
+            if (data.success && data.data?.token) {
                 // Update auth state via context
-                login(data.token, data.userEmail, data.userId);
+                login(data.data.token, data.data.user.email, data.data.user.id.toString());
 
                 // Update auth state - invalidate all auth queries
                 queryClient.invalidateQueries({ queryKey: authKeys.all });
@@ -90,7 +90,7 @@ export const useResetPassword = () => {
 
     return useMutation({
         mutationKey: authKeys.resetPassword(),
-        mutationFn: (data: IAuthData) => resetPassword(data),
+        mutationFn: (data: ResetPasswordFormData) => resetPassword(data),
         onSuccess: () => {
             navigate('/login');
         }

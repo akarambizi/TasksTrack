@@ -3,7 +3,7 @@ import { useHabitById } from '@/queries';
 import { useFocusSessionsByHabit, useResumeFocusSessionMutation } from '@/queries/focusSessions';
 import { HabitLogs } from './HabitLogs';
 import { HabitLogStats } from './HabitLogStats';
-import { AddHabitLogDialog } from './AddHabitLogDialog';
+import AddHabitLogDialog from './AddHabitLogDialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Activity, Calendar, Clock } from 'lucide-react';
 import {
@@ -48,7 +48,7 @@ export const HabitDetailPage = () => {
                 title={habit.name}
                 subtitle={habit.description || 'Track your progress and build consistency'}
                 backPath="/habits"
-                actions={<AddHabitLogDialog habit={habit} />}
+                actions={<AddHabitLogDialog habit={habit} isOpen={false} onClose={() => {}} />}
             />
 
             {/* Habit Info Card */}

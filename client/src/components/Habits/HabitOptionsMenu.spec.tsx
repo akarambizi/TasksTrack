@@ -33,7 +33,8 @@ const mockHabit: IHabit = {
     isActive: true,
     createdBy: 'test-user-id',
     createdDate: new Date().toISOString(),
-    updatedDate: new Date().toISOString()
+    updatedDate: new Date().toISOString(),
+    updatedBy: 'test-user-id'
 };
 
 const renderHabitOptionsMenu = (props: Partial<React.ComponentProps<typeof HabitOptionsMenu>> = {}) => {

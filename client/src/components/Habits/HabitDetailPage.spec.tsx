@@ -26,7 +26,7 @@ vi.mock('./HabitLogStats', () => ({
 }));
 
 vi.mock('./AddHabitLogDialog', () => ({
-    AddHabitLogDialog: ({ habit }: { habit: IHabit }) => (
+    default: ({ habit }: { habit: IHabit }) => (
         <button data-testid="add-habit-log">Add Log for {habit.name}</button>
     ),
 }));
@@ -83,6 +83,8 @@ const mockHabit: IHabit = {
     createdBy: 'test-user',
     createdDate: '2024-01-01T00:00:00Z',
     updatedDate: '2024-01-01T00:00:00Z',
+    updatedBy: null,
+    icon: null
 };
 
 describe('HabitDetailPage', () => {
@@ -202,9 +204,9 @@ describe('HabitDetailPage', () => {
         const habitWithoutOptionalFields: IHabit = {
             ...mockHabit,
             description: '',
-            category: undefined,
-            color: undefined,
-            icon: undefined,
+            category: null,
+            color: null,
+            icon: null,
             metricType: 'binary',
             isActive: false,
         };
@@ -283,7 +285,7 @@ describe('HabitDetailPage', () => {
         });
 
         it('should use metricType as display unit when unit is not available', () => {
-            const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'count' as const };
+            const habitWithMetricType = { ...mockHabit, unit: null, metricType: 'count' as const };
             (useHabitById as any).mockReturnValue(createMockQueryResult(habitWithMetricType));
 
             renderWithProviders();

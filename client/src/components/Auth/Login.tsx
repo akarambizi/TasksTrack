@@ -1,18 +1,30 @@
 import { FormField } from '@/components/ui';
 import { AuthLayout } from '@/components/ui';
-import { FormType, useForm } from '@/hooks';
+import { useLoginForm } from '@/hooks/useForm';
 import { Link } from 'react-router-dom';
+import { LoginFormData } from '@/types';
 
 export const Login = () => {
-    const { formData, errors, isLoading, handleChange, handleSubmit } = useForm({ email: '', password: '' }, FormType.Login);
+    const form = useLoginForm();
+    const {
+        control,
+        handleSubmit,
+        formState: { isSubmitting },
+        onSubmit
+    } = form;
+
+    const handleFormSubmit = (_data: LoginFormData) => {
+        // Form submission is handled by the hook
+        onSubmit(_data);
+    };
 
     return (
         <AuthLayout
             title="Login"
             subtitle="Enter your email below to login to your account"
-            submitButtonText={isLoading ? 'Logging in...' : 'Login'}
-            isLoading={isLoading}
-            onSubmit={handleSubmit}
+            submitButtonText={isSubmitting ? 'Logging in...' : 'Login'}
+            isLoading={isSubmitting}
+            onSubmit={handleSubmit(handleFormSubmit)}
             footerContent={
                 <>
                     Don&apos;t have an account?{' '}
@@ -24,24 +36,19 @@ export const Login = () => {
             imageAlt="login image"
         >
             <FormField
-                id="email"
                 name="email"
+                control={control}
                 type="email"
                 label="Email"
                 placeholder="m@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                error={errors.email}
+                required
             />
 
             <FormField
-                id="password"
                 name="password"
+                control={control}
                 type="password"
                 label="Password"
-                value={formData.password}
-                onChange={handleChange}
-                error={errors.password}
                 required
                 labelAction={
                     <Link to="/reset-password" className="ml-auto inline-block text-sm underline">

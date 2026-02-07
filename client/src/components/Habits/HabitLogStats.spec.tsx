@@ -69,6 +69,10 @@ const mockHabit: IHabit = {
     createdBy: 'test-user',
     createdDate: '2024-01-01T00:00:00Z',
     updatedDate: '2024-01-01T00:00:00Z',
+    category: 'Health',
+    updatedBy: null,
+    color: null,
+    icon: null
 };
 
 const mockHabitLogs: IHabitLog[] = [
@@ -277,7 +281,7 @@ describe('HabitLogStats', () => {
         });
 
         it('should use metricType when unit is not available', () => {
-            const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'count' as const };
+            const habitWithMetricType = { ...mockHabit, unit: null, metricType: 'count' as const };
             (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );

@@ -1,4 +1,4 @@
-import { IAuthData, IAuthResult } from './userAuth.types';
+import { IAuthResult, LoginFormData, RegisterFormData, ResetPasswordFormData } from '@/types';
 import { apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
 
@@ -8,7 +8,7 @@ import { ToastService } from '../services/toastService';
  * @returns A promise that resolves to the response data.
  * @throws An error if the registration fails.
  */
-export const registerUser = async (userData: IAuthData): Promise<IAuthResult> => {
+export const registerUser = async (userData: RegisterFormData): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/register';
         const response = await apiPost<IAuthResult>(endpoint, userData);
@@ -27,7 +27,7 @@ export const registerUser = async (userData: IAuthData): Promise<IAuthResult> =>
  * @returns A Promise that resolves to the response data from the login API.
  * @throws An error if the login fails.
  */
-export const loginUser = async (userData: IAuthData): Promise<IAuthResult> => {
+export const loginUser = async (userData: LoginFormData): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/login';
         const response = await apiPost<IAuthResult>(endpoint, userData);
@@ -60,11 +60,11 @@ export const logoutUser = async (): Promise<IAuthResult> => {
 
 /**
  * Resets the user's password.
- * @param {IAuthData} data - The data including email, token, and new password.
+ * @param {ResetPasswordFormData} data - The data including email and new password.
  * @returns {Promise<IAuthResult>} - A promise that resolves to the response data.
  * @throws {Error} - If the password reset request fails.
  */
-export const resetPassword = async (data: IAuthData): Promise<IAuthResult> => {
+export const resetPassword = async (data: ResetPasswordFormData): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/reset-password';
         const response = await apiPost<IAuthResult>(endpoint, data);

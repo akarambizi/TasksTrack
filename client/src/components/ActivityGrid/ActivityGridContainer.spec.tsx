@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { ActivityGridContainer } from './ActivityGridContainer';
 import { useActivityGrid, useActivityStatistics } from '../../queries/activity';
-import { IActivityGridResponse, IActivityStatisticsResponse } from '../../api/activity.types';
+import { IActivityGridResponse, IActivityStatisticsResponse } from '@/types';
 
 // Mock the activity query hooks
 vi.mock('../../queries/activity', () => ({
@@ -36,8 +36,8 @@ const mockGridData: IActivityGridResponse[] = [
         totalValue: 20,
         intensityLevel: 2,
         habitsSummary: [
-            { habitId: 1, habitName: 'Exercise', metricType: 'Count', value: 1, unit: 'times' },
-            { habitId: 2, habitName: 'Reading', metricType: 'Duration', value: 30, unit: 'min' }
+            { habitId: 1, habitName: 'Exercise', metricType: 'Count', value: 1, unit: null, color: null, icon: null },
+            { habitId: 2, habitName: 'Reading', metricType: 'Duration', value: 30, unit: null, color: null, icon: null }
         ]
     },
     {
@@ -46,8 +46,8 @@ const mockGridData: IActivityGridResponse[] = [
         totalValue: 45,
         intensityLevel: 3,
         habitsSummary: [
-            { habitId: 1, habitName: 'Exercise', metricType: 'Count', value: 2, unit: 'times' },
-            { habitId: 3, habitName: 'Meditation', metricType: 'Duration', value: 15, unit: 'min' }
+            { habitId: 1, habitName: 'Exercise', metricType: 'Count', value: 2, unit: null, color: null, icon: null },
+            { habitId: 3, habitName: 'Meditation', metricType: 'Duration', value: 15, unit: null, color: null, icon: null }
         ]
     }
 ];

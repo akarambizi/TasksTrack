@@ -5,7 +5,7 @@ import {
     // IExportAnalyticsRequest,
     // IExportAnalyticsResponse,
     // IGoalProgress
-} from './analytics.types';
+} from '@/types';
 import { apiGet } from './apiClient'; // apiPost unused
 import { ToastService } from '../services/toastService';
 
@@ -146,7 +146,7 @@ export const getYearlyAnalytics = async (yearOffset: number = 0): Promise<IAnaly
 //             ...(targetMinutes && { targetMinutes: targetMinutes.toString() }),
 //             ...(targetSessions && { targetSessions: targetSessions.toString() })
 //         });
-// 
+//
 //         const endpoint = `/api/analytics/goal-progress?${params}`;
 //         return await apiGet<IGoalProgress>(endpoint);
 //     } catch (error) {

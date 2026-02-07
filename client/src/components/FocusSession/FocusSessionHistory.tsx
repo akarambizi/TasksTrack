@@ -269,7 +269,7 @@ export const FocusSessionHistory = ({
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <h4 className="font-medium text-sm">
-                                                    {session.habitName || session.habit?.name || 'Unknown Habit'}
+                                                    {session.habit?.name || 'Unknown Habit'}
                                                 </h4>
                                                 <Badge
                                                     variant="outline"

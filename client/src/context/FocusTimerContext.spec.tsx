@@ -3,7 +3,8 @@ import { render, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusTimerProvider } from './FocusTimerContext';
 import { useFocusTimerContext } from '@/hooks/useFocusTimerContext';
-import { FocusSessionStatus } from '@/api';
+import { FocusSessionStatus } from '@/types'; // Import from centralized types
+
 
 // Mock dependencies
 vi.mock('react-timer-hook', () => ({

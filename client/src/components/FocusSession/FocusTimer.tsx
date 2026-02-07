@@ -9,7 +9,7 @@ import {
     useCompleteFocusSessionMutation,
     useCancelFocusSessionMutation,
 } from '@/queries';
-import { IHabit, FocusSessionStatus } from '@/api';
+import { IHabit } from '@/api';
 import { focusNotificationService } from '@/services/focusNotificationService';
 import { useFocusTimerContext } from '@/hooks/useFocusTimerContext';
 import { formatTime } from '@/utils/focusTimer';
@@ -76,7 +76,7 @@ export const FocusTimer = ({ habit, className }: IFocusTimerProps) => {
                 </CardTitle>
                 {activeSession && (
                     <Badge
-                        variant={activeSession.status === FocusSessionStatus.Active ? "default" : "secondary"}
+                        variant={activeSession.status === 'active' ? "default" : "secondary"}
                         className="mx-auto mt-2"
                     >
                         {activeSession.status.charAt(0).toUpperCase() + activeSession.status.slice(1)}

@@ -117,7 +117,7 @@ export const FocusSessions = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <div>
-                                    <p className="font-medium text-lg">{activeSession.habit?.name}</p>
+                                    <p className="font-medium text-lg">{activeSession.habit?.name || 'Unknown Habit'}</p>
                                     <div className="flex items-center gap-3 mt-1">
                                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                                             activeSession.status === 'active'

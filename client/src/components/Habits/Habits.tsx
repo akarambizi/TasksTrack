@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { AddHabitDialog } from './AddHabitDialog';
 import { EditHabitDialog } from './EditHabitDialog';
 import { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
-import { AddHabitLogDialog } from './AddHabitLogDialog';
+import AddHabitLogDialog from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
 import { FocusSessionDialog } from '../FocusSession';
 import { CategoryManagementDialog } from '../Categories/CategoryManagementDialog';
@@ -104,11 +104,8 @@ export const Habits = () => {
                                 <div className="flex space-x-2">
                                     <AddHabitLogDialog
                                         habit={habit}
-                                        trigger={
-                                            <button className="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900 text-green-600 dark:text-green-400">
-                                                <CheckCircle size={16} />
-                                            </button>
-                                        }
+                                        isOpen={false}
+                                        onClose={() => {}}
                                     />
                                     <FocusSessionDialog
                                         habit={habit}
@@ -135,7 +132,7 @@ export const Habits = () => {
                     <AddHabitLogDialog
                         habit={selectedHabitForLogging}
                         isOpen={true}
-                        onOpenChange={handleCloseLogDialog}
+                        onClose={() => handleCloseLogDialog(false)}
                     />
                 )}
 

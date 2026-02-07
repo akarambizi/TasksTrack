@@ -30,7 +30,14 @@ describe('FocusSessionDialog', () => {
         createdBy: 'user1',
         createdDate: '2026-01-31T10:00:00Z',
         modifiedBy: 'user1',
-        modifiedDate: '2026-01-31T10:00:00Z'
+        modifiedDate: '2026-01-31T10:00:00Z',
+        unit: null,
+        target: null,
+        targetFrequency: null,
+        category: null,
+        updatedDate: null,
+        updatedBy: null,
+        icon: null
     };
 
     beforeEach(() => {

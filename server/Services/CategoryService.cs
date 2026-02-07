@@ -118,7 +118,7 @@ namespace TasksTrack.Services
                 }
 
                 // Prevent circular references: check if the parent is currently a subcategory of this category
-                if (parentCategory.ParentId == category.Id)
+                if (parentCategory.ParentId.HasValue && parentCategory.ParentId.Value == category.Id)
                 {
                     throw new InvalidOperationException("Cannot create circular reference: the parent category is currently a subcategory of this category.");
                 }

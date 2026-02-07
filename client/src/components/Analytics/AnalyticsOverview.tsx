@@ -1,16 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { format, subWeeks, startOfWeek, endOfWeek } from 'date-fns';
-import { 
-    Clock, 
-    Target, 
-    TrendingUp, 
+import {
+    Clock,
+    Target,
+    TrendingUp,
     Calendar,
     Zap,
     Trophy,
     Activity
 } from 'lucide-react';
 
-import { 
+import {
     AnalyticsCard,
     PeriodSelector,
     TPeriodType
@@ -119,7 +119,7 @@ export const AnalyticsOverview: React.FC = () => {
                         {periodDates.start} - {periodDates.end}
                     </p>
                 </div>
-                
+
                 <PeriodSelector
                     period={period}
                     offset={offset}
@@ -136,21 +136,21 @@ export const AnalyticsOverview: React.FC = () => {
                     subtitle={`Across ${data?.totalSessions || 0} sessions`}
                     icon={Clock}
                 />
-                
+
                 <AnalyticsCard
                     title="Active Habits"
                     value={isLoading ? '...' : data?.totalHabitsTracked || 0}
                     subtitle={`${Math.round((data?.activityRate || 0) * 100)}% activity rate`}
                     icon={Target}
                 />
-                
+
                 <AnalyticsCard
                     title="Current Streak"
                     value={isLoading ? '...' : `${data?.currentStreak || 0} days`}
                     subtitle={`Longest: ${data?.longestStreak || 0} days`}
                     icon={TrendingUp}
                 />
-                
+
                 <AnalyticsCard
                     title="Active Days"
                     value={isLoading ? '...' : `${data?.activeDays || 0}/${data?.totalDays || 0}`}
@@ -201,14 +201,14 @@ export const AnalyticsOverview: React.FC = () => {
                         icon={Trophy}
                         className={data.goalProgress.onTrack ? 'border-green-200' : 'border-yellow-200'}
                     />
-                    
+
                     <AnalyticsCard
                         title="Sessions Goal"
                         value={`${data.goalProgress.actualSessions} / ${data.goalProgress.targetSessionsPerPeriod}`}
                         subtitle={`${Math.round((data.goalProgress.actualSessions / data.goalProgress.targetSessionsPerPeriod) * 100)}% complete`}
                         icon={Activity}
                     />
-                    
+
                     <AnalyticsCard
                         title="Daily Target"
                         value={`${Math.round(data.goalProgress.requiredDailyAverage)} min`}

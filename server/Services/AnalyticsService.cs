@@ -155,14 +155,14 @@ namespace TasksTrack.Services
             }
 
             var habitLogs = await _habitLogRepository.GetByDateRangeAsync(startDate, endDate);
-            var habitLogEntries = habitLogs.Where(l => userHabitIds.Contains(l.HabitId)).ToList();
+            habitLogs.Where(l => userHabitIds.Contains(l.HabitId)).ToList();
 
             var focusSessions = _focusSessionRepository.GetByUser(userId)
                 .Where(s => DateOnly.FromDateTime(s.StartTime.DateTime) >= startDate 
                          && DateOnly.FromDateTime(s.StartTime.DateTime) <= endDate)
                 .ToList();
 
-            var totalMinutes = (decimal)focusSessions.Sum(s => s.ActualDurationSeconds ?? 0) / 60;
+            var totalMinutes = focusSessions.Sum(s => (decimal)(s.ActualDurationSeconds ?? 0)) / 60;
             var totalSessions = focusSessions.Count;
 
             var daysRemaining = Math.Max(0, endDate.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber);

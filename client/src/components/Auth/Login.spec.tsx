@@ -14,7 +14,7 @@ vi.mock('@/components/ui', () => ({
             <input id={name} name={name} aria-label={label} />
         </div>
     ),
-    AuthLayout: ({ title, subtitle, children, ...props }: any) => (
+    AuthLayout: ({ title, subtitle, children }: any) => (
         <div data-testid="auth-layout">
             <h1>{title}</h1>
             <p>{subtitle}</p>

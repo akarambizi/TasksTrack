@@ -83,9 +83,4 @@ export type IAnalyticsResponse = z.infer<typeof analyticsResponseSchema>;
 export type IHabitAnalytics = z.infer<typeof habitAnalyticsSchema>;
 export type ICategoryAnalytics = z.infer<typeof categoryAnalyticsSchema>;
 export type IDailyProgress = z.infer<typeof dailyProgressSchema>;
-export type IGoalProgress = z.infer<typeof goalProgressSchema>;
 
-// Additional type aliases for backward compatibility
-export type IAnalyticsData = IAnalyticsResponse;
-export type ICategoryBreakdown = ICategoryAnalytics;
-export type IHabitBreakdown = IHabitAnalytics;

@@ -10,12 +10,6 @@ import {
     type ResetPasswordFormData
 } from '@/types';
 
-export enum FormType {
-    Login = 'login',
-    Register = 'register',
-    ResetPassword = 'reset-password'
-}
-
 // Login form hook
 export function useLoginForm() {
     const loginMutation = useLogin();

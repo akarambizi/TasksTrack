@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { SignUp } from './SignUp';
@@ -16,7 +16,7 @@ vi.mock('@/components/ui', () => ({
             <input id={name} name={name} aria-label={label} />
         </div>
     ),
-    AuthLayout: ({ title, subtitle, children, ...props }: any) => (
+    AuthLayout: ({ title, subtitle, children }: any) => (
         <div data-testid="auth-layout">
             <h1>{title}</h1>
             <p>{subtitle}</p>

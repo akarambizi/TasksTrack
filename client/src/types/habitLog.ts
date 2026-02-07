@@ -36,7 +36,6 @@ export const habitLogFormSchema = habitLogEntitySchema.pick({
 });
 
 // Habit log request schemas for API operations
-export const habitLogCreateRequestSchema = habitLogFormSchema;
 export const habitLogUpdateRequestSchema = habitLogFormSchema.extend({
   id: z.number(),
 }).partial().extend({
@@ -46,5 +45,5 @@ export const habitLogUpdateRequestSchema = habitLogFormSchema.extend({
 // Export types
 export type IHabitLog = z.infer<typeof habitLogEntitySchema>;
 export type HabitLogFormData = z.infer<typeof habitLogFormSchema>;
-export type IHabitLogCreateRequest = z.infer<typeof habitLogCreateRequestSchema>;
+export type IHabitLogCreateRequest = z.infer<typeof habitLogFormSchema>;
 export type IHabitLogUpdateRequest = z.infer<typeof habitLogUpdateRequestSchema>;

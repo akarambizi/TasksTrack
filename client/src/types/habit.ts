@@ -63,28 +63,3 @@ export const habitFormSchema = habitEntitySchema.pick({
 // Export types
 export type IHabit = z.infer<typeof habitEntitySchema>;
 export type HabitFormData = z.infer<typeof habitFormSchema>;
-
-// Request/Response types for API operations
-export interface IHabitCreateRequest {
-  name: string;
-  description?: string;
-  metricType: string;
-  unit?: string;
-  target?: number;
-  targetFrequency?: string;
-  category?: string;
-  color?: string;
-  icon?: string;
-}
-
-export interface IHabitUpdateRequest {
-  name?: string;
-  description?: string;
-  metricType?: string;
-  unit?: string;
-  target?: number;
-  targetFrequency?: string;
-  category?: string;
-  color?: string;
-  icon?: string;
-}

@@ -7,20 +7,6 @@ import type {
 } from '@/types';
 
 /**
- * Gets all categories.
- * @returns {Promise<ICategory[]>} Array of categories.
- */
-export const getAllCategories = async (): Promise<ICategory[]> => {
-    try {
-        return await apiGet<ICategory[]>('/api/categories');
-    } catch (error) {
-        console.error('Failed to fetch categories:', error);
-        ToastService.error('Failed to fetch categories');
-        return [];
-    }
-};
-
-/**
  * Gets active categories only.
  * @returns {Promise<ICategory[]>} Array of active categories.
  */

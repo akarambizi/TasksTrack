@@ -49,7 +49,7 @@ export const weeklyStatisticsSchema = z.object({
 });
 
 // Activity Grid Response schema (array of days)
-export const activityGridResponseSchema = z.array(activityGridDaySchema);
+// export const activityGridResponseSchema = z.array(activityGridDaySchema); // Currently unused
 
 // Activity Statistics Response schema - matches ActivityStatisticsResponse.cs exactly
 export const activityStatisticsResponseSchema = z.object({
@@ -72,5 +72,4 @@ export const activityStatisticsResponseSchema = z.object({
 
 // Export types
 export type IActivityGridResponse = z.infer<typeof activityGridDaySchema>;
-export type ActivityGridResponse = z.infer<typeof activityGridResponseSchema>;
 export type IActivityStatisticsResponse = z.infer<typeof activityStatisticsResponseSchema>;

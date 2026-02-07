@@ -46,7 +46,6 @@ export const categoryFormSchema = z.object({
 });
 
 // Category request schemas for API operations
-export const categoryCreateRequestSchema = categoryFormSchema;
 export const categoryUpdateRequestSchema = categoryFormSchema.extend({
   id: z.number(),
   isActive: z.boolean().optional(),
@@ -54,5 +53,5 @@ export const categoryUpdateRequestSchema = categoryFormSchema.extend({
 
 // Export types
 export type CategoryFormData = z.infer<typeof categoryFormSchema>;
-export type ICategoryCreateRequest = z.infer<typeof categoryCreateRequestSchema>;
+export type ICategoryCreateRequest = z.infer<typeof categoryFormSchema>;
 export type ICategoryUpdateRequest = z.infer<typeof categoryUpdateRequestSchema>;

@@ -21,19 +21,14 @@ export type {
   ResetPasswordFormData,
   ICategoryCreateRequest,
   ICategoryUpdateRequest,
-  IHabitCreateRequest,
-  IHabitUpdateRequest,
   IHabitLogCreateRequest,
   IHabitLogUpdateRequest,
   IFocusSession,
   IFocusSessionCreateRequest,
   IFocusSessionUpdateRequest,
   IFocusSessionAnalytics,
-  IAnalyticsData,
   IActivityGridResponse,
-  ActivityGridResponse,
   IActivityStatisticsResponse,
-  IAuthData,
   IAuthResult
 } from '@/types';
 

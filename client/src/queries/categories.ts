@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-    getAllCategories,
     getActiveCategories,
     getParentCategories,
     createCategory,
@@ -33,13 +32,6 @@ export const categoryQueryKeys = {
 /**
  * Category Query Hooks
  */
-export const useCategoriesQuery = () => {
-    return useQuery({
-        queryKey: categoryQueryKeys.list('all'),
-        queryFn: getAllCategories,
-        staleTime: 5 * 60 * 1000, // 5 minutes
-    });
-};
 
 export const useActiveCategoriesQuery = () => {
     return useQuery({

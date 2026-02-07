@@ -4,7 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusTimer } from './FocusTimer';
-import type { IHabit } from '../../api';
+import type { IHabit } from '@/types';
 
 // Mock all dependencies
 vi.mock('@/queries', () => ({

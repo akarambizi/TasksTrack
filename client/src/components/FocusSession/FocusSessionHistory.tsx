@@ -11,7 +11,7 @@ import {
     SelectValue
 } from '@/components/ui/select';
 import { useFocusSessions } from '@/queries';
-import { IFocusSession, FocusSessionStatus } from '@/api';
+import { IFocusSession, FocusSessionStatus } from '@/types';
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, subDays } from 'date-fns';
 import { ODataQueryBuilder } from '@/utils/odataQueryBuilder';
 

@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { HABIT_COLORS, TARGET_FREQUENCY } from '@/types/constants';
 import * as habitMutations from '@/queries/habits';
 

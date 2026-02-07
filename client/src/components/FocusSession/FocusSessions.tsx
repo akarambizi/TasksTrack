@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FocusTimer, FocusSessionHistory } from '@/components/FocusSession';
 import { useHabitData, useActiveFocusSession, useFocusSessionAnalytics } from '@/queries';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { FocusTimerProvider } from '@/context/FocusTimerContext';
 
 export const FocusSessions = () => {

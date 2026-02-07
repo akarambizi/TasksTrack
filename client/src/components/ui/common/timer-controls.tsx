@@ -1,7 +1,7 @@
 import React from 'react';
 import { Play, Pause, Square, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { IFocusSession, IHabit } from '@/api';
+import { IFocusSession, IHabit } from '@/types';
 
 interface ITimerControlsProps {
     activeSession: IFocusSession | null;

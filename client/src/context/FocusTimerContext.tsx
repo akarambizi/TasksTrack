@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useTimer } from 'react-timer-hook';
 import { addSeconds } from 'date-fns';
 import { useActiveFocusSession } from '@/queries';
-import { IFocusSession } from '@/api';
+import { IFocusSession } from '@/types';
 import { getSessionState } from '@/utils/focusTimer';
 import { FocusTimerContext } from '@/hooks/useFocusTimerContext';
 

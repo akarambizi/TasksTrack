@@ -1,5 +1,5 @@
 import { useUpdateHabitMutation } from "@/queries";
-import { IHabit } from "@/api";
+import { IHabit } from "@/types";
 import { HabitFormDialog } from "./HabitFormDialog";
 
 interface EditHabitDialogProps {

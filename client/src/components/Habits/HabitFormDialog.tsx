@@ -4,7 +4,7 @@ import { FormField, SelectField, TextareaField } from "@/components/ui";
 import { useEffect, useState } from "react";
 import { useHabitForm } from "./useHabitForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { IHabit } from "@/api";
+import { IHabit } from "@/types";
 import { useActiveCategoriesQuery } from '@/queries/categories';
 import { Badge } from "@/components/ui/badge";
 import { type HabitFormData } from '@/types';

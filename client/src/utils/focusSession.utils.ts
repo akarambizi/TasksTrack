@@ -1,4 +1,4 @@
-import { IFocusSession, IHabit } from '@/api';
+import { IFocusSession, IHabit } from '@/types';
 
 /**
  * Focus session status and action utilities

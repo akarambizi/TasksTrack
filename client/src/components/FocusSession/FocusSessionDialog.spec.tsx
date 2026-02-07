@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusSessionDialog } from './FocusSessionDialog';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { HABIT_COLORS, TARGET_FREQUENCY } from '@/types/constants';
 
 // Mock the FocusTimerContext

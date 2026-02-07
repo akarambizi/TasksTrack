@@ -9,7 +9,7 @@ import AddHabitLogDialog from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
 import { FocusSessionDialog } from '../FocusSession';
 import { CategoryManagementDialog } from '../Categories/CategoryManagementDialog';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 
 export const Habits = () => {
     const { data: habits } = useHabitData('');

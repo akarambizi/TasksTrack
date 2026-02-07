@@ -6,12 +6,14 @@ import {
     cancelFocusSession,
     getFocusSessions,
     getActiveFocusSession,
-    getFocusSessionAnalytics,
+    getFocusSessionAnalytics
+} from '@/api';
+import type {
     IFocusSession,
     IFocusSessionCreateRequest,
     IFocusSessionUpdateRequest,
     IFocusSessionAnalytics
-} from '@/api';
+} from '@/types';
 import { focusSessionKeys } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';

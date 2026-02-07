@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { HabitDetailPage } from './HabitDetailPage';
-import { IHabit } from '../../api';
+import { IHabit } from '@/types';
 import { useHabitById } from '../../queries/habits';
 import { AxiosError } from 'axios';
 

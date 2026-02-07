@@ -9,7 +9,7 @@ import {
     useCompleteFocusSessionMutation,
     useCancelFocusSessionMutation,
 } from '@/queries';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { focusNotificationService } from '@/services/focusNotificationService';
 import { useFocusTimerContext } from '@/hooks/useFocusTimerContext';
 import { formatTime } from '@/utils/focusTimer';

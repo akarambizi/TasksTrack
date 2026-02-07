@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Pause, Clock, Play } from 'lucide-react';
 import { format } from 'date-fns';
-import { IFocusSession, FocusSessionStatus } from '@/api';
+import { IFocusSession, FocusSessionStatus } from '@/types';
 
 interface IFocusSessionCardProps {
     session: IFocusSession;

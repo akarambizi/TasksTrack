@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HabitLogs } from './HabitLogs';
-import { IHabit, IHabitLog } from '../../api';
+import { IHabit, IHabitLog } from '@/types';
 import React from 'react';
 import { useHabitLogs } from '../../queries/habitLogs';
 import { AxiosError } from 'axios';

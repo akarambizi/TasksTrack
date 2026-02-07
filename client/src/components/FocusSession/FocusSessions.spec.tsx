@@ -10,7 +10,7 @@ const mockHabit: IHabit = {
     id: 1,
     name: 'Test Habit',
     description: 'Test description',
-    metricType: 'minutes',
+    metricType: 'duration',
     unit: 'min',
     target: 25,
     targetFrequency: 'daily',

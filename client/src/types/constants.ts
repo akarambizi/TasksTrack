@@ -76,28 +76,8 @@ export const getUnitsForMetricType = (metricType: MetricType): readonly string[]
 };
 
 export const getDefaultUnitForMetricType = (metricType: MetricType): string => {
-  return METRIC_TYPE_CONFIG[metricType]?.baseUnit || METRIC_TYPE_CONFIG[metricType]?.units[0] || '';
-};
-
-// Validation helpers
-export const isValidMetricType = (value: string): value is MetricType => {
-  return Object.keys(METRIC_TYPE_CONFIG).includes(value);
-};
-
-export const isValidTargetFrequency = (value: string): value is TargetFrequency => {
-  return Object.values(TARGET_FREQUENCY).includes(value as TargetFrequency);
-};
-
-export const isValidCategory = (value: string): value is Category => {
-  return Object.values(CATEGORIES).includes(value as Category);
-};
-
-export const isValidHabitColor = (value: string): value is HabitColor => {
-  return Object.values(HABIT_COLORS).includes(value as HabitColor);
-};
-
-export const isValidHabitIcon = (value: string): value is HabitIcon => {
-  return Object.values(HABIT_ICONS).includes(value as HabitIcon);
+  const config = METRIC_TYPE_CONFIG[metricType];
+  return config?.baseUnit || '';
 };
 
 // Re-export for convenience

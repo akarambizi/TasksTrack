@@ -6,7 +6,7 @@ import { DEFAULT_HABIT_FORM, getDefaultUnitForMetricType } from "@/types/constan
 interface UseHabitFormReturn {
   formData: IHabitCreateRequest;
   setFormData: React.Dispatch<React.SetStateAction<IHabitCreateRequest>>;
-  handleChange: (field: keyof IHabitCreateRequest) => (value: string | number) => void;
+  handleChange: <K extends keyof IHabitCreateRequest>(field: K) => (value: IHabitCreateRequest[K]) => void;
   resetForm: () => void;
   error: string | null;
   setError: (error: string | null) => void;
@@ -27,7 +27,9 @@ export function useHabitForm(): UseHabitFormReturn {
 
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = useCallback((field: keyof IHabitCreateRequest) => (value: string | number) => {
+  const handleChange = useCallback(<K extends keyof IHabitCreateRequest>(
+    field: K
+  ) => (value: IHabitCreateRequest[K]) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,

@@ -7,9 +7,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IHabit } from "@/api";
 import { useActiveCategoriesQuery } from '@/queries/categories';
 import { Badge } from "@/components/ui/badge";
-import { 
-  METRIC_TYPE_CONFIG, 
+import {
+  METRIC_TYPE_CONFIG,
   type MetricType,
+  type TargetFrequency,
+  type Category,
+  type HabitColor,
+  type HabitIcon,
   TARGET_FREQUENCY,
   CATEGORIES,
   HABIT_COLORS,
@@ -127,7 +131,7 @@ export function HabitFormDialog({
   useEffect(() => {
     if (formData.metricType && suggestedUnits.length > 0) {
       // If current unit is not valid for the selected metric type, reset to default option
-      if (!formData.unit || !suggestedUnits.includes(formData.unit as any)) {
+      if (!formData.unit || !suggestedUnits.includes(formData.unit)) {
         handleChange('unit')(getDefaultUnitForMetricType(formData.metricType));
       }
     }
@@ -177,7 +181,7 @@ export function HabitFormDialog({
   };
 
   const handleColorChange = (colorValue: string) => {
-    handleChange('color')(colorValue);
+    handleChange('color')(colorValue as HabitColor);
   };
 
   return (
@@ -232,7 +236,7 @@ export function HabitFormDialog({
                   label="Metric Type"
                   placeholder="How do you want to measure this habit?"
                   value={formData.metricType}
-                  onValueChange={handleChange('metricType')}
+                  onValueChange={(value) => handleChange('metricType')(value as MetricType)}
                   required
                   options={METRIC_TYPE_OPTIONS.map(option => ({
                     value: option.value,
@@ -283,7 +287,7 @@ export function HabitFormDialog({
                   label="Target Frequency"
                   placeholder="How often do you want to achieve this target?"
                   value={formData.targetFrequency}
-                  onValueChange={handleChange('targetFrequency')}
+                  onValueChange={(value) => handleChange('targetFrequency')(value as TargetFrequency)}
                   options={FREQUENCY_OPTIONS}
                 />
               </div>
@@ -299,7 +303,7 @@ export function HabitFormDialog({
                 placeholder="Select a category to organize your habit"
                 value={formData.category || 'none'}
                 onValueChange={(value) => {
-                  const actualValue = value === 'none' ? '' : value;
+                  const actualValue = value === 'none' ? undefined : (value as Category);
                   handleChange('category')(actualValue);
                 }}
                 options={[
@@ -359,7 +363,7 @@ export function HabitFormDialog({
                   label="Icon"
                   placeholder="Choose an icon for your habit"
                   value={formData.icon}
-                  onValueChange={handleChange('icon')}
+                  onValueChange={(value) => handleChange('icon')(value as HabitIcon)}
                   options={ICON_OPTIONS}
                 />
               </div>

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
 import { IHabit } from '@/api';
+import { HABIT_COLORS, TARGET_FREQUENCY } from '@/types/constants';
 import * as habitMutations from '@/queries/habits';
 
 // Mock the habit mutation hooks
@@ -22,12 +23,12 @@ const mockHabit: IHabit = {
     id: 1,
     name: 'Exercise',
     description: 'Daily workout',
-    metricType: 'time',
+    metricType: 'duration',
     unit: 'minutes',
     target: 30,
-    targetFrequency: 'daily',
-    category: 'health',
-    color: '#blue',
+    targetFrequency: TARGET_FREQUENCY.DAILY,
+    category: 'Health',
+    color: HABIT_COLORS.BLUE,
     icon: 'dumbbell',
     isActive: true,
     createdBy: 'test-user-id',

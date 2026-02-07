@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusSessionDialog } from './FocusSessionDialog';
 import { IHabit } from '@/api';
+import { HABIT_COLORS, TARGET_FREQUENCY } from '@/types/constants';
 
 // Mock the FocusTimerContext
 vi.mock('@/context/FocusTimerContext', () => ({
@@ -23,9 +24,9 @@ describe('FocusSessionDialog', () => {
         id: 1,
         name: 'Reading',
         description: 'Daily reading habit',
-        color: '#3B82F6',
+        color: HABIT_COLORS.BLUE,
         isActive: true,
-        metricType: 'boolean' as const,
+        metricType: 'binary' as const,
         createdBy: 'user1',
         createdDate: '2026-01-31T10:00:00Z',
         modifiedBy: 'user1',
@@ -86,7 +87,7 @@ describe('FocusSessionDialog', () => {
         const differentHabit = {
             ...mockHabit,
             name: 'Exercise',
-            color: '#10B981',
+            color: HABIT_COLORS.GREEN,
             description: 'Daily workout'
         };
 
@@ -152,7 +153,7 @@ describe('FocusSessionDialog', () => {
             ...mockHabit,
             target: 30,
             unit: 'minutes',
-            targetFrequency: 'daily'
+            targetFrequency: TARGET_FREQUENCY.DAILY
         };
         const user = userEvent.setup();
 

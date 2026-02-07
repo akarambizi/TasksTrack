@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
-    DialogContent,
-    DialogHeader,
+    DialogContent,    DialogDescription,    DialogHeader,
     DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog';
@@ -28,7 +27,14 @@ export const FocusSessionDialog = ({
 }: IFocusSessionDialogProps) => {
     const [internalOpen, setInternalOpen] = useState(false);
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
-    const setOpen = onOpenChange || setInternalOpen;
+    
+    const handleOpenChange = (newOpen: boolean) => {
+        if (onOpenChange) {
+            onOpenChange(newOpen);
+        } else {
+            setInternalOpen(newOpen);
+        }
+    };
 
     const defaultTrigger = (
         <Button variant="outline" size="sm" className="flex items-center gap-2" data-testid="focus-dialog-trigger">
@@ -38,7 +44,7 @@ export const FocusSessionDialog = ({
     );
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
                 {trigger || defaultTrigger}
             </DialogTrigger>
@@ -48,6 +54,9 @@ export const FocusSessionDialog = ({
                         <Target className="h-5 w-5 text-blue-600" />
                         Focus Session
                     </DialogTitle>
+                    <DialogDescription>
+                        Start a focused session for {habit.name}. Set your timer and track your progress.
+                    </DialogDescription>
                     <HabitInfo habit={habit} className="pt-2" />
                 </DialogHeader>
 

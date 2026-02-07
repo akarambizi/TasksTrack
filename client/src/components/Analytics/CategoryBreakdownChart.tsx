@@ -49,7 +49,7 @@ export const CategoryBreakdownChart: React.FC<ICategoryBreakdownChartProps> = ({
     className = ''
 }) => {
     const totalMinutes = data.reduce((sum, item) => sum + item.totalMinutes, 0);
-    
+
     const chartData = data.map((item, index) => ({
         ...item,
         percentage: totalMinutes > 0 ? Math.round((item.totalMinutes / totalMinutes) * 100) : 0,
@@ -99,13 +99,13 @@ export const CategoryBreakdownChart: React.FC<ICategoryBreakdownChartProps> = ({
 
     const CustomLegend: React.FC<LegendProps> = ({ payload }) => {
         if (!payload) return null;
-        
+
         return (
             <div className="flex flex-wrap gap-3 justify-center mt-4">
                 {payload.map((entry, index: number) => (
                     <div key={index} className="flex items-center gap-2 text-sm">
-                        <div 
-                            className="w-3 h-3 rounded-full" 
+                        <div
+                            className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: entry.color }}
                         />
                         <span className="text-muted-foreground">

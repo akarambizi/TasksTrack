@@ -1,19 +1,21 @@
+import { MetricType, TargetFrequency, Category, HabitColor, HabitIcon } from '@/types/constants';
+
 export interface IHabit {
     id: number;
     name: string;
     description?: string;
-    metricType: string; // "minutes", "miles", "reps", "pages", etc.
-    unit?: string; // Display unit like "min", "mi", "reps", "pages"
+    metricType: MetricType; // "duration", "count", "distance", etc.
+    unit?: string; // Display unit like "minutes", "miles", "reps", "pages"
     target?: number; // Daily/weekly target value
-    targetFrequency?: string; // "daily", "weekly"
-    category?: string; // "Health", "Learning", "Creative", etc.
+    targetFrequency?: TargetFrequency; // "daily", "weekly", etc.
+    category?: Category; // "Health", "Learning", "Creative", etc.
     isActive: boolean;
     createdDate: string;
     updatedDate?: string;
     createdBy: string;
     updatedBy?: string;
-    color?: string; // Hex color code
-    icon?: string; // Icon identifier
+    color?: HabitColor; // Hex color code
+    icon?: HabitIcon; // Icon identifier
 }
 
 export interface IHabitLog {
@@ -32,13 +34,13 @@ export interface IHabitLog {
 export interface IHabitCreateRequest {
     name: string;
     description?: string;
-    metricType: string;
+    metricType: MetricType;
     unit?: string;
     target?: number;
-    targetFrequency?: string;
-    category?: string;
-    color?: string;
-    icon?: string;
+    targetFrequency?: TargetFrequency;
+    category?: Category;
+    color?: HabitColor;
+    icon?: HabitIcon;
 }
 
 export interface IHabitLogCreateRequest {

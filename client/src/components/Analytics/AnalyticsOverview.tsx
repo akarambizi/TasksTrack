@@ -205,7 +205,7 @@ export const AnalyticsOverview: React.FC = () => {
                     <AnalyticsCard
                         title="Sessions Goal"
                         value={`${data.goalProgress.actualSessions} / ${data.goalProgress.targetSessionsPerPeriod}`}
-                        subtitle={data.goalProgress.targetSessionsPerPeriod > 0 
+                        subtitle={data.goalProgress.targetSessionsPerPeriod > 0
                             ? `${Math.round((data.goalProgress.actualSessions / data.goalProgress.targetSessionsPerPeriod) * 100)}% complete`
                             : 'No target set'
                         }

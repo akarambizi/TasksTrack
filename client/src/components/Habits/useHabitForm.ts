@@ -1,6 +1,7 @@
 // useHabitForm.ts
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { IHabitCreateRequest } from "@/api/habit.types";
+import { DEFAULT_HABIT_FORM, getDefaultUnitForMetricType } from "@/types/constants";
 
 interface UseHabitFormReturn {
   formData: IHabitCreateRequest;
@@ -15,35 +16,35 @@ export function useHabitForm(): UseHabitFormReturn {
   const [formData, setFormData] = useState<IHabitCreateRequest>({
     name: '',
     description: '',
-    metricType: 'minutes',
-    unit: 'min',
-    target: 0,
-    targetFrequency: 'daily',
-    category: 'Health',
-    color: '#3b82f6',
-    icon: 'target',
+    metricType: DEFAULT_HABIT_FORM.metricType,
+    unit: getDefaultUnitForMetricType(DEFAULT_HABIT_FORM.metricType),
+    target: DEFAULT_HABIT_FORM.target,
+    targetFrequency: DEFAULT_HABIT_FORM.targetFrequency,
+    category: DEFAULT_HABIT_FORM.category,
+    color: DEFAULT_HABIT_FORM.color,
+    icon: DEFAULT_HABIT_FORM.icon,
   });
 
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (field: keyof IHabitCreateRequest) => (value: string | number) => {
+  const handleChange = useCallback((field: keyof IHabitCreateRequest) => (value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
-  };
+  }, []);
 
   const resetForm = () => {
     setFormData({
       name: '',
       description: '',
-      metricType: 'minutes',
-      unit: 'min',
-      target: 0,
-      targetFrequency: 'daily',
-      category: 'Health',
-      color: '#3b82f6',
-      icon: 'target',
+      metricType: DEFAULT_HABIT_FORM.metricType,
+      unit: getDefaultUnitForMetricType(DEFAULT_HABIT_FORM.metricType),
+      target: DEFAULT_HABIT_FORM.target,
+      targetFrequency: DEFAULT_HABIT_FORM.targetFrequency,
+      category: DEFAULT_HABIT_FORM.category,
+      color: DEFAULT_HABIT_FORM.color,
+      icon: DEFAULT_HABIT_FORM.icon,
     });
     setError(null);
   };

@@ -7,7 +7,16 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IHabit } from "@/api";
 import { useActiveCategoriesQuery } from '@/queries/categories';
 import { Badge } from "@/components/ui/badge";
-import { METRIC_TYPE_CONFIG, type MetricType } from '@/utils/unitStandardization';
+import { 
+  METRIC_TYPE_CONFIG, 
+  type MetricType,
+  TARGET_FREQUENCY,
+  CATEGORIES,
+  HABIT_COLORS,
+  HABIT_ICONS,
+  getUnitsForMetricType,
+  getDefaultUnitForMetricType
+} from '@/types/constants';
 
 interface HabitFormDialogProps {
   mode: 'create' | 'edit';
@@ -46,35 +55,36 @@ function getExamplesForMetricType(metricType: MetricType): string {
 }
 
 const COLOR_OPTIONS = [
-  { value: '#22c55e', label: 'Green', preview: '#22c55e' },
-  { value: '#3b82f6', label: 'Blue', preview: '#3b82f6' },
-  { value: '#a855f7', label: 'Purple', preview: '#a855f7' },
-  { value: '#f59e0b', label: 'Amber', preview: '#f59e0b' },
-  { value: '#ef4444', label: 'Red', preview: '#ef4444' },
-  { value: '#ec4899', label: 'Pink', preview: '#ec4899' },
-  { value: '#14b8a6', label: 'Teal', preview: '#14b8a6' },
+  { value: HABIT_COLORS.GREEN, label: 'Green', preview: HABIT_COLORS.GREEN },
+  { value: HABIT_COLORS.BLUE, label: 'Blue', preview: HABIT_COLORS.BLUE },
+  { value: HABIT_COLORS.PURPLE, label: 'Purple', preview: HABIT_COLORS.PURPLE },
+  { value: HABIT_COLORS.YELLOW, label: 'Amber', preview: HABIT_COLORS.YELLOW },
+  { value: HABIT_COLORS.RED, label: 'Red', preview: HABIT_COLORS.RED },
+  { value: HABIT_COLORS.PINK, label: 'Pink', preview: HABIT_COLORS.PINK },
+  { value: HABIT_COLORS.TEAL, label: 'Teal', preview: HABIT_COLORS.TEAL },
   { value: '#6b7280', label: 'Gray', preview: '#6b7280' }
 ];
 
 const ICON_OPTIONS = [
-  { value: 'Heart', label: '❤️ Heart' },
-  { value: 'BookOpen', label: '📖 Book' },
+  { value: HABIT_ICONS.HEART, label: '❤️ Heart' },
+  { value: HABIT_ICONS.BOOK, label: '📖 Book' },
   { value: 'Palette', label: '🎨 Palette' },
   { value: 'Users', label: '👥 Users' },
   { value: 'Briefcase', label: '💼 Work' },
   { value: 'User', label: '👤 Personal' },
-  { value: 'Target', label: '🎯 Target' },
-  { value: 'Star', label: '⭐ Star' },
-  { value: 'Trophy', label: '🏆 Trophy' },
-  { value: 'Zap', label: '⚡ Energy' },
-  { value: 'Clock', label: '🕒 Time' },
+  { value: HABIT_ICONS.TARGET, label: '🎯 Target' },
+  { value: HABIT_ICONS.STAR, label: '⭐ Star' },
+  { value: HABIT_ICONS.TROPHY, label: '🏆 Trophy' },
+  { value: HABIT_ICONS.FLAME, label: '⚡ Energy' },
+  { value: HABIT_ICONS.CLOCK, label: '🕒 Time' },
   { value: 'Activity', label: '📊 Activity' }
 ];
 
 const FREQUENCY_OPTIONS = [
-  { value: 'daily', label: 'Daily' },
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'monthly', label: 'Monthly' }
+  { value: TARGET_FREQUENCY.DAILY, label: 'Daily' },
+  { value: TARGET_FREQUENCY.WEEKLY, label: 'Weekly' },
+  { value: TARGET_FREQUENCY.MONTHLY, label: 'Monthly' },
+  { value: TARGET_FREQUENCY.YEARLY, label: 'Yearly' }
 ];
 
 export function HabitFormDialog({
@@ -99,29 +109,29 @@ export function HabitFormDialog({
         name: habit.name,
         description: habit.description || '',
         metricType: habit.metricType,
-        unit: habit.unit || '',
+        unit: habit.unit || getDefaultUnitForMetricType(habit.metricType),
         target: habit.target || 0,
-        targetFrequency: habit.targetFrequency || 'daily',
-        category: habit.category || '',
-        color: habit.color || '#3b82f6',
-        icon: habit.icon || 'Star'
+        targetFrequency: habit.targetFrequency || TARGET_FREQUENCY.DAILY,
+        category: habit.category || CATEGORIES.HEALTH,
+        color: habit.color || HABIT_COLORS.BLUE,
+        icon: habit.icon || HABIT_ICONS.STAR
       });
     }
   }, [mode, habit, open, setFormData]);
 
   // Get suggested units for selected metric type
   const selectedMetricType = METRIC_TYPE_OPTIONS.find(option => option.value === formData.metricType);
-  const suggestedUnits = selectedMetricType?.units || [];
+  const suggestedUnits = getUnitsForMetricType(formData.metricType);
 
   // Auto-reset unit when metric type changes to ensure consistency
   useEffect(() => {
     if (formData.metricType && suggestedUnits.length > 0) {
-      // If current unit is not valid for the selected metric type, reset to first option
+      // If current unit is not valid for the selected metric type, reset to default option
       if (!formData.unit || !suggestedUnits.includes(formData.unit as any)) {
-        handleChange('unit')(suggestedUnits[0]);
+        handleChange('unit')(getDefaultUnitForMetricType(formData.metricType));
       }
     }
-  }, [formData.metricType, suggestedUnits, formData.unit]);
+  }, [formData.metricType, suggestedUnits, formData.unit, handleChange]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -94,13 +94,13 @@ export const DailyProgressChart: React.FC<IDailyProgressChartProps> = ({
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                    <XAxis 
-                        dataKey="formattedDate" 
+                    <XAxis
+                        dataKey="formattedDate"
                         axisLine={false}
                         tickLine={false}
                         tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                     />
-                    <YAxis 
+                    <YAxis
                         axisLine={false}
                         tickLine={false}
                         tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}

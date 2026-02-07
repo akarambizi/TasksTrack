@@ -48,10 +48,10 @@ namespace TasksTrack.Services
         {
             var today = DateTime.Today;
             var targetDate = today.AddMonths(quarterOffset * 3);
-            
+
             var quarter = (targetDate.Month - 1) / 3 + 1;
             var startOfQuarter = DateOnly.FromDateTime(new DateTime(targetDate.Year, (quarter - 1) * 3 + 1, 1));
-            var endOfQuarter = DateOnly.FromDateTime(new DateTime(targetDate.Year, quarter * 3, 
+            var endOfQuarter = DateOnly.FromDateTime(new DateTime(targetDate.Year, quarter * 3,
                 DateTime.DaysInMonth(targetDate.Year, quarter * 3)));
 
             return await GetAnalyticsForPeriodAsync(userId, startOfQuarter, endOfQuarter, "Quarterly");
@@ -87,8 +87,8 @@ namespace TasksTrack.Services
             return await GetAnalyticsForPeriodAsync(userId, startDate, endDate, "Custom", request.HabitIds, request.Categories);
         }
 
-        public async Task<ComparisonAnalyticsResponse> GetComparisonAnalyticsAsync(string userId, 
-            DateOnly currentStart, DateOnly currentEnd, 
+        public async Task<ComparisonAnalyticsResponse> GetComparisonAnalyticsAsync(string userId,
+            DateOnly currentStart, DateOnly currentEnd,
             DateOnly previousStart, DateOnly previousEnd)
         {
             var currentPeriod = await GetAnalyticsForPeriodAsync(userId, currentStart, currentEnd, "Current");
@@ -132,7 +132,7 @@ namespace TasksTrack.Services
             };
         }
 
-        public async Task<GoalProgress> CalculateGoalProgressAsync(string userId, DateOnly startDate, DateOnly endDate, 
+        public async Task<GoalProgress> CalculateGoalProgressAsync(string userId, DateOnly startDate, DateOnly endDate,
             decimal? targetMinutes = null, int? targetSessions = null)
         {
             // Get basic data directly to avoid circular dependency
@@ -158,7 +158,7 @@ namespace TasksTrack.Services
             habitLogs.Where(l => userHabitIds.Contains(l.HabitId)).ToList();
 
             var focusSessions = _focusSessionRepository.GetByUser(userId)
-                .Where(s => DateOnly.FromDateTime(s.StartTime.DateTime) >= startDate 
+                .Where(s => DateOnly.FromDateTime(s.StartTime.DateTime) >= startDate
                          && DateOnly.FromDateTime(s.StartTime.DateTime) <= endDate)
                 .ToList();
 
@@ -181,7 +181,7 @@ namespace TasksTrack.Services
                 ActualSessions = totalSessions,
                 OnTrack = totalMinutes >= (defaultTargetMinutes * (periodDays - daysRemaining) / periodDays),
                 DaysRemaining = daysRemaining,
-                RequiredDailyAverage = daysRemaining > 0 
+                RequiredDailyAverage = daysRemaining > 0
                     ? Math.Max(0, (defaultTargetMinutes - totalMinutes) / daysRemaining)
                     : 0
             };
@@ -191,24 +191,24 @@ namespace TasksTrack.Services
         {
             // Get current week analytics for dashboard overview
             var weeklyAnalytics = await GetWeeklyAnalyticsAsync(userId, 0);
-            
+
             // Override period name for dashboard
             weeklyAnalytics.Period = "Dashboard Overview";
 
             return weeklyAnalytics;
         }
 
-        private async Task<AnalyticsResponse> GetAnalyticsForPeriodAsync(string userId, DateOnly startDate, DateOnly endDate, 
+        private async Task<AnalyticsResponse> GetAnalyticsForPeriodAsync(string userId, DateOnly startDate, DateOnly endDate,
             string period, List<int>? habitIds = null, List<string>? categories = null)
         {
             // Get user habits with optional filtering
             var userHabits = await _habitRepository.GetByUserIdAsync(userId);
-            
+
             if (habitIds?.Any() == true)
             {
                 userHabits = userHabits.Where(h => habitIds.Contains(h.Id)).ToList();
             }
-            
+
             if (categories?.Any() == true)
             {
                 userHabits = userHabits.Where(h => categories.Contains(h.Category ?? "No Category")).ToList();
@@ -247,13 +247,13 @@ namespace TasksTrack.Services
 
             // Calculate habit breakdowns
             var habitBreakdown = await CalculateHabitBreakdownAsync(userHabits, userHabitLogs, focusSessions, startDate, endDate, userId);
-            
+
             // Calculate category breakdowns
             var categoryBreakdown = CalculateCategoryBreakdown(habitBreakdown);
-            
+
             // Calculate daily progress
             var dailyProgress = CalculateDailyProgress(userHabitLogs, focusSessions, startDate, endDate);
-            
+
             // Calculate goal progress
             var goalProgress = await CalculateGoalProgressAsync(userId, startDate, endDate);
 
@@ -282,7 +282,7 @@ namespace TasksTrack.Services
             };
         }
 
-        private async Task<List<HabitAnalytics>> CalculateHabitBreakdownAsync(IEnumerable<Habit> habits, 
+        private async Task<List<HabitAnalytics>> CalculateHabitBreakdownAsync(IEnumerable<Habit> habits,
             List<HabitLog> habitLogs, List<FocusSession> focusSessions, DateOnly startDate, DateOnly endDate, string userId)
         {
             var result = new List<HabitAnalytics>();
@@ -349,8 +349,8 @@ namespace TasksTrack.Services
                 HabitCount = group.Count(),
                 TotalSessions = group.Sum(h => h.SessionCount),
                 TotalMinutes = Math.Round(group.Sum(h => h.TotalMinutes), 2),
-                Percentage = totalMinutes > 0 
-                    ? Math.Round((group.Sum(h => h.TotalMinutes) / totalMinutes) * 100, 2) 
+                Percentage = totalMinutes > 0
+                    ? Math.Round((group.Sum(h => h.TotalMinutes) / totalMinutes) * 100, 2)
                     : 0,
                 CompletedDays = group.Sum(h => h.CompletedDays),
                 CompletionRate = Math.Round(group.Average(h => h.CompletionRate), 2),
@@ -358,7 +358,7 @@ namespace TasksTrack.Services
             }).ToList();
         }
 
-        private List<DailyProgress> CalculateDailyProgress(List<HabitLog> habitLogs, 
+        private List<DailyProgress> CalculateDailyProgress(List<HabitLog> habitLogs,
             List<FocusSession> focusSessions, DateOnly startDate, DateOnly endDate)
         {
             var result = new List<DailyProgress>();
@@ -401,15 +401,15 @@ namespace TasksTrack.Services
 
         private ComparisonMetrics CalculateComparisonMetrics(AnalyticsResponse current, AnalyticsResponse previous)
         {
-            var sessionsChange = previous.TotalSessions > 0 
+            var sessionsChange = previous.TotalSessions > 0
                 ? Math.Round(((decimal)(current.TotalSessions - previous.TotalSessions) / previous.TotalSessions) * 100, 2)
                 : current.TotalSessions > 0 ? 100 : 0;
 
-            var minutesChange = previous.TotalMinutes > 0 
+            var minutesChange = previous.TotalMinutes > 0
                 ? Math.Round(((current.TotalMinutes - previous.TotalMinutes) / previous.TotalMinutes) * 100, 2)
                 : current.TotalMinutes > 0 ? 100 : 0;
 
-            var activityRateChange = previous.ActivityRate > 0 
+            var activityRateChange = previous.ActivityRate > 0
                 ? Math.Round(((current.ActivityRate - previous.ActivityRate) / previous.ActivityRate) * 100, 2)
                 : current.ActivityRate > 0 ? 100 : 0;
 
@@ -422,7 +422,7 @@ namespace TasksTrack.Services
             var habitComparisons = current.HabitBreakdown.Select(currentHabit =>
             {
                 var previousHabit = previous.HabitBreakdown.FirstOrDefault(h => h.HabitId == currentHabit.HabitId);
-                
+
                 var habitSessionsChange = previousHabit?.SessionCount > 0
                     ? Math.Round(((decimal)(currentHabit.SessionCount - previousHabit.SessionCount) / previousHabit.SessionCount) * 100, 2)
                     : currentHabit.SessionCount > 0 ? 100 : 0;
@@ -440,8 +440,8 @@ namespace TasksTrack.Services
                     Name = currentHabit.Name,
                     SessionsChange = habitSessionsChange,
                     MinutesChange = habitMinutesChange,
-                    CompletionRateChange = previousHabit != null 
-                        ? Math.Round(currentHabit.CompletionRate - previousHabit.CompletionRate, 2) 
+                    CompletionRateChange = previousHabit != null
+                        ? Math.Round(currentHabit.CompletionRate - previousHabit.CompletionRate, 2)
                         : currentHabit.CompletionRate,
                     Trend = habitTrend
                 };
@@ -523,7 +523,7 @@ namespace TasksTrack.Services
             while (currentDate > minDate)
             {
                 var hasActivity = await HasActivityOnDate(userId, userHabitIds, currentDate);
-                
+
                 if (!hasActivity)
                 {
                     // Allow one day gap for current streak (if today has no activity yet)
@@ -537,7 +537,7 @@ namespace TasksTrack.Services
 
                 streak++;
                 currentDate = currentDate.AddDays(-1);
-                
+
                 // Prevent infinite loop and extremely long streaks
                 if (streak > 3650) // Max 10 years worth of streak
                     break;
@@ -568,7 +568,7 @@ namespace TasksTrack.Services
 
             var longestStreak = 0;
             var currentStreak = 1;
-            
+
             for (int i = 1; i < allActivityDates.Count; i++)
             {
                 if (allActivityDates[i].DayNumber - allActivityDates[i - 1].DayNumber == 1)
@@ -605,38 +605,38 @@ namespace TasksTrack.Services
             var json = JsonSerializer.Serialize(analytics, new JsonSerializerOptions { WriteIndented = true });
             var bytes = Encoding.UTF8.GetBytes(json);
             var fileName = $"analytics-{analytics.StartDate:yyyy-MM-dd}-to-{analytics.EndDate:yyyy-MM-dd}.json";
-            
+
             return (bytes, "application/json", fileName);
         }
 
         private (byte[] Data, string ContentType, string FileName) GenerateCsvExport(AnalyticsResponse analytics, ExportAnalyticsRequest request)
         {
             var csv = new StringBuilder();
-            
+
             // Headers
             csv.AppendLine("Date,Sessions,Minutes,Habits Completed,Activity Intensity");
-            
+
             // Daily data
             foreach (var day in analytics.DailyProgress)
             {
                 csv.AppendLine($"{day.Date:yyyy-MM-dd},{day.SessionCount},{day.TotalMinutes},{day.HabitsCompleted},{day.ActivityIntensity}");
             }
-            
+
             if (request.IncludeHabitBreakdown)
             {
                 csv.AppendLine();
                 csv.AppendLine("Habit Breakdown");
                 csv.AppendLine("Habit Name,Category,Sessions,Total Minutes,Completion Rate,Current Streak");
-                
+
                 foreach (var habit in analytics.HabitBreakdown)
                 {
                     csv.AppendLine($"{habit.Name},{habit.Category},{habit.SessionCount},{habit.TotalMinutes},{habit.CompletionRate},{habit.CurrentStreak}");
                 }
             }
-            
+
             var bytes = Encoding.UTF8.GetBytes(csv.ToString());
             var fileName = $"analytics-{analytics.StartDate:yyyy-MM-dd}-to-{analytics.EndDate:yyyy-MM-dd}.csv";
-            
+
             return (bytes, "text/csv", fileName);
         }
     }

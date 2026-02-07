@@ -27,7 +27,7 @@ export const FocusSessionDialog = ({
 }: IFocusSessionDialogProps) => {
     const [internalOpen, setInternalOpen] = useState(false);
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
-    
+
     const handleOpenChange = (newOpen: boolean) => {
         if (onOpenChange) {
             onOpenChange(newOpen);

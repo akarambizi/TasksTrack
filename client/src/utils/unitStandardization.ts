@@ -111,7 +111,7 @@ export type MetricType = keyof typeof METRIC_TYPE_CONFIG;
 // - getBaseUnit: Get the base unit for a metric type
 // - standardizeHabitLogValues: Convert habit log values to base units for aggregation
 // - getAvailableUnits: Get all available units for a metric type
-// - isValidUnit: Validate if a unit is valid for a metric type  
+// - isValidUnit: Validate if a unit is valid for a metric type
 // - aggregateHabitLogsByMetricType: Group and aggregate logs by metric type
 // - formatValueWithUnit: Format a value with its unit for display
 // - getMetricTypeInfo: Get display-friendly metric type information

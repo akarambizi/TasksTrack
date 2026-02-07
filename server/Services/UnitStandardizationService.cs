@@ -138,14 +138,14 @@ namespace TasksTrack.Services
         /// Standardize a collection of habit log values for analytics aggregation
         /// All values will be converted to their respective base units
         /// </summary>
-        public static IEnumerable<(int HabitId, string MetricType, string Unit, decimal StandardizedValue)> 
+        public static IEnumerable<(int HabitId, string MetricType, string Unit, decimal StandardizedValue)>
             StandardizeHabitLogValues(IEnumerable<(int HabitId, string MetricType, string Unit, decimal Value)> logs)
         {
             foreach (var log in logs)
             {
                 var standardizedValue = ConvertToBaseUnit(log.MetricType, log.Value, log.Unit);
                 var baseUnit = GetBaseUnit(log.MetricType);
-                
+
                 yield return (log.HabitId, log.MetricType, baseUnit, standardizedValue);
             }
         }

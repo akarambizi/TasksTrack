@@ -77,17 +77,17 @@ const FREQUENCY_OPTIONS = [
   { value: 'monthly', label: 'Monthly' }
 ];
 
-export function HabitFormDialog({ 
-  mode, 
-  habit, 
-  open, 
-  onOpenChange, 
-  onSubmit, 
-  isLoading, 
-  title, 
-  description, 
-  submitLabel, 
-  loadingLabel 
+export function HabitFormDialog({
+  mode,
+  habit,
+  open,
+  onOpenChange,
+  onSubmit,
+  isLoading,
+  title,
+  description,
+  submitLabel,
+  loadingLabel
 }: HabitFormDialogProps) {
   const { formData, handleChange, resetForm, error, setError, setFormData } = useHabitForm();
   const { data: categories = [] } = useActiveCategoriesQuery();
@@ -158,11 +158,11 @@ export function HabitFormDialog({
     onOpenChange(false);
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
       handleClose();
     } else {
-      onOpenChange(open);
+      onOpenChange(newOpen);
     }
   };
 
@@ -191,7 +191,7 @@ export function HabitFormDialog({
             {/* Basic Information */}
             <div className="space-y-4">
               <h4 className="text-sm font-medium text-muted-foreground">Basic Information</h4>
-              
+
               <FormField
                 id="name"
                 name="name"
@@ -201,7 +201,7 @@ export function HabitFormDialog({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('name')(e.target.value)}
                 required
               />
-              
+
               <TextareaField
                 id="description"
                 label="Description (Optional)"
@@ -215,7 +215,7 @@ export function HabitFormDialog({
             {/* Measurement & Target */}
             <div className="space-y-4">
               <h4 className="text-sm font-medium text-muted-foreground">Measurement & Target</h4>
-              
+
               <div className="grid grid-cols-1 gap-4">
                 <SelectField
                   id="metricType"
@@ -240,7 +240,7 @@ export function HabitFormDialog({
                     </p>
                   </div>
                 )}
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <SelectField
                     id="unit"
@@ -253,7 +253,7 @@ export function HabitFormDialog({
                       label: unit
                     }))}
                   />
-                  
+
                   <FormField
                     id="target"
                     name="target"
@@ -282,7 +282,7 @@ export function HabitFormDialog({
             {/* Organization */}
             <div className="space-y-4">
               <h4 className="text-sm font-medium text-muted-foreground">Organization</h4>
-              
+
               <SelectField
                 id="category"
                 label="Category (Optional)"
@@ -305,7 +305,7 @@ export function HabitFormDialog({
             {/* Appearance */}
             <div className="space-y-4">
               <h4 className="text-sm font-medium text-muted-foreground">Appearance</h4>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label htmlFor="color" className="text-sm font-medium">Color</label>
@@ -323,7 +323,7 @@ export function HabitFormDialog({
                         {formData.color || '#3b82f6'}
                       </div>
                     </div>
-                    
+
                     {/* Preset Color Options */}
                     <div className="grid grid-cols-4 gap-2">
                       {COLOR_OPTIONS.map(colorOption => (
@@ -332,8 +332,8 @@ export function HabitFormDialog({
                           type="button"
                           onClick={() => handleColorChange(colorOption.value)}
                           className={`w-8 h-8 rounded-full border-2 transition-all ${
-                            formData.color === colorOption.value 
-                              ? 'border-foreground scale-110' 
+                            formData.color === colorOption.value
+                              ? 'border-foreground scale-110'
                               : 'border-muted-foreground/20 hover:border-muted-foreground/50'
                           }`}
                           style={{ backgroundColor: colorOption.value }}
@@ -360,7 +360,7 @@ export function HabitFormDialog({
               <h4 className="text-sm font-medium text-muted-foreground">Preview</h4>
               <div className="p-4 border rounded-lg bg-muted/30">
                 <div className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
                     style={{ backgroundColor: formData.color || '#3b82f6' }}
                   >
@@ -388,8 +388,8 @@ export function HabitFormDialog({
             <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isLoading}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >

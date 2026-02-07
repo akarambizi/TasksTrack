@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { 
+import {
     getAllCategories,
     getActiveCategories,
     getParentCategories,
@@ -62,7 +62,7 @@ export const useParentCategoriesQuery = () => {
  */
 export const useCreateCategoryMutation = () => {
     const queryClient = useQueryClient();
-    
+
     return useMutation({
         mutationFn: createCategory,
         onSuccess: () => {
@@ -73,7 +73,7 @@ export const useCreateCategoryMutation = () => {
 
 export const useUpdateCategoryMutation = () => {
     const queryClient = useQueryClient();
-    
+
     return useMutation({
         mutationFn: updateCategory,
         onSuccess: (_, variables) => {
@@ -85,7 +85,7 @@ export const useUpdateCategoryMutation = () => {
 
 export const useDeleteCategoryMutation = () => {
     const queryClient = useQueryClient();
-    
+
     return useMutation({
         mutationFn: deleteCategory,
         onSuccess: () => {
@@ -96,7 +96,7 @@ export const useDeleteCategoryMutation = () => {
 
 export const useArchiveCategoryMutation = () => {
     const queryClient = useQueryClient();
-    
+
     return useMutation({
         mutationFn: archiveCategory,
         onSuccess: () => {

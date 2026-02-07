@@ -50,8 +50,8 @@ namespace TasksTrack.Repositories
         {
             return await _context.CategoryGoals
                 .Include(cg => cg.Category)
-                .FirstOrDefaultAsync(cg => cg.CategoryId == categoryId 
-                                         && cg.UserId == userId 
+                .FirstOrDefaultAsync(cg => cg.CategoryId == categoryId
+                                         && cg.UserId == userId
                                          && cg.IsActive);
         }
 
@@ -91,8 +91,8 @@ namespace TasksTrack.Repositories
 
         public async Task<bool> HasActiveGoalAsync(int categoryId, string userId, int? excludeId = null)
         {
-            var query = _context.CategoryGoals.Where(cg => cg.CategoryId == categoryId 
-                                                         && cg.UserId == userId 
+            var query = _context.CategoryGoals.Where(cg => cg.CategoryId == categoryId
+                                                         && cg.UserId == userId
                                                          && cg.IsActive);
             if (excludeId.HasValue)
             {

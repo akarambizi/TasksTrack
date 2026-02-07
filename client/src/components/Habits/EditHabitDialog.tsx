@@ -170,10 +170,13 @@ export function EditHabitDialog({ habit, open, onOpenChange }: EditHabitDialogPr
               id="category"
               label="Category"
               placeholder="Select category (optional)"
-              value={formData.category}
-              onValueChange={handleChange('category')}
+              value={formData.category || 'none'}
+              onValueChange={(value) => {
+                const actualValue = value === 'none' ? '' : value;
+                handleChange('category')(actualValue);
+              }}
               options={[
-                { value: '', label: 'No Category' },
+                { value: 'none', label: 'No Category' },
                 ...categories.map(cat => ({
                   value: cat.name,
                   label: cat.name
@@ -222,8 +225,8 @@ export function EditHabitDialog({ habit, open, onOpenChange }: EditHabitDialogPr
             <Button type="button" variant="outline" onClick={handleClose}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={updateHabitMutation.isPending}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >

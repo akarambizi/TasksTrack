@@ -15,7 +15,7 @@ export function ConfirmDeleteDialog({ habit, open, onOpenChange }: ConfirmDelete
 
   const handleDelete = async () => {
     if (!habit) return;
-    
+
     try {
       await deleteHabitMutation.mutateAsync(habit.id);
       onOpenChange(false);
@@ -33,23 +33,23 @@ export function ConfirmDeleteDialog({ habit, open, onOpenChange }: ConfirmDelete
             Delete Habit
           </DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete <strong>"{habit?.name}"</strong>? 
+            Are you sure you want to delete <strong>"{habit?.name}"</strong>?
             This action cannot be undone and will permanently remove the habit and all its associated logs.
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter>
-          <Button 
-            type="button" 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={deleteHabitMutation.isPending}
           >
             Cancel
           </Button>
-          <Button 
-            type="button" 
-            variant="destructive" 
+          <Button
+            type="button"
+            variant="destructive"
             onClick={handleDelete}
             disabled={deleteHabitMutation.isPending}
           >

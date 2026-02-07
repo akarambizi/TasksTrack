@@ -118,9 +118,9 @@ export const Habits = () => {
                                             </button>
                                         }
                                     />
-                                    <HabitOptionsMenu 
-                                        habit={habit} 
-                                        onLogActivity={handleLogActivity} 
+                                    <HabitOptionsMenu
+                                        habit={habit}
+                                        onLogActivity={handleLogActivity}
                                         onEdit={handleEditHabit}
                                         onDelete={handleDeleteHabit}
                                     />

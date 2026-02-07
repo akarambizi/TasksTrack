@@ -15,7 +15,7 @@ export interface ICategory {
     updatedDate?: string;
     createdBy: string;
     updatedBy?: string;
-    
+
     // Navigation properties (populated when needed)
     parent?: ICategory;
     subCategories?: ICategory[];

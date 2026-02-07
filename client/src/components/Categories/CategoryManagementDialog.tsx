@@ -6,10 +6,10 @@ import { Plus, Edit, Trash2, Archive, RotateCcw, Settings, ChevronDown, ChevronR
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { 
-    useCategoriesQuery, 
+import {
+    useCategoriesQuery,
     useParentCategoriesQuery,
-    useCreateCategoryMutation, 
+    useCreateCategoryMutation,
     useUpdateCategoryMutation,
     useDeleteCategoryMutation,
     useArchiveCategoryMutation
@@ -142,7 +142,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, parentCategories,
             />
 
             <div className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50">
-                <div 
+                <div
                     className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium"
                     style={{ backgroundColor: formData.color }}
                 >
@@ -198,7 +198,7 @@ export const CategoryManagementDialog: React.FC = () => {
 
     const handleUpdateCategory = async (data: CategoryFormData) => {
         if (!editingCategory) return;
-        
+
         try {
             setError(null);
             const request: ICategoryUpdateRequest = {
@@ -348,7 +348,7 @@ export const CategoryManagementDialog: React.FC = () => {
                                         // Group categories by parent
                                         const parentCategories = categoriesArray.filter(cat => !cat.parentId);
                                         const subcategoriesMap = new Map<number, ICategory[]>();
-                                        
+
                                         categoriesArray.filter(cat => cat.parentId).forEach(subcat => {
                                             const parentId = subcat.parentId!;
                                             if (!subcategoriesMap.has(parentId)) {
@@ -385,7 +385,7 @@ export const CategoryManagementDialog: React.FC = () => {
                                                                         </button>
                                                                     )}
                                                                     {!hasSubcategories && <div className="w-6" />}
-                                                                    <div 
+                                                                    <div
                                                                         className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium"
                                                                         style={{ backgroundColor: category.color }}
                                                                     >
@@ -403,7 +403,7 @@ export const CategoryManagementDialog: React.FC = () => {
                                                                                 className="text-xs cursor-pointer hover:bg-muted-foreground/20"
                                                                                 onClick={() => handleOpenForm(subcat)}
                                                                             >
-                                                                                <div 
+                                                                                <div
                                                                                     className="w-3 h-3 rounded-full mr-1"
                                                                                     style={{ backgroundColor: subcat.color }}
                                                                                 />
@@ -464,7 +464,7 @@ export const CategoryManagementDialog: React.FC = () => {
                                                                     <div key={subcat.id} className="grid grid-cols-4 gap-4 py-2 pl-4 border-l-2 border-muted bg-muted/30 rounded">
                                                                         <div>
                                                                             <div className="flex items-center gap-2">
-                                                                                <div 
+                                                                                <div
                                                                                     className="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-medium"
                                                                                     style={{ backgroundColor: subcat.color }}
                                                                                 >

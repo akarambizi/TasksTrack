@@ -1,8 +1,8 @@
 import { apiGet, apiPost, apiPut, apiDelete, apiPatch } from './apiClient';
 import { ToastService } from '../services/toastService';
-import type { 
-    ICategory, 
-    ICategoryCreateRequest, 
+import type {
+    ICategory,
+    ICategoryCreateRequest,
     ICategoryUpdateRequest
 } from './categories.types';
 

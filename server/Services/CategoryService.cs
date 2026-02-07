@@ -122,6 +122,12 @@ namespace TasksTrack.Services
                 {
                     throw new InvalidOperationException("Cannot create circular reference: the parent category is currently a subcategory of this category.");
                 }
+
+                // Check if setting this parent would create a direct circular reference
+                if (category.ParentId == parentCategory.Id && parentCategory.Id == category.Id)
+                {
+                    throw new InvalidOperationException("Circular reference detected: Category cannot be its own parent");
+                }
             }
 
             existingCategory.Name = category.Name;

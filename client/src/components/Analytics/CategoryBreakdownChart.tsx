@@ -77,7 +77,7 @@ export const CategoryBreakdownChart: React.FC<ICategoryBreakdownChartProps> = ({
                         </div>
                         <div className="flex items-center justify-between gap-4">
                             <span className="text-muted-foreground">Sessions:</span>
-                            <span className="font-medium">{data.sessionCount}</span>
+                            <span className="font-medium">{data.totalSessions}</span>
                         </div>
                         <div className="flex items-center justify-between gap-4">
                             <span className="text-muted-foreground">Avg. Duration:</span>

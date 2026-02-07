@@ -6,7 +6,7 @@ namespace TasksTrack.Repositories
     {
         Task<IEnumerable<CategoryGoal>> GetAllAsync();
         Task<IEnumerable<CategoryGoal>> GetByUserIdAsync(string userId);
-        Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId);
+        Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId, string userId);
         Task<CategoryGoal?> GetByIdAsync(int id);
         Task<CategoryGoal?> GetActiveByCategoryAndUserAsync(int categoryId, string userId);
         Task AddAsync(CategoryGoal categoryGoal);

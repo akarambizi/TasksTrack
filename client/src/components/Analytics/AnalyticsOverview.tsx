@@ -71,19 +71,19 @@ export const AnalyticsOverview: React.FC = () => {
                 break;
             }
             case 'monthly': {
-                start = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-                end = new Date(now.getFullYear(), now.getMonth() - offset + 1, 0);
+                start = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+                end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0);
                 break;
             }
             case 'quarterly': {
-                const quarterMonth = Math.floor(now.getMonth() / 3) * 3 - (offset * 3);
+                const quarterMonth = Math.floor(now.getMonth() / 3) * 3 + (offset * 3);
                 start = new Date(now.getFullYear(), quarterMonth, 1);
                 end = new Date(now.getFullYear(), quarterMonth + 3, 0);
                 break;
             }
             case 'yearly': {
-                start = new Date(now.getFullYear() - offset, 0, 1);
-                end = new Date(now.getFullYear() - offset, 11, 31);
+                start = new Date(now.getFullYear() + offset, 0, 1);
+                end = new Date(now.getFullYear() + offset, 11, 31);
                 break;
             }
             default: {
@@ -140,7 +140,7 @@ export const AnalyticsOverview: React.FC = () => {
                 <AnalyticsCard
                     title="Active Habits"
                     value={isLoading ? '...' : data?.totalHabitsTracked || 0}
-                    subtitle={`${Math.round((data?.activityRate || 0) * 100)}% activity rate`}
+                    subtitle={`${Math.round(data?.activityRate || 0)}% activity rate`}
                     icon={Target}
                 />
 
@@ -205,7 +205,10 @@ export const AnalyticsOverview: React.FC = () => {
                     <AnalyticsCard
                         title="Sessions Goal"
                         value={`${data.goalProgress.actualSessions} / ${data.goalProgress.targetSessionsPerPeriod}`}
-                        subtitle={`${Math.round((data.goalProgress.actualSessions / data.goalProgress.targetSessionsPerPeriod) * 100)}% complete`}
+                        subtitle={data.goalProgress.targetSessionsPerPeriod > 0 
+                            ? `${Math.round((data.goalProgress.actualSessions / data.goalProgress.targetSessionsPerPeriod) * 100)}% complete`
+                            : 'No target set'
+                        }
                         icon={Activity}
                     />
 

@@ -28,29 +28,32 @@ export interface IHabitAnalytics {
     sessionCount: number;
     totalMinutes: number;
     averageSessionDuration: number;
+    completedDays: number;
     completionRate: number;
     currentStreak: number;
     longestStreak: number;
-    lastActivity: string;
+    lastActivityDate: string;
     activityIntensity: number;
 }
 
 export interface ICategoryAnalytics {
     category: string;
     habitCount: number;
-    sessionCount: number;
+    totalSessions: number;
     totalMinutes: number;
-    averageSessionDuration: number;
+    percentage: number;
+    completedDays: number;
     completionRate: number;
+    averageSessionDuration: number;
 }
 
 export interface IDailyProgress {
     date: string;
     sessionCount: number;
     totalMinutes: number;
-    completedHabits: number;
-    targetMinutes: number;
-    achievementRate: number;
+    habitsCompleted: number;
+    activityIntensity: number;
+    label: string;
 }
 
 export interface IGoalProgress {

@@ -30,11 +30,11 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId)
+        public async Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId, string userId)
         {
             return await _context.CategoryGoals
                 .Include(cg => cg.Category)
-                .Where(cg => cg.CategoryId == categoryId && cg.IsActive)
+                .Where(cg => cg.CategoryId == categoryId && cg.UserId == userId && cg.IsActive)
                 .OrderByDescending(cg => cg.CreatedDate)
                 .ToListAsync();
         }

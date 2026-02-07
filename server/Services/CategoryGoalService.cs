@@ -22,9 +22,9 @@ namespace TasksTrack.Services
             return await _repository.GetByUserIdAsync(userId);
         }
 
-        public async Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId)
+        public async Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId, string userId)
         {
-            return await _repository.GetActiveByCategoryIdAsync(categoryId);
+            return await _repository.GetActiveByCategoryIdAsync(categoryId, userId);
         }
 
         public async Task<CategoryGoal?> GetByIdAsync(int id)

@@ -40,7 +40,7 @@ export const DailyProgressChart: React.FC<IDailyProgressChartProps> = ({
     const chartData = data.map(item => ({
         ...item,
         formattedDate: format(parseISO(item.date), 'MMM dd'),
-        completionRate: Math.round(item.achievementRate)
+        completionRate: Math.round(item.activityIntensity)
     }));
 
     const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
@@ -60,7 +60,7 @@ export const DailyProgressChart: React.FC<IDailyProgressChartProps> = ({
                         </div>
                         <div className="flex items-center justify-between gap-4">
                             <span className="text-muted-foreground">Habits:</span>
-                            <span className="font-medium">{data.completedHabits}</span>
+                            <span className="font-medium">{data.habitsCompleted}</span>
                         </div>
                         <div className="flex items-center justify-between gap-4">
                             <span className="text-muted-foreground">Achievement:</span>

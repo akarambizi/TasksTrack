@@ -40,7 +40,8 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var result = await _categoryGoalService.GetActiveByCategoryIdAsync(categoryId);
+                var userId = GetUserId();
+                var result = await _categoryGoalService.GetActiveByCategoryIdAsync(categoryId, userId);
                 return Ok(result);
             }
             catch (Exception ex)

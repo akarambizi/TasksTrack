@@ -169,7 +169,7 @@ namespace TasksTrack.Services
 
             // Default goals if not specified
             var periodDays = endDate.DayNumber - startDate.DayNumber + 1;
-            var defaultTargetMinutes = targetMinutes ?? periodDays * 30; // 30 minutes per day default
+            var defaultTargetMinutes = targetMinutes ?? (decimal)periodDays * 30; // 30 minutes per day default
             var defaultTargetSessions = targetSessions ?? periodDays; // 1 session per day default
 
             return new GoalProgress

@@ -96,12 +96,13 @@ describe('AddHabitDialog', () => {
         fireEvent.click(addButton);
 
         await waitFor(() => {
-            expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+            expect(screen.getByLabelText(/habit name/i)).toBeInTheDocument();
             expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
             expect(screen.getByText(/metric type/i)).toBeInTheDocument();
             expect(screen.getByLabelText(/unit/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/daily target/i)).toBeInTheDocument();
-            expect(screen.getByText('Category')).toBeInTheDocument();
+            expect(screen.getByLabelText(/target amount/i)).toBeInTheDocument();
+            expect(screen.getByText(/target frequency/i)).toBeInTheDocument();
+            expect(screen.getByText(/category.*optional/i)).toBeInTheDocument();
         });
     });
 

@@ -1,3 +1,4 @@
+import { HABIT_COLORS, TARGET_FREQUENCY, HABIT_ICONS } from '@/types/constants';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -73,18 +74,18 @@ describe('FocusTimer', () => {
         id: 1,
         name: 'Test Habit',
         description: 'Test Description',
-        metricType: 'minutes',
+        metricType: 'duration',
         unit: 'min',
         target: 25,
-        targetFrequency: 'daily',
+        targetFrequency: TARGET_FREQUENCY.DAILY,
         category: 'Learning',
         isActive: true,
         createdDate: '2026-01-31T10:00:00Z',
         updatedDate: '2026-01-31T10:00:00Z',
         createdBy: 'user1',
         updatedBy: 'user1',
-        color: '#3B82F6',
-        icon: '📚'
+        color: HABIT_COLORS.BLUE,
+        icon: HABIT_ICONS.BOOK
     };
 
     beforeEach(() => {
@@ -787,18 +788,18 @@ describe('FocusTimer', () => {
             id: 1,
             name: 'Test Habit',
             description: 'A test habit',
-            metricType: 'minutes',
+            metricType: 'duration',
             unit: 'min',
             target: 25,
-            targetFrequency: 'daily',
+            targetFrequency: TARGET_FREQUENCY.DAILY,
             category: 'Learning',
             isActive: true,
             createdDate: '2024-01-01T00:00:00Z',
             updatedDate: '2024-01-01T00:00:00Z',
             createdBy: 'test-user-id',
             updatedBy: 'test-user-id',
-            color: '#3B82F6',
-            icon: '📚'
+            color: HABIT_COLORS.BLUE,
+            icon: HABIT_ICONS.BOOK
         };
 
         (useFocusTimerContext as ReturnType<typeof vi.fn>).mockReturnValue({

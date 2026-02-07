@@ -3,22 +3,53 @@ import { useHabitData } from '@/queries';
 import { CheckCircle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AddHabitDialog } from './AddHabitDialog';
+import { EditHabitDialog } from './EditHabitDialog';
+import { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
 import { AddHabitLogDialog } from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
 import { FocusSessionDialog } from '../FocusSession';
+import { CategoryManagementDialog } from '../Categories/CategoryManagementDialog';
 import { IHabit } from '@/api';
 
 export const Habits = () => {
     const { data: habits } = useHabitData('');
     const [selectedHabitForLogging, setSelectedHabitForLogging] = useState<IHabit | null>(null);
+    const [selectedHabitForEditing, setSelectedHabitForEditing] = useState<IHabit | null>(null);
+    const [selectedHabitForDeleting, setSelectedHabitForDeleting] = useState<IHabit | null>(null);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const handleLogActivity = (habit: IHabit) => {
         setSelectedHabitForLogging(habit);
     };
 
+    const handleEditHabit = (habit: IHabit) => {
+        setSelectedHabitForEditing(habit);
+        setIsEditDialogOpen(true);
+    };
+
+    const handleDeleteHabit = (habit: IHabit) => {
+        setSelectedHabitForDeleting(habit);
+        setIsDeleteDialogOpen(true);
+    };
+
     const handleCloseLogDialog = (open: boolean) => {
         if (!open) {
             setSelectedHabitForLogging(null);
+        }
+    };
+
+    const handleCloseEditDialog = (open: boolean) => {
+        setIsEditDialogOpen(open);
+        if (!open) {
+            setSelectedHabitForEditing(null);
+        }
+    };
+
+    const handleCloseDeleteDialog = (open: boolean) => {
+        setIsDeleteDialogOpen(open);
+        if (!open) {
+            setSelectedHabitForDeleting(null);
         }
     };
 
@@ -30,7 +61,10 @@ export const Habits = () => {
                         <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Your Habits</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400">Build and track your daily habits</p>
                     </div>
-                    <AddHabitDialog />
+                    <div className="flex gap-2">
+                        <CategoryManagementDialog />
+                        <AddHabitDialog />
+                    </div>
                 </div>
 
                 <div className="grid gap-4">
@@ -84,7 +118,12 @@ export const Habits = () => {
                                             </button>
                                         }
                                     />
-                                    <HabitOptionsMenu habit={habit} onLogActivity={handleLogActivity} />
+                                    <HabitOptionsMenu
+                                        habit={habit}
+                                        onLogActivity={handleLogActivity}
+                                        onEdit={handleEditHabit}
+                                        onDelete={handleDeleteHabit}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -99,6 +138,20 @@ export const Habits = () => {
                         onOpenChange={handleCloseLogDialog}
                     />
                 )}
+
+                {/* Edit Habit Dialog */}
+                <EditHabitDialog
+                    habit={selectedHabitForEditing}
+                    open={isEditDialogOpen}
+                    onOpenChange={handleCloseEditDialog}
+                />
+
+                {/* Delete Confirmation Dialog */}
+                <ConfirmDeleteDialog
+                    habit={selectedHabitForDeleting}
+                    open={isDeleteDialogOpen}
+                    onOpenChange={handleCloseDeleteDialog}
+                />
             </div>
         </section>
     );

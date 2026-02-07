@@ -45,6 +45,14 @@ builder.Services.AddControllers().AddOData(options =>
            .Expand()
            .Count()
            .SetMaxTop(null);
+}).ConfigureApiBehaviorOptions(options =>
+{
+    // Configure API behavior if needed
+}).AddJsonOptions(options =>
+{
+    // Handle circular references in JSON serialization
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 });
 
 // Add CORS services

@@ -1,4 +1,4 @@
-import { getHabitData, getHabitById, deleteHabit, archiveHabit, activateHabit, createHabit, IHabit } from '@/api';
+import { getHabitData, getHabitById, deleteHabit, archiveHabit, activateHabit, createHabit, updateHabit, IHabit } from '@/api';
 import { getHabitKey } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -85,6 +85,20 @@ export const useCreateHabitMutation = () => {
 
     return useMutation({
         mutationFn: createHabit,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: getHabitKey('') });
+        },
+    });
+};
+
+/**
+ * Mutation hook for updating an existing habit.
+ */
+export const useUpdateHabitMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (habit: IHabit) => updateHabit(habit),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getHabitKey('') });
         },

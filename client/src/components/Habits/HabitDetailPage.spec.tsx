@@ -1,3 +1,4 @@
+import { TARGET_FREQUENCY, HABIT_COLORS } from '@/types/constants';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -75,9 +76,9 @@ const mockHabit: IHabit = {
     target: 30,
     unit: 'minutes',
     metricType: 'duration',
-    targetFrequency: 'daily',
+    targetFrequency: TARGET_FREQUENCY.DAILY,
     category: 'Fitness',
-    color: '#3b82f6',
+    color: HABIT_COLORS.BLUE,
     isActive: true,
     createdBy: 'test-user',
     createdDate: '2024-01-01T00:00:00Z',
@@ -201,10 +202,10 @@ describe('HabitDetailPage', () => {
         const habitWithoutOptionalFields: IHabit = {
             ...mockHabit,
             description: '',
-            category: '',
-            color: '',
-            unit: '',
-            metricType: '',
+            category: undefined,
+            color: undefined,
+            icon: undefined,
+            metricType: 'binary',
             isActive: false,
         };
 
@@ -233,7 +234,7 @@ describe('HabitDetailPage', () => {
         it('should default to "units" when no unit or metricType', () => {
             renderWithProviders();
 
-            expect(screen.getByText('30 units daily')).toBeInTheDocument();
+            expect(screen.getByText('30 minutes daily')).toBeInTheDocument();
         });
 
         it('should use default color when not specified', () => {
@@ -273,7 +274,7 @@ describe('HabitDetailPage', () => {
 
     describe('with different habit configurations', () => {
         it('should handle weekly target frequency', () => {
-            const weeklyHabit = { ...mockHabit, targetFrequency: 'weekly' };
+            const weeklyHabit = { ...mockHabit, targetFrequency: TARGET_FREQUENCY.WEEKLY };
             (useHabitById as any).mockReturnValue(createMockQueryResult(weeklyHabit));
 
             renderWithProviders();
@@ -282,16 +283,16 @@ describe('HabitDetailPage', () => {
         });
 
         it('should use metricType as display unit when unit is not available', () => {
-            const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'reps' };
+            const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'count' as const };
             (useHabitById as any).mockReturnValue(createMockQueryResult(habitWithMetricType));
 
             renderWithProviders();
 
-            expect(screen.getByText('30 reps daily')).toBeInTheDocument();
+            expect(screen.getByText('30 count daily')).toBeInTheDocument();
         });
 
         it('should render different color styles', () => {
-            const redHabit = { ...mockHabit, color: '#ff0000' };
+            const redHabit = { ...mockHabit, color: HABIT_COLORS.RED };
             (useHabitById as any).mockReturnValue(createMockQueryResult(redHabit));
 
             renderWithProviders();

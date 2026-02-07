@@ -13,10 +13,11 @@ import { useNavigate } from "react-router-dom";
 interface HabitOptionsMenuProps {
   habit: IHabit;
   onEdit?: (habit: IHabit) => void;
+  onDelete?: (habit: IHabit) => void;
   onLogActivity?: (habit: IHabit) => void;
 }
 
-export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsMenuProps) => {
+export const HabitOptionsMenu = ({ habit, onEdit, onDelete, onLogActivity }: HabitOptionsMenuProps) => {
   const navigate = useNavigate();
   const deleteHabitMutation = useDeleteHabitMutation();
   const archiveHabitMutation = useArchiveHabitMutation();
@@ -46,7 +47,9 @@ export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsM
 
   // Handler for deleting a habit
   const handleDeleteHabit = () => {
-    deleteHabitMutation.mutate(habit.id);
+    if (onDelete) {
+      onDelete(habit);
+    }
   };
 
   // Handler for archiving/activating habit
@@ -61,8 +64,8 @@ export const HabitOptionsMenu = ({ habit, onEdit, onLogActivity }: HabitOptionsM
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button 
-          className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800" 
+        <button
+          className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
           disabled={isLoading}
         >
           <Settings size={16} className="text-slate-500 dark:text-slate-400" />

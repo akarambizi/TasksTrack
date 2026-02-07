@@ -1,12 +1,14 @@
 import { ToastTestButton } from '../ui/toast-test-button';
 import { ActivityGridContainer } from '../ActivityGrid';
+import { AnalyticsOverview } from '../Analytics';
 
 export const Dashboard = () => {
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+            <div className="space-y-8">
+                {/* Analytics Dashboard Section */}
+                <AnalyticsOverview />
 
-            <div className="space-y-6">
                 {/* Activity Grid Section */}
                 <ActivityGridContainer />
 

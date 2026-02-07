@@ -14,5 +14,7 @@ namespace TasksTrack.Data
         public DbSet<Habit> Habits { get; set; }
         public DbSet<HabitLog> HabitLogs { get; set; }
         public DbSet<FocusSession> FocusSessions { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<CategoryGoal> CategoryGoals { get; set; }
     }
 }

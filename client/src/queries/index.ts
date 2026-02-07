@@ -13,5 +13,8 @@ export * from './focusSessions';
 // Activity queries
 export * from './activity';
 
+// Analytics queries
+export * from './analytics';
+
 // Query keys
 export * from './queryKeys';

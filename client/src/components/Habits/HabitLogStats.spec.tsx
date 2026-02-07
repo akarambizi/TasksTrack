@@ -1,3 +1,4 @@
+import { TARGET_FREQUENCY } from '@/types/constants';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -63,7 +64,7 @@ const mockHabit: IHabit = {
     target: 30,
     unit: 'minutes',
     metricType: 'duration',
-    targetFrequency: 'daily',
+    targetFrequency: TARGET_FREQUENCY.DAILY,
     isActive: true,
     createdBy: 'test-user',
     createdDate: '2024-01-01T00:00:00Z',
@@ -178,7 +179,7 @@ describe('HabitLogStats', () => {
         const weeklyHabit: IHabit = {
             ...mockHabit,
             target: 200,
-            targetFrequency: 'weekly',
+            targetFrequency: TARGET_FREQUENCY.WEEKLY,
         };
 
         beforeEach(() => {
@@ -276,7 +277,7 @@ describe('HabitLogStats', () => {
         });
 
         it('should use metricType when unit is not available', () => {
-            const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'count' };
+            const habitWithMetricType = { ...mockHabit, unit: undefined, metricType: 'count' as const };
             (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
@@ -288,14 +289,14 @@ describe('HabitLogStats', () => {
         });
 
         it('should default to "units" when neither unit nor metricType is available', () => {
-            const habitWithoutUnit = { ...mockHabit, unit: '', metricType: '' };
+            const habitWithoutUnit = { ...mockHabit, unit: '', metricType: 'binary' as const };
             (useHabitLogsByHabitAndDateRange as any).mockImplementation(() =>
                 createMockQueryResult(mockHabitLogs)
             );
 
             renderWithQueryClient(<HabitLogStats habit={habitWithoutUnit} />);
 
-            const unitsText = screen.getAllByText('35 units');
+            const unitsText = screen.getAllByText('35 binary');
             expect(unitsText[0]).toBeInTheDocument();
         });
     });

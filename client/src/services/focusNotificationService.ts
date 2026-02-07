@@ -1,50 +1,52 @@
 import { ToastService } from './toastService';
 import { Howl } from 'howler';
 
-// Simple notification sound using clean embedded audio
-const sound = new Howl({
+// Audio configuration
+const AUDIO_CONFIG = {
     src: ['data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Dyvnc+BSWN2PTjgSYEC3bN6d2QQgwVXajk4qpXFwY9kNLz2YJJBxN/yOByhzEJEXLH8+OVSA0RXKfb56xdIAVIjdz1x4w2ChN5v+R6kzwLH2O76+KyaB4CMHu96YM'],
     html5: true,
-    volume: 0.3
-});
+    volume: 0.3,
+    preload: false
+};
+
+// Create and play sound, disposing after use to prevent pool exhaustion
+const playNotificationSound = () => {
+    try {
+        const sound = new Howl(AUDIO_CONFIG);
+        sound.play();
+        // Auto-dispose after playing to prevent memory leaks
+        sound.on('end', () => {
+            sound.unload();
+        });
+        sound.on('loaderror', () => {
+            sound.unload();
+        });
+    } catch (error) {
+        console.warn('Could not play notification sound:', error);
+    }
+};
 
 /**
  * Simple focus session notification service
  */
 export const focusNotificationService = {
     notifySessionStarted(habitName: string, duration: number) {
-        try {
-            sound.play();
-        } catch (error) {
-            console.warn('Could not play notification sound:', error);
-        }
+        playNotificationSound();
         ToastService.success(`${habitName} - ${duration}min session`, 'Focus Started');
     },
 
     notifySessionPaused(habitName: string) {
-        try {
-            sound.play();
-        } catch (error) {
-            console.warn('Could not play notification sound:', error);
-        }
+        playNotificationSound();
         ToastService.info(`${habitName} - Take a break`, 'Session Paused');
     },
 
     notifySessionResumed(habitName: string) {
-        try {
-            sound.play();
-        } catch (error) {
-            console.warn('Could not play notification sound:', error);
-        }
+        playNotificationSound();
         ToastService.success(`${habitName} - Back to work!`, 'Session Resumed');
     },
 
     notifySessionCompleted(habitName: string, actualMinutes: number) {
-        try {
-            sound.play();
-        } catch (error) {
-            console.warn('Could not play notification sound:', error);
-        }
+        playNotificationSound();
         ToastService.success(`${habitName} - ${actualMinutes}min completed`, 'Session Complete!');
     },
 
@@ -53,11 +55,7 @@ export const focusNotificationService = {
     },
 
     notifyCountdownWarning(timeLeft: string) {
-        try {
-            sound.play();
-        } catch (error) {
-            console.warn('Could not play notification sound:', error);
-        }
+        playNotificationSound();
         ToastService.warning(`${timeLeft} remaining`);
     },
 

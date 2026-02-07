@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface ISelectOption {
     value: string;
     label: string;
+    preview?: string; // Optional preview property for color options
 }
 
 interface ISelectFieldProps {

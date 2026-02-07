@@ -31,6 +31,14 @@ public static class DependencyInjectionSetup
         // Analytics services
         services.AddScoped<IAnalyticsService, AnalyticsService>();
 
+        // Category services
+        services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+        // CategoryGoal services
+        services.AddScoped<ICategoryGoalService, CategoryGoalService>();
+        services.AddScoped<ICategoryGoalRepository, CategoryGoalRepository>();
+
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAuthRepository, AuthRepository>();
 

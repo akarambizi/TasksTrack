@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TasksTrack.Data;
@@ -11,9 +12,11 @@ using TasksTrack.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(TasksTrackContext))]
-    partial class TasksTrackContextModelSnapshot : ModelSnapshot
+    [Migration("20260206083415_SeedDefaultCategories")]
+    partial class SeedDefaultCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace server.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text");
 
@@ -70,8 +70,6 @@ namespace server.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -337,15 +335,6 @@ namespace server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TasksTrack.Models.Category", b =>
-                {
-                    b.HasOne("TasksTrack.Models.Category", "Parent")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Parent");
-                });
-
             modelBuilder.Entity("TasksTrack.Models.CategoryGoal", b =>
                 {
                     b.HasOne("TasksTrack.Models.Category", "Category")
@@ -382,8 +371,6 @@ namespace server.Migrations
             modelBuilder.Entity("TasksTrack.Models.Category", b =>
                 {
                     b.Navigation("CategoryGoals");
-
-                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

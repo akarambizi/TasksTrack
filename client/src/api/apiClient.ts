@@ -82,6 +82,19 @@ export const apiPut = async <T>(endpoint: string, data: unknown, config?: AxiosR
 };
 
 /**
+ * Wrapper function for API PATCH requests
+ * @param endpoint - API endpoint path
+ * @param data - Optional data to send in request body
+ * @param config - Optional axios config
+ * @returns Promise with response data
+ */
+export const apiPatch = async <T>(endpoint: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
+  const url = getUrl(endpoint);
+  const response = await apiClient.patch<T>(url, data, config);
+  return response.data;
+};
+
+/**
  * Wrapper function for API DELETE requests
  * @param endpoint - API endpoint path
  * @param config - Optional axios config
@@ -92,5 +105,8 @@ export const apiDelete = async <T>(endpoint: string, config?: AxiosRequestConfig
   const response = await apiClient.delete<T>(url, config);
   return response.data;
 };
+
+// Export apiClient for direct use in other modules
+export { apiClient };
 
 // Default export removed as unused

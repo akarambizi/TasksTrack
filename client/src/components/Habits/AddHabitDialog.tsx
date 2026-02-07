@@ -8,12 +8,14 @@ import { useCreateHabitMutation } from "@/queries";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IHabit } from "@/api";
 import { useAuthContext } from "@/context/useAuthContext";
+import { useActiveCategoriesQuery } from '@/queries/categories';
 
 export function AddHabitDialog() {
   const [open, setOpen] = useState(false);
   const { formData, handleChange, resetForm, error, setError } = useHabitForm();
   const createHabitMutation = useCreateHabitMutation();
   const { user } = useAuthContext();
+  const { data: categories = [] } = useActiveCategoriesQuery();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,14 +142,12 @@ export function AddHabitDialog() {
                 placeholder="Select category"
                 value={formData.category}
                 onValueChange={handleChange('category')}
-                options={[
-                  { value: "Health", label: "Health" },
-                  { value: "Learning", label: "Learning" },
-                  { value: "Creative", label: "Creative" },
-                  { value: "Social", label: "Social" },
-                  { value: "Work", label: "Work" },
-                  { value: "Personal", label: "Personal" }
-                ]}
+                options={categories.map(category => ({
+                  value: category.name,
+                  label: category.name,
+                  icon: category.icon,
+                  color: category.color
+                }))}
               />
             </div>
             <FormField

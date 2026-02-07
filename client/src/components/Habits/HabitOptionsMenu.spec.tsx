@@ -191,16 +191,12 @@ describe('HabitOptionsMenu', () => {
         expect(mockActivateMutation).toHaveBeenCalledWith(1);
     });
 
-    it('calls delete mutation when delete is clicked', async () => {
+    it('calls onDelete when delete is clicked', async () => {
         const user = userEvent.setup();
 
-        const mockDeleteMutation = vi.fn();
-        MockedUseDeleteHabitMutation.mockReturnValue({
-            mutate: mockDeleteMutation,
-            isPending: false
-        });
+        const mockOnDelete = vi.fn();
 
-        renderHabitOptionsMenu();
+        renderHabitOptionsMenu({ onDelete: mockOnDelete });
 
         const trigger = screen.getByRole('button');
         await user.click(trigger);
@@ -208,7 +204,7 @@ describe('HabitOptionsMenu', () => {
         const deleteOption = await screen.findByText(/Delete Habit/i);
         await user.click(deleteOption);
 
-        expect(mockDeleteMutation).toHaveBeenCalledWith(1);
+        expect(mockOnDelete).toHaveBeenCalledWith(mockHabit);
     });
 
     it('disables trigger when mutations are pending', () => {

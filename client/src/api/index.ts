@@ -8,5 +8,7 @@ export * from './analytics';
 export * from './analytics.types';
 export * from './userAuth';
 export * from './userAuth.types';
+export * from './categories';
+export * from './categories.types';
 export * from './utils';
 export * from './apiClient';

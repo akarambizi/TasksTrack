@@ -1,5 +1,5 @@
 import { IHabit } from './habit.types';
-import { apiGet, apiPost, apiDelete } from './apiClient';
+import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
 
 /**
@@ -53,6 +53,22 @@ export const createHabit = async (habitData: Partial<IHabit>): Promise<IHabit> =
     }
 };
 
+/**
+ * Updates an existing habit.
+ * @param {IHabit} habit - The habit data to update.
+ * @returns {Promise<void>}
+ */
+export const updateHabit = async (habit: IHabit): Promise<void> => {
+    try {
+        const endpoint = `/api/habits/${habit.id}`;
+        await apiPut(endpoint, habit);
+        ToastService.success('Habit updated successfully');
+    } catch (error) {
+        console.error('Failed to update habit:', error);
+        ToastService.error('Failed to update habit');
+        throw error;
+    }
+};
 
 /**
  * Deletes a habit.

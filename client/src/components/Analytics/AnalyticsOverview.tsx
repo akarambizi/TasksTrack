@@ -55,7 +55,7 @@ export const AnalyticsOverview: React.FC = () => {
         }
     }, [period, weeklyQuery, monthlyQuery, quarterlyQuery, yearlyQuery]);
 
-    const { data, isLoading, error } = currentQuery;
+    const { data, isLoading, isError, error } = currentQuery;
 
     // Calculate period dates for display
     const periodDates = useMemo(() => {
@@ -98,7 +98,7 @@ export const AnalyticsOverview: React.FC = () => {
         };
     }, [period, offset]);
 
-    if (error) {
+    if (isError) {
         return (
             <div className="container mx-auto p-6">
                 <div className="text-center py-12">
@@ -166,7 +166,7 @@ export const AnalyticsOverview: React.FC = () => {
                     <DailyProgressChart
                         data={data?.dailyProgress || []}
                         isLoading={isLoading}
-                        error={error ? String(error) : null}
+                        error={isError && error ? (error as any).message : null}
                         title={`Daily Progress - ${period.charAt(0).toUpperCase() + period.slice(1)}`}
                         description="Your daily activity and progress over time"
                     />
@@ -176,7 +176,7 @@ export const AnalyticsOverview: React.FC = () => {
                 <HabitBreakdownChart
                     data={data?.habitBreakdown || []}
                     isLoading={isLoading}
-                    error={error ? String(error) : null}
+                    error={isError && error ? (error as any).message : null}
                     title="Habit Performance"
                     description="Time spent on each habit"
                 />
@@ -185,7 +185,7 @@ export const AnalyticsOverview: React.FC = () => {
                 <CategoryBreakdownChart
                     data={data?.categoryBreakdown || []}
                     isLoading={isLoading}
-                    error={error ? String(error) : null}
+                    error={isError && error ? (error as any).message : null}
                     title="Category Distribution"
                     description="Time allocation by category"
                 />

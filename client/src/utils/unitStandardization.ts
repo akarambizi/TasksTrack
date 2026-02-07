@@ -101,53 +101,17 @@ export const METRIC_TYPE_CONFIG = {
 
 export type MetricType = keyof typeof METRIC_TYPE_CONFIG;
 
-/**
- * Convert a value from any unit to the base unit for a metric type
- * This enables consistent aggregation in analytics
- */
-export function convertToBaseUnit(metricType: MetricType, value: number, fromUnit: string): number {
-  const config = METRIC_TYPE_CONFIG[metricType];
-  const converter = config.conversions[fromUnit as keyof typeof config.conversions];
-  
-  if (!converter) {
-    console.warn(`Unknown unit '${fromUnit}' for metric type '${metricType}'. Using value as-is.`);
-    return value;
-  }
-  
-  return converter(value);
-}
+// Analytics utility functions are available in the METRIC_TYPE_CONFIG for future implementation:
+// - Unit conversion functions to standardize values for analytics aggregation
+// - Base unit mapping for consistent data comparison
+// - Comprehensive metric type definitions for precise habit tracking
 
-/**
- * Get the base unit for a metric type
- * Useful for displaying aggregated values in analytics
- */
-export function getBaseUnit(metricType: MetricType): string {
-  return METRIC_TYPE_CONFIG[metricType].baseUnit;
-}
-
-/**
- * Standardize habit log values for analytics aggregation
- * This function takes raw habit log data and converts all values to base units
- */
-export interface HabitLogData {
-  habitId: number;
-  metricType: MetricType;
-  unit: string;
-  value: number;
-}
-
-export function standardizeHabitLogValues(logs: HabitLogData[]): HabitLogData[] {
-  return logs.map(log => ({
-    ...log,
-    value: convertToBaseUnit(log.metricType, log.value, log.unit),
-    unit: getBaseUnit(log.metricType)
-  }));
-}
-
-// Additional utility functions for future analytics enhancements:
+// These functions will be implemented when analytics features need them:
+// - convertToBaseUnit: Convert values to base units for standardization
+// - getBaseUnit: Get the base unit for a metric type
+// - standardizeHabitLogValues: Convert habit log values to base units for aggregation
 // - getAvailableUnits: Get all available units for a metric type
 // - isValidUnit: Validate if a unit is valid for a metric type  
 // - aggregateHabitLogsByMetricType: Group and aggregate logs by metric type
 // - formatValueWithUnit: Format a value with its unit for display
 // - getMetricTypeInfo: Get display-friendly metric type information
-// These will be exported when analytics features are implemented

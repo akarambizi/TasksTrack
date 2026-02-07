@@ -117,7 +117,7 @@ export function HabitFormDialog({
   useEffect(() => {
     if (formData.metricType && suggestedUnits.length > 0) {
       // If current unit is not valid for the selected metric type, reset to first option
-      if (!formData.unit || !suggestedUnits.includes(formData.unit)) {
+      if (!formData.unit || !suggestedUnits.includes(formData.unit as any)) {
         handleChange('unit')(suggestedUnits[0]);
       }
     }
@@ -158,17 +158,27 @@ export function HabitFormDialog({
     onOpenChange(false);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      handleClose();
+    } else {
+      onOpenChange(open);
+    }
+  };
+
   const handleColorChange = (colorValue: string) => {
     handleChange('color')(colorValue);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} noValidate>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
+            <DialogDescription>
+              {description}
+            </DialogDescription>
           </DialogHeader>
 
           {error && (
@@ -238,7 +248,6 @@ export function HabitFormDialog({
                     placeholder="Select a unit"
                     value={formData.unit}
                     onValueChange={handleChange('unit')}
-                    disabled={!formData.metricType}
                     options={suggestedUnits.map(unit => ({
                       value: unit,
                       label: unit
@@ -357,16 +366,18 @@ export function HabitFormDialog({
                   >
                     {formData.icon?.charAt(0) || '⭐'}
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h5 className="font-medium">{formData.name || 'Your Habit Name'}</h5>
-                    <p className="text-xs text-muted-foreground">
-                      Target: {formData.target || 0} {formData.unit || 'units'} {formData.targetFrequency || 'daily'}
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>
+                        Target: {formData.target || 0} {formData.unit || 'units'} {formData.targetFrequency || 'daily'}
+                      </span>
                       {formData.category && (
-                        <Badge variant="secondary" className="ml-2 text-xs">
+                        <Badge variant="secondary" className="text-xs">
                           {formData.category}
                         </Badge>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>

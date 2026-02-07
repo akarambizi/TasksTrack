@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IHabit } from "@/api";
 import { useActiveCategoriesQuery } from '@/queries/categories';
 import { Badge } from "@/components/ui/badge";
+import { METRIC_TYPE_CONFIG, type MetricType } from '@/utils/unitStandardization';
 
 interface HabitFormDialogProps {
   mode: 'create' | 'edit';
@@ -21,16 +22,28 @@ interface HabitFormDialogProps {
   loadingLabel: string;
 }
 
-// Unified metric type options that map to both specific units and generic types
-const METRIC_TYPE_OPTIONS = [
-  { value: 'duration', label: 'Time/Duration', units: ['minutes', 'hours', 'seconds'], examples: 'Exercise, Reading, Meditation' },
-  { value: 'count', label: 'Count/Repetitions', units: ['times', 'reps', 'sets'], examples: 'Push-ups, Tasks completed' },
-  { value: 'distance', label: 'Distance', units: ['miles', 'kilometers', 'steps'], examples: 'Running, Walking, Cycling' },
-  { value: 'pages', label: 'Pages/Items', units: ['pages', 'chapters', 'articles'], examples: 'Reading, Writing' },
-  { value: 'volume', label: 'Volume/Quantity', units: ['cups', 'glasses', 'liters'], examples: 'Water intake, Meals' },
-  { value: 'weight', label: 'Weight', units: ['lbs', 'kg', 'grams'], examples: 'Weight lifting, Body weight' },
-  { value: 'binary', label: 'Yes/No', units: ['completion'], examples: 'Daily check-in, Habit completion' }
-];
+// Unified metric type options using standardized configuration
+const METRIC_TYPE_OPTIONS = Object.entries(METRIC_TYPE_CONFIG).map(([value, config]) => ({
+  value: value as MetricType,
+  label: config.label,
+  units: [...config.units], // Create copy since readonly
+  examples: getExamplesForMetricType(value as MetricType)
+}));
+
+function getExamplesForMetricType(metricType: MetricType): string {
+  const examples = {
+    duration: 'Exercise, Reading, Meditation',
+    count: 'Push-ups, Tasks completed, Items processed',
+    distance: 'Running, Walking, Cycling',
+    pages: 'Reading, Writing, Research',
+    volume: 'Water intake, Meals, Supplements',
+    weight: 'Weight lifting, Body weight, Equipment',
+    binary: 'Daily check-in, Habit completion, Yes/No tasks',
+    percentage: 'Performance rating, Quiz scores, Efficiency',
+    currency: 'Savings, Spending, Budget tracking'
+  };
+  return examples[metricType];
+}
 
 const COLOR_OPTIONS = [
   { value: '#22c55e', label: 'Green', preview: '#22c55e' },
@@ -99,6 +112,16 @@ export function HabitFormDialog({
   // Get suggested units for selected metric type
   const selectedMetricType = METRIC_TYPE_OPTIONS.find(option => option.value === formData.metricType);
   const suggestedUnits = selectedMetricType?.units || [];
+
+  // Auto-reset unit when metric type changes to ensure consistency
+  useEffect(() => {
+    if (formData.metricType && suggestedUnits.length > 0) {
+      // If current unit is not valid for the selected metric type, reset to first option
+      if (!formData.unit || !suggestedUnits.includes(formData.unit)) {
+        handleChange('unit')(suggestedUnits[0]);
+      }
+    }
+  }, [formData.metricType, suggestedUnits, formData.unit]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -200,19 +223,26 @@ export function HabitFormDialog({
 
                 {selectedMetricType && (
                   <div className="text-xs text-muted-foreground p-3 bg-muted/50 rounded-lg">
-                    <p><strong>Suggested units:</strong> {suggestedUnits.join(', ')}</p>
+                    <p><strong>Available units:</strong> {suggestedUnits.join(', ')}</p>
                     <p><strong>Examples:</strong> {selectedMetricType.examples}</p>
+                    <p className="text-blue-600 dark:text-blue-400 mt-1">
+                      <strong>💡 Analytics benefit:</strong> Using standardized units enables precise progress tracking and comparison across habits
+                    </p>
                   </div>
                 )}
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <FormField
+                  <SelectField
                     id="unit"
-                    name="unit"
                     label="Unit"
-                    placeholder={suggestedUnits[0] || "e.g., minutes, pages, times"}
+                    placeholder="Select a unit"
                     value={formData.unit}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('unit')(e.target.value)}
+                    onValueChange={handleChange('unit')}
+                    disabled={!formData.metricType}
+                    options={suggestedUnits.map(unit => ({
+                      value: unit,
+                      label: unit
+                    }))}
                   />
                   
                   <FormField

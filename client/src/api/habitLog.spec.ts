@@ -92,7 +92,7 @@ describe('habitLog API', () => {
         it('should handle update errors with toast', async () => {
             const logId = 1;
             const errorMessage = 'Failed to update';
-            const mockRequest = { 
+            const mockRequest = {
                 habitId: 1,
                 value: 45,
                 date: '2024-01-15',

@@ -330,20 +330,72 @@ export const useCreateHabitMutation = () => {
 - Request/response structure patterns
 - Export patterns used in API files
 
-### 8. **Reference Existing Form Patterns**
+### 8. **Form Handling with React Hook Form + Zod**
 
-**Study the form handling approach in:**
+**MANDATORY: All forms must use React Hook Form with Zod validation.**
 
-- `client/src/hooks/useForm.ts` - for form validation and state management
-- `client/src/components/Auth/Login.tsx` - for form component structure
-- `client/src/components/Auth/SignUp.tsx` - for form submission patterns
+**Study the form handling patterns in:**
 
-**Follow the established patterns for:**
+- `client/src/hooks/useForm.ts` - for form hook patterns and integration
+- `client/src/hooks/useHabitLogForm.ts` - for simple form hook examples
+- `client/src/components/Auth/Login.tsx` - for Controller pattern implementation
+- `client/src/components/Auth/ResetPassword.tsx` - for FormField usage
+- `client/src/components/Habits/AddHabitLogDialog.tsx` - for complex forms
+- `client/docs/FORM_HANDLING.md` - for complete documentation
 
-- Form validation logic and error handling
-- State management approach using the `useForm` hook
-- Form submission and error display patterns
-- Input handling and form field structure
+**Form Development Rules:**
+
+1. **Schema-First Approach**: Always define Zod schema before building forms
+   ```typescript
+   export const loginFormSchema = z.object({
+     email: z.string().email('Invalid email address'),
+     password: z.string().min(6, 'Password must be at least 6 characters')
+   });
+   export type LoginFormData = z.infer<typeof loginFormSchema>;
+   ```
+
+2. **Simple Form Hooks**: Return `useForm` result directly, no complex interfaces
+   ```typescript
+   export function useLoginForm() {
+     return useForm<LoginFormData>({
+       resolver: zodResolver(loginFormSchema),
+       defaultValues: { email: '', password: '' },
+       mode: 'onChange' // Real-time validation
+     });
+   }
+   ```
+
+3. **Controller Pattern Only**: Never use register pattern, always use Controller
+   ```typescript
+   // ✅ Good - Controller pattern
+   <FormField control={control} name="email" label="Email" />
+   
+   // ❌ Bad - Register pattern  
+   <input {...register('email')} />
+   ```
+
+4. **Standardized Form Components**:
+   - `FormField` - Standard inputs (text, email, password, number, date)
+   - `TextareaField` - Multi-line text inputs
+   - `SelectField` - Dropdown selections
+   - All exported from `client/src/components/ui/`
+
+5. **Simple Test Mocks**: Mock only what you need, avoid complex helpers
+   ```typescript
+   // ✅ Simple and effective
+   vi.mocked(useLoginForm).mockReturnValue({
+     control: {} as any,
+     handleSubmit: vi.fn((fn) => fn),
+     formState: { isSubmitting: false },
+     reset: vi.fn()
+   } as any);
+   ```
+
+**Key Benefits:**
+- **Type Safety**: End-to-end type safety from schema to API
+- **Performance**: Minimal re-renders with uncontrolled components
+- **Consistency**: Single validation source for client and server
+- **Developer Experience**: Excellent TypeScript integration and debugging
 
 ### 9. **Follow Existing Context Patterns**
 

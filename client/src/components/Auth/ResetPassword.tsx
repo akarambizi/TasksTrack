@@ -1,15 +1,19 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/ui';
 import { useResetPasswordForm } from '@/hooks/useForm';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ResetPasswordFormData } from '@/types';
 
 export const ResetPassword = () => {
-    const { register, handleSubmit, formState: { errors }, onSubmit, isLoading } = useResetPasswordForm();
+    const { control, handleSubmit, formState: { isSubmitting }, onSubmit, isLoading } = useResetPasswordForm();
+
+    const handleFormSubmit = (_data: ResetPasswordFormData) => {
+        onSubmit(_data);
+    };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -17,27 +21,25 @@ export const ResetPassword = () => {
                         <p className="text-balance text-muted-foreground">Enter your email below to reset your password.</p>
                     </div>
                     <div className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="m@example.com"
-                                {...register('email')}
-                            />
-                            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="newPassword">New Password</Label>
-                            <Input
-                                id="newPassword"
-                                type="password"
-                                {...register('newPassword')}
-                            />
-                            {errors.newPassword && <p className="text-red-500">{errors.newPassword.message}</p>}
-                        </div>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? 'Resetting...' : 'Reset password'}
+                        <FormField
+                            name="email"
+                            control={control}
+                            type="email"
+                            label="Email"
+                            placeholder="m@example.com"
+                            required
+                        />
+
+                        <FormField
+                            name="newPassword"
+                            control={control}
+                            type="password"
+                            label="New Password"
+                            required
+                        />
+
+                        <Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
+                            {isSubmitting || isLoading ? 'Resetting...' : 'Reset password'}
                         </Button>
                         <Link to="/login">
                             <Button variant="outline" className="w-full">

@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { FormField, TextareaField } from '@/components/ui';
 
 import { useEffect } from 'react';
 import { useHabitLogForm } from '@/hooks/useHabitLogForm';
@@ -18,9 +16,9 @@ interface IAddHabitLogDialogProps {
 
 export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSuccess }: IAddHabitLogDialogProps) {
     const {
-        register,
+        control,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: { isSubmitting },
         reset
     } = useHabitLogForm(habit.id);
 
@@ -70,54 +68,35 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                     </DialogHeader>
 
                     <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="value">Value ({displayUnit})</Label>
-                            <Input
-                                id="value"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
-                                {...register('value')}
-                                data-testid="value-input"
-                            />
-                            {errors.value && (
-                                <p className="text-sm text-red-600" data-testid="value-error">
-                                    {errors.value.message}
-                                </p>
-                            )}
-                        </div>
+                        <FormField
+                            name="value"
+                            control={control}
+                            type="number"
+                            label={`Value (${displayUnit})`}
+                            placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
+                            step="0.01"
+                            min="0"
+                            data-testid="value-input"
+                            required
+                        />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="date">Date</Label>
-                            <Input
-                                id="date"
-                                type="date"
-                                {...register('date')}
-                                data-testid="date-input"
-                            />
-                            {errors.date && (
-                                <p className="text-sm text-red-600" data-testid="date-error">
-                                    {errors.date.message}
-                                </p>
-                            )}
-                        </div>
+                        <FormField
+                            name="date"
+                            control={control}
+                            type="date"
+                            label="Date"
+                            data-testid="date-input"
+                            required
+                        />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="notes">Notes (Optional)</Label>
-                            <Textarea
-                                id="notes"
-                                placeholder="How did it go? Any observations..."
-                                rows={3}
-                                {...register('notes')}
-                                data-testid="notes-input"
-                            />
-                            {errors.notes && (
-                                <p className="text-sm text-red-600" data-testid="notes-error">
-                                    {errors.notes.message}
-                                </p>
-                            )}
-                        </div>
+                        <TextareaField
+                            name="notes"
+                            control={control}
+                            label="Notes (Optional)"
+                            placeholder="How did it go? Any observations..."
+                            rows={3}
+                            data-testid="notes-input"
+                        />
                     </div>
 
                     <DialogFooter>

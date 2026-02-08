@@ -83,4 +83,3 @@ export type IAnalyticsResponse = z.infer<typeof analyticsResponseSchema>;
 export type IHabitAnalytics = z.infer<typeof habitAnalyticsSchema>;
 export type ICategoryAnalytics = z.infer<typeof categoryAnalyticsSchema>;
 export type IDailyProgress = z.infer<typeof dailyProgressSchema>;
-

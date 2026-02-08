@@ -65,7 +65,7 @@ describe('SignUp', () => {
 
     it('displays form data correctly', () => {
         renderSignUp();
-        
+
         // Check that the basic form fields are rendered with our simplified mock
         expect(screen.getByLabelText('Email')).toBeInTheDocument();
         expect(screen.getByLabelText('Password')).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe('SignUp', () => {
         // Just verify that form fields are present
         const emailInput = screen.getByLabelText('Email');
         const passwordInput = screen.getByLabelText('Password');
-        
+
         expect(emailInput).toBeInTheDocument();
         expect(passwordInput).toBeInTheDocument();
     });

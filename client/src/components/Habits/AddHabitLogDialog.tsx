@@ -1,127 +1,112 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { FormField, TextareaField } from '@/components/ui';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useHabitLogForm } from '@/hooks/useHabitLogForm';
-import { useCreateHabitLogMutation } from '@/queries';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { IHabit } from '@/api';
+import { useCreateHabitLogMutation } from '@/queries/habitLogs';
+import { IHabit } from '@/types';
+import { HabitLogFormData } from '@/types';
+import { useAuthContext } from '@/context/useAuthContext';
 
 interface IAddHabitLogDialogProps {
     habit: IHabit;
-    trigger?: React.ReactNode;
-    isOpen?: boolean;
-    onOpenChange?: (open: boolean) => void;
+    isOpen: boolean;
+    onClose: () => void;
+    onSubmitSuccess?: () => void;
 }
 
-export function AddHabitLogDialog({ habit, trigger, isOpen, onOpenChange }: IAddHabitLogDialogProps) {
-    const [internalOpen, setInternalOpen] = useState(false);
-    const { formData, handleChange, resetForm, error, setError } = useHabitLogForm(habit.id);
+export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSuccess }: IAddHabitLogDialogProps) {
+    const { user } = useAuthContext();
     const createHabitLogMutation = useCreateHabitLogMutation();
+    const {
+        control,
+        handleSubmit,
+        formState: { isSubmitting },
+        reset
+    } = useHabitLogForm(habit.id);
 
-    // Use external state if provided, otherwise use internal state
-    const open = isOpen !== undefined ? isOpen : internalOpen;
-    const setOpen = onOpenChange || setInternalOpen;
-
-    const onSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Validate form
-        if (!formData.value || formData.value <= 0) {
-            setError('Please enter a valid value greater than 0');
-            return;
+    // Set default values when dialog opens
+    useEffect(() => {
+        if (isOpen) {
+            const today = new Date().toISOString().split('T')[0];
+            reset({
+                date: today,
+                habitId: habit.id,
+                value: 0,
+                notes: '',
+                createdBy: user?.id || 'unknown'
+            });
         }
+    }, [isOpen, habit, reset, user]);
 
-        if (!formData.date) {
-            setError('Please select a date');
-            return;
-        }
-
-        setError(null);
-
+    const onSubmit = async (data: HabitLogFormData) => {
         try {
-            await createHabitLogMutation.mutateAsync(formData);
-            resetForm();
-            setOpen(false);
+            await createHabitLogMutation.mutateAsync(data);
+            onSubmitSuccess?.();
+            reset();
+            onClose();
         } catch (error) {
-            setError(error instanceof Error ? error.message : 'Failed to log habit');
+            // Error handling is managed by the mutation
+            console.error('Form submission error:', error);
         }
+    };
+
+    const handleClose = () => {
+        reset();
+        onClose();
     };
 
     const handleOpenChange = (newOpen: boolean) => {
-        setOpen(newOpen);
         if (!newOpen) {
-            resetForm();
+            handleClose();
         }
     };
+
+    if (!isOpen) return null;
 
     const displayUnit = habit.unit || habit.metricType || 'units';
 
     return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-            {trigger && (
-                <DialogTrigger asChild>
-                    {trigger}
-                </DialogTrigger>
-            )}
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[425px]" data-testid="add-habit-log-dialog">
-                <form onSubmit={onSubmit} data-testid="habit-log-form">
+                <form onSubmit={handleSubmit(onSubmit)} data-testid="habit-log-form">
                     <DialogHeader>
-                        <DialogTitle>Log Activity: {habit.name}</DialogTitle>
+                        <DialogTitle>Add Log Entry</DialogTitle>
                         <DialogDescription>
-                            Record your progress for today. Target: {habit.target} {displayUnit} {habit.targetFrequency}.
+                            Record your progress for {habit.name}. Target: {habit.target} {displayUnit}.
                         </DialogDescription>
                     </DialogHeader>
 
-                    {error && (
-                        <Alert variant="destructive" className="mb-4" data-testid="error-alert">
-                            <AlertDescription data-testid="error-message">{error}</AlertDescription>
-                        </Alert>
-                    )}
-
                     <div className="grid gap-4 py-4">
                         <FormField
-                            id="value"
                             name="value"
+                            control={control}
                             type="number"
                             label={`Value (${displayUnit})`}
                             placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
-                            value={formData.value?.toString()}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleChange('value')(parseFloat(e.target.value) || 0)
-                            }
-                            className=""
-                            testId="value-input"
                             step="0.01"
                             min="0"
+                            data-testid="value-input"
                             required
                         />
 
                         <FormField
-                            id="date"
                             name="date"
+                            control={control}
                             type="date"
                             label="Date"
-                            value={formData.date}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleChange('date')(e.target.value)
-                            }
-                            className=""
-                            testId="date-input"
+                            data-testid="date-input"
                             required
                         />
 
                         <TextareaField
-                            id="notes"
+                            name="notes"
+                            control={control}
                             label="Notes (Optional)"
                             placeholder="How did it go? Any observations..."
-                            value={formData.notes}
-                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                                handleChange('notes')(e.target.value)
-                            }
                             rows={3}
-                            testId="notes-input"
+                            data-testid="notes-input"
                         />
                     </div>
 
@@ -129,18 +114,18 @@ export function AddHabitLogDialog({ habit, trigger, isOpen, onOpenChange }: IAdd
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => handleOpenChange(false)}
+                            onClick={handleClose}
                             data-testid="cancel-button"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
-                            disabled={createHabitLogMutation.isPending}
+                            disabled={isSubmitting || createHabitLogMutation.isPending}
                             className="bg-green-600 hover:bg-green-700"
                             data-testid="submit-button"
                         >
-                            {createHabitLogMutation.isPending ? 'Logging...' : 'Log Activity'}
+                            {isSubmitting || createHabitLogMutation.isPending ? 'Logging...' : 'Log Activity'}
                         </Button>
                     </DialogFooter>
                 </form>

@@ -1,5 +1,5 @@
 import { useContext, createContext } from 'react';
-import { IFocusSession } from '@/api';
+import { IFocusSession } from '@/types';
 
 interface IFocusTimerState {
     timeLeft: number;

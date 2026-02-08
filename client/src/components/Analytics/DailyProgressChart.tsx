@@ -10,7 +10,7 @@ import {
     Line
 } from 'recharts';
 import { format, parseISO } from 'date-fns';
-import { IDailyProgress } from '@/api/analytics.types';
+import { IDailyProgress } from '@/types';
 import { ChartCard } from '@/components/ui/common/chart-card';
 
 interface IDailyProgressChartProps {

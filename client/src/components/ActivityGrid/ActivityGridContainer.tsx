@@ -4,7 +4,7 @@ import { ActivityGrid } from './ActivityGrid';
 import { useActivityGrid, useActivityStatistics } from '../../queries/activity';
 import { LoadingSkeleton } from '../ui/common/loading-skeleton';
 import { Card, CardContent } from '../ui/card';
-import { IActivityGridResponse } from '../../api/activity.types';
+import { IActivityGridResponse } from '@/types';
 
 interface IActivityGridContainerProps {
     /**

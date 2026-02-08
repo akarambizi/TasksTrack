@@ -1,4 +1,4 @@
-import { IHabit } from './habit.types';
+import { IHabit } from '@/types';
 import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
 

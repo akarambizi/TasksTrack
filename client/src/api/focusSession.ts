@@ -3,7 +3,7 @@ import type {
     IFocusSessionCreateRequest,
     IFocusSessionUpdateRequest,
     IFocusSessionAnalytics
-} from './focusSession.types';
+} from '@/types';
 import { apiGet, apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
 

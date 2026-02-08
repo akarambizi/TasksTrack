@@ -13,7 +13,6 @@ export const TARGET_FREQUENCY = {
   YEARLY: 'yearly'
 } as const;
 
-export type TargetFrequency = typeof TARGET_FREQUENCY[keyof typeof TARGET_FREQUENCY];
 
 // Default categories
 export const CATEGORIES = {
@@ -26,8 +25,6 @@ export const CATEGORIES = {
   CREATIVE: 'Creative',
   FINANCE: 'Finance'
 } as const;
-
-export type Category = typeof CATEGORIES[keyof typeof CATEGORIES];
 
 // Default colors for habits
 export const HABIT_COLORS = {
@@ -56,8 +53,6 @@ export const HABIT_ICONS = {
   TROPHY: 'Trophy',
   CALENDAR: 'calendar'
 } as const;
-
-export type HabitIcon = typeof HABIT_ICONS[keyof typeof HABIT_ICONS];
 
 // Default form values
 export const DEFAULT_HABIT_FORM = {

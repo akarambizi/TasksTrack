@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusSessions } from './FocusSessions';
-import type { IFocusSessionAnalytics } from '@/api/focusSession.types';
-import type { IHabit } from '@/api/habit.types';
+import type { IFocusSessionAnalytics } from '@/types';
+import type { IHabit } from '@/types';
 
 // Mock data with proper types
 const mockHabit: IHabit = {
@@ -18,7 +18,10 @@ const mockHabit: IHabit = {
     isActive: true,
     createdDate: '2024-01-01T10:00:00Z',
     createdBy: 'user1',
-    color: '#3b82f6'
+    updatedDate: null,
+    updatedBy: null,
+    color: '#3b82f6',
+    icon: null
 };
 
 const mockAnalytics: IFocusSessionAnalytics = {

@@ -1,4 +1,4 @@
-import { IFocusSession, FocusSessionStatus } from '@/api';
+import { IFocusSession, FocusSessionStatus } from '@/types';
 import { differenceInSeconds, parseISO, format, addSeconds } from 'date-fns';
 
 /**

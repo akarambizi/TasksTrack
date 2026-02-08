@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertTriangle } from "lucide-react";
-import { IHabit } from "@/api";
+import { IHabit } from "@/types";
 import { useDeleteHabitMutation } from "@/queries";
 
 interface ConfirmDeleteDialogProps {

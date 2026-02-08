@@ -7,7 +7,7 @@ import {
     isDateToday,
     getActivityDateRangeLabels
 } from './activityGrid.utils';
-import { IActivityGridResponse } from '../api/activity.types';
+import { IActivityGridResponse } from '@/types';
 import { format } from 'date-fns';
 
 const createMockData = (dates: string[]): IActivityGridResponse[] => {
@@ -21,7 +21,9 @@ const createMockData = (dates: string[]): IActivityGridResponse[] => {
             habitName: 'Exercise',
             metricType: 'Count',
             value: index + 1,
-            unit: 'times'
+            unit: 'times',
+            color: null,
+            icon: null
         }]
     }));
 };
@@ -93,14 +95,16 @@ describe('Activity Grid Utilities', () => {
                     habitName: 'Exercise',
                     metricType: 'Count',
                     value: 1,
-                    unit: 'times'
+                    unit: null,
+                    color: null,
+                    icon: null
                 }]
             };
 
             const content = createActivityTooltipContent(data);
             expect(content).toContain('1 activity');
             expect(content).toContain('Total: 10');
-            expect(content).toContain('Exercise: 1 times');
+            expect(content).toContain('Exercise: 1');
         });
 
         it('creates content for multiple activities', () => {
@@ -110,16 +114,16 @@ describe('Activity Grid Utilities', () => {
                 totalValue: 30,
                 intensityLevel: 3,
                 habitsSummary: [
-                    { habitId: 1, habitName: 'Exercise', metricType: 'Count', value: 1, unit: 'times' },
-                    { habitId: 2, habitName: 'Reading', metricType: 'Duration', value: 30, unit: 'minutes' }
+                    { habitId: 1, habitName: 'Exercise', metricType: 'Count', value: 1, unit: null, color: null, icon: null },
+                    { habitId: 2, habitName: 'Reading', metricType: 'Duration', value: 30, unit: null, color: null, icon: null }
                 ]
             };
 
             const content = createActivityTooltipContent(data);
             expect(content).toContain('3 activities');
             expect(content).toContain('Total: 30');
-            expect(content).toContain('Exercise: 1 times');
-            expect(content).toContain('Reading: 30 minutes');
+            expect(content).toContain('Exercise: 1');
+            expect(content).toContain('Reading: 30');
         });
 
         it('handles missing habitsSummary gracefully', () => {

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FocusTimer, FocusSessionHistory } from '@/components/FocusSession';
 import { useHabitData, useActiveFocusSession, useFocusSessionAnalytics } from '@/queries';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { FocusTimerProvider } from '@/context/FocusTimerContext';
 
 export const FocusSessions = () => {
@@ -117,7 +117,7 @@ export const FocusSessions = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <div>
-                                    <p className="font-medium text-lg">{activeSession.habit?.name}</p>
+                                    <p className="font-medium text-lg">{activeSession.habit?.name || 'Unknown Habit'}</p>
                                     <div className="flex items-center gap-3 mt-1">
                                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                                             activeSession.status === 'active'

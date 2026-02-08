@@ -1,7 +1,7 @@
 import { Calendar, Clock, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { IHabit, IHabitLog } from '@/api';
+import { IHabit, IHabitLog } from '@/types';
 
 interface IHabitLogItemProps {
     log: IHabitLog;

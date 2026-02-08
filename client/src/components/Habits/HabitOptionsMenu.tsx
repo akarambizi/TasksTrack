@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings, Archive, Play, Trash2, Edit, Plus, Eye } from "lucide-react";
-import { IHabit } from "@/api";
+import { IHabit } from "@/types";
 import { useDeleteHabitMutation, useArchiveHabitMutation, useActivateHabitMutation } from "@/queries";
 import { useNavigate } from "react-router-dom";
 

@@ -1,5 +1,5 @@
 import { useHabitLogs } from '@/queries';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { TrendingUp, Target } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSkeleton, HabitLogItem } from '@/components/ui';

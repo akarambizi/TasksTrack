@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IActivityGridResponse, IActivityStatisticsResponse } from '../../api/activity.types';
+import { IActivityGridResponse, IActivityStatisticsResponse } from '@/types';
 import { cn } from '../../lib/utils';
 import { ChevronDown } from 'lucide-react';
 import {

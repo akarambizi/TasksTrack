@@ -1,69 +1,74 @@
 import React from 'react';
-import { Input } from '@/components/ui/input';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import { Input, InputProps } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface IFormFieldProps {
-    id: string;
-    name: string;
-    type?: string;
+interface IFormFieldProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> extends Omit<InputProps, 'name'> {
+    name: TName;
+    control: Control<TFieldValues>;
     label: string;
-    placeholder?: string;
-    value: string | undefined;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    error?: string;
-    required?: boolean;
-    className?: string;
     labelAction?: React.ReactNode;
     testId?: string;
-    min?: string;
-    max?: string;
-    step?: string;
+    description?: string;
+    showLabel?: boolean;
 }
 
-export const FormField: React.FC<IFormFieldProps> = ({
-    id,
+export function FormField<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
     name,
-    type = "text",
+    control,
     label,
-    placeholder,
-    value,
-    onChange,
-    error,
     required = false,
     className = "",
     labelAction,
     testId,
-    min,
-    max,
-    step
-}) => {
+    description,
+    showLabel = true,
+    ...inputProps
+}: IFormFieldProps<TFieldValues, TName>) {
     return (
-        <div className={`grid gap-2 ${className}`}>
-            <div className="flex items-center">
-                <Label htmlFor={id}>
-                    {label}
-                    {required && <span className="text-red-500 ml-1">*</span>}
-                </Label>
-                {labelAction}
-            </div>
-            <Input
-                id={id}
-                name={name}
-                type={type}
-                placeholder={placeholder}
-                value={value || ''}
-                onChange={onChange}
-                required={required}
-                data-testid={testId}
-                min={min}
-                max={max}
-                step={step}
-            />
-            {error && (
-                <p className="text-red-500 text-sm" role="alert">
-                    {error}
-                </p>
+        <Controller
+            name={name}
+            control={control}
+            render={({ field, fieldState }) => (
+                <div className={`grid gap-2 ${className}`}>
+                    {showLabel && (
+                        <div className="flex items-center">
+                            <Label htmlFor={field.name}>
+                                {label}
+                                {required && <span className="text-red-500 ml-1">*</span>}
+                            </Label>
+                            {labelAction}
+                        </div>
+                    )}
+                    <Input
+                        {...field}
+                        id={field.name}
+                        required={required}
+                        data-testid={testId}
+                        aria-invalid={fieldState.invalid}
+                        onChange={(e) => {
+                            // Handle number inputs with coercion
+                            if (inputProps?.type === 'number') {
+                                const value = e.target.value === '' ? 0 : Number(e.target.value);
+                                field.onChange(value);
+                            } else {
+                                field.onChange(e.target.value);
+                            }
+                        }}
+                        {...inputProps}
+                    />
+                    {description && (
+                        <p className="text-sm text-muted-foreground">
+                            {description}
+                        </p>
+                    )}
+                    {fieldState.error && (
+                        <p className="text-red-500 text-sm" role="alert">
+                            {fieldState.error.message}
+                        </p>
+                    )}
+                </div>
             )}
-        </div>
+        />
     );
-};
+}

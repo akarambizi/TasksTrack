@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 
 interface IHabitInfoProps {
     habit: IHabit;

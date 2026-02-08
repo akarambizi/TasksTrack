@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getActivityGrid, getActivityStatistics } from './activity';
-import { IActivityGridResponse, IActivityStatisticsResponse } from './activity.types';
+import { IActivityGridResponse, IActivityStatisticsResponse } from '@/types';
 import { apiGet } from './apiClient';
 
 // Mock dependencies
@@ -29,12 +29,14 @@ describe('Activity API', () => {
                     totalValue: 30,
                     intensityLevel: 2,
                     habitsSummary: [
-                        { 
-                            habitId: 1, 
-                            habitName: 'Exercise', 
-                            metricType: 'Count', 
-                            value: 1, 
-                            unit: 'times' 
+                        {
+                            habitId: 1,
+                            habitName: 'Exercise',
+                            metricType: 'Count',
+                            value: 1,
+                            unit: null,
+                            color: null,
+                            icon: null
                         }
                     ]
                 }

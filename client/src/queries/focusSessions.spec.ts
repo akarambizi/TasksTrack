@@ -12,8 +12,9 @@ import {
     useCompleteFocusSessionMutation,
     useCancelFocusSessionMutation
 } from '@/queries/focusSessions';
-import { FocusSessionStatus } from '@/api';
+
 import * as focusSessionApi from '@/api/focusSession';
+import { FocusSessionStatus } from '@/types'; // Import from centralized types
 
 // Mock the API functions
 vi.mock('@/api/focusSession');

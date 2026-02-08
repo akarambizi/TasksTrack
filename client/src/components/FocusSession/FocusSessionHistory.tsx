@@ -11,7 +11,7 @@ import {
     SelectValue
 } from '@/components/ui/select';
 import { useFocusSessions } from '@/queries';
-import { IFocusSession, FocusSessionStatus } from '@/api';
+import { IFocusSession, FocusSessionStatus } from '@/types';
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, subDays } from 'date-fns';
 import { ODataQueryBuilder } from '@/utils/odataQueryBuilder';
 
@@ -269,7 +269,7 @@ export const FocusSessionHistory = ({
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <h4 className="font-medium text-sm">
-                                                    {session.habitName || session.habit?.name || 'Unknown Habit'}
+                                                    {session.habit?.name || 'Unknown Habit'}
                                                 </h4>
                                                 <Badge
                                                     variant="outline"

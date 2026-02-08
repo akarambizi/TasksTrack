@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { ActivityStatistics } from './ActivityStatistics';
 import { useActivityStatistics } from '../../queries/activity';
-import { IActivityStatisticsResponse } from '../../api/activity.types';
+import { IActivityStatisticsResponse } from '@/types';
 
 // Mock the activity statistics query hook
 vi.mock('../../queries/activity', () => ({

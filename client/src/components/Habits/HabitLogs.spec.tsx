@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HabitLogs } from './HabitLogs';
-import { IHabit, IHabitLog } from '../../api';
+import { IHabit, IHabitLog } from '@/types';
 import React from 'react';
 import { useHabitLogs } from '../../queries/habitLogs';
 import { AxiosError } from 'axios';
@@ -63,6 +63,10 @@ const mockHabit: IHabit = {
     updatedDate: '2024-01-01T00:00:00Z',
     createdBy: 'user1',
     updatedBy: 'user1',
+    description: 'Daily exercise tracking',
+    category: 'Health',
+    color: '#3b82f6',
+    icon: null
 };
 
 const mockHabitLogs: IHabitLog[] = [
@@ -247,7 +251,7 @@ describe('HabitLogs', () => {
     it('handles habit without target', () => {
         const habitWithoutTarget = {
             ...mockHabit,
-            target: undefined,
+            target: null,
         };
 
         vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult([mockHabitLogs[0]]));
@@ -266,7 +270,7 @@ describe('HabitLogs', () => {
     it('handles habit without unit', () => {
         const habitWithoutUnit = {
             ...mockHabit,
-            unit: undefined,
+            unit: null,
         };
 
         vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult([mockHabitLogs[0]]));

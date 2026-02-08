@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Target } from 'lucide-react';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 
 interface IHabitDetailsCardProps {
     habit: IHabit;

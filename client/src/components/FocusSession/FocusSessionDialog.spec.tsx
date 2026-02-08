@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusSessionDialog } from './FocusSessionDialog';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { HABIT_COLORS, TARGET_FREQUENCY } from '@/types/constants';
 
 // Mock the FocusTimerContext
@@ -30,7 +30,14 @@ describe('FocusSessionDialog', () => {
         createdBy: 'user1',
         createdDate: '2026-01-31T10:00:00Z',
         modifiedBy: 'user1',
-        modifiedDate: '2026-01-31T10:00:00Z'
+        modifiedDate: '2026-01-31T10:00:00Z',
+        unit: null,
+        target: null,
+        targetFrequency: null,
+        category: null,
+        updatedDate: null,
+        updatedBy: null,
+        icon: null
     };
 
     beforeEach(() => {

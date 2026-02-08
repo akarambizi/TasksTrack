@@ -1,15 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { FormType, useForm } from '@/hooks';
+import { FormField } from '@/components/ui';
+import { useResetPasswordForm } from '@/hooks/useForm';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const ResetPassword = () => {
-    const { formData, errors, handleChange, handleSubmit } = useForm({ email: '', newPassword: '' }, FormType.ResetPassword);
+    const { control, handleSubmit, formState: { isSubmitting }, onSubmit, isLoading } = useResetPasswordForm();
 
     return (
-        <form onSubmit={handleSubmit} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -17,13 +16,25 @@ export const ResetPassword = () => {
                         <p className="text-balance text-muted-foreground">Enter your email below to reset your password.</p>
                     </div>
                     <div className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" name="email" type="email" placeholder="m@example.com" value={formData.email} onChange={handleChange} />
-                            {errors.email && <p className="text-red-500">{errors.email}</p>}
-                        </div>
-                        <Button type="submit" className="w-full">
-                            Reset password
+                        <FormField
+                            name="email"
+                            control={control}
+                            type="email"
+                            label="Email"
+                            placeholder="m@example.com"
+                            required
+                        />
+
+                        <FormField
+                            name="password"
+                            control={control}
+                            type="password"
+                            label="New Password"
+                            required
+                        />
+
+                        <Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
+                            {isSubmitting || isLoading ? 'Resetting...' : 'Reset password'}
                         </Button>
                         <Link to="/login">
                             <Button variant="outline" className="w-full">

@@ -7,7 +7,7 @@ import {
     DialogTrigger
 } from '@/components/ui/dialog';
 import { Clock, Target } from 'lucide-react';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { FocusTimer } from './FocusTimer';
 import { HabitInfo } from '@/components/ui';
 import { FocusTimerProvider } from '@/context/FocusTimerContext';

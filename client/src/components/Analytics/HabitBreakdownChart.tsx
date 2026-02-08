@@ -8,7 +8,7 @@ import {
     Tooltip,
     ResponsiveContainer
 } from 'recharts';
-import { IHabitAnalytics } from '@/api/analytics.types';
+import { IHabitAnalytics } from '@/types';
 import { ChartCard } from '@/components/ui/common/chart-card';
 
 interface IHabitBreakdownChartProps {
@@ -90,8 +90,8 @@ export const HabitBreakdownChart: React.FC<IHabitBreakdownChartProps> = ({
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                    <XAxis 
-                        dataKey="name" 
+                    <XAxis
+                        dataKey="name"
                         axisLine={false}
                         tickLine={false}
                         tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
@@ -100,13 +100,13 @@ export const HabitBreakdownChart: React.FC<IHabitBreakdownChartProps> = ({
                         textAnchor="end"
                         height={60}
                     />
-                    <YAxis 
+                    <YAxis
                         axisLine={false}
                         tickLine={false}
                         tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        label={{ 
-                            value: 'Minutes', 
-                            angle: -90, 
+                        label={{
+                            value: 'Minutes',
+                            angle: -90,
                             position: 'insideLeft',
                             style: { textAnchor: 'middle' }
                         }}

@@ -1,5 +1,5 @@
 import { format, startOfWeek, endOfWeek } from 'date-fns';
-import { IActivityGridResponse } from '../api/activity.types';
+import { IActivityGridResponse } from '@/types';
 
 /**
  * Activity grid utility functions for organizing and formatting activity data

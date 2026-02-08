@@ -1,9 +1,25 @@
 import authData from './auth.ts';
-import { IAuthData, IAuthResult } from '../../../api/userAuth.types.ts';
+import { IAuthResult } from '@/types';
 import { Request, Response, NextFunction } from 'express';
 
+// Simple mock user structure for testing
+interface MockUser {
+  id: number;
+  email: string;
+  password: string;
+  name?: string;
+}
+
 // Response objects for each auth endpoint
-const loginSuccessResponse = (user: IAuthData): IAuthResult & { token: string } => ({ success: true, token: `mock-token-${user.email}`, message: 'Login successful' });
+const loginSuccessResponse = (user: MockUser): IAuthResult => ({
+  success: true,
+  message: 'Login successful',
+  data: {
+    user: { id: user.id, email: user.email, name: user.name },
+    token: `mock-token-${user.email}`,
+    refreshToken: `mock-refresh-token-${user.id}`
+  }
+});
 const loginFailureResponse: IAuthResult = { success: false, message: 'Invalid credentials' };
 
 const registerSuccessResponse: IAuthResult = { success: true, message: 'Registration successful' };
@@ -14,7 +30,7 @@ const resetPasswordFailureResponse: IAuthResult = { success: false, message: 'Us
 
 const logoutResponse: IAuthResult = { success: true, message: 'Logout successful' };
 
-function getUsers(): IAuthData[] {
+function getUsers(): MockUser[] {
     return authData.auth;
 }
 
@@ -22,7 +38,7 @@ export default function authMiddleware(req: Request, res: Response, next: NextFu
     if (req.method === 'POST' && req.path === '/auth/login') {
         const { email, password } = req.body;
         const users = getUsers();
-        const user = users.find((u: IAuthData) => u.email === email && u.password === password);
+        const user = users.find((u: MockUser) => u.email === email && u.password === password);
         if (!user) {
             return res.status(401).jsonp(loginFailureResponse);
         }
@@ -32,7 +48,7 @@ export default function authMiddleware(req: Request, res: Response, next: NextFu
     if (req.method === 'POST' && req.path === '/auth/register') {
         const { email } = req.body;
         const users = getUsers();
-        if (users.find((u: IAuthData) => u.email === email)) {
+        if (users.find((u: MockUser) => u.email === email)) {
             return res.status(400).jsonp(registerFailureResponse);
         }
         return res.jsonp(registerSuccessResponse);
@@ -41,7 +57,7 @@ export default function authMiddleware(req: Request, res: Response, next: NextFu
     if (req.method === 'POST' && req.path === '/auth/reset-password') {
         const { email } = req.body;
         const users = getUsers();
-        const user = users.find((u: IAuthData) => u.email === email);
+        const user = users.find((u: MockUser) => u.email === email);
         if (!user) {
             return res.status(404).jsonp(resetPasswordFailureResponse);
         }

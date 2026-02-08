@@ -17,6 +17,7 @@
     "clean": "npm run analyze && npm run test -- --run"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-label": "^2.0.2",
@@ -35,11 +36,13 @@
     "react": "^18.2.0",
     "react-cookie": "^8.0.1",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.71.1",
     "react-router-dom": "^7.13.0",
     "react-timer-hook": "^4.0.5",
     "recharts": "^3.7.0",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

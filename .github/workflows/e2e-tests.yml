@@ -48,7 +48,7 @@ jobs:
 
     - name: Run E2E tests
       working-directory: ./client
-      run: npm run test:e2e:desktop
+      run: npx playwright test --project=chromium --project=firefox --project=webkit --reporter=list
       env:
         CI: true
 

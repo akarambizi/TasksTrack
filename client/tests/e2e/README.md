@@ -18,7 +18,7 @@ tests/e2e/
 ├── README.md                # This file
 ├── base-setup.ts           # Base test with common setup
 ├── auth.spec.ts            # Authentication tests
-├── basic.spec.ts           # Basic functionality tests  
+├── basic.spec.ts           # Basic functionality tests
 ├── habits.spec.ts          # Habits management tests
 ├── focus-timer.spec.ts     # Focus timer tests
 └── constants/

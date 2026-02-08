@@ -1,5 +1,5 @@
 import { useHabitLogsByHabitAndDateRange } from '@/queries';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 
 import { TrendingUp, Target, Calendar, Award } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, startOfDay, endOfDay } from 'date-fns';

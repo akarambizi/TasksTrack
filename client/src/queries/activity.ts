@@ -6,7 +6,7 @@ import {
 import {
     IActivityGridResponse,
     IActivityStatisticsResponse
-} from '../api/activity.types';
+} from '@/types';
 import { ACTIVITY_KEYS } from './queryKeys';
 import { CACHE_TIMES } from './constants';
 

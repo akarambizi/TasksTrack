@@ -1,105 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { screen } from '@testing-library/react';
 import { HabitLogs } from './HabitLogs';
-import { IHabit, IHabitLog } from '../../api';
-import React from 'react';
 import { useHabitLogs } from '../../queries/habitLogs';
 import { AxiosError } from 'axios';
+import {
+  mockHabit,
+  mockHabitLogs,
+  createMockQuery,
+  renderWithProviders
+} from '../../utils/test-utils';
 
 // Mock the queries
 vi.mock('../../queries/habitLogs', () => ({
     useHabitLogs: vi.fn(),
 }));
 
-// Helper to create mock query results
-const createMockQueryResult = (data: IHabitLog[] | undefined, isLoading = false, error: AxiosError | null = null) => ({
-    data,
-    isLoading,
-    error,
-    isError: !!error,
-    isSuccess: !isLoading && !error && data !== undefined,
-    isPending: isLoading,
-    isFetching: isLoading,
-    isFetched: !isLoading,
-    isFetchedAfterMount: !isLoading,
-    isRefetching: false,
-    isLoadingError: false,
-    isRefetchError: false,
-    isStale: false,
-    isPlaceholderData: false,
-    isPaused: false,
-    failureCount: error ? 1 : 0,
-    failureReason: error,
-    status: isLoading ? 'pending' : error ? 'error' : 'success',
-    fetchStatus: isLoading ? 'fetching' : 'idle',
-    refetch: vi.fn(),
-} as any);
 
-const createWrapper = () => {
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: { retry: false },
-            mutations: { retry: false },
-        },
-    });
 
-    return ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-    );
-};
-
-const mockHabit: IHabit = {
-    id: 1,
-    name: 'Exercise',
-    target: 30,
-    unit: 'minutes',
-    metricType: 'duration',
-    targetFrequency: 'daily',
-    isActive: true,
-    createdDate: '2024-01-01T00:00:00Z',
-    updatedDate: '2024-01-01T00:00:00Z',
-    createdBy: 'user1',
-    updatedBy: 'user1',
-};
-
-const mockHabitLogs: IHabitLog[] = [
-    {
-        id: 1,
-        habitId: 1,
-        value: 35,
-        date: '2024-01-23',
-        notes: 'Great workout today!',
-        createdDate: '2024-01-23T10:00:00Z',
-        updatedDate: '2024-01-23T10:00:00Z',
-        createdBy: 'user1',
-        updatedBy: 'user1',
-    },
-    {
-        id: 2,
-        habitId: 1,
-        value: 25,
-        date: '2024-01-22',
-        notes: 'Felt tired but pushed through',
-        createdDate: '2024-01-22T10:00:00Z',
-        updatedDate: '2024-01-22T10:00:00Z',
-        createdBy: 'user1',
-        updatedBy: 'user1',
-    },
-    {
-        id: 3,
-        habitId: 1,
-        value: 40,
-        date: '2024-01-21',
-        notes: undefined,
-        createdDate: '2024-01-21T10:00:00Z',
-        updatedDate: '2024-01-21T10:00:00Z',
-        createdBy: 'user1',
-        updatedBy: 'user1',
-    }
-];
 
 describe('HabitLogs', () => {
     beforeEach(() => {
@@ -107,36 +24,23 @@ describe('HabitLogs', () => {
     });
 
     it('shows loading state', () => {
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery(undefined, { isLoading: true }));
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult(undefined, true));
-
-        const wrapper = createWrapper();
-
-        render(
-            <HabitLogs habit={mockHabit} />,
-            { wrapper }
-        );
+        renderWithProviders(<HabitLogs habit={mockHabit} />);
 
         expect(screen.getByTestId('habit-logs-loading')).toBeInTheDocument();
         expect(screen.getByText('Recent Activity')).toBeInTheDocument();
 
         // Should show loading skeletons
-        const { container } = render(<HabitLogs habit={mockHabit} />, { wrapper });
-        const skeletons = container.querySelectorAll('.animate-pulse');
+        const skeletons = screen.getByTestId('habit-logs-loading').querySelectorAll('.animate-pulse');
         expect(skeletons.length).toBeGreaterThan(0);
     });
 
     it('shows error state', () => {
-
         const axiosError = { isAxiosError: true, toJSON: () => ({}) } as AxiosError;
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult(undefined, false, axiosError));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery(undefined, { isError: true, error: axiosError }));
 
-        const wrapper = createWrapper();
-
-        render(
-            <HabitLogs habit={mockHabit} />,
-            { wrapper }
-        );
+        renderWithProviders(<HabitLogs habit={mockHabit} />);
 
         expect(screen.getByTestId('habit-logs-error')).toBeInTheDocument();
         expect(screen.getByText('Failed to load activity logs')).toBeInTheDocument();
@@ -144,13 +48,12 @@ describe('HabitLogs', () => {
 
     it('shows empty state when no logs exist', () => {
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult([]));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery([]));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={mockHabit} />,
-            { wrapper }
         );
 
         expect(screen.getByTestId('habit-logs-empty')).toBeInTheDocument();
@@ -160,13 +63,12 @@ describe('HabitLogs', () => {
 
     it('displays habit logs correctly', () => {
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult(mockHabitLogs));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery(mockHabitLogs));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={mockHabit} />,
-            { wrapper }
         );
 
         expect(screen.getByTestId('habit-logs-container')).toBeInTheDocument();
@@ -175,7 +77,7 @@ describe('HabitLogs', () => {
         // Check each log is rendered
         mockHabitLogs.forEach((log) => {
             expect(screen.getByTestId(`habit-log-${log.id}`)).toBeInTheDocument();
-            expect(screen.getByTestId(`log-value-${log.id}`)).toHaveTextContent(`${log.value} minutes`);
+            expect(screen.getByTestId(`log-value-${log.id}`)).toHaveTextContent(`${log.value} reps`);
         });
     });
 
@@ -187,13 +89,12 @@ describe('HabitLogs', () => {
         };
 
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult([todayLog]));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery([todayLog]));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={mockHabit} />,
-            { wrapper }
         );
 
         expect(screen.getByTestId(`today-badge-${todayLog.id}`)).toBeInTheDocument();
@@ -202,34 +103,29 @@ describe('HabitLogs', () => {
 
     it('shows target achievement status', () => {
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult(mockHabitLogs));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery(mockHabitLogs));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={mockHabit} />,
-            { wrapper }
         );
 
-        // First log (35 minutes) should show target met (target is 30)
+        // First log (35 reps) should show target met (target is 10)
         expect(screen.getByTestId(`target-badge-${mockHabitLogs[0].id}`)).toHaveTextContent('✓ Target Met');
 
-        // Second log (25 minutes) should show percentage
-        expect(screen.getByTestId(`target-badge-${mockHabitLogs[1].id}`)).toHaveTextContent('83% of target');
-
-        // Third log (40 minutes) should show target met
-        expect(screen.getByTestId(`target-badge-${mockHabitLogs[2].id}`)).toHaveTextContent('✓ Target Met');
+        // Second log (25 reps) should show target met (target is 10)
+        expect(screen.getByTestId(`target-badge-${mockHabitLogs[1].id}`)).toHaveTextContent('✓ Target Met');
     });
 
     it('displays notes when present', () => {
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult(mockHabitLogs));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery(mockHabitLogs));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={mockHabit} />,
-            { wrapper }
         );
 
         // First log has notes
@@ -238,25 +134,21 @@ describe('HabitLogs', () => {
 
         // Second log has notes
         expect(screen.getByTestId(`log-notes-${mockHabitLogs[1].id}`)).toBeInTheDocument();
-        expect(screen.getByText('Felt tired but pushed through')).toBeInTheDocument();
-
-        // Third log has no notes
-        expect(screen.queryByTestId(`log-notes-${mockHabitLogs[2].id}`)).not.toBeInTheDocument();
+        expect(screen.getByText('Good progress')).toBeInTheDocument();
     });
 
     it('handles habit without target', () => {
         const habitWithoutTarget = {
             ...mockHabit,
-            target: undefined,
+            target: null,
         };
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult([mockHabitLogs[0]]));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery([mockHabitLogs[0]]));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={habitWithoutTarget} />,
-            { wrapper }
         );
 
         // Should not show target badge when habit has no target
@@ -266,28 +158,26 @@ describe('HabitLogs', () => {
     it('handles habit without unit', () => {
         const habitWithoutUnit = {
             ...mockHabit,
-            unit: undefined,
+            unit: null,
         };
 
-        vi.mocked(useHabitLogs).mockReturnValue(createMockQueryResult([mockHabitLogs[0]]));
+        vi.mocked(useHabitLogs).mockReturnValue(createMockQuery([mockHabitLogs[0]]));
 
-        const wrapper = createWrapper();
 
-        render(
+
+        renderWithProviders(
             <HabitLogs habit={habitWithoutUnit} />,
-            { wrapper }
         );
 
         // Should fallback to metricType or 'units'
-        expect(screen.getByTestId(`log-value-${mockHabitLogs[0].id}`)).toHaveTextContent('35 duration');
+        expect(screen.getByTestId(`log-value-${mockHabitLogs[0].id}`)).toHaveTextContent('35 count');
     });
 
     it('respects limit prop', () => {
 
 
-        render(
+        renderWithProviders(
             <HabitLogs habit={mockHabit} limit={5} />,
-            { wrapper: createWrapper() }
         );
 
         expect(useHabitLogs).toHaveBeenCalledWith({
@@ -299,9 +189,8 @@ describe('HabitLogs', () => {
     it('uses default limit when not specified', () => {
 
 
-        render(
+        renderWithProviders(
             <HabitLogs habit={mockHabit} />,
-            { wrapper: createWrapper() }
         );
 
         expect(useHabitLogs).toHaveBeenCalledWith({

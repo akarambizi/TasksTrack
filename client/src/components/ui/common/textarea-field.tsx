@@ -1,49 +1,56 @@
 import React from 'react';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-interface ITextareaFieldProps {
-    id: string;
+interface ITextareaFieldProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> extends Omit<React.ComponentProps<'textarea'>, 'name'> {
+    name: TName;
+    control: Control<TFieldValues>;
     label: string;
-    placeholder?: string;
-    value: string | undefined;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    error?: string;
-    required?: boolean;
-    className?: string;
-    rows?: number;
     testId?: string;
+    description?: string;
 }
 
-export const TextareaField: React.FC<ITextareaFieldProps> = ({
-    id,
+export function TextareaField<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
+    name,
+    control,
     label,
-    placeholder,
-    value,
-    onChange,
-    error,
     required = false,
     className = "",
-    rows = 3,
-    testId
-}) => {
+    testId,
+    description,
+    ...textareaProps
+}: ITextareaFieldProps<TFieldValues, TName>) {
     return (
-        <div className={`grid gap-2 ${className}`}>
-            <Label htmlFor={id}>
-                {label}
-                {required && <span className="text-red-500 ml-1">*</span>}
-            </Label>
-            <Textarea
-                id={id}
-                placeholder={placeholder}
-                value={value || ''}
-                onChange={onChange}
-                rows={rows}
-                data-testid={testId}
-            />
-            {error && (
-                <p className="text-sm text-red-500 mt-1">{error}</p>
+        <Controller
+            name={name}
+            control={control}
+            render={({ field, fieldState }) => (
+                <div className={`grid gap-2 ${className}`}>
+                    <Label htmlFor={field.name}>
+                        {label}
+                        {required && <span className="text-red-500 ml-1">*</span>}
+                    </Label>
+                    <Textarea
+                        {...field}
+                        id={field.name}
+                        required={required}
+                        data-testid={testId}
+                        aria-invalid={fieldState.invalid}
+                        {...textareaProps}
+                    />
+                    {description && (
+                        <p className="text-sm text-muted-foreground">
+                            {description}
+                        </p>
+                    )}
+                    {fieldState.error && (
+                        <p className="text-red-500 text-sm mt-1" role="alert">
+                            {fieldState.error.message}
+                        </p>
+                    )}
+                </div>
             )}
-        </div>
+        />
     );
-};
+}

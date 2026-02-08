@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useHabitById } from '@/queries';
 import { useFocusSessionsByHabit, useResumeFocusSessionMutation } from '@/queries/focusSessions';
 import { HabitLogs } from './HabitLogs';
 import { HabitLogStats } from './HabitLogStats';
-import { AddHabitLogDialog } from './AddHabitLogDialog';
+import AddHabitLogDialog from './AddHabitLogDialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Activity, Calendar, Clock } from 'lucide-react';
 import {
@@ -16,6 +17,7 @@ import {
 export const HabitDetailPage = () => {
     const { habitId } = useParams<{ habitId: string }>();
     const navigate = useNavigate();
+    const [isLogDialogOpen, setIsLogDialogOpen] = useState(false);
     const { data: habit, isLoading, error } = useHabitById(Number(habitId));
     const { data: focusSessions = [], isLoading: isLoadingFocusSessions } = useFocusSessionsByHabit(Number(habitId));
     const resumeMutation = useResumeFocusSessionMutation();
@@ -48,7 +50,15 @@ export const HabitDetailPage = () => {
                 title={habit.name}
                 subtitle={habit.description || 'Track your progress and build consistency'}
                 backPath="/habits"
-                actions={<AddHabitLogDialog habit={habit} />}
+                actions={
+                    <button
+                        onClick={() => setIsLogDialogOpen(true)}
+                        className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium flex items-center gap-2"
+                    >
+                        <Activity size={16} />
+                        Add Log
+                    </button>
+                }
             />
 
             {/* Habit Info Card */}
@@ -120,6 +130,15 @@ export const HabitDetailPage = () => {
                     </Card>
                 )}
             </div>
+
+            {/* Add Habit Log Dialog */}
+            {habit && (
+                <AddHabitLogDialog
+                    habit={habit}
+                    isOpen={isLogDialogOpen}
+                    onClose={() => setIsLogDialogOpen(false)}
+                />
+            )}
         </div>
     );
 };

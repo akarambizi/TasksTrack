@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import { AddHabitDialog } from './AddHabitDialog';
 import { EditHabitDialog } from './EditHabitDialog';
 import { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
-import { AddHabitLogDialog } from './AddHabitLogDialog';
+import AddHabitLogDialog from './AddHabitLogDialog';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
 import { FocusSessionDialog } from '../FocusSession';
 import { CategoryManagementDialog } from '../Categories/CategoryManagementDialog';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 
 export const Habits = () => {
     const { data: habits } = useHabitData('');
@@ -102,14 +102,13 @@ export const Habits = () => {
                                     </div>
                                 </div>
                                 <div className="flex space-x-2">
-                                    <AddHabitLogDialog
-                                        habit={habit}
-                                        trigger={
-                                            <button className="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900 text-green-600 dark:text-green-400">
-                                                <CheckCircle size={16} />
-                                            </button>
-                                        }
-                                    />
+                                    <button
+                                        className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+                                        onClick={() => handleLogActivity(habit)}
+                                        title="Log Activity"
+                                    >
+                                        <CheckCircle size={16} className="text-green-500 dark:text-green-400" />
+                                    </button>
                                     <FocusSessionDialog
                                         habit={habit}
                                         trigger={
@@ -135,7 +134,7 @@ export const Habits = () => {
                     <AddHabitLogDialog
                         habit={selectedHabitForLogging}
                         isOpen={true}
-                        onOpenChange={handleCloseLogDialog}
+                        onClose={() => handleCloseLogDialog(false)}
                     />
                 )}
 
@@ -152,6 +151,15 @@ export const Habits = () => {
                     open={isDeleteDialogOpen}
                     onOpenChange={handleCloseDeleteDialog}
                 />
+
+                {/* Add Habit Log Dialog */}
+                {selectedHabitForLogging && (
+                    <AddHabitLogDialog
+                        habit={selectedHabitForLogging}
+                        isOpen={!!selectedHabitForLogging}
+                        onClose={() => setSelectedHabitForLogging(null)}
+                    />
+                )}
             </div>
         </section>
     );

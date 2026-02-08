@@ -1,4 +1,5 @@
-import { getHabitData, getHabitById, deleteHabit, archiveHabit, activateHabit, createHabit, updateHabit, IHabit } from '@/api';
+import { getHabitData, getHabitById, deleteHabit, archiveHabit, activateHabit, createHabit, updateHabit } from '@/api';
+import { IHabit } from '@/types';
 import { getHabitKey } from './queryKeys';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';

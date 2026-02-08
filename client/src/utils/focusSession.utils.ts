@@ -1,4 +1,4 @@
-import { IFocusSession, IHabit } from '@/api';
+import { IFocusSession, IHabit } from '@/types';
 
 /**
  * Focus session status and action utilities
@@ -103,7 +103,7 @@ export const createFocusSessionHandlers = (
         try {
             await pauseMutation.mutateAsync();
 
-            if (activeSession?.habit) {
+            if (activeSession?.habit?.name) {
                 notificationService.notifySessionPaused(activeSession.habit.name);
             }
         } catch (error) {
@@ -115,7 +115,7 @@ export const createFocusSessionHandlers = (
         try {
             await resumeMutation.mutateAsync();
 
-            if (activeSession?.habit) {
+            if (activeSession?.habit?.name) {
                 notificationService.notifySessionResumed(activeSession.habit.name);
             }
         } catch (error) {
@@ -145,7 +145,7 @@ export const createFocusSessionHandlers = (
         try {
             await cancelMutation.mutateAsync({});
 
-            if (activeSession?.habit) {
+            if (activeSession?.habit?.name) {
                 notificationService.notifySessionCancelled(activeSession.habit.name);
             }
         } catch (error) {

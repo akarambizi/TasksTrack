@@ -1,7 +1,8 @@
+import { renderWithProviders } from '../../utils/test-utils';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { ActivityGrid } from './ActivityGrid';
-import { IActivityGridResponse } from '../../api/activity.types';
+import { IActivityGridResponse } from '@/types';
 import { format, subDays } from 'date-fns';
 
 const mockOnDateSelect = vi.fn();
@@ -18,7 +19,9 @@ const createMockGridData = (intensityPattern: number[]): IActivityGridResponse[]
             habitName: 'Exercise',
             metricType: 'Count',
             value: intensity,
-            unit: 'times'
+            unit: 'times',
+            color: null,
+            icon: null
         }] : []
     }));
 };
@@ -31,7 +34,7 @@ describe('ActivityGrid', () => {
     it('renders activity grid with correct structure', () => {
         const gridData = createMockGridData([0, 1, 2, 3, 4]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -45,7 +48,7 @@ describe('ActivityGrid', () => {
     it('displays correct intensity colors for different levels', () => {
         const gridData = createMockGridData([0, 1, 2, 3, 4]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -60,7 +63,7 @@ describe('ActivityGrid', () => {
     it('shows month labels', () => {
         const gridData = createMockGridData([1, 1, 1, 1, 1]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -74,7 +77,7 @@ describe('ActivityGrid', () => {
     it('shows weekday labels', () => {
         const gridData = createMockGridData([1, 1, 1, 1, 1]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -90,7 +93,7 @@ describe('ActivityGrid', () => {
     it('calls onDateSelect when a cell is clicked', () => {
         const gridData = createMockGridData([1, 2, 3]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -105,7 +108,7 @@ describe('ActivityGrid', () => {
     });
 
     it('handles empty data gracefully', () => {
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={[]}
                 onDateSelect={mockOnDateSelect}
@@ -135,12 +138,14 @@ describe('ActivityGrid', () => {
                     habitName: 'Exercise',
                     metricType: 'Duration',
                     value: i % 5,
-                    unit: 'minutes'
+                    unit: null,
+                    color: null,
+                    icon: null
                 }] : []
             });
         }
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -153,7 +158,7 @@ describe('ActivityGrid', () => {
     it('shows intensity legend', () => {
         const gridData = createMockGridData([0, 1, 2, 3, 4]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}
@@ -167,7 +172,7 @@ describe('ActivityGrid', () => {
     it('provides accessibility attributes', () => {
         const gridData = createMockGridData([1, 2, 3]);
 
-        render(
+        renderWithProviders(
             <ActivityGrid
                 data={gridData}
                 onDateSelect={mockOnDateSelect}

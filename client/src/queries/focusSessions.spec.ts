@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createElement } from 'react';
 import {
     useFocusSessions,
     useActiveFocusSession,
@@ -12,33 +10,21 @@ import {
     useCompleteFocusSessionMutation,
     useCancelFocusSessionMutation
 } from '@/queries/focusSessions';
-import { FocusSessionStatus } from '@/api';
-import * as focusSessionApi from '@/api/focusSession';
+import { TestWrapper, mockFocusSessions, mockActiveFocusSession, mockFocusSessionAnalytics, mockStartedFocusSession, mockPausedFocusSession, mockResumedFocusSession, mockCompletedFocusSession, mockCancelledFocusSession } from '../utils/test-utils';
+
+import * as focusSessionApi from '@/api';
 
 // Mock the API functions
-vi.mock('@/api/focusSession');
-
-const mockStartFocusSession = vi.mocked(focusSessionApi.startFocusSession);
-const mockPauseFocusSession = vi.mocked(focusSessionApi.pauseFocusSession);
-const mockResumeFocusSession = vi.mocked(focusSessionApi.resumeFocusSession);
-const mockCompleteFocusSession = vi.mocked(focusSessionApi.completeFocusSession);
-const mockCancelFocusSession = vi.mocked(focusSessionApi.cancelFocusSession);
-const mockGetFocusSessions = vi.mocked(focusSessionApi.getFocusSessions);
-const mockGetActiveFocusSession = vi.mocked(focusSessionApi.getActiveFocusSession);
-const mockGetFocusSessionAnalytics = vi.mocked(focusSessionApi.getFocusSessionAnalytics);
-
-// Test wrapper component
-const createWrapper = () => {
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: { retry: false },
-            mutations: { retry: false },
-        },
-    });
-
-    return ({ children }: { children: React.ReactNode }) =>
-        createElement(QueryClientProvider, { client: queryClient }, children);
-};
+vi.mock('@/api', () => ({
+    startFocusSession: vi.fn(),
+    pauseFocusSession: vi.fn(),
+    resumeFocusSession: vi.fn(),
+    completeFocusSession: vi.fn(),
+    cancelFocusSession: vi.fn(),
+    getFocusSessions: vi.fn(),
+    getActiveFocusSession: vi.fn(),
+    getFocusSessionAnalytics: vi.fn(),
+}));
 
 describe('Focus Session Query Hooks', () => {
     beforeEach(() => {
@@ -47,41 +33,27 @@ describe('Focus Session Query Hooks', () => {
 
     describe('useFocusSessions', () => {
         it('should fetch focus sessions successfully', async () => {
-            const mockSessions = [
-                {
-                    id: 1,
-                    habitId: 1,
-                    status: FocusSessionStatus.Completed,
-                    plannedDurationMinutes: 25,
-                    startTime: '2026-01-31T10:00:00Z',
-                    createdBy: 'user1',
-                    createdDate: '2026-01-31T10:00:00Z',
-                    actualDurationSeconds: 1500,
-                    pausedDurationSeconds: 0
-                }
-            ];
-
-            mockGetFocusSessions.mockResolvedValue(mockSessions);
+            vi.mocked(focusSessionApi.getFocusSessions).mockResolvedValue(mockFocusSessions);
 
             const { result } = renderHook(
                 () => useFocusSessions('?$filter=habitId eq 1'),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             await waitFor(() => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockGetFocusSessions).toHaveBeenCalledWith('?$filter=habitId eq 1');
-            expect(result.current.data).toEqual(mockSessions);
+            expect(vi.mocked(focusSessionApi.getFocusSessions)).toHaveBeenCalledWith('?$filter=habitId eq 1');
+            expect(result.current.data).toEqual(mockFocusSessions);
         });
 
         it('should handle errors gracefully', async () => {
-            mockGetFocusSessions.mockRejectedValue(new Error('Failed to fetch'));
+            vi.mocked(focusSessionApi.getFocusSessions).mockRejectedValue(new Error('Failed to fetch'));
 
             const { result } = renderHook(
                 () => useFocusSessions(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             await waitFor(() => {
@@ -94,39 +66,27 @@ describe('Focus Session Query Hooks', () => {
 
     describe('useActiveFocusSession', () => {
         it('should fetch active session', async () => {
-            const mockActiveSession = {
-                id: 1,
-                habitId: 1,
-                status: FocusSessionStatus.Active,
-                plannedDurationMinutes: 25,
-                startTime: '2026-01-31T10:00:00Z',
-                createdBy: 'user1',
-                createdDate: '2026-01-31T10:00:00Z',
-                actualDurationSeconds: 0,
-                pausedDurationSeconds: 0
-            };
-
-            mockGetActiveFocusSession.mockResolvedValue(mockActiveSession);
+            vi.mocked(focusSessionApi.getActiveFocusSession).mockResolvedValue(mockActiveFocusSession);
 
             const { result } = renderHook(
                 () => useActiveFocusSession(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             await waitFor(() => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockGetActiveFocusSession).toHaveBeenCalled();
-            expect(result.current.data).toEqual(mockActiveSession);
+            expect(vi.mocked(focusSessionApi.getActiveFocusSession)).toHaveBeenCalled();
+            expect(result.current.data).toEqual(mockActiveFocusSession);
         });
 
         it('should handle no active session (null)', async () => {
-            mockGetActiveFocusSession.mockResolvedValue(null);
+            vi.mocked(focusSessionApi.getActiveFocusSession).mockResolvedValue(null);
 
             const { result } = renderHook(
                 () => useActiveFocusSession(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             await waitFor(() => {
@@ -139,30 +99,19 @@ describe('Focus Session Query Hooks', () => {
 
     describe('useFocusSessionAnalytics', () => {
         it('should fetch analytics data', async () => {
-            const mockAnalytics = {
-                totalSessions: 10,
-                completedSessions: 8,
-                totalMinutes: 200,
-                averageSessionMinutes: 25,
-                longestSessionMinutes: 45,
-                currentStreak: 3,
-                longestStreak: 5,
-                completionRate: 0.8
-            };
-
-            mockGetFocusSessionAnalytics.mockResolvedValue(mockAnalytics);
+            vi.mocked(focusSessionApi.getFocusSessionAnalytics).mockResolvedValue(mockFocusSessionAnalytics);
 
             const { result } = renderHook(
                 () => useFocusSessionAnalytics('?$filter=habitId eq 1'),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             await waitFor(() => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockGetFocusSessionAnalytics).toHaveBeenCalledWith('?$filter=habitId eq 1');
-            expect(result.current.data).toEqual(mockAnalytics);
+            expect(vi.mocked(focusSessionApi.getFocusSessionAnalytics)).toHaveBeenCalledWith('?$filter=habitId eq 1');
+            expect(result.current.data).toEqual(mockFocusSessionAnalytics);
         });
     });
 });
@@ -174,23 +123,11 @@ describe('Focus Session Mutation Hooks', () => {
 
     describe('useStartFocusSessionMutation', () => {
         it('should start focus session successfully', async () => {
-            const mockSession = {
-                id: 1,
-                habitId: 1,
-                status: FocusSessionStatus.Active,
-                plannedDurationMinutes: 25,
-                startTime: '2026-01-31T10:00:00Z',
-                createdBy: 'user1',
-                createdDate: '2026-01-31T10:00:00Z',
-                actualDurationSeconds: 0,
-                pausedDurationSeconds: 0
-            };
-
-            mockStartFocusSession.mockResolvedValue(mockSession);
+            vi.mocked(focusSessionApi.startFocusSession).mockResolvedValue(mockStartedFocusSession);
 
             const { result } = renderHook(
                 () => useStartFocusSessionMutation(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             result.current.mutate({ habitId: 1, plannedDurationMinutes: 25 });
@@ -199,16 +136,16 @@ describe('Focus Session Mutation Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockStartFocusSession).toHaveBeenCalledWith({ habitId: 1, plannedDurationMinutes: 25 });
-            expect(result.current.data).toEqual(mockSession);
+            expect(vi.mocked(focusSessionApi.startFocusSession)).toHaveBeenCalledWith({ habitId: 1, plannedDurationMinutes: 25 });
+            expect(result.current.data).toEqual(mockStartedFocusSession);
         });
 
         it('should handle start session errors', async () => {
-            mockStartFocusSession.mockRejectedValue(new Error('Start failed'));
+            vi.mocked(focusSessionApi.startFocusSession).mockRejectedValue(new Error('Start failed'));
 
             const { result } = renderHook(
                 () => useStartFocusSessionMutation(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             result.current.mutate({ habitId: 1 });
@@ -223,24 +160,11 @@ describe('Focus Session Mutation Hooks', () => {
 
     describe('usePauseFocusSessionMutation', () => {
         it('should pause focus session successfully', async () => {
-            const mockSession = {
-                id: 1,
-                habitId: 1,
-                status: FocusSessionStatus.Paused,
-                plannedDurationMinutes: 25,
-                startTime: '2026-01-31T10:00:00Z',
-                pauseTime: '2026-01-31T10:10:00Z',
-                createdBy: 'user1',
-                createdDate: '2026-01-31T10:00:00Z',
-                actualDurationSeconds: 600,
-                pausedDurationSeconds: 0
-            };
-
-            mockPauseFocusSession.mockResolvedValue(mockSession);
+            vi.mocked(focusSessionApi.pauseFocusSession).mockResolvedValue(mockPausedFocusSession);
 
             const { result } = renderHook(
                 () => usePauseFocusSessionMutation(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             result.current.mutate();
@@ -249,31 +173,18 @@ describe('Focus Session Mutation Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockPauseFocusSession).toHaveBeenCalled();
-            expect(result.current.data).toEqual(mockSession);
+            expect(vi.mocked(focusSessionApi.pauseFocusSession)).toHaveBeenCalled();
+            expect(result.current.data).toEqual(mockPausedFocusSession);
         });
     });
 
     describe('useResumeFocusSessionMutation', () => {
         it('should resume focus session successfully', async () => {
-            const mockSession = {
-                id: 1,
-                habitId: 1,
-                status: FocusSessionStatus.Active,
-                plannedDurationMinutes: 25,
-                startTime: '2026-01-31T10:00:00Z',
-                resumeTime: '2026-01-31T10:15:00Z',
-                createdBy: 'user1',
-                createdDate: '2026-01-31T10:00:00Z',
-                actualDurationSeconds: 900,
-                pausedDurationSeconds: 300
-            };
-
-            mockResumeFocusSession.mockResolvedValue(mockSession);
+            vi.mocked(focusSessionApi.resumeFocusSession).mockResolvedValue(mockResumedFocusSession);
 
             const { result } = renderHook(
                 () => useResumeFocusSessionMutation(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             result.current.mutate();
@@ -282,31 +193,18 @@ describe('Focus Session Mutation Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockResumeFocusSession).toHaveBeenCalled();
-            expect(result.current.data).toEqual(mockSession);
+            expect(vi.mocked(focusSessionApi.resumeFocusSession)).toHaveBeenCalled();
+            expect(result.current.data).toEqual(mockResumedFocusSession);
         });
     });
 
     describe('useCompleteFocusSessionMutation', () => {
         it('should complete focus session successfully', async () => {
-            const mockSession = {
-                id: 1,
-                habitId: 1,
-                status: FocusSessionStatus.Completed,
-                plannedDurationMinutes: 25,
-                actualDurationSeconds: 1500,
-                startTime: '2026-01-31T10:00:00Z',
-                endTime: '2026-01-31T10:25:00Z',
-                createdBy: 'user1',
-                createdDate: '2026-01-31T10:00:00Z',
-                pausedDurationSeconds: 0
-            };
-
-            mockCompleteFocusSession.mockResolvedValue(mockSession);
+            vi.mocked(focusSessionApi.completeFocusSession).mockResolvedValue(mockCompletedFocusSession);
 
             const { result } = renderHook(
                 () => useCompleteFocusSessionMutation(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             result.current.mutate({ notes: 'Completed successfully' });
@@ -315,31 +213,18 @@ describe('Focus Session Mutation Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockCompleteFocusSession).toHaveBeenCalledWith({ notes: 'Completed successfully' });
-            expect(result.current.data).toEqual(mockSession);
+            expect(vi.mocked(focusSessionApi.completeFocusSession)).toHaveBeenCalledWith({ notes: 'Completed successfully' });
+            expect(result.current.data).toEqual(mockCompletedFocusSession);
         });
     });
 
     describe('useCancelFocusSessionMutation', () => {
         it('should cancel focus session successfully', async () => {
-            const mockSession = {
-                id: 1,
-                habitId: 1,
-                status: FocusSessionStatus.Interrupted,
-                plannedDurationMinutes: 25,
-                startTime: '2026-01-31T10:00:00Z',
-                endTime: '2026-01-31T10:10:00Z',
-                createdBy: 'user1',
-                createdDate: '2026-01-31T10:00:00Z',
-                actualDurationSeconds: 600,
-                pausedDurationSeconds: 0
-            };
-
-            mockCancelFocusSession.mockResolvedValue(mockSession);
+            vi.mocked(focusSessionApi.cancelFocusSession).mockResolvedValue(mockCancelledFocusSession);
 
             const { result } = renderHook(
                 () => useCancelFocusSessionMutation(),
-                { wrapper: createWrapper() }
+                { wrapper: TestWrapper }
             );
 
             result.current.mutate({ notes: 'Cancelled by user' });
@@ -348,8 +233,8 @@ describe('Focus Session Mutation Hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockCancelFocusSession).toHaveBeenCalledWith({ notes: 'Cancelled by user' });
-            expect(result.current.data).toEqual(mockSession);
+            expect(vi.mocked(focusSessionApi.cancelFocusSession)).toHaveBeenCalledWith({ notes: 'Cancelled by user' });
+            expect(result.current.data).toEqual(mockCancelledFocusSession);
         });
     });
 });

@@ -7,7 +7,7 @@ import {
     Tooltip,
     Legend
 } from 'recharts';
-import { ICategoryAnalytics } from '@/api/analytics.types';
+import { ICategoryAnalytics } from '@/types';
 import { ChartCard } from '@/components/ui/common/chart-card';
 
 interface ICategoryBreakdownChartProps {

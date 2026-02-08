@@ -1,14 +1,14 @@
-import { IAuthData, IAuthResult } from './userAuth.types';
+import { IAuthResult, IAuthFormData } from '@/types';
 import { apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
 
 /**
  * Registers a new user.
- * @param userData - The user data including email, username, and password.
- * @returns A promise that resolves to the response data.
- * @throws An error if the registration fails.
+ * @param {IAuthFormData} userData - The user data including email and password.
+ * @returns {Promise<IAuthResult>} A promise that resolves to the response data.
+ * @throws {Error} An error if the registration fails.
  */
-export const registerUser = async (userData: IAuthData): Promise<IAuthResult> => {
+export const registerUser = async (userData: IAuthFormData): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/register';
         const response = await apiPost<IAuthResult>(endpoint, userData);
@@ -23,11 +23,11 @@ export const registerUser = async (userData: IAuthData): Promise<IAuthResult> =>
 
 /**
  * Logs in a user with the provided email and password.
- * @param userData - The user data containing the email and password.
- * @returns A Promise that resolves to the response data from the login API.
- * @throws An error if the login fails.
+ * @param {IAuthFormData} userData - The user data containing the email and password.
+ * @returns {Promise<IAuthResult>} A Promise that resolves to the response data from the login API.
+ * @throws {Error} An error if the login fails.
  */
-export const loginUser = async (userData: IAuthData): Promise<IAuthResult> => {
+export const loginUser = async (userData: IAuthFormData): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/login';
         const response = await apiPost<IAuthResult>(endpoint, userData);
@@ -43,7 +43,7 @@ export const loginUser = async (userData: IAuthData): Promise<IAuthResult> => {
 /**
  * Logs out the user by making a POST request to the logout API endpoint.
  * @returns {Promise<IAuthResult>} A promise that resolves to the response data from the API.
- * @throws {Error} If the logout request fails.
+ * @throws {Error} An error if the logout request fails.
  */
 export const logoutUser = async (): Promise<IAuthResult> => {
     try {
@@ -60,11 +60,11 @@ export const logoutUser = async (): Promise<IAuthResult> => {
 
 /**
  * Resets the user's password.
- * @param {IAuthData} data - The data including email, token, and new password.
- * @returns {Promise<IAuthResult>} - A promise that resolves to the response data.
- * @throws {Error} - If the password reset request fails.
+ * @param {IAuthFormData} data - The data including email (password field used for new password).
+ * @returns {Promise<IAuthResult>} A promise that resolves to the response data.
+ * @throws {Error} An error if the password reset request fails.
  */
-export const resetPassword = async (data: IAuthData): Promise<IAuthResult> => {
+export const resetPassword = async (data: IAuthFormData): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/reset-password';
         const response = await apiPost<IAuthResult>(endpoint, data);

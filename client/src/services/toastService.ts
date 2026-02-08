@@ -26,8 +26,8 @@ export const ToastService = {
 
   /**
    * Show a success toast
-   * @param message - Message to display
-   * @param title - Optional title
+   * @param {string} message - Message to display
+   * @param {string} [title="Success"] - Optional title
    */
   success: (message: string, title = "Success") => {
     ToastService.show({ title, description: message, type: "success" });
@@ -35,8 +35,8 @@ export const ToastService = {
 
   /**
    * Show an error toast
-   * @param message - Message to display
-   * @param title - Optional title
+   * @param {string} message - Message to display
+   * @param {string} [title="Error"] - Optional title
    */
   error: (message: string, title = "Error") => {
     ToastService.show({ title, description: message, type: "error" });
@@ -44,8 +44,8 @@ export const ToastService = {
 
   /**
    * Show a warning toast
-   * @param message - Message to display
-   * @param title - Optional title
+   * @param {string} message - Message to display
+   * @param {string} [title="Warning"] - Optional title
    */
   warning: (message: string, title = "Warning") => {
     ToastService.show({ title, description: message, type: "warning" });
@@ -53,8 +53,8 @@ export const ToastService = {
 
   /**
    * Show an info toast
-   * @param message - Message to display
-   * @param title - Optional title
+   * @param {string} message - Message to display
+   * @param {string} [title="Info"] - Optional title
    */
   info: (message: string, title = "Info") => {
     ToastService.show({ title, description: message, type: "info" });

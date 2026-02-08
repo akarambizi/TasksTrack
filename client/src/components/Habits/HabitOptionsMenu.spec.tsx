@@ -1,12 +1,11 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { HabitOptionsMenu } from './HabitOptionsMenu';
-import { IHabit } from '@/api';
+import { IHabit } from '@/types';
 import { HABIT_COLORS, TARGET_FREQUENCY } from '@/types/constants';
 import * as habitMutations from '@/queries/habits';
+import { renderWithProviders, mockHabit, createMockMutation } from '../../utils/test-utils';
 
 // Mock the habit mutation hooks
 vi.mock('@/queries/habits', () => ({
@@ -19,7 +18,9 @@ const MockedUseDeleteHabitMutation = habitMutations.useDeleteHabitMutation as Re
 const MockedUseArchiveHabitMutation = habitMutations.useArchiveHabitMutation as ReturnType<typeof vi.fn>;
 const MockedUseActivateHabitMutation = habitMutations.useActivateHabitMutation as ReturnType<typeof vi.fn>;
 
-const mockHabit: IHabit = {
+// Use test habit with specific properties for this test
+const testHabit: IHabit = {
+    ...mockHabit,
     id: 1,
     name: 'Exercise',
     description: 'Daily workout',
@@ -30,47 +31,28 @@ const mockHabit: IHabit = {
     category: 'Health',
     color: HABIT_COLORS.BLUE,
     icon: 'dumbbell',
-    isActive: true,
-    createdBy: 'test-user-id',
-    createdDate: new Date().toISOString(),
-    updatedDate: new Date().toISOString()
+    isActive: true
 };
 
 const renderHabitOptionsMenu = (props: Partial<React.ComponentProps<typeof HabitOptionsMenu>> = {}) => {
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: { retry: false },
-            mutations: { retry: false }
-        }
-    });
-
-    return render(
-        <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                <HabitOptionsMenu habit={mockHabit} {...props} />
-            </BrowserRouter>
-        </QueryClientProvider>
-    );
+    return renderWithProviders(<HabitOptionsMenu habit={testHabit} {...props} />);
 };
 
 describe('HabitOptionsMenu', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        MockedUseDeleteHabitMutation.mockReturnValue({
-            mutateAsync: vi.fn(),
-            isPending: false
-        });
+        MockedUseDeleteHabitMutation.mockReturnValue(
+            createMockMutation({ mutateAsync: vi.fn() })
+        );
 
-        MockedUseArchiveHabitMutation.mockReturnValue({
-            mutateAsync: vi.fn(),
-            isPending: false
-        });
+        MockedUseArchiveHabitMutation.mockReturnValue(
+            createMockMutation({ mutateAsync: vi.fn() })
+        );
 
-        MockedUseActivateHabitMutation.mockReturnValue({
-            mutateAsync: vi.fn(),
-            isPending: false
-        });
+        MockedUseActivateHabitMutation.mockReturnValue(
+            createMockMutation({ mutateAsync: vi.fn() })
+        );
     });
 
     it('renders options menu trigger button', () => {
@@ -133,7 +115,7 @@ describe('HabitOptionsMenu', () => {
         const logActivityOption = await screen.findByText(/Log Activity/i);
         await user.click(logActivityOption);
 
-        expect(mockOnLogActivity).toHaveBeenCalledWith(mockHabit);
+        expect(mockOnLogActivity).toHaveBeenCalledWith(testHabit);
     });
 
     it('calls onEdit when edit is clicked', async () => {
@@ -148,7 +130,7 @@ describe('HabitOptionsMenu', () => {
         const editOption = await screen.findByText(/Edit Habit/i);
         await user.click(editOption);
 
-        expect(mockOnEdit).toHaveBeenCalledWith(mockHabit);
+        expect(mockOnEdit).toHaveBeenCalledWith(testHabit);
     });
 
     it('calls archive mutation when archive is clicked', async () => {
@@ -205,7 +187,7 @@ describe('HabitOptionsMenu', () => {
         const deleteOption = await screen.findByText(/Delete Habit/i);
         await user.click(deleteOption);
 
-        expect(mockOnDelete).toHaveBeenCalledWith(mockHabit);
+        expect(mockOnDelete).toHaveBeenCalledWith(testHabit);
     });
 
     it('disables trigger when mutations are pending', () => {

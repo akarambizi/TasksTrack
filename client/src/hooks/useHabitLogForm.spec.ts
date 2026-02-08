@@ -27,82 +27,61 @@ describe('useHabitLogForm', () => {
     it('should initialize with default form values', () => {
         const { result } = renderHook(() => useHabitLogForm(1));
 
-        expect(result.current.formData.value).toBe(0);
-        expect(result.current.formData.date).toBe(new Date().toISOString().split('T')[0]);
-        expect(result.current.formData.notes).toBe('');
-        expect(result.current.formData.habitId).toBe(1);
+        const watchedValues = result.current.watch();
+        expect(watchedValues.habitId).toBe(1);
+        expect(watchedValues.value).toBe(0);
+        expect(watchedValues.date).toBe(new Date().toISOString().split('T')[0]);
+        expect(watchedValues.notes).toBe('');
+        expect(watchedValues.createdBy).toBe('test-user-id');
     });
 
-    it('should update form data when handleChange is called', () => {
-        const { result } = renderHook(() => useHabitLogForm(1));
-
-        act(() => {
-            result.current.handleChange('value')(45);
-        });
-
-        expect(result.current.formData.value).toBe(45);
-    });
-
-    it('should handle string values', () => {
-        const { result } = renderHook(() => useHabitLogForm(1));
-
-        act(() => {
-            result.current.handleChange('notes')('Great workout!');
-        });
-
-        expect(result.current.formData.notes).toBe('Great workout!');
-    });
-
-    it('should handle date changes', () => {
-        const { result } = renderHook(() => useHabitLogForm(1));
-
-        act(() => {
-            result.current.handleChange('date')('2024-01-15');
-        });
-
-        expect(result.current.formData.date).toBe('2024-01-15');
-    });
-
-    it('should reset form to initial values', () => {
-        const { result } = renderHook(() => useHabitLogForm(1));
-
-        // Change some values
-        act(() => {
-            result.current.handleChange('value')(50);
-            result.current.handleChange('notes')('Test notes');
-        });
-
-        // Reset form
-        act(() => {
-            result.current.resetForm();
-        });
-
-        expect(result.current.formData.value).toBe(0);
-        expect(result.current.formData.notes).toBe('');
-        expect(result.current.formData.habitId).toBe(1);
-    });
-
-    it('should handle error state', () => {
-        const { result } = renderHook(() => useHabitLogForm(1));
-
-        expect(result.current.error).toBeNull();
-
-        act(() => {
-            result.current.setError('Test error');
-        });
-
-        expect(result.current.error).toBe('Test error');
-
-        act(() => {
-            result.current.setError(null);
-        });
-
-        expect(result.current.error).toBeNull();
-    });
-
-    it('should initialize with default habitId when none provided', () => {
+    it('should use default habitId of 0 when not provided', () => {
         const { result } = renderHook(() => useHabitLogForm());
 
-        expect(result.current.formData.habitId).toBe(0);
+        const watchedValues = result.current.watch();
+        expect(watchedValues.habitId).toBe(0);
+    });
+
+    it('should set values correctly', () => {
+        const { result } = renderHook(() => useHabitLogForm(1));
+
+        act(() => {
+            result.current.setValue('value', 25);
+            result.current.setValue('notes', 'Great workout!');
+        });
+
+        const watchedValues = result.current.watch();
+        expect(watchedValues.value).toBe(25);
+        expect(watchedValues.notes).toBe('Great workout!');
+    });
+
+    it('should reset form to default values', () => {
+        const { result } = renderHook(() => useHabitLogForm(1));
+
+        act(() => {
+            result.current.setValue('value', 25);
+            result.current.setValue('notes', 'Great workout!');
+        });
+
+        act(() => {
+            result.current.reset();
+        });
+
+        const watchedValues = result.current.watch();
+        expect(watchedValues.value).toBe(0);
+        expect(watchedValues.notes).toBe('');
+    });
+
+    it('should provide all required React Hook Form methods', () => {
+        const { result } = renderHook(() => useHabitLogForm(1));
+
+        expect(typeof result.current.register).toBe('function');
+        expect(typeof result.current.setValue).toBe('function');
+        expect(typeof result.current.watch).toBe('function');
+        expect(typeof result.current.getValues).toBe('function');
+        expect(typeof result.current.trigger).toBe('function');
+        expect(typeof result.current.reset).toBe('function');
+        expect(typeof result.current.handleSubmit).toBe('function');
+        expect(result.current.formState).toBeDefined();
     });
 });

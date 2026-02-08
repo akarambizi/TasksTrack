@@ -1,6 +1,6 @@
+import { renderWithProviders, createMockQuery } from '../../utils/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { screen } from '@testing-library/react';
 import { FocusSessionHistory } from './FocusSessionHistory';
 
 // Mock dependencies
@@ -28,39 +28,22 @@ vi.mock('date-fns', () => ({
 const { useFocusSessions, useFocusSessionAnalytics } = await import('@/queries');
 
 describe('FocusSessionHistory', () => {
-    let queryClient: QueryClient;
-
     beforeEach(() => {
-        queryClient = new QueryClient({
-            defaultOptions: {
-                queries: { retry: false },
-                mutations: { retry: false }
-            }
-        });
         vi.clearAllMocks();
 
-        (useFocusSessions as ReturnType<typeof vi.fn>).mockReturnValue({
-            data: [],
-            isLoading: false,
-            error: null
-        });
-        (useFocusSessionAnalytics as ReturnType<typeof vi.fn>).mockReturnValue({
-            data: null,
-            isLoading: false
-        });
+        (useFocusSessions as ReturnType<typeof vi.fn>).mockReturnValue(
+            createMockQuery([])
+        );
+        (useFocusSessionAnalytics as ReturnType<typeof vi.fn>).mockReturnValue(
+            createMockQuery(null)
+        );
     });
 
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-    );
-
     it('should render focus session history component', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Focus Sessions')).toBeInTheDocument();
@@ -73,10 +56,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         // Check for skeleton loaders
@@ -84,10 +67,10 @@ describe('FocusSessionHistory', () => {
     });
 
     it('should show empty state', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('No focus sessions found')).toBeInTheDocument();
@@ -115,10 +98,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Reading')).toBeInTheDocument();
@@ -151,10 +134,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Completed')).toBeInTheDocument();
@@ -176,10 +159,10 @@ describe('FocusSessionHistory', () => {
             isLoading: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Focus Sessions')).toBeInTheDocument();
@@ -192,20 +175,20 @@ describe('FocusSessionHistory', () => {
             error: new Error('Failed to fetch sessions')
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Failed to load focus sessions')).toBeInTheDocument();
     });
 
     it('should handle status filter functionality', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         const filterSelect = screen.getAllByRole('combobox')[0];
@@ -245,10 +228,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getAllByText('Test Habit').length).toBeGreaterThan(10);
@@ -307,10 +290,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Focus Sessions')).toBeInTheDocument();
@@ -347,10 +330,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Test Habit')).toBeInTheDocument();
@@ -419,10 +402,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getAllByText('Test Habit')).toHaveLength(4);
@@ -435,10 +418,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('No focus sessions found')).toBeInTheDocument();
@@ -456,10 +439,10 @@ describe('FocusSessionHistory', () => {
             isLoading: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Focus Sessions')).toBeInTheDocument();
@@ -496,10 +479,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Test Habit')).toBeInTheDocument();
@@ -512,10 +495,10 @@ describe('FocusSessionHistory', () => {
             error: new Error('Analytics failed')
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Focus Sessions')).toBeInTheDocument();
@@ -577,10 +560,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Test Habit')).toBeInTheDocument();
@@ -609,10 +592,10 @@ describe('FocusSessionHistory', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessionHistory />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Reading')).toBeInTheDocument();

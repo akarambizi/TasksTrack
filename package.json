@@ -13,12 +13,14 @@
     "lint:md": "markdownlint-cli2 **/*.md --config .markdownlint.json",
     "find-unused": "cd client && npm run find-unused",
     "precommit": "npm run build && npm run lint:md",
-    "install:all": "npm install && cd client && npm install && cd ../server && dotnet restore"
+    "install:all": "npm install && cd client && npm install && cd ../server && dotnet restore",
+    "mcp:shadcn": "npx @jpisnice/shadcn-ui-mcp-server"
   },
   "dependencies": {
     "markdownlint-cli2": "^0.20.0"
   },
   "devDependencies": {
+    "@jpisnice/shadcn-ui-mcp-server": "^2.0.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2"
   }

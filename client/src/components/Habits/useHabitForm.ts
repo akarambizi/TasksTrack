@@ -1,62 +1,24 @@
-// useHabitForm.ts
-import { useState, useCallback } from "react";
-import { IHabitCreateRequest } from "@/api/habit.types";
-import { DEFAULT_HABIT_FORM, getDefaultUnitForMetricType } from "@/types/constants";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { DEFAULT_HABIT_FORM, getDefaultUnitForMetricType } from '@/types/constants';
+import { habitFormSchema, type HabitFormData } from '@/types';
 
-interface UseHabitFormReturn {
-  formData: IHabitCreateRequest;
-  setFormData: React.Dispatch<React.SetStateAction<IHabitCreateRequest>>;
-  handleChange: <K extends keyof IHabitCreateRequest>(field: K) => (value: IHabitCreateRequest[K]) => void;
-  resetForm: () => void;
-  error: string | null;
-  setError: (error: string | null) => void;
-}
+export function useHabitForm() {
+    const defaultValues: HabitFormData = {
+        name: '',
+        description: '',
+        metricType: DEFAULT_HABIT_FORM.metricType,
+        unit: getDefaultUnitForMetricType(DEFAULT_HABIT_FORM.metricType),
+        target: DEFAULT_HABIT_FORM.target,
+        targetFrequency: DEFAULT_HABIT_FORM.targetFrequency,
+        category: DEFAULT_HABIT_FORM.category,
+        color: DEFAULT_HABIT_FORM.color,
+        icon: DEFAULT_HABIT_FORM.icon,
+    };
 
-export function useHabitForm(): UseHabitFormReturn {
-  const [formData, setFormData] = useState<IHabitCreateRequest>({
-    name: '',
-    description: '',
-    metricType: DEFAULT_HABIT_FORM.metricType,
-    unit: getDefaultUnitForMetricType(DEFAULT_HABIT_FORM.metricType),
-    target: DEFAULT_HABIT_FORM.target,
-    targetFrequency: DEFAULT_HABIT_FORM.targetFrequency,
-    category: DEFAULT_HABIT_FORM.category,
-    color: DEFAULT_HABIT_FORM.color,
-    icon: DEFAULT_HABIT_FORM.icon,
-  });
-
-  const [error, setError] = useState<string | null>(null);
-
-  const handleChange = useCallback(<K extends keyof IHabitCreateRequest>(
-    field: K
-  ) => (value: IHabitCreateRequest[K]) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }, []);
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      description: '',
-      metricType: DEFAULT_HABIT_FORM.metricType,
-      unit: getDefaultUnitForMetricType(DEFAULT_HABIT_FORM.metricType),
-      target: DEFAULT_HABIT_FORM.target,
-      targetFrequency: DEFAULT_HABIT_FORM.targetFrequency,
-      category: DEFAULT_HABIT_FORM.category,
-      color: DEFAULT_HABIT_FORM.color,
-      icon: DEFAULT_HABIT_FORM.icon,
+    return useForm<HabitFormData>({
+        resolver: zodResolver(habitFormSchema),
+        defaultValues,
+        mode: 'onChange' // Validate on change for immediate feedback
     });
-    setError(null);
-  };
-
-  return {
-    formData,
-    setFormData,
-    handleChange,
-    resetForm,
-    error,
-    setError
-  };
 }

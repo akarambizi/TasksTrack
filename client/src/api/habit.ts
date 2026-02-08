@@ -1,11 +1,11 @@
-import { IHabit } from './habit.types';
+import { IHabit } from '@/types';
 import { apiGet, apiPost, apiPut, apiDelete } from './apiClient';
 import { ToastService } from '../services/toastService';
 
 /**
  * Gets habit data.
- * @param {string} query - The search query string.
- * @returns {Promise<IHabit[]>} array of habits results.
+ * @param {string} [query=''] - The search query string.
+ * @returns {Promise<IHabit[]>} Array of habits results.
  */
 export const getHabitData = async (query = ''): Promise<IHabit[]> => {
     try {
@@ -56,7 +56,7 @@ export const createHabit = async (habitData: Partial<IHabit>): Promise<IHabit> =
 /**
  * Updates an existing habit.
  * @param {IHabit} habit - The habit data to update.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when update completes.
  */
 export const updateHabit = async (habit: IHabit): Promise<void> => {
     try {
@@ -73,7 +73,7 @@ export const updateHabit = async (habit: IHabit): Promise<void> => {
 /**
  * Deletes a habit.
  * @param {number} id - The ID of the habit to delete.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when deletion completes.
  */
 export const deleteHabit = async (id: number): Promise<void> => {
     try {
@@ -90,7 +90,7 @@ export const deleteHabit = async (id: number): Promise<void> => {
 /**
  * Archives a habit (sets IsActive to false).
  * @param {number} id - The ID of the habit to archive.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when archiving completes.
  */
 export const archiveHabit = async (id: number): Promise<void> => {
     try {
@@ -107,7 +107,7 @@ export const archiveHabit = async (id: number): Promise<void> => {
 /**
  * Activates a habit (sets IsActive to true).
  * @param {number} id - The ID of the habit to activate.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when activation completes.
  */
 export const activateHabit = async (id: number): Promise<void> => {
     try {

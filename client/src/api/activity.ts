@@ -1,7 +1,7 @@
 import {
     IActivityGridResponse,
     IActivityStatisticsResponse
-} from './activity.types';
+} from '@/types';
 import { apiGet } from './apiClient';
 import { ToastService } from '../services/toastService';
 

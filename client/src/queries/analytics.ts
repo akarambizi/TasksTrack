@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { 
-    getWeeklyAnalytics, 
-    getMonthlyAnalytics, 
-    getQuarterlyAnalytics, 
+import {
+    getWeeklyAnalytics,
+    getMonthlyAnalytics,
+    getQuarterlyAnalytics,
     getYearlyAnalytics,
     // getCustomAnalytics,
     // getComparisonAnalytics,
@@ -10,14 +10,14 @@ import {
     // getGoalProgress,
     // getDashboardOverview
 } from '../api/analytics';
-import { 
+import {
     IAnalyticsResponse,
     // ICustomAnalyticsRequest,
     // IComparisonAnalyticsResponse,
     // IExportAnalyticsRequest,
     // IExportAnalyticsResponse,
     // IGoalProgress
-} from '../api/analytics.types';
+} from '@/types';
 import { ANALYTICS_KEYS } from './queryKeys';
 import { CACHE_TIMES } from './constants';
 

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useCreateHabitMutation } from "@/queries";
-import { IHabit } from "@/api";
+import { IHabit } from "@/types";
 import { useAuthContext } from "@/context/useAuthContext";
 import { HabitFormDialog } from "./HabitFormDialog";
 

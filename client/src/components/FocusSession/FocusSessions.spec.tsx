@@ -1,9 +1,9 @@
+import { renderWithProviders } from '../../utils/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { screen, waitFor } from '@testing-library/react';
 import { FocusSessions } from './FocusSessions';
-import type { IFocusSessionAnalytics } from '@/api/focusSession.types';
-import type { IHabit } from '@/api/habit.types';
+import type { IFocusSessionAnalytics } from '@/types';
+import type { IHabit } from '@/types';
 
 // Mock data with proper types
 const mockHabit: IHabit = {
@@ -18,7 +18,10 @@ const mockHabit: IHabit = {
     isActive: true,
     createdDate: '2024-01-01T10:00:00Z',
     createdBy: 'user1',
-    color: '#3b82f6'
+    updatedDate: null,
+    updatedBy: null,
+    color: '#3b82f6',
+    icon: null
 };
 
 const mockAnalytics: IFocusSessionAnalytics = {
@@ -84,15 +87,7 @@ vi.mock('@/context/FocusTimerContext', () => ({
 const { useHabitData, useActiveFocusSession, useFocusSessionAnalytics, useFocusSessions, useStartFocusSessionMutation, usePauseFocusSessionMutation, useResumeFocusSessionMutation, useCompleteFocusSessionMutation, useCancelFocusSessionMutation } = await import('@/queries');
 
 describe('FocusSessions', () => {
-    let queryClient: QueryClient;
-
     beforeEach(() => {
-        queryClient = new QueryClient({
-            defaultOptions: {
-                queries: { retry: false },
-                mutations: { retry: false }
-            }
-        });
         vi.clearAllMocks();
 
         (useHabitData as ReturnType<typeof vi.fn>).mockReturnValue({
@@ -135,47 +130,41 @@ describe('FocusSessions', () => {
         });
     });
 
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-    );
-
     it('should render focus sessions component', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByRole('heading', { name: 'Focus Sessions', level: 1 })).toBeInTheDocument();
     });
 
     it('should display habit selection when habits are available', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Choose a habit to focus on')).toBeInTheDocument();
     });
 
     it('should display duration selection', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('25 minutes (Pomodoro)')).toBeInTheDocument();
     });
 
     it('should show session start interface', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Start a Focus Session')).toBeInTheDocument();
@@ -190,10 +179,10 @@ describe('FocusSessions', () => {
             isLoading: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Total Sessions')).toBeInTheDocument();
@@ -208,10 +197,10 @@ describe('FocusSessions', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Choose a habit to focus on')).toBeInTheDocument();
@@ -232,10 +221,10 @@ describe('FocusSessions', () => {
             isLoading: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         // When active session exists, expect the active session section to be displayed
@@ -250,10 +239,10 @@ describe('FocusSessions', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Choose a habit to focus on')).toBeInTheDocument();
@@ -265,20 +254,20 @@ describe('FocusSessions', () => {
             isLoading: true
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Start a Focus Session')).toBeInTheDocument();
     });
 
     it('should handle habit selection changes', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         const habitSelector = screen.getByText('Choose a habit to focus on');
@@ -288,10 +277,10 @@ describe('FocusSessions', () => {
     });
 
     it('should handle duration selection scenarios', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         const durationSelector = screen.getByText('25 minutes (Pomodoro)');
@@ -299,10 +288,10 @@ describe('FocusSessions', () => {
     });
 
     it('should handle habit selection with invalid habit ID', async () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         // Wait for content to be rendered
@@ -321,10 +310,10 @@ describe('FocusSessions', () => {
     });
 
     it('should handle duration selection callback', async () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         // Wait for content to be rendered
@@ -358,10 +347,10 @@ describe('FocusSessions', () => {
             isLoading: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Total Sessions')).toBeInTheDocument();
@@ -376,10 +365,10 @@ describe('FocusSessions', () => {
             error: new Error('Failed to load analytics')
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Start a Focus Session')).toBeInTheDocument();
@@ -392,10 +381,10 @@ describe('FocusSessions', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         const habitSelector = screen.getByText('Choose a habit to focus on');
@@ -409,10 +398,10 @@ describe('FocusSessions', () => {
             error: new Error('Failed to load habits')
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Choose a habit to focus on')).toBeInTheDocument();
@@ -433,10 +422,10 @@ describe('FocusSessions', () => {
             isLoading: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         // When paused session exists, check that the UI shows session information
@@ -451,10 +440,10 @@ describe('FocusSessions', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Choose a habit to focus on')).toBeInTheDocument();
@@ -478,10 +467,10 @@ describe('FocusSessions', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getAllByText('Focus Sessions')[0]).toBeInTheDocument();
@@ -493,20 +482,20 @@ describe('FocusSessions', () => {
             isLoading: true
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Start a Focus Session')).toBeInTheDocument();
     });
 
     it('should render with multiple duration options', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('25 minutes (Pomodoro)')).toBeInTheDocument();
@@ -525,10 +514,10 @@ describe('FocusSessions', () => {
             error: null
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         // This should trigger the handleHabitChange function with an invalid ID
@@ -537,10 +526,10 @@ describe('FocusSessions', () => {
     });
 
     it('should handle duration selection changes', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusSessions />
-            </TestWrapper>
+
         );
 
         // This should trigger duration selection handling

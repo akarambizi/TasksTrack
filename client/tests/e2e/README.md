@@ -6,34 +6,31 @@ Comprehensive end-to-end testing setup following best practices from popular rep
 
 Our E2E testing follows these established patterns:
 
-- **Page Object Model (POM)** - Reusable page classes in `pages/`
-- **Test Fixtures** - Custom fixtures for authentication and data setup
-- **Test Utilities** - Helper functions in `utils/`
-- **Constants** - Centralized test data and selectors in `constants/`
-- **Base Test Setup** - Common configuration and cleanup
+- **Direct Test Implementation** - Focused test specs with inline actions
+- **Shared Base Setup** - Common configuration and utilities in `base-setup.ts`
+- **Test Constants** - Centralized test data and selectors in `constants/`
+- **CI/CD Integration** - GitHub Actions workflow with Docker stack
 
 ## Structure
 
 ```
 tests/e2e/
-├── README.md                 # This file
-├── base.test.ts             # Base test with common setup
-├── playwright.config.ts     # Main configuration
-├── constants/
-│   └── test-data.ts        # Test constants and selectors
-├── fixtures/
-│   └── auth.fixture.ts     # Authentication fixtures
-├── pages/
-│   ├── BasePage.ts         # Base page class
-│   ├── LoginPage.ts        # Login page object
-│   ├── DashboardPage.ts    # Dashboard page object
-│   └── HabitsPage.ts       # Habits page object
-├── utils/
-│   └── test-helpers.ts     # Utility functions
-└── specs/
-    ├── auth.spec.ts        # Authentication tests
-    ├── habits.spec.ts      # Habits management tests
-    └── focus-timer.spec.ts # Focus timer tests
+├── README.md                # This file
+├── base-setup.ts           # Base test with common setup
+├── auth.spec.ts            # Authentication tests
+├── basic.spec.ts           # Basic functionality tests  
+├── habits.spec.ts          # Habits management tests
+├── focus-timer.spec.ts     # Focus timer tests
+└── constants/
+    └── test-data.ts        # Test constants and selectors
+```
+
+**Configuration:**
+```
+client/
+├── playwright.config.ts     # Main Playwright configuration
+├── package.json            # Test scripts and dependencies
+└── tests/e2e/              # Test files and utilities
 ```
 
 ## Quick Start
@@ -100,10 +97,10 @@ npm run test:e2e:trace
 - Dynamic test data generation to avoid conflicts
 - Consistent user credentials across tests
 
-### 3. **Page Object Model**
-- Reusable page classes with methods and locators
-- Inheritance from `BasePage` for common functionality
-- Clear separation of concerns
+### 3. **Direct Test Implementation**
+- Focused test specs with clear, readable actions
+- Inline selectors and interactions for simplicity
+- Consistent test patterns across all specs
 
 ### 4. **Selectors Strategy**
 - Prioritize `data-testid` attributes
@@ -154,32 +151,47 @@ DATABASE_URL=postgresql://...
 ### Basic Test Structure
 
 ```typescript
-import { test, expect } from '../base.test';
-import { TEST_USERS, SELECTORS } from '../constants/test-data';
-import { login, expectElementToBeVisible } from '../utils/test-helpers';
+import { test, expect } from './base-setup';
+import { TEST_USERS } from './constants/test-data';
 
 test.describe('Feature Name', () => {
   test.beforeEach(async ({ page }) => {
-    // Common setup
-    await login(page, TEST_USERS.STANDARD.email, TEST_USERS.STANDARD.password);
+    // Navigate to login and authenticate
+    await page.goto('/login');
+    await page.getByPlaceholder('Email').fill(TEST_USERS.STANDARD.email);
+    await page.getByPlaceholder('Password').fill(TEST_USERS.STANDARD.password);
+    await page.getByRole('button', { name: 'Sign In' }).click();
   });
 
   test('should perform action successfully', async ({ page }) => {
-    // Test implementation
-    await page.goto('/feature');
-    await expectElementToBeVisible(page, SELECTORS.FEATURE_ELEMENT);
+    // Test implementation with direct selectors
+    await page.goto('/habits');
+    await expect(page.getByRole('heading', { name: 'Habits' })).toBeVisible();
   });
 });
 ```
 
-### Using Page Objects
+### Test Example from Actual Codebase
 
 ```typescript
-import { LoginPage } from '../pages/LoginPage';
+// From auth.spec.ts
+test('should complete full signup and login flow', async ({ page }) => {
+  // Signup flow
+  await page.goto('/signup');
+  await page.getByPlaceholder('Username').fill('testuser');
+  await page.getByPlaceholder('Email').fill('test@example.com');
+  await page.getByPlaceholder('Password').fill('password123');
+  await page.getByRole('button', { name: 'Sign Up' }).click();
 
-test('should login successfully', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  await loginPage.goto();
+  // Login flow
+  await page.goto('/login');
+  await page.getByPlaceholder('Email').fill('test@example.com');
+  await page.getByPlaceholder('Password').fill('password123');
+  await page.getByRole('button', { name: 'Sign In' }).click();
+
+  // Verify successful login
+  await expect(page).toHaveURL('/dashboard');
+});
   await loginPage.login(user.email, user.password);
   await loginPage.expectSuccessfulLogin();
 });

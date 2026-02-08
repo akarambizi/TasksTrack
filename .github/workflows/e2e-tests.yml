@@ -33,12 +33,18 @@ jobs:
     - name: Start application stack
       run: |
         make up -d
-        # Wait for services to be ready with better error handling
+        sleep 10
+        # Show running services for debugging
+        echo "Docker services status:"
+        docker ps
+        # Wait for services to be ready
         echo "Waiting for client to be ready..."
-        timeout 120s bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do echo "Waiting for client..."; sleep 5; done'
-        echo "Waiting for server to be ready..."
-        timeout 60s bash -c 'until curl -f http://localhost:5206/health > /dev/null 2>&1 || curl -f http://localhost:5206 > /dev/null 2>&1; do echo "Waiting for server..."; sleep 5; done'
-        echo "All services are ready!"
+        timeout 120s bash -c 'until curl -s http://localhost:3000 > /dev/null 2>&1; do echo "Waiting for client..."; sleep 5; done'
+        echo "Client is ready!"
+        echo "Waiting for server to be ready..."  
+        timeout 60s bash -c 'until curl -s http://localhost:5206 > /dev/null 2>&1; do echo "Waiting for server..."; sleep 5; done'
+        echo "Server is ready!"
+        echo "All services are ready - proceeding to tests!"
 
     - name: Run E2E tests
       working-directory: ./client

@@ -32,7 +32,7 @@ export const SELECTORS = {
   LOADING_SPINNER: '[data-testid="loading-spinner"]',
   ERROR_MESSAGE: '[data-testid="error-message"]',
   SUCCESS_MESSAGE: '[data-testid="success-message"]',
-  
+
   // Auth
   LOGIN_FORM: '[data-testid="login-form"]',
   SIGNUP_FORM: '[data-testid="signup-form"]',
@@ -40,17 +40,17 @@ export const SELECTORS = {
   PASSWORD_INPUT: '[data-testid="password-input"]',
   USER_MENU_TRIGGER: '[data-testid="user-menu-trigger"]',
   LOGOUT_BUTTON: '[data-testid="logout-button"]',
-  
+
   // Dashboard
   DASHBOARD: '[data-testid="dashboard"]',
   USER_MENU: '[data-testid="user-menu"]',
-  
+
   // Habits
   ADD_HABIT_BUTTON: '[data-testid="add-habit-button"]',
   HABIT_CARD: '[data-testid="habit-card"]',
   LOG_HABIT_BUTTON: '[data-testid="log-habit-button"]',
   NOTES_INPUT: '[data-testid="notes-input"]',
-  
+
   // Focus Timer
   FOCUS_TIMER: '[data-testid="focus-timer"]',
   START_BUTTON: '[data-testid="start-button"]',
@@ -85,4 +85,3 @@ export const ERROR_MESSAGES = {
   EMAIL_REQUIRED: 'Email is required',
   PASSWORD_REQUIRED: 'Password is required',
 } as const;
-

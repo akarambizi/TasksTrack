@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Basic App Tests', () => {
   test('should be able to access login page', async ({ page }) => {
-    // Navigate directly to the login page without using webServer
-    await page.goto('http://localhost:3000/login');
+    // Navigate to the login page using baseURL configuration
+    await page.goto('/login');
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');

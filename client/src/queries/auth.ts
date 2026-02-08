@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, logoutUser, registerUser, resetPassword } from '../api/userAuth';
-import { IAuthFormData, IAuthResult } from '@/types';
+import { IAuthFormData, IAuthResult, IRegisterRequest } from '@/types';
 import { ToastService } from '../services/toastService';
 import { useAuthContext } from '@/context/useAuthContext';
 import { authKeys } from './queryKeys';
@@ -14,7 +14,7 @@ export const useRegister = () => {
 
     return useMutation({
         mutationKey: authKeys.register(),
-        mutationFn: (userData: IAuthFormData) => registerUser(userData),
+        mutationFn: (userData: IRegisterRequest) => registerUser(userData),
         onSuccess: () => {
             // Redirect to login page after successful registration
             navigate('/login');

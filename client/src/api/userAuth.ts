@@ -1,14 +1,14 @@
-import { IAuthResult, IAuthFormData } from '@/types';
+import { IAuthResult, IAuthFormData, IRegisterRequest } from '@/types';
 import { apiPost } from './apiClient';
 import { ToastService } from '../services/toastService';
 
 /**
  * Registers a new user.
- * @param {IAuthFormData} userData - The user data including email and password.
+ * @param {IRegisterRequest} userData - The user data including name, email and password.
  * @returns {Promise<IAuthResult>} A promise that resolves to the response data.
  * @throws {Error} An error if the registration fails.
  */
-export const registerUser = async (userData: IAuthFormData): Promise<IAuthResult> => {
+export const registerUser = async (userData: IRegisterRequest): Promise<IAuthResult> => {
     try {
         const endpoint = '/api/auth/register';
         const response = await apiPost<IAuthResult>(endpoint, userData);

@@ -1,5 +1,5 @@
 import { test, expect } from './base-setup';
-import { TEST_USERS, TIMEOUTS } from './constants/test-data';
+import { TIMEOUTS } from './constants/test-data';
 
 /**
  * Authentication Flow Tests (Improved with Best Practices)

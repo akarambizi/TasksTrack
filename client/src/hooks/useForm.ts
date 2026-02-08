@@ -1,10 +1,12 @@
 import { useForm as useReactHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+
 import { useLogin, useRegister, useResetPassword } from '@/queries';
 import {
     authFormSchema,
-    type IAuthFormData
+    registerFormSchema,
+    type IAuthFormData,
+    type IRegisterFormData
 } from '@/types';
 
 // Login form hook
@@ -32,24 +34,16 @@ export function useLoginForm() {
 export function useRegisterForm() {
     const registerMutation = useRegister();
 
-    const registerFormSchema = authFormSchema.extend({
-        name: z.string().min(1, 'Name is required'),
-        confirmPassword: z.string().min(1, 'Please confirm your password'),
-    }).refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords don't match",
-        path: ['confirmPassword'],
-    });
-
-    const form = useReactHookForm<z.infer<typeof registerFormSchema>>({
+    const form = useReactHookForm<IRegisterFormData>({
         resolver: zodResolver(registerFormSchema),
         defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
         mode: 'onChange'
     });
 
-    const onSubmit = (data: z.infer<typeof registerFormSchema>) => {
+    const onSubmit = (data: IRegisterFormData) => {
         // Extract only the fields needed for the API
         const { name, email, password } = data;
-        registerMutation.mutate({ name, email, password } as any);
+        registerMutation.mutate({ name, email, password });
     };
 
     return {

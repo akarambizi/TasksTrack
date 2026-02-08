@@ -25,11 +25,22 @@ export const SignUp = () => {
             imageAlt="login image"
         >
             <FormField
+                name="name"
+                control={control}
+                type="text"
+                label="Name"
+                placeholder="Enter your full name"
+                testId="name-input"
+                required
+            />
+
+            <FormField
                 name="email"
                 control={control}
                 type="email"
                 label="Email"
                 placeholder="m@example.com"
+                testId="email-input"
                 required
             />
 
@@ -38,12 +49,17 @@ export const SignUp = () => {
                 control={control}
                 type="password"
                 label="Password"
+                testId="password-input"
                 required
-                labelAction={
-                    <Link to="/reset-password" className="ml-auto inline-block text-sm underline">
-                        Forgot your password?
-                    </Link>
-                }
+            />
+
+            <FormField
+                name="confirmPassword"
+                control={control}
+                type="password"
+                label="Confirm Password"
+                testId="confirm-password-input"
+                required
             />
         </AuthLayout>
     );

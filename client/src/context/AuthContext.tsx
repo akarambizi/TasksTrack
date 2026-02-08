@@ -3,6 +3,7 @@ import { createContext } from 'react';
 export interface UserData {
   email?: string;
   id?: string;
+  name?: string;
 }
 
 // Export for use in the useAuthContext hook

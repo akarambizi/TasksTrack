@@ -49,6 +49,7 @@ export const AuthLayout: React.FC<IAuthLayoutProps> = ({
                             type="submit"
                             className="w-full"
                             disabled={isLoading}
+                            data-testid="submit-button"
                         >
                             {submitButtonText}
                         </Button>

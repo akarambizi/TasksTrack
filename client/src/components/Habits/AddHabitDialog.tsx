@@ -32,7 +32,11 @@ export function AddHabitDialog() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+      <Button
+        onClick={() => setOpen(true)}
+        className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+        data-testid="add-habit-button"
+      >
         <Plus className="h-4 w-4" />
         Add Habit
       </Button>

@@ -33,3 +33,12 @@ coveragereport/
 
 # Node.js
 node_modules/
+
+# Playwright Test Results
+test-results/
+client/test-results/
+client/playwright-report/
+client/test-results.json
+client/test-results.xml
+client/test-output.json
+client/test-monitoring-report.json

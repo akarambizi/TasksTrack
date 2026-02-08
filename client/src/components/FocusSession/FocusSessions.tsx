@@ -30,9 +30,9 @@ export const FocusSessions = () => {
     ];
 
     return (
-        <div className="container mx-auto py-4 space-y-4">
+        <div className="container mx-auto py-4 space-y-4" data-testid="focus-sessions">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between" data-testid="focus-timer-section">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                         Focus Sessions

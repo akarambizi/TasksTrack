@@ -35,6 +35,7 @@ export const Login = () => {
                 type="email"
                 label="Email"
                 placeholder="m@example.com"
+                testId="email-input"
                 required
             />
 
@@ -43,6 +44,7 @@ export const Login = () => {
                 control={control}
                 type="password"
                 label="Password"
+                testId="password-input"
                 required
                 labelAction={
                     <Link to="/reset-password" className="ml-auto inline-block text-sm underline">

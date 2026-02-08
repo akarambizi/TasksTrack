@@ -1,6 +1,6 @@
 # TasksTrack Development Makefile
 
-.PHONY: help build up down restart logs logs-client logs-server clean rebuild stop fresh fresh-wipe fresh-client fresh-server
+.PHONY: help build up up-ci down restart logs logs-client logs-server clean rebuild stop fresh fresh-wipe fresh-client fresh-server
 
 # Helper function to show ready message
 define show_ready_message
@@ -16,7 +16,8 @@ endef
 # Default target
 help:
 	@echo "Available commands:"
-	@echo "  make up          - Start all services"
+	@echo "  make up          - Start all services (with logs following)"
+	@echo "  make up-ci       - Start all services (CI mode - no log following)"
 	@echo "  make build       - Build all services"
 	@echo "  make rebuild     - Rebuild and start all services"
 	@echo "  make down        - Stop all services"
@@ -44,6 +45,13 @@ up:
 	@echo ""
 	@sleep 2
 	@docker compose logs -f
+
+# Start services for CI (no log following)
+up-ci:
+	@echo "Starting services for CI..."
+	@docker compose up -d
+	@sleep 5
+	$(call show_ready_message)
 
 # Build services
 build:

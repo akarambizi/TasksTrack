@@ -54,7 +54,7 @@ export const Habits = () => {
     };
 
     return (
-        <section>
+        <section data-testid="habit-list">
             <div className="flex-1 overflow-auto p-6">
                 <div className="flex justify-between items-center mb-6">
                     <div>
@@ -72,6 +72,7 @@ export const Habits = () => {
                         <div
                             key={habit.id}
                             className={`p-4 rounded-lg border ${!habit.isActive ? 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-60' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}`}
+                            data-testid="habit-card"
                             style={{
                                 borderLeftColor: habit.color || '#3b82f6',
                                 borderLeftWidth: '4px'
@@ -106,6 +107,7 @@ export const Habits = () => {
                                         className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
                                         onClick={() => handleLogActivity(habit)}
                                         title="Log Activity"
+                                        data-testid="log-habit-button"
                                     >
                                         <CheckCircle size={16} className="text-green-500 dark:text-green-400" />
                                     </button>

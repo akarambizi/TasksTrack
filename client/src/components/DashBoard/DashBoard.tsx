@@ -4,13 +4,17 @@ import { AnalyticsOverview } from '../Analytics';
 
 export const Dashboard = () => {
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4" data-testid="dashboard">
             <div className="space-y-8">
                 {/* Analytics Dashboard Section */}
-                <AnalyticsOverview />
+                <div data-testid="analytics-section">
+                    <AnalyticsOverview />
+                </div>
 
                 {/* Activity Grid Section */}
-                <ActivityGridContainer />
+                <div data-testid="activity-grid-section">
+                    <ActivityGridContainer />
+                </div>
 
                 <div className="bg-card p-6 rounded-lg shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">Welcome to TasksTrack</h2>

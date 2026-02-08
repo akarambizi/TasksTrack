@@ -53,7 +53,8 @@ describe('SignUp', () => {
         expect(screen.getByRole('heading', { name: /sign up/i })).toBeInTheDocument();
         expect(screen.getByText(/enter your information to create an account/i)).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: /email/i })).toBeInTheDocument();
-        expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+        expect(screen.getByLabelText('Password')).toBeInTheDocument();
+        expect(screen.getByLabelText('Confirm Password')).toBeInTheDocument();
     });
 
     it('displays form data correctly', () => {

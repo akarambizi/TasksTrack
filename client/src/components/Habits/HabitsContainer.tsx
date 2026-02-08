@@ -6,7 +6,9 @@ export const HabitsContainer = () => {
             <div className="flex items-center">
                 <h1 className="text-lg font-semibold md:text-2xl">Habits</h1>
             </div>
-            <Habits />
+            <div data-testid="habits-section">
+                <Habits />
+            </div>
         </>
     );
 };

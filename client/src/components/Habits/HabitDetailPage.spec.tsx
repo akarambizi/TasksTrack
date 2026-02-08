@@ -340,9 +340,10 @@ describe('HabitDetailPage', () => {
             renderWithProviders();
 
             const buttons = screen.getAllByRole('button');
-            expect(buttons).toHaveLength(2); // Back button and Add Log button
+            expect(buttons).toHaveLength(3); // Back button, Add Log button, and options button
             expect(buttons[0]).toBeInTheDocument(); // Back button
             expect(buttons[1]).toBeInTheDocument(); // Add Log button
+            expect(buttons[2]).toBeInTheDocument(); // Options button
         });
     });
 });

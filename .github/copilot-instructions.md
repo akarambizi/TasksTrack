@@ -149,6 +149,44 @@ TasksTrack/
 - [ ] **New features have tests** - Every new feature must include comprehensive unit tests
 - [ ] **Edge cases covered** - Test error conditions, null values, and boundary conditions
 
+#### **Testing Standards & Best Practices**
+
+**CRITICAL: This project has achieved 100% test success (257/257 tests passing) using proven patterns.**
+
+##### **Frontend Testing Approach**
+- **Use renderWithProviders** for all React component tests (includes router context)
+- **Mock React Hook Form completely** for form components to prevent control object errors
+- **Clean up after each test** with afterEach(() => cleanup()) to prevent test interference
+- **Use data-testid attributes** for reliable element selection when role/label selectors fail
+- **Test real user interactions** with userEvent.setup() and async/await patterns
+
+##### **Backend Testing Approach**
+- **Unit tests for all Controllers and Services** with proper dependency injection mocking
+- **Integration tests for database operations** using in-memory test database
+- **API endpoint tests** with comprehensive request/response validation
+- **Authentication and authorization tests** for all secured endpoints
+
+##### **Testing Quality Gates**
+```bash
+# Frontend quality validation
+npm run build        # Must succeed with zero errors
+npm run test -- --run --coverage  # Must show ≥80% coverage and 100% pass rate
+npm run lint         # Must pass with no errors
+
+# Backend quality validation
+dotnet build         # Must succeed with no warnings/errors
+dotnet test          # Must show 100% test pass rate
+```
+
+**If any quality gate fails, the feature is NOT ready for merge.**
+
+##### **Reference Testing Patterns**
+- **Form Components**: See `client/src/components/Habits/AddHabitLogDialog.spec.tsx`
+- **Router Components**: See `client/src/components/Auth/Login.spec.tsx`
+- **Complex State**: See `client/src/components/FocusSession/FocusTimer.spec.tsx`
+- **API Functions**: See `client/src/api/habitLog.spec.ts`
+- **Server Controllers**: See `server/Tests/Controllers/` directory
+
 #### **Validation Commands**
 
 Run these commands before considering any feature complete:

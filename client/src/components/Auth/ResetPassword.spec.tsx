@@ -1,6 +1,6 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProviders } from '../../utils/test-utils';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BrowserRouter } from 'react-router-dom';
 import { ResetPassword } from './ResetPassword';
 import { useResetPasswordForm } from '@/hooks/useForm';
 
@@ -20,10 +20,10 @@ vi.mock('@/components/ui', () => ({
 }));
 
 const renderResetPassword = () => {
-    return render(
-        <BrowserRouter>
+    return renderWithProviders(
+
             <ResetPassword />
-        </BrowserRouter>
+
     );
 };
 

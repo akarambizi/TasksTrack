@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, act } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { act } from '@testing-library/react';
 import { FocusTimerProvider } from './FocusTimerContext';
 import { useFocusTimerContext } from '@/hooks/useFocusTimerContext';
-import { FocusSessionStatus } from '@/types'; // Import from centralized types
+import { FocusSessionStatus } from '@/types';
+import { renderWithProviders } from '../utils/test-utils';
 
 
 // Mock dependencies
@@ -28,7 +28,6 @@ const { useActiveFocusSession } = await import('@/queries');
 const { getSessionState } = await import('@/utils/focusTimer');
 
 describe('FocusTimerContext', () => {
-    let queryClient: QueryClient;
     const mockTimer = {
         totalSeconds: 1500,
         isRunning: false,
@@ -36,12 +35,6 @@ describe('FocusTimerContext', () => {
     };
 
     beforeEach(() => {
-        queryClient = new QueryClient({
-            defaultOptions: {
-                queries: { retry: false },
-                mutations: { retry: false }
-            }
-        });
         vi.clearAllMocks();
         (useTimer as ReturnType<typeof vi.fn>).mockReturnValue(mockTimer);
         (useActiveFocusSession as ReturnType<typeof vi.fn>).mockReturnValue({
@@ -54,14 +47,6 @@ describe('FocusTimerContext', () => {
             isRunning: false
         });
     });
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            <FocusTimerProvider plannedDurationMinutes={25}>
-                {children}
-            </FocusTimerProvider>
-        </QueryClientProvider>
-    );
 
     const TestComponent = () => {
         const context = useFocusTimerContext();
@@ -83,10 +68,10 @@ describe('FocusTimerContext', () => {
     };
 
     it('should provide default timer state when no active session', () => {
-        const { getByTestId } = render(
-            <TestWrapper>
+        const { getByTestId } = renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         expect(getByTestId('time-left')).toHaveTextContent('1500');
@@ -117,10 +102,10 @@ describe('FocusTimerContext', () => {
             isRunning: true
         });
 
-        const { getByTestId } = render(
-            <TestWrapper>
+        const { getByTestId } = renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         expect(getByTestId('has-active-session')).toHaveTextContent('true');
@@ -128,10 +113,10 @@ describe('FocusTimerContext', () => {
     });
 
     it('should handle completion celebration state', () => {
-        const { getByTestId } = render(
-            <TestWrapper>
+        const { getByTestId } = renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         const setCelebrationButton = getByTestId('set-celebration');
@@ -145,10 +130,10 @@ describe('FocusTimerContext', () => {
     it('should auto-hide celebration after 3 seconds', async () => {
         vi.useFakeTimers();
 
-        const { getByTestId } = render(
-            <TestWrapper>
+        const { getByTestId } = renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         const setCelebrationButton = getByTestId('set-celebration');
@@ -189,10 +174,10 @@ describe('FocusTimerContext', () => {
             isRunning: true
         });
 
-        const { getByTestId } = render(
-            <TestWrapper>
+        const { getByTestId } = renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         expect(getByTestId('progress')).toHaveTextContent('50');
@@ -209,10 +194,10 @@ describe('FocusTimerContext', () => {
             return <div data-testid="is-loading">{context.isLoadingSession.toString()}</div>;
         };
 
-        const { getByTestId } = render(
-            <TestWrapper>
+        const { getByTestId } = renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestLoadingComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         expect(getByTestId('is-loading')).toHaveTextContent('true');
@@ -240,10 +225,10 @@ describe('FocusTimerContext', () => {
             isRunning: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+            <FocusTimerProvider plannedDurationMinutes={25}>
                 <TestComponent />
-            </TestWrapper>
+            </FocusTimerProvider>
         );
 
         expect(mockTimer.restart).toHaveBeenCalledWith(

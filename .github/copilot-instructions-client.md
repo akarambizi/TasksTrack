@@ -161,18 +161,43 @@ client/src/
 - Import organization
 - Component structure
 
-### 3. **Testing with Vitest**
+### 3. **Testing with Vitest - Comprehensive Guidelines**
+
+#### **Testing Infrastructure Setup**
+
+**STEP 1: ALWAYS Start with Test Utils**
+
+**CRITICAL: Before writing ANY test, import and use these utilities from `client/src/utils/test-utils.tsx`:**
+
+```typescript
+// MANDATORY: Import centralized test utilities FIRST
+import {
+  renderWithProviders,  // Essential: Wraps components with all providers (router, theme, query)
+  mockHabit,           // Pre-configured mock data for habits
+  mockUser,            // Pre-configured mock data for users
+  mockHabitLog,        // Pre-configured mock data for habit logs
+  createMockUseForm    // Complete React Hook Form mocking utility
+} from '../../utils/test-utils';
+```
+
+**Why Test Utils Are Critical:**
+- **`renderWithProviders()`** prevents router nesting errors (primary cause of test failures)
+- **Mock data objects** ensure consistency across all tests
+- **`createMockUseForm()`** provides complete React Hook Form mocking with Controller support
+- **TestWrapper** is integrated - never use it directly
 
 **Use Vitest as the test runner with `.spec.ts` or `.spec.tsx` file extensions:**
 
 ```typescript
 // Component testing with Vitest + React Testing Library
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-// Note: jest-dom matchers are imported via src/test-setup.ts
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-// Hook testing
-import { renderHook, act } from '@testing-library/react';
+// MANDATORY: Clean up after each test
+afterEach(() => {
+  cleanup();
+});
 
 // Test file naming:
 // - useAuth.spec.ts (for hooks)
@@ -180,13 +205,186 @@ import { renderHook, act } from '@testing-library/react';
 // - habitLog.spec.ts (for API functions)
 ```
 
-**Key Testing Patterns:**
+#### **React Hook Form Testing Patterns**
 
-- Use QueryClient wrapper for components using TanStack Query
-- Mock API functions and services using `vi.mock()`
-- Test user interactions with `fireEvent` and `waitFor`
-- Use descriptive test names that explain the expected behavior
-- jest-dom matchers like `toBeInTheDocument()` are available via test setup
+**CRITICAL: For components using React Hook Form, use this exact mocking pattern:**
+
+```typescript
+// Mock React Hook Form completely (prevents control object errors)
+vi.mock('react-hook-form', () => ({
+  useForm: () => ({
+    register: vi.fn(),
+    handleSubmit: vi.fn((fn) => (e) => {
+      e?.preventDefault?.();
+      fn?.({});
+    }),
+    formState: { errors: {}, isSubmitting: false },
+    control: {},
+    setValue: vi.fn(),
+    getValues: vi.fn(() => ({})),
+    reset: vi.fn(),
+    watch: vi.fn()
+  }),
+  Controller: ({ render }: any) => {
+    return render({
+      field: {
+        value: '',
+        onChange: vi.fn(),
+        onBlur: vi.fn(),
+        name: 'test'
+      },
+      fieldState: {
+        invalid: false,
+        error: null
+      }
+    });
+  }
+}));
+
+// Mock your custom form hooks
+vi.mock('../../hooks/useHabitLogForm', () => ({
+  useHabitLogForm: () => ({
+    register: vi.fn(),
+    handleSubmit: vi.fn((fn) => (e) => {
+      e?.preventDefault?.();
+      fn?.({});
+    }),
+    formState: { errors: {}, isSubmitting: false },
+    control: {},
+    setValue: vi.fn(),
+    getValues: vi.fn(() => ({})),
+    reset: vi.fn(),
+    watch: vi.fn()
+  })
+}));
+```
+
+#### **Router Testing Patterns**
+
+**CRITICAL: Use renderWithProviders to avoid router nesting errors:**
+
+```typescript
+// CORRECT: Use renderWithProviders (includes BrowserRouter)
+const renderComponent = (props = {}) => {
+  return renderWithProviders(
+    <MyComponent {...defaultProps} {...props} />
+  );
+};
+
+// WRONG: Don't nest routers or use TestWrapper inside renderWithProviders
+// This will cause "You cannot render a <Router> inside another <Router>" errors
+```
+
+#### **Component Testing Best Practices**
+
+**Follow these patterns for reliable component tests:**
+
+```typescript
+describe('ComponentName', () => {
+  const mockOnClose = vi.fn();
+  const mockOnSubmit = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  const renderComponent = (props = {}) => {
+    return renderWithProviders(
+      <ComponentName
+        onClose={mockOnClose}
+        onSubmit={mockOnSubmit}
+        {...props}
+      />
+    );
+  };
+
+  it('should render component when prop is true', () => {
+    renderComponent({ isOpen: true });
+
+    // Use data-testid for reliable element selection
+    expect(screen.getByTestId('component-container')).toBeInTheDocument();
+    expect(screen.getByText('Expected Text')).toBeInTheDocument();
+  });
+
+  it('should handle user interactions correctly', async () => {
+    const user = userEvent.setup();
+    renderComponent({ isOpen: true });
+
+    // Use actual button text from component (e.g., "Log Activity" not "Save")
+    const submitButton = screen.getByRole('button', { name: /log activity/i });
+    await user.click(submitButton);
+
+    expect(mockOnSubmit).toHaveBeenCalled();
+  });
+
+  it('should display form fields correctly', () => {
+    renderComponent({ isOpen: true });
+
+    // Use data-testid when label associations are complex
+    expect(screen.getByTestId('value-input')).toBeInTheDocument();
+    expect(screen.getByTestId('date-input')).toBeInTheDocument();
+    expect(screen.getByTestId('notes-input')).toBeInTheDocument();
+  });
+});
+```
+
+#### **API and Query Testing**
+
+**Use consistent patterns for API and TanStack Query testing:**
+
+```typescript
+// Mock TanStack Query hooks
+vi.mock('../../queries/habitLogs', () => ({
+  useCreateHabitLogMutation: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+    error: null
+  })
+}));
+
+// Test API functions with error handling
+it('should handle API errors gracefully', async () => {
+  vi.mocked(apiClient.apiPost).mockRejectedValueOnce(new Error('API Error'));
+
+  await expect(createHabitLog(mockData)).rejects.toThrow('API Error');
+});
+```
+
+#### **Test Quality Standards**
+
+**MANDATORY: Every test must meet these standards:**
+
+- **Use renderWithProviders** for all component tests
+- **Clean up after each test** with afterEach(() => cleanup())
+- **Mock React Hook Form completely** for form components
+- **Use data-testid attributes** when role/label selectors are unreliable
+- **Test actual rendered text** (check component output, not assumptions)
+- **Handle async operations** with proper async/await and user events
+- **Mock external dependencies** consistently
+
+#### **Proven Success Patterns**
+
+**These patterns achieved 100% test success (257/257 tests passing):**
+
+1. **Router Handling**: Always use renderWithProviders, never nest TestWrapper
+2. **Form Testing**: Complete React Hook Form mocking with Controller support
+3. **Element Selection**: Prefer data-testid over complex role/label queries
+4. **User Interactions**: Use userEvent.setup() and await all interactions
+5. **Clean Separation**: Mock all external APIs and dependencies
+6. **Realistic Testing**: Test what users actually see and interact with
+
+#### **Reference Implementations**
+
+**Study these successful test files for patterns:**
+
+- `client/src/components/Auth/Login.spec.tsx` - Form testing with validation
+- `client/src/components/Habits/AddHabitLogDialog.spec.tsx` - Dialog with React Hook Form
+- `client/src/components/FocusSession/FocusTimer.spec.tsx` - Complex state management
+- `client/src/api/habitLog.spec.ts` - API function testing with error handling
 
 ### 4. **Reference Existing Interface Patterns**
 

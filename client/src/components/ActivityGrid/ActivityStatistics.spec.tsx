@@ -1,7 +1,6 @@
+import { renderWithProviders } from '../../utils/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
+import { screen } from '@testing-library/react';
 import { ActivityStatistics } from './ActivityStatistics';
 import { useActivityStatistics } from '../../queries/activity';
 import { IActivityStatisticsResponse } from '@/types';
@@ -13,20 +12,7 @@ vi.mock('../../queries/activity', () => ({
 
 const mockUseActivityStatistics = vi.mocked(useActivityStatistics);
 
-const createWrapper = () => {
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: { retry: false },
-            mutations: { retry: false },
-        },
-    });
 
-    return ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-    );
-};
 
 const mockStatisticsData: IActivityStatisticsResponse = {
     totalDaysTracked: 365,
@@ -70,8 +56,6 @@ const mockStatisticsData: IActivityStatisticsResponse = {
 };
 
 describe('ActivityStatistics', () => {
-    const Wrapper = createWrapper();
-
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -84,7 +68,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Activity Statistics')).toBeInTheDocument();
         // Loading skeleton should be present
@@ -100,7 +84,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Activity Statistics')).toBeInTheDocument();
         expect(screen.getByText('Active Days')).toBeInTheDocument();
@@ -115,7 +99,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Current Streak')).toBeInTheDocument();
         expect(screen.getByText('7 days')).toBeInTheDocument();
@@ -131,7 +115,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Best Performing Habit')).toBeInTheDocument();
         expect(screen.getByText('Exercise')).toBeInTheDocument();
@@ -145,7 +129,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Recent Weekly Activity')).toBeInTheDocument();
     });
@@ -158,7 +142,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Monthly Progress')).toBeInTheDocument();
     });
@@ -172,7 +156,7 @@ describe('ActivityStatistics', () => {
             isError: true,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Activity Statistics')).toBeInTheDocument();
         expect(screen.getByText('Failed to load activity statistics')).toBeInTheDocument();
@@ -194,7 +178,7 @@ describe('ActivityStatistics', () => {
             isError: false,
         } as any);
 
-        render(<ActivityStatistics />, { wrapper: Wrapper });
+        renderWithProviders(<ActivityStatistics />);
 
         expect(screen.getByText('Activity Statistics')).toBeInTheDocument();
         // Should handle zero values without errors

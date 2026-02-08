@@ -54,7 +54,7 @@ export const createCategory = async (category: ICategoryCreateRequest): Promise<
 /**
  * Updates an existing category.
  * @param {ICategoryUpdateRequest} category - The category data to update.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when update completes.
  */
 export const updateCategory = async (category: ICategoryUpdateRequest): Promise<void> => {
     try {
@@ -70,7 +70,7 @@ export const updateCategory = async (category: ICategoryUpdateRequest): Promise<
 /**
  * Deletes a category.
  * @param {number} id - The ID of the category to delete.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when deletion completes.
  */
 export const deleteCategory = async (id: number): Promise<void> => {
     try {
@@ -86,7 +86,7 @@ export const deleteCategory = async (id: number): Promise<void> => {
 /**
  * Archives a category.
  * @param {number} id - The ID of the category to archive.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when archiving completes.
  */
 export const archiveCategory = async (id: number): Promise<void> => {
     try {

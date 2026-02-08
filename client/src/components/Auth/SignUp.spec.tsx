@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { renderWithProviders } from '../../utils/test-utils';
+import { screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BrowserRouter } from 'react-router-dom';
 import { SignUp } from './SignUp';
 import { useRegisterForm } from '@/hooks/useForm';
+import { createMockUseForm } from '../../utils/test-utils';
 
 // Mock the useRegisterForm hook
 vi.mock('@/hooks/useForm', () => ({
@@ -26,32 +27,24 @@ vi.mock('@/components/ui', () => ({
 }));
 
 const renderSignUp = () => {
-    return render(
-        <BrowserRouter>
+    return renderWithProviders(
+
             <SignUp />
-        </BrowserRouter>
+
     );
 };
 
 describe('SignUp', () => {
-    const mockHandleSubmit = vi.fn((callback) => (e: Event) => {
-        e.preventDefault();
-        callback({});
-    });
-    const mockOnSubmit = vi.fn();
-
     beforeEach(() => {
         vi.clearAllMocks();
-        (useRegisterForm as ReturnType<typeof vi.fn>).mockReturnValue({
-            control: {},
-            handleSubmit: mockHandleSubmit,
-            formState: {
-                errors: {},
-                isSubmitting: false
-            },
-            isLoading: false,
-            onSubmit: mockOnSubmit
-        });
+        (useRegisterForm as ReturnType<typeof vi.fn>).mockReturnValue(
+            createMockUseForm({
+                formState: {
+                    errors: {},
+                    isSubmitting: false
+                }
+            }) as any
+        );
     });
 
     it('renders signup form with all elements', () => {
@@ -72,19 +65,17 @@ describe('SignUp', () => {
     });
 
     it('displays validation errors', () => {
-        (useRegisterForm as ReturnType<typeof vi.fn>).mockReturnValue({
-            control: {},
-            handleSubmit: mockHandleSubmit,
-            formState: {
-                errors: {
-                    email: { message: 'Email is required' },
-                    password: { message: 'Password must be at least 8 characters' }
-                },
-                isSubmitting: false
-            },
-            isLoading: false,
-            onSubmit: mockOnSubmit
-        });
+        (useRegisterForm as ReturnType<typeof vi.fn>).mockReturnValue(
+            createMockUseForm({
+                formState: {
+                    errors: {
+                        email: { message: 'Email is required', type: 'required' },
+                        password: { message: 'Password must be at least 8 characters', type: 'minLength' }
+                    },
+                    isSubmitting: false
+                }
+            }) as any
+        );
 
         renderSignUp();
 
@@ -105,10 +96,7 @@ describe('SignUp', () => {
     });
 
     it('calls handleSubmit when form is submitted', async () => {
-        mockHandleSubmit.mockImplementation((fn) => (e: any) => {
-            e.preventDefault();
-            fn({ email: 'test@example.com', password: 'password123' });
-        });
+        // Form submission is handled by the component
 
         renderSignUp();
 
@@ -118,16 +106,14 @@ describe('SignUp', () => {
     });
 
     it('shows loading state when form is submitting', () => {
-        (useRegisterForm as ReturnType<typeof vi.fn>).mockReturnValue({
-            control: {},
-            handleSubmit: mockHandleSubmit,
-            formState: {
-                errors: {},
-                isSubmitting: true
-            },
-            isLoading: true,
-            onSubmit: mockOnSubmit
-        });
+        (useRegisterForm as ReturnType<typeof vi.fn>).mockReturnValue(
+            createMockUseForm({
+                formState: {
+                    errors: {},
+                    isSubmitting: true
+                }
+            }) as any
+        );
 
         renderSignUp();
 

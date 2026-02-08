@@ -1,8 +1,8 @@
+import { renderWithProviders } from '../../utils/test-utils';
 import { HABIT_COLORS, TARGET_FREQUENCY, HABIT_ICONS } from '@/types/constants';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FocusTimer } from './FocusTimer';
 import type { IHabit } from '@/types';
 
@@ -63,7 +63,6 @@ const {
 const { useFocusTimerContext } = await import('@/hooks/useFocusTimerContext');
 
 describe('FocusTimer', () => {
-    let queryClient: QueryClient;
     const mockStartSession = vi.fn();
     const mockPauseSession = vi.fn();
     const mockResumeSession = vi.fn();
@@ -89,12 +88,6 @@ describe('FocusTimer', () => {
     };
 
     beforeEach(() => {
-        queryClient = new QueryClient({
-            defaultOptions: {
-                queries: { retry: false },
-                mutations: { retry: false }
-            }
-        });
         vi.clearAllMocks();
 
         (useStartFocusSessionMutation as ReturnType<typeof vi.fn>).mockReturnValue({
@@ -124,17 +117,11 @@ describe('FocusTimer', () => {
         });
     });
 
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-    );
-
     it('should render timer component', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('focus-timer-card')).toBeInTheDocument();
@@ -143,10 +130,10 @@ describe('FocusTimer', () => {
     });
 
     it('should display start button when no active session', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('start-session-button')).toBeInTheDocument();
@@ -154,10 +141,10 @@ describe('FocusTimer', () => {
     });
 
     it('should show no habit message when no habit provided', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('no-habit-message')).toBeInTheDocument();
@@ -178,10 +165,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('progress-bar')).toBeInTheDocument();
@@ -201,10 +188,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('completion-celebration')).toBeInTheDocument();
@@ -244,10 +231,10 @@ describe('FocusTimer', () => {
             isPending: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const startButton = screen.getByTestId('start-session-button');
@@ -276,10 +263,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('pause-session-button')).toBeInTheDocument();
@@ -309,10 +296,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('resume-session-button')).toBeInTheDocument();
@@ -334,20 +321,20 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByText('Focus Timer')).toBeInTheDocument();
     });
 
     it('should handle start session with different durations', () => {
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const startButton = screen.getByTestId('start-session-button');
@@ -379,10 +366,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('timer-display')).toHaveTextContent('15:00');
@@ -408,10 +395,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('timer-display')).toHaveTextContent('10:00');
@@ -424,10 +411,10 @@ describe('FocusTimer', () => {
         (mockCancelSession as { isPending?: boolean }).isPending = true;
         (mockCompleteSession as { isPending?: boolean }).isPending = true;
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const resumeButton = screen.getByTestId('resume-session-button');
@@ -454,10 +441,10 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('timer-display')).toHaveTextContent('1:05');
@@ -483,20 +470,18 @@ describe('FocusTimer', () => {
             setCompletionCelebration: vi.fn()
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('timer-display')).toHaveTextContent('0:00');
     });
 
     it('should handle various session status changes', () => {
-        const { rerender } = render(
-            <TestWrapper>
-                <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+        const { rerender } = renderWithProviders(
+            <FocusTimer habit={mockHabit} />
         );
 
         // Test transition from idle to active
@@ -520,9 +505,7 @@ describe('FocusTimer', () => {
         });
 
         rerender(
-            <TestWrapper>
-                <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+            <FocusTimer habit={mockHabit} />
         );
 
         expect(screen.getByTestId('timer-display')).toHaveTextContent('23:00');
@@ -554,10 +537,10 @@ describe('FocusTimer', () => {
             isRunning: true
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const completeButton = screen.getByTestId('complete-session-button');
@@ -583,10 +566,10 @@ describe('FocusTimer', () => {
             isRunning: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const startButton = screen.getByTestId('start-session-button');
@@ -627,10 +610,10 @@ describe('FocusTimer', () => {
             isRunning: true
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         // In running state, click the pause button
@@ -673,10 +656,10 @@ describe('FocusTimer', () => {
             isRunning: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const resumeButton = screen.getByTestId('resume-session-button');
@@ -717,10 +700,10 @@ describe('FocusTimer', () => {
             isRunning: true
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const completeButton = screen.getByTestId('complete-session-button');
@@ -761,10 +744,10 @@ describe('FocusTimer', () => {
             isRunning: true
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const cancelButton = screen.getByTestId('cancel-session-button');
@@ -810,10 +793,10 @@ describe('FocusTimer', () => {
             isRunning: false
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer habit={mockHabit} />
-            </TestWrapper>
+
         );
 
         const startButton = screen.getByTestId('start-session-button');
@@ -848,10 +831,10 @@ describe('FocusTimer', () => {
             progress: 60
         });
 
-        render(
-            <TestWrapper>
+        renderWithProviders(
+
                 <FocusTimer />
-            </TestWrapper>
+
         );
 
         expect(screen.getByTestId('focus-timer-card')).toBeInTheDocument();

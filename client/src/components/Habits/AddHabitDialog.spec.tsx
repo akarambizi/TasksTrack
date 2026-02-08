@@ -1,7 +1,7 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AddHabitDialog } from './AddHabitDialog';
+import { renderWithProviders } from '../../utils/test-utils';
 import * as useCreateHabitMutationHook from '@/queries/habits';
 import * as useAuthContextHook from '@/context/useAuthContext';
 
@@ -25,21 +25,6 @@ vi.mock('@/api/categories', () => ({
 const MockedUseCreateHabitMutation = useCreateHabitMutationHook.useCreateHabitMutation as ReturnType<typeof vi.fn>;
 const MockedUseAuthContext = useAuthContextHook.useAuthContext as ReturnType<typeof vi.fn>;
 
-const renderAddHabitDialog = () => {
-    const queryClient = new QueryClient({
-        defaultOptions: {
-            queries: { retry: false },
-            mutations: { retry: false }
-        }
-    });
-
-    return render(
-        <QueryClientProvider client={queryClient}>
-            <AddHabitDialog />
-        </QueryClientProvider>
-    );
-};
-
 describe('AddHabitDialog', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -56,12 +41,12 @@ describe('AddHabitDialog', () => {
     });
 
     it('renders add habit button', () => {
-        renderAddHabitDialog();
+        renderWithProviders(<AddHabitDialog />);
         expect(screen.getByText('Add Habit')).toBeInTheDocument();
     });
 
     it('opens dialog when add habit button is clicked', async () => {
-        renderAddHabitDialog();
+        renderWithProviders(<AddHabitDialog />);
         const button = screen.getByText('Add Habit');
         fireEvent.click(button);
 
@@ -71,7 +56,7 @@ describe('AddHabitDialog', () => {
     });
 
     it('displays form fields in dialog', async () => {
-        renderAddHabitDialog();
+        renderWithProviders(<AddHabitDialog />);
         const button = screen.getByText('Add Habit');
         fireEvent.click(button);
 
@@ -82,7 +67,7 @@ describe('AddHabitDialog', () => {
     });
 
     it('shows cancel and create buttons', async () => {
-        renderAddHabitDialog();
+        renderWithProviders(<AddHabitDialog />);
         const button = screen.getByText('Add Habit');
         fireEvent.click(button);
 

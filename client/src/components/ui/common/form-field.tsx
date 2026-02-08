@@ -42,6 +42,15 @@ export function FormField<TFieldValues extends FieldValues = FieldValues, TName 
                         required={required}
                         data-testid={testId}
                         aria-invalid={fieldState.invalid}
+                        onChange={(e) => {
+                            // Handle number inputs with coercion
+                            if (inputProps?.type === 'number') {
+                                const value = e.target.value === '' ? 0 : Number(e.target.value);
+                                field.onChange(value);
+                            } else {
+                                field.onChange(e.target.value);
+                            }
+                        }}
                         {...inputProps}
                     />
                     {description && (

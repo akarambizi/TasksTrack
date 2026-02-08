@@ -213,6 +213,7 @@ export function HabitFormDialog({
                   control={control}
                   label="Metric Type"
                   placeholder="How do you want to measure this habit?"
+                  valueType="string"
                   required
                   options={METRIC_TYPE_OPTIONS.map(option => ({
                     value: option.value,
@@ -236,6 +237,7 @@ export function HabitFormDialog({
                     control={control}
                     label="Unit"
                     placeholder="Select a unit"
+                    valueType="string"
                     options={suggestedUnits.map(unit => ({
                       value: unit,
                       label: unit
@@ -256,6 +258,7 @@ export function HabitFormDialog({
                   control={control}
                   label="Target Frequency"
                   placeholder="How often do you want to achieve this target?"
+                  valueType="string"
                   options={FREQUENCY_OPTIONS}
                 />
               </div>
@@ -270,6 +273,7 @@ export function HabitFormDialog({
                 control={control}
                 label="Category (Optional)"
                 placeholder="Select a category to organize your habit"
+                valueType="string"
                 options={[
                   { value: 'none', label: 'No Category' },
                   ...categories.map(cat => ({
@@ -326,8 +330,7 @@ export function HabitFormDialog({
                   name="icon"
                   control={control}
                   label="Icon"
-                  placeholder="Choose an icon for your habit"
-                  options={ICON_OPTIONS}
+                  placeholder="Choose an icon for your habit"                  valueType="string"                  options={ICON_OPTIONS}
                 />
               </div>
             </div>

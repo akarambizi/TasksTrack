@@ -4,8 +4,10 @@ import { FormField, TextareaField } from '@/components/ui';
 
 import { useEffect } from 'react';
 import { useHabitLogForm } from '@/hooks/useHabitLogForm';
+import { useCreateHabitLogMutation } from '@/queries/habitLogs';
 import { IHabit } from '@/types';
 import { HabitLogFormData } from '@/types';
+import { useAuthContext } from '@/context/useAuthContext';
 
 interface IAddHabitLogDialogProps {
     habit: IHabit;
@@ -15,6 +17,8 @@ interface IAddHabitLogDialogProps {
 }
 
 export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSuccess }: IAddHabitLogDialogProps) {
+    const { user } = useAuthContext();
+    const createHabitLogMutation = useCreateHabitLogMutation();
     const {
         control,
         handleSubmit,
@@ -30,19 +34,20 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                 date: today,
                 habitId: habit.id,
                 value: 0,
-                notes: ''
+                notes: '',
+                createdBy: user?.id || 'unknown'
             });
         }
-    }, [isOpen, habit, reset]);
+    }, [isOpen, habit, reset, user]);
 
-    const onSubmit = async (_data: HabitLogFormData) => {
+    const onSubmit = async (data: HabitLogFormData) => {
         try {
-            // The form hook handles the submission
+            await createHabitLogMutation.mutateAsync(data);
             onSubmitSuccess?.();
             reset();
             onClose();
         } catch (error) {
-            // Error handling is managed by the hook
+            // Error handling is managed by the mutation
             console.error('Form submission error:', error);
         }
     };
@@ -52,12 +57,18 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
         onClose();
     };
 
+    const handleOpenChange = (newOpen: boolean) => {
+        if (!newOpen) {
+            handleClose();
+        }
+    };
+
     if (!isOpen) return null;
 
     const displayUnit = habit.unit || habit.metricType || 'units';
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleClose}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[425px]" data-testid="add-habit-log-dialog">
                 <form onSubmit={handleSubmit(onSubmit)} data-testid="habit-log-form">
                     <DialogHeader>
@@ -110,11 +121,11 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                         </Button>
                         <Button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || createHabitLogMutation.isPending}
                             className="bg-green-600 hover:bg-green-700"
                             data-testid="submit-button"
                         >
-                            {isSubmitting ? 'Logging...' : 'Log Activity'}
+                            {isSubmitting || createHabitLogMutation.isPending ? 'Logging...' : 'Log Activity'}
                         </Button>
                     </DialogFooter>
                 </form>

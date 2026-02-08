@@ -13,21 +13,23 @@ The shadcn/ui MCP server provides AI assistants with access to:
 
 ## Setup
 
-The MCP server has been configured for this workspace:
+The **official** shadcn/ui MCP server has been configured for this workspace:
 
 ### Configuration Files
-- **`.vscode/mcp.json`** - MCP server configuration
-- **`.vscode/settings.json`** - VS Code workspace settings including MCP configuration
-- **`package.json`** - Includes the `@jpisnice/shadcn-ui-mcp-server` dependency
+- **`.vscode/mcp.json`** - Official shadcn MCP server configuration
+- **`.vscode/settings.json`** - VS Code workspace settings (currently contains dotnet-test-explorer settings)
+- **`components.json`** - Standard shadcn/ui configuration (no additional MCP setup needed)
 
 ### Running the Server
 
-You can start the MCP server manually using:
+The MCP server uses the official shadcn CLI:
 ```bash
-npm run mcp:shadcn
+npx shadcn@latest mcp
 ```
 
-Or directly with:
+### Official Documentation
+- [shadcn/ui MCP Documentation](https://ui.shadcn.com/docs/mcp)
+- [VS Code MCP Setup](https://ui.shadcn.com/docs/mcp#vs-code)
 ```bash
 npx @jpisnice/shadcn-ui-mcp-server
 ```

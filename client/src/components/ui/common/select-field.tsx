@@ -2,6 +2,7 @@
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 interface ISelectOption {
     value: string;
@@ -19,6 +20,7 @@ interface ISelectFieldProps<TFieldValues extends FieldValues = FieldValues, TNam
     className?: string;
     testId?: string;
     description?: string;
+    valueType: 'string' | 'number';
 }
 
 export function SelectField<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
@@ -30,21 +32,30 @@ export function SelectField<TFieldValues extends FieldValues = FieldValues, TNam
     required = false,
     className = "",
     testId,
-    description
+    description,
+    valueType
 }: ISelectFieldProps<TFieldValues, TName>) {
     return (
         <Controller
             name={name}
             control={control}
             render={({ field, fieldState }) => (
-                <div className={`grid gap-2 ${className}`}>
+                <div className={cn("grid gap-2", className)}>
                     <Label htmlFor={field.name}>
                         {label}
                         {required && <span className="text-red-500 ml-1">*</span>}
                     </Label>
                     <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
+                        value={field.value?.toString() || ''}
+                        onValueChange={(value) => {
+                            // Handle type conversion based on valueType prop
+                            if (valueType === 'number') {
+                                const numValue = value === '' ? undefined : Number(value);
+                                field.onChange(numValue);
+                            } else {
+                                field.onChange(value);
+                            }
+                        }}
                         data-testid={testId}
                     >
                         <SelectTrigger id={field.name} aria-invalid={fieldState.invalid}>

@@ -42,7 +42,7 @@ export const categoryFormSchema = z.object({
   description: z.string().max(500).optional().or(z.literal('')),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
   icon: z.string().optional(),
-  parentId: z.number().positive().optional(),
+  parentId: z.union([z.number().positive(), z.undefined()]),
 });
 
 // Category request schemas for API operations

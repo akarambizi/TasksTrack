@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 import { FormField } from "@/components/ui/common/form-field";
 import { SelectField } from "@/components/ui/common/select-field";
+import { TextareaField } from "@/components/ui/common/textarea-field";
 import { useCategoryForm } from './useCategoryForm';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { ICategory } from '@/types';
@@ -131,12 +132,12 @@ export function CategoryFormDialog({
                         required
                     />
 
-                    <FormField
+                    <TextareaField
                         name="description"
                         control={form.control}
                         label="Description"
                         placeholder="Enter category description (optional)"
-                        type="textarea"
+                        rows={3}
                         description="Brief description of this category"
                     />
 
@@ -145,6 +146,7 @@ export function CategoryFormDialog({
                         control={form.control}
                         label="Parent Category"
                         placeholder="Select parent category"
+                        valueType="number"
                         options={[
                             { value: "", label: "None (Main Category)" },
                             ...parentCategories
@@ -161,8 +163,7 @@ export function CategoryFormDialog({
                         name="color"
                         control={form.control}
                         label="Color"
-                        placeholder="Select color"
-                        options={COLOR_OPTIONS.map(color => ({
+                        placeholder="Select color"                        valueType="string"                        options={COLOR_OPTIONS.map(color => ({
                             value: color.value,
                             label: color.label
                         }))}
@@ -172,8 +173,7 @@ export function CategoryFormDialog({
                         name="icon"
                         control={form.control}
                         label="Icon"
-                        placeholder="Select icon"
-                        options={ICON_OPTIONS.map(option => ({
+                        placeholder="Select icon"                        valueType="string"                        options={ICON_OPTIONS.map(option => ({
                             value: option.value,
                             label: option.label
                         }))}

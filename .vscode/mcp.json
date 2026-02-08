@@ -1,6 +1,6 @@
 {
     "servers": {
-        "shadcn-ui": {
+        "shadcn": {
             "command": "npx",
             "args": ["shadcn@latest", "mcp"]
         }

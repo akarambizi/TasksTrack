@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { parseISO, isAfter, isBefore, addYears, startOfDay } from 'date-fns';
 
 // Habit log entity schema (complete database model)
 export const habitLogEntitySchema = z.object({
@@ -26,12 +27,16 @@ export const habitLogFormSchema = habitLogEntitySchema.pick({
     .min(1, 'Date is required')
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')
     .refine((dateStr) => {
-      const date = new Date(dateStr);
-      const now = new Date();
-      const maxDate = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
-      const minDate = new Date(2020, 0, 1); // Reasonable minimum date
+      try {
+        const date = parseISO(dateStr);
+        const now = startOfDay(new Date());
+        const maxDate = addYears(now, 1);
+        const minDate = parseISO('2020-01-01');
 
-      return date >= minDate && date <= maxDate;
+        return !isBefore(date, minDate) && !isAfter(date, maxDate);
+      } catch {
+        return false;
+      }
     }, 'Date must be between January 1, 2020 and one year from today'),
 });
 

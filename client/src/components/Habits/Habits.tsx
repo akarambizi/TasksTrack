@@ -102,11 +102,13 @@ export const Habits = () => {
                                     </div>
                                 </div>
                                 <div className="flex space-x-2">
-                                    <AddHabitLogDialog
-                                        habit={habit}
-                                        isOpen={false}
-                                        onClose={() => {}}
-                                    />
+                                    <button 
+                                        className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+                                        onClick={() => handleLogActivity(habit)}
+                                        title="Log Activity"
+                                    >
+                                        <CheckCircle size={16} className="text-green-500 dark:text-green-400" />
+                                    </button>
                                     <FocusSessionDialog
                                         habit={habit}
                                         trigger={
@@ -149,6 +151,15 @@ export const Habits = () => {
                     open={isDeleteDialogOpen}
                     onOpenChange={handleCloseDeleteDialog}
                 />
+
+                {/* Add Habit Log Dialog */}
+                {selectedHabitForLogging && (
+                    <AddHabitLogDialog
+                        habit={selectedHabitForLogging}
+                        isOpen={!!selectedHabitForLogging}
+                        onClose={() => setSelectedHabitForLogging(null)}
+                    />
+                )}
             </div>
         </section>
     );

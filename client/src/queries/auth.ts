@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, logoutUser, registerUser, resetPassword } from '../api/userAuth';
-import { RegisterFormData, LoginFormData, IAuthResult, ResetPasswordFormData } from '@/types';
+import { IAuthFormData, IAuthResult } from '@/types';
 import { ToastService } from '../services/toastService';
 import { useAuthContext } from '@/context/useAuthContext';
 import { authKeys } from './queryKeys';
@@ -14,7 +14,7 @@ export const useRegister = () => {
 
     return useMutation({
         mutationKey: authKeys.register(),
-        mutationFn: (userData: RegisterFormData) => registerUser(userData),
+        mutationFn: (userData: IAuthFormData) => registerUser(userData),
         onSuccess: () => {
             // Redirect to login page after successful registration
             navigate('/login');
@@ -32,12 +32,16 @@ export const useLogin = () => {
 
     return useMutation({
         mutationKey: authKeys.login(),
-        mutationFn: (userData: LoginFormData) => loginUser(userData),
+        mutationFn: (userData: IAuthFormData) => {
+            return loginUser(userData);
+        },
         onSuccess: (data: IAuthResult) => {
             // If login is successful and data is provided
-            if (data.success && data.data?.token) {
-                // Update auth state via context
-                login(data.data.token, data.data.user.email, data.data.user.id.toString());
+            if (data.success && data.token) {
+                // Update auth state via context - need to get user data from response
+                const userEmail = data.user?.email || '';
+                const userId = data.user?.id?.toString() || '';
+                login(data.token, userEmail, userId);
 
                 // Update auth state - invalidate all auth queries
                 queryClient.invalidateQueries({ queryKey: authKeys.all });
@@ -45,6 +49,9 @@ export const useLogin = () => {
                 // Redirect to dashboard
                 navigate('/dashboard');
             }
+        },
+        onError: (error) => {
+            console.error('Login failed:', error);
         }
     });
 };
@@ -90,7 +97,7 @@ export const useResetPassword = () => {
 
     return useMutation({
         mutationKey: authKeys.resetPassword(),
-        mutationFn: (data: ResetPasswordFormData) => resetPassword(data),
+        mutationFn: (data: IAuthFormData) => resetPassword(data),
         onSuccess: () => {
             navigate('/login');
         }

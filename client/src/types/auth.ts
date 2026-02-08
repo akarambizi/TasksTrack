@@ -1,20 +1,7 @@
 import { z } from 'zod';
 
-// Login form validation schema
-export const loginFormSchema = z.object({
-  email: z.string()
-    .min(1, 'Email is required')
-    .email('Invalid email format')
-    .max(255, 'Email is too long'),
-
-  password: z.string()
-    .min(1, 'Password is required')
-    .min(6, 'Password must be at least 6 characters')
-    .max(128, 'Password is too long')
-});
-
-// Registration form validation schema
-export const registerFormSchema = z.object({
+// Base auth form validation schema (used for login, register, and reset password)
+export const authFormSchema = z.object({
   email: z.string()
     .min(1, 'Email is required')
     .email('Invalid email format')
@@ -30,24 +17,35 @@ export const registerFormSchema = z.object({
     .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character')
 });
 
-// Reset password form validation schema
-export const resetPasswordFormSchema = z.object({
-  email: z.string()
-    .min(1, 'Email is required')
-    .email('Invalid email format')
-    .max(255, 'Email is too long'),
-
-  newPassword: z.string()
-    .min(1, 'New password is required')
-    .min(8, 'New password must be at least 8 characters')
-    .max(128, 'New password is too long')
-    .regex(/[A-Z]/, 'New password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'New password must contain at least one lowercase letter')
-    .regex(/\d/, 'New password must contain at least one number')
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'New password must contain at least one special character')
+// Auth data schema
+export const authDataSchema = z.object({
+  user: z.object({
+    id: z.number(),
+    email: z.string().email(),
+    name: z.string().optional(),
+  }),
+  token: z.string(),
+  refreshToken: z.string().optional(),
 });
 
-// Export types
-export type LoginFormData = z.infer<typeof loginFormSchema>;
-export type RegisterFormData = z.infer<typeof registerFormSchema>;
-export type ResetPasswordFormData = z.infer<typeof resetPasswordFormSchema>;
+// Auth result schema - updated to match actual API response structure
+export const authResultSchema = z.object({
+  success: z.boolean(),
+  message: z.string().optional(),
+  token: z.string().optional(), // Token directly on response for successful login
+  refreshToken: z.string().optional(),
+  tokenExpiry: z.string().optional(),
+  user: z.object({
+    id: z.number(),
+    email: z.string().email(),
+    name: z.string().optional(),
+  }).optional(),
+  data: authDataSchema.optional(), // Include authDataSchema for nested data structure
+  errors: z.array(z.string()).optional(),
+});
+
+// Export form type
+export type IAuthFormData = z.infer<typeof authFormSchema>;
+
+// Export auth types
+export type IAuthResult = z.infer<typeof authResultSchema>;

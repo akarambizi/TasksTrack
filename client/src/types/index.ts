@@ -10,5 +10,4 @@ export * from './habitLog';
 export * from './auth';
 export * from './analytics';
 export * from './focusSession';
-export * from './userAuth';
 export * from './activity';

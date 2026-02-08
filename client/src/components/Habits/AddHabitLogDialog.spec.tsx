@@ -127,7 +127,7 @@ describe('AddHabitLogDialog', () => {
   it('should call handleSubmit when form is submitted', async () => {
     const user = userEvent.setup();
     const mockHandleSubmit = vi.fn((callback) => callback);
-    
+
     vi.mocked(useHabitLogForm).mockReturnValue({
       control: {} as any,
       handleSubmit: mockHandleSubmit,

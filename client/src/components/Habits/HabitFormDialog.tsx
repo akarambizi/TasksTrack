@@ -294,16 +294,22 @@ export function HabitFormDialog({
                   <div className="space-y-3">
                     {/* Visual Color Picker */}
                     <div className="flex items-center gap-2">
-                      <input
+                      <FormField
+                        name="color"
+                        control={control}
+                        label=""
+                        showLabel={false}
                         type="color"
-                        id="colorPicker"
-                        value={formData.color || '#3b82f6'}
-                        onChange={(e) => handleColorChange(e.target.value)}
-                        className="w-12 h-8 rounded border border-input bg-background"
+                        className="w-12 h-8 p-1"
                       />
-                      <div className="flex-1 px-3 py-2 bg-muted/50 rounded-md text-sm font-mono">
-                        {formData.color || '#3b82f6'}
-                      </div>
+                      <FormField
+                        name="color"
+                        control={control}
+                        label=""
+                        showLabel={false}
+                        readOnly
+                        className="flex-1 font-mono text-sm"
+                      />
                     </div>
 
                     {/* Preset Color Options */}

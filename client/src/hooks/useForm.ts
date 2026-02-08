@@ -2,25 +2,21 @@ import { useForm as useReactHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLogin, useRegister, useResetPassword } from '@/queries';
 import {
-    loginFormSchema,
-    registerFormSchema,
-    resetPasswordFormSchema,
-    type LoginFormData,
-    type RegisterFormData,
-    type ResetPasswordFormData
+    authFormSchema,
+    type IAuthFormData
 } from '@/types';
 
 // Login form hook
 export function useLoginForm() {
     const loginMutation = useLogin();
 
-    const form = useReactHookForm<LoginFormData>({
-        resolver: zodResolver(loginFormSchema),
+    const form = useReactHookForm<IAuthFormData>({
+        resolver: zodResolver(authFormSchema),
         defaultValues: { email: '', password: '' },
         mode: 'onChange'
     });
 
-    const onSubmit = (data: LoginFormData) => {
+    const onSubmit = (data: IAuthFormData) => {
         loginMutation.mutate(data);
     };
 
@@ -35,13 +31,13 @@ export function useLoginForm() {
 export function useRegisterForm() {
     const registerMutation = useRegister();
 
-    const form = useReactHookForm<RegisterFormData>({
-        resolver: zodResolver(registerFormSchema),
+    const form = useReactHookForm<IAuthFormData>({
+        resolver: zodResolver(authFormSchema),
         defaultValues: { email: '', password: '' },
         mode: 'onChange'
     });
 
-    const onSubmit = (data: RegisterFormData) => {
+    const onSubmit = (data: IAuthFormData) => {
         registerMutation.mutate(data);
     };
 
@@ -56,13 +52,13 @@ export function useRegisterForm() {
 export function useResetPasswordForm() {
     const resetPasswordMutation = useResetPassword();
 
-    const form = useReactHookForm<ResetPasswordFormData>({
-        resolver: zodResolver(resetPasswordFormSchema),
-        defaultValues: { email: '', newPassword: '' },
+    const form = useReactHookForm<IAuthFormData>({
+        resolver: zodResolver(authFormSchema),
+        defaultValues: { email: '', password: '' },
         mode: 'onChange'
     });
 
-    const onSubmit = (data: ResetPasswordFormData) => {
+    const onSubmit = (data: IAuthFormData) => {
         // Pass the data directly as it matches the expected format
         resetPasswordMutation.mutate(data);
     };

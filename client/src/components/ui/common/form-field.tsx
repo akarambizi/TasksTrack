@@ -10,6 +10,7 @@ interface IFormFieldProps<TFieldValues extends FieldValues = FieldValues, TName 
     labelAction?: React.ReactNode;
     testId?: string;
     description?: string;
+    showLabel?: boolean;
 }
 
 export function FormField<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
@@ -21,6 +22,7 @@ export function FormField<TFieldValues extends FieldValues = FieldValues, TName 
     labelAction,
     testId,
     description,
+    showLabel = true,
     ...inputProps
 }: IFormFieldProps<TFieldValues, TName>) {
     return (
@@ -29,13 +31,15 @@ export function FormField<TFieldValues extends FieldValues = FieldValues, TName 
             control={control}
             render={({ field, fieldState }) => (
                 <div className={`grid gap-2 ${className}`}>
-                    <div className="flex items-center">
-                        <Label htmlFor={field.name}>
-                            {label}
-                            {required && <span className="text-red-500 ml-1">*</span>}
-                        </Label>
-                        {labelAction}
-                    </div>
+                    {showLabel && (
+                        <div className="flex items-center">
+                            <Label htmlFor={field.name}>
+                                {label}
+                                {required && <span className="text-red-500 ml-1">*</span>}
+                            </Label>
+                            {labelAction}
+                        </div>
+                    )}
                     <Input
                         {...field}
                         id={field.name}

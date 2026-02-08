@@ -102,7 +102,7 @@ export const Habits = () => {
                                     </div>
                                 </div>
                                 <div className="flex space-x-2">
-                                    <button 
+                                    <button
                                         className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
                                         onClick={() => handleLogActivity(habit)}
                                         title="Log Activity"

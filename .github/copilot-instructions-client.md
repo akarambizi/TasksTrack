@@ -369,8 +369,8 @@ export const useCreateHabitMutation = () => {
    ```typescript
    // ✅ Good - Controller pattern
    <FormField control={control} name="email" label="Email" />
-   
-   // ❌ Bad - Register pattern  
+
+   // ❌ Bad - Register pattern
    <input {...register('email')} />
    ```
 

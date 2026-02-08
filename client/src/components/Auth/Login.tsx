@@ -2,7 +2,6 @@ import { FormField } from '@/components/ui';
 import { AuthLayout } from '@/components/ui';
 import { useLoginForm } from '@/hooks/useForm';
 import { Link } from 'react-router-dom';
-import { LoginFormData } from '@/types';
 
 export const Login = () => {
     const form = useLoginForm();
@@ -13,18 +12,13 @@ export const Login = () => {
         onSubmit
     } = form;
 
-    const handleFormSubmit = (_data: LoginFormData) => {
-        // Form submission is handled by the hook
-        onSubmit(_data);
-    };
-
     return (
         <AuthLayout
             title="Login"
             subtitle="Enter your email below to login to your account"
             submitButtonText={isSubmitting ? 'Logging in...' : 'Login'}
             isLoading={isSubmitting}
-            onSubmit={handleSubmit(handleFormSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             footerContent={
                 <>
                     Don&apos;t have an account?{' '}

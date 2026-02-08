@@ -62,6 +62,9 @@ jobs:
       working-directory: ./server
       run: dotnet build --no-restore
 
+    - name: Install EF Core tools
+      run: dotnet tool install --global dotnet-ef
+
     - name: Run database migrations
       working-directory: ./server
       run: dotnet ef database update

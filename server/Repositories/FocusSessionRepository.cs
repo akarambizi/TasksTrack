@@ -20,11 +20,10 @@ namespace TasksTrack.Repositories
                 .FirstOrDefaultAsync(fs => fs.Id == id);
         }
 
-        public IQueryable<FocusSession> GetByUser(string userId)
+        public IQueryable<FocusSession> GetQueryable()
         {
             return _context.FocusSessions
-                .Include(fs => fs.Habit)
-                .Where(fs => fs.CreatedBy == userId);
+                .Include(fs => fs.Habit);
         }
 
         public async Task<IEnumerable<FocusSession>> GetByHabitAsync(int habitId)
@@ -36,13 +35,12 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<FocusSession?> GetActiveOrPausedSessionByUserAsync(string userId)
+        public async Task<FocusSession?> GetActiveOrPausedSessionAsync()
         {
             return await _context.FocusSessions
                 .Include(fs => fs.Habit)
-                .FirstOrDefaultAsync(fs => fs.CreatedBy == userId &&
-                                        (fs.Status == FocusSessionStatus.Active.ToStringValue() ||
-                                         fs.Status == FocusSessionStatus.Paused.ToStringValue()));
+                .FirstOrDefaultAsync(fs => fs.Status == FocusSessionStatus.Active.ToStringValue() ||
+                                         fs.Status == FocusSessionStatus.Paused.ToStringValue());
         }
 
         public async Task AddAsync(FocusSession focusSession)
@@ -60,7 +58,7 @@ namespace TasksTrack.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var session = await _context.FocusSessions.FindAsync(id);
+            var session = await _context.FocusSessions.FirstOrDefaultAsync(fs => fs.Id == id);
             if (session != null)
             {
                 _context.FocusSessions.Remove(session);
@@ -68,11 +66,9 @@ namespace TasksTrack.Repositories
             }
         }
 
-        public async Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId)
+        public async Task<FocusSessionAnalytics> GetAnalyticsAsync()
         {
-            var sessions = await _context.FocusSessions
-                .Where(fs => fs.CreatedBy == userId)
-                .ToListAsync();
+            var sessions = await _context.FocusSessions.ToListAsync();
 
             var totalSessions = sessions.Count;
             var completedSessions = sessions.Count(s => s.Status == FocusSessionStatus.Completed.ToStringValue());

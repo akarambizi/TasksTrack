@@ -12,18 +12,12 @@ namespace TasksTrack.Tests.Controllers
     public class HabitControllerTests
     {
         private readonly Mock<IHabitService> _mockService;
-        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly HabitController _controller;
 
         public HabitControllerTests()
         {
             _mockService = new Mock<IHabitService>();
-            _mockCurrentUserService = new Mock<ICurrentUserService>();
-
-            // Mock the GetUserId method to return test user ID
-            _mockCurrentUserService.Setup(x => x.GetUserId()).Returns("test-user-id");
-
-            _controller = new HabitController(_mockService.Object, _mockCurrentUserService.Object);
+            _controller = new HabitController(_mockService.Object);
         }
 
         [Fact]
@@ -60,7 +54,7 @@ namespace TasksTrack.Tests.Controllers
                     CreatedDate = new System.DateTime(2024, 1, 1)
                 }
             };
-            _mockService.Setup(service => service.GetByUserIdAsync("test-user-id")).ReturnsAsync(habits);
+            _mockService.Setup(service => service.GetAllAsync()).ReturnsAsync(habits);
 
             // Act
             var result = await _controller.GetAll();

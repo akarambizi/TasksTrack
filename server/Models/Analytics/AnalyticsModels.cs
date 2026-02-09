@@ -94,10 +94,10 @@ namespace TasksTrack.Models
     {
         [Required]
         public string StartDate { get; set; } = string.Empty;
-        
+
         [Required]
         public string EndDate { get; set; } = string.Empty;
-        
+
         public List<int>? HabitIds { get; set; }
         public List<string>? Categories { get; set; }
         public bool IncludeGoalProgress { get; set; } = true;
@@ -146,13 +146,13 @@ namespace TasksTrack.Models
     {
         [Required]
         public string StartDate { get; set; } = string.Empty;
-        
+
         [Required]
         public string EndDate { get; set; } = string.Empty;
-        
+
         [Required]
         public string Format { get; set; } = string.Empty; // "csv", "json", "pdf"
-        
+
         public List<int>? HabitIds { get; set; }
         public List<string>? Categories { get; set; }
         public bool IncludeDailyBreakdown { get; set; } = true;

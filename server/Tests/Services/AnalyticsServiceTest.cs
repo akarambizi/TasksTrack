@@ -42,23 +42,23 @@ namespace TasksTrack.Tests.Services
             var habitLogs = CreateTestHabitLogs();
             var focusSessions = CreateTestFocusSessions().AsQueryable();
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(habits);
 
             _habitLogRepositoryMock.Setup(repo => repo.GetByDateRangeAsync(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
                 .ReturnsAsync(habitLogs);
 
-            _focusSessionRepositoryMock.Setup(repo => repo.GetByUser(userId))
+            _focusSessionRepositoryMock.Setup(repo => repo.GetQueryable())
                 .Returns(focusSessions);
 
-            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(5);
 
-            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(10);
 
             // Act
-            var result = await _service.GetWeeklyAnalyticsAsync(userId, weekOffset);
+            var result = await _service.GetWeeklyAnalyticsAsync(weekOffset);
 
             // Assert
             Assert.NotNull(result);
@@ -89,23 +89,23 @@ namespace TasksTrack.Tests.Services
             var habitLogs = CreateTestHabitLogs().Where(l => l.HabitId == 1).ToList();
             var focusSessions = CreateTestFocusSessions().Where(s => s.HabitId == 1).AsQueryable();
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(habits);
 
             _habitLogRepositoryMock.Setup(repo => repo.GetByDateRangeAsync(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
                 .ReturnsAsync(habitLogs);
 
-            _focusSessionRepositoryMock.Setup(repo => repo.GetByUser(userId))
+            _focusSessionRepositoryMock.Setup(repo => repo.GetQueryable())
                 .Returns(focusSessions);
 
-            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(userId, It.IsAny<int>()))
-                .ReturnsAsync(4);
+            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(It.IsAny<int>()))
+                .ReturnsAsync(5);
 
-            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(9);
 
             // Act
-            var result = await _service.GetCustomAnalyticsAsync(userId, request);
+            var result = await _service.GetCustomAnalyticsAsync(request);
 
             // Assert
             Assert.NotNull(result);
@@ -128,7 +128,7 @@ namespace TasksTrack.Tests.Services
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => 
-                _service.GetCustomAnalyticsAsync(userId, request));
+                _service.GetCustomAnalyticsAsync(request));
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace TasksTrack.Tests.Services
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => 
-                _service.GetCustomAnalyticsAsync(userId, request));
+                _service.GetCustomAnalyticsAsync(request));
         }
 
         [Fact]
@@ -166,23 +166,23 @@ namespace TasksTrack.Tests.Services
             var habitLogs = CreateTestHabitLogs();
             var focusSessions = CreateTestFocusSessions().AsQueryable();
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(habits);
 
             _habitLogRepositoryMock.Setup(repo => repo.GetByDateRangeAsync(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
                 .ReturnsAsync(habitLogs);
 
-            _focusSessionRepositoryMock.Setup(repo => repo.GetByUser(userId))
+            _focusSessionRepositoryMock.Setup(repo => repo.GetQueryable())
                 .Returns(focusSessions);
 
-            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(2);
 
-            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(5);
 
             // Act
-            var result = await _service.ExportAnalyticsAsync(userId, request);
+            var result = await _service.ExportAnalyticsAsync(request);
 
             // Assert
             Assert.Equal("application/json", result.ContentType);
@@ -208,23 +208,23 @@ namespace TasksTrack.Tests.Services
             var habitLogs = CreateTestHabitLogs();
             var focusSessions = CreateTestFocusSessions().AsQueryable();
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(habits);
 
             _habitLogRepositoryMock.Setup(repo => repo.GetByDateRangeAsync(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
                 .ReturnsAsync(habitLogs);
 
-            _focusSessionRepositoryMock.Setup(repo => repo.GetByUser(userId))
+            _focusSessionRepositoryMock.Setup(repo => repo.GetQueryable())
                 .Returns(focusSessions);
 
-            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(1);
 
-            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(userId, It.IsAny<int>()))
+            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(It.IsAny<int>()))
                 .ReturnsAsync(3);
 
             // Act
-            var result = await _service.ExportAnalyticsAsync(userId, request);
+            var result = await _service.ExportAnalyticsAsync(request);
 
             // Assert
             Assert.Equal("text/csv", result.ContentType);
@@ -246,7 +246,7 @@ namespace TasksTrack.Tests.Services
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => 
-                _service.ExportAnalyticsAsync(userId, request));
+                _service.ExportAnalyticsAsync(request));
         }
 
         // Helper methods for creating test data

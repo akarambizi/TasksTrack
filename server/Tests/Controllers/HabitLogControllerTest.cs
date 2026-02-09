@@ -107,13 +107,21 @@ namespace TasksTrack.Tests.Controllers
         public async Task Add_ReturnsCreatedAtAction()
         {
             // Arrange
-            var habitLog = new HabitLog
+            var request = new CreateHabitLogRequest
             {
-                Id = 1,
                 HabitId = 1,
                 Value = 30.0m,
                 Date = DateOnly.FromDateTime(DateTime.Today),
-                Notes = "First log entry",
+                Notes = "First log entry"
+            };
+
+            var createdHabitLog = new HabitLog
+            {
+                Id = 1,
+                HabitId = request.HabitId,
+                Value = request.Value,
+                Date = request.Date,
+                Notes = request.Notes,
                 CreatedBy = "testuser",
                 CreatedDate = DateTime.Now
             };
@@ -121,31 +129,29 @@ namespace TasksTrack.Tests.Controllers
             _mockService.Setup(service => service.AddAsync(It.IsAny<HabitLog>())).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _controller.Add(habitLog);
+            var result = await _controller.Add(request);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
             Assert.Equal(nameof(_controller.GetById), createdAtActionResult.ActionName);
-            Assert.Equal(habitLog.Id, createdAtActionResult.RouteValues!["id"]);
         }
 
         [Fact]
         public async Task Add_ReturnsBadRequest_WhenServiceThrowsArgumentException()
         {
             // Arrange
-            var habitLog = new HabitLog
+            var request = new CreateHabitLogRequest
             {
-                HabitId = 999,
+                HabitId = 999, // Non-existent habit
                 Value = 30.0m,
-                Date = DateOnly.FromDateTime(DateTime.Today),
-                CreatedBy = "testuser",
-                CreatedDate = DateTime.Now
+                Date = DateOnly.FromDateTime(DateTime.Today)
             };
+
             _mockService.Setup(service => service.AddAsync(It.IsAny<HabitLog>()))
                 .ThrowsAsync(new ArgumentException("Habit does not exist"));
 
             // Act
-            var result = await _controller.Add(habitLog);
+            var result = await _controller.Add(request);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

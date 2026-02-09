@@ -25,26 +25,26 @@ namespace TasksTrack.Services
             _activityService = activityService;
         }
 
-        public async Task<AnalyticsResponse> GetWeeklyAnalyticsAsync(string userId, int weekOffset = 0)
+        public async Task<AnalyticsResponse> GetWeeklyAnalyticsAsync(int weekOffset = 0)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             var startOfWeek = today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday + (weekOffset * 7));
             var endOfWeek = startOfWeek.AddDays(6);
 
-            return await GetAnalyticsForPeriodAsync(userId, startOfWeek, endOfWeek, "Weekly");
+            return await GetAnalyticsForPeriodAsync(startOfWeek, endOfWeek, "Weekly");
         }
 
-        public async Task<AnalyticsResponse> GetMonthlyAnalyticsAsync(string userId, int monthOffset = 0)
+        public async Task<AnalyticsResponse> GetMonthlyAnalyticsAsync(int monthOffset = 0)
         {
             var today = DateTime.Today;
             var targetMonth = today.AddMonths(monthOffset);
             var startOfMonth = DateOnly.FromDateTime(new DateTime(targetMonth.Year, targetMonth.Month, 1));
             var endOfMonth = DateOnly.FromDateTime(new DateTime(targetMonth.Year, targetMonth.Month, DateTime.DaysInMonth(targetMonth.Year, targetMonth.Month)));
 
-            return await GetAnalyticsForPeriodAsync(userId, startOfMonth, endOfMonth, "Monthly");
+            return await GetAnalyticsForPeriodAsync(startOfMonth, endOfMonth, "Monthly");
         }
 
-        public async Task<AnalyticsResponse> GetQuarterlyAnalyticsAsync(string userId, int quarterOffset = 0)
+        public async Task<AnalyticsResponse> GetQuarterlyAnalyticsAsync(int quarterOffset = 0)
         {
             var today = DateTime.Today;
             var targetDate = today.AddMonths(quarterOffset * 3);
@@ -54,20 +54,20 @@ namespace TasksTrack.Services
             var endOfQuarter = DateOnly.FromDateTime(new DateTime(targetDate.Year, quarter * 3,
                 DateTime.DaysInMonth(targetDate.Year, quarter * 3)));
 
-            return await GetAnalyticsForPeriodAsync(userId, startOfQuarter, endOfQuarter, "Quarterly");
+            return await GetAnalyticsForPeriodAsync(startOfQuarter, endOfQuarter, "Quarterly");
         }
 
-        public async Task<AnalyticsResponse> GetYearlyAnalyticsAsync(string userId, int yearOffset = 0)
+        public async Task<AnalyticsResponse> GetYearlyAnalyticsAsync(int yearOffset = 0)
         {
             var today = DateTime.Today;
             var targetYear = today.Year + yearOffset;
             var startOfYear = DateOnly.FromDateTime(new DateTime(targetYear, 1, 1));
             var endOfYear = DateOnly.FromDateTime(new DateTime(targetYear, 12, 31));
 
-            return await GetAnalyticsForPeriodAsync(userId, startOfYear, endOfYear, "Yearly");
+            return await GetAnalyticsForPeriodAsync(startOfYear, endOfYear, "Yearly");
         }
 
-        public async Task<AnalyticsResponse> GetCustomAnalyticsAsync(string userId, CustomAnalyticsRequest request)
+        public async Task<AnalyticsResponse> GetCustomAnalyticsAsync(CustomAnalyticsRequest request)
         {
             if (!DateOnly.TryParse(request.StartDate, out var startDate))
             {
@@ -84,15 +84,15 @@ namespace TasksTrack.Services
                 throw new ArgumentException("Start date cannot be after end date.");
             }
 
-            return await GetAnalyticsForPeriodAsync(userId, startDate, endDate, "Custom", request.HabitIds, request.Categories);
+            return await GetAnalyticsForPeriodAsync(startDate, endDate, "Custom", request.HabitIds, request.Categories);
         }
 
-        public async Task<ComparisonAnalyticsResponse> GetComparisonAnalyticsAsync(string userId,
+        public async Task<ComparisonAnalyticsResponse> GetComparisonAnalyticsAsync(
             DateOnly currentStart, DateOnly currentEnd,
             DateOnly previousStart, DateOnly previousEnd)
         {
-            var currentPeriod = await GetAnalyticsForPeriodAsync(userId, currentStart, currentEnd, "Current");
-            var previousPeriod = await GetAnalyticsForPeriodAsync(userId, previousStart, previousEnd, "Previous");
+            var currentPeriod = await GetAnalyticsForPeriodAsync(currentStart, currentEnd, "Current");
+            var previousPeriod = await GetAnalyticsForPeriodAsync(previousStart, previousEnd, "Previous");
 
             var comparison = CalculateComparisonMetrics(currentPeriod, previousPeriod);
 
@@ -104,13 +104,13 @@ namespace TasksTrack.Services
             };
         }
 
-        public async Task<List<HabitAnalytics>> GetHabitComparisonAsync(string userId, List<int> habitIds, DateOnly startDate, DateOnly endDate)
+        public async Task<List<HabitAnalytics>> GetHabitComparisonAsync(List<int> habitIds, DateOnly startDate, DateOnly endDate)
         {
-            var analytics = await GetAnalyticsForPeriodAsync(userId, startDate, endDate, "Comparison", habitIds);
+            var analytics = await GetAnalyticsForPeriodAsync(startDate, endDate, "Comparison", habitIds);
             return analytics.HabitBreakdown.Where(h => habitIds.Contains(h.HabitId)).ToList();
         }
 
-        public async Task<(byte[] Data, string ContentType, string FileName)> ExportAnalyticsAsync(string userId, ExportAnalyticsRequest request)
+        public async Task<(byte[] Data, string ContentType, string FileName)> ExportAnalyticsAsync(ExportAnalyticsRequest request)
         {
             if (!DateOnly.TryParse(request.StartDate, out var startDate))
             {
@@ -122,7 +122,7 @@ namespace TasksTrack.Services
                 throw new ArgumentException("Invalid end date format. Use YYYY-MM-DD.");
             }
 
-            var analytics = await GetAnalyticsForPeriodAsync(userId, startDate, endDate, "Export", request.HabitIds, request.Categories);
+            var analytics = await GetAnalyticsForPeriodAsync(startDate, endDate, "Export", request.HabitIds, request.Categories);
 
             return request.Format.ToLower() switch
             {
@@ -132,11 +132,11 @@ namespace TasksTrack.Services
             };
         }
 
-        public async Task<GoalProgress> CalculateGoalProgressAsync(string userId, DateOnly startDate, DateOnly endDate,
+        public async Task<GoalProgress> CalculateGoalProgressAsync(DateOnly startDate, DateOnly endDate,
             decimal? targetMinutes = null, int? targetSessions = null)
         {
             // Get basic data directly to avoid circular dependency
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any())
@@ -157,7 +157,7 @@ namespace TasksTrack.Services
             var habitLogs = await _habitLogRepository.GetByDateRangeAsync(startDate, endDate);
             habitLogs.Where(l => userHabitIds.Contains(l.HabitId)).ToList();
 
-            var focusSessions = _focusSessionRepository.GetByUser(userId)
+            var focusSessions = _focusSessionRepository.GetQueryable()
                 .Where(s => DateOnly.FromDateTime(s.StartTime.DateTime) >= startDate
                          && DateOnly.FromDateTime(s.StartTime.DateTime) <= endDate)
                 .ToList();
@@ -187,10 +187,10 @@ namespace TasksTrack.Services
             };
         }
 
-        public async Task<AnalyticsResponse> GetDashboardOverviewAsync(string userId)
+        public async Task<AnalyticsResponse> GetDashboardOverviewAsync()
         {
             // Get current week analytics for dashboard overview
-            var weeklyAnalytics = await GetWeeklyAnalyticsAsync(userId, 0);
+            var weeklyAnalytics = await GetWeeklyAnalyticsAsync(0);
 
             // Override period name for dashboard
             weeklyAnalytics.Period = "Dashboard Overview";
@@ -198,11 +198,11 @@ namespace TasksTrack.Services
             return weeklyAnalytics;
         }
 
-        private async Task<AnalyticsResponse> GetAnalyticsForPeriodAsync(string userId, DateOnly startDate, DateOnly endDate,
+        private async Task<AnalyticsResponse> GetAnalyticsForPeriodAsync(DateOnly startDate, DateOnly endDate,
             string period, List<int>? habitIds = null, List<string>? categories = null)
         {
             // Get user habits with optional filtering
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
 
             if (habitIds?.Any() == true)
             {
@@ -226,7 +226,7 @@ namespace TasksTrack.Services
             var userHabitLogs = habitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
 
             // Get focus sessions in date range
-            var focusSessions = _focusSessionRepository.GetByUser(userId)
+            var focusSessions = _focusSessionRepository.GetQueryable()
                 .Where(session => session.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue).Date &&
                                 session.StartTime.Date <= endDate.ToDateTime(TimeOnly.MinValue).Date)
                 .Where(session => userHabitIds.Contains(session.HabitId))
@@ -246,7 +246,7 @@ namespace TasksTrack.Services
             var activityRate = totalDays > 0 ? Math.Round((decimal)activeDates / totalDays * 100, 2) : 0;
 
             // Calculate habit breakdowns
-            var habitBreakdown = await CalculateHabitBreakdownAsync(userHabits, userHabitLogs, focusSessions, startDate, endDate, userId);
+            var habitBreakdown = await CalculateHabitBreakdownAsync(userHabits, userHabitLogs, focusSessions, startDate, endDate);
 
             // Calculate category breakdowns
             var categoryBreakdown = CalculateCategoryBreakdown(habitBreakdown);
@@ -255,11 +255,11 @@ namespace TasksTrack.Services
             var dailyProgress = CalculateDailyProgress(userHabitLogs, focusSessions, startDate, endDate);
 
             // Calculate goal progress
-            var goalProgress = await CalculateGoalProgressAsync(userId, startDate, endDate);
+            var goalProgress = await CalculateGoalProgressAsync(startDate, endDate);
 
             // Calculate streaks
-            var currentStreak = await CalculateCurrentOverallStreakAsync(userId);
-            var longestStreak = await CalculateLongestOverallStreakAsync(userId);
+            var currentStreak = await CalculateCurrentOverallStreakAsync();
+            var longestStreak = await CalculateLongestOverallStreakAsync();
 
             return new AnalyticsResponse
             {
@@ -283,7 +283,7 @@ namespace TasksTrack.Services
         }
 
         private async Task<List<HabitAnalytics>> CalculateHabitBreakdownAsync(IEnumerable<Habit> habits,
-            List<HabitLog> habitLogs, List<FocusSession> focusSessions, DateOnly startDate, DateOnly endDate, string userId)
+            List<HabitLog> habitLogs, List<FocusSession> focusSessions, DateOnly startDate, DateOnly endDate)
         {
             var result = new List<HabitAnalytics>();
 
@@ -304,8 +304,8 @@ namespace TasksTrack.Services
                 var totalDays = endDate.DayNumber - startDate.DayNumber + 1;
                 var completionRate = totalDays > 0 ? Math.Round((decimal)completedDates / totalDays * 100, 2) : 0;
 
-                var currentStreak = await _activityService.GetCurrentStreakAsync(userId, habit.Id);
-                var longestStreak = await _activityService.GetLongestStreakAsync(userId, habit.Id);
+                var currentStreak = await _activityService.GetCurrentStreakAsync(habit.Id);
+                var longestStreak = await _activityService.GetLongestStreakAsync(habit.Id);
 
                 var lastActivity = habitLogEntries.Any() || habitFocusSessions.Any()
                     ? habitLogEntries.Select(l => l.Date.ToDateTime(TimeOnly.MinValue)).ToList()
@@ -507,9 +507,9 @@ namespace TasksTrack.Services
             };
         }
 
-        private async Task<int> CalculateCurrentOverallStreakAsync(string userId)
+        private async Task<int> CalculateCurrentOverallStreakAsync()
         {
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any()) return 0;
@@ -522,7 +522,7 @@ namespace TasksTrack.Services
             // Look backwards from today to find consecutive days with activity
             while (currentDate > minDate)
             {
-                var hasActivity = await HasActivityOnDate(userId, userHabitIds, currentDate);
+                var hasActivity = await HasActivityOnDate(userHabitIds, currentDate);
 
                 if (!hasActivity)
                 {
@@ -546,9 +546,9 @@ namespace TasksTrack.Services
             return streak;
         }
 
-        private async Task<int> CalculateLongestOverallStreakAsync(string userId)
+        private async Task<int> CalculateLongestOverallStreakAsync()
         {
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any()) return 0;
@@ -556,7 +556,7 @@ namespace TasksTrack.Services
             // Get all activity dates
             var allHabitLogs = await _habitLogRepository.GetAllAsync();
             var habitLogs = allHabitLogs.Where(l => userHabitIds.Contains(l.HabitId));
-            var focusSessions = _focusSessionRepository.GetByUser(userId).ToList();
+            var focusSessions = _focusSessionRepository.GetQueryable().ToList();
 
             var allActivityDates = habitLogs.Select(l => l.Date)
                 .Union(focusSessions.Select(s => DateOnly.FromDateTime(s.StartTime.DateTime.Date)))
@@ -585,14 +585,14 @@ namespace TasksTrack.Services
             return Math.Max(longestStreak, currentStreak);
         }
 
-        private async Task<bool> HasActivityOnDate(string userId, List<int> habitIds, DateOnly date)
+        private async Task<bool> HasActivityOnDate(List<int> habitIds, DateOnly date)
         {
             var habitLogs = await _habitLogRepository.GetByDateRangeAsync(date, date);
             var dayHabitLogs = habitLogs.Where(l => habitIds.Contains(l.HabitId)).Any();
 
             if (dayHabitLogs) return true;
 
-            var focusSessions = _focusSessionRepository.GetByUser(userId)
+            var focusSessions = _focusSessionRepository.GetQueryable()
                 .Where(s => DateOnly.FromDateTime(s.StartTime.DateTime.Date) == date)
                 .Where(s => habitIds.Contains(s.HabitId))
                 .Any();

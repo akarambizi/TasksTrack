@@ -69,7 +69,7 @@ namespace TasksTrack.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (category != null)
             {
                 _context.Categories.Remove(category);
@@ -85,11 +85,6 @@ namespace TasksTrack.Repositories
                 query = query.Where(c => c.Id != excludeId.Value);
             }
             return await query.AnyAsync();
-        }
-
-        public async Task<bool> ExistsAsync(string name)
-        {
-            return await ExistsAsync(name, null);
         }
     }
 }

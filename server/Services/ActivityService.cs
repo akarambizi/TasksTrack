@@ -17,10 +17,10 @@ namespace TasksTrack.Services
             _focusSessionRepository = focusSessionRepository;
         }
 
-        public async Task<IEnumerable<ActivityGridResponse>> GetActivityGridAsync(string userId, DateOnly startDate, DateOnly endDate)
+        public async Task<IEnumerable<ActivityGridResponse>> GetActivityGridAsync(DateOnly startDate, DateOnly endDate)
         {
             // Get all habit logs for the user in the date range
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any())
@@ -33,14 +33,14 @@ namespace TasksTrack.Services
             var userHabitLogs = habitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
 
             // Get focus sessions for the user in the date range
-            var focusSessions = _focusSessionRepository.GetByUser(userId)
+            var focusSessions = _focusSessionRepository.GetQueryable()
                 .Where(session => session.StartTime.Date >= startDate.ToDateTime(TimeOnly.MinValue).Date &&
                                 session.StartTime.Date <= endDate.ToDateTime(TimeOnly.MinValue).Date)
                 .Where(session => userHabitIds.Contains(session.HabitId))
                 .ToList();
 
             // Get user statistics for intensity calculation
-            var userStats = await GetActivityStatisticsAsync(userId);
+            var userStats = await GetActivityStatisticsAsync();
 
             // Group logs by date
             var logsByDate = userHabitLogs.GroupBy(log => log.Date).ToList();
@@ -115,9 +115,9 @@ namespace TasksTrack.Services
             return result;
         }
 
-        public async Task<ActivitySummaryResponse> GetActivitySummaryAsync(string userId, DateOnly startDate, DateOnly endDate)
+        public async Task<ActivitySummaryResponse> GetActivitySummaryAsync(DateOnly startDate, DateOnly endDate)
         {
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any())
@@ -135,8 +135,8 @@ namespace TasksTrack.Services
             var averageValue = totalActivities > 0 ? totalValue / totalActivities : 0;
 
             // Calculate streaks
-            var currentStreak = await GetCurrentOverallStreakAsync(userId);
-            var longestStreak = await GetLongestOverallStreakAsync(userId);
+            var currentStreak = await GetCurrentOverallStreakAsync();
+            var longestStreak = await GetLongestOverallStreakAsync();
 
             // Category breakdown
             var categoryBreakdown = userHabitLogs
@@ -159,8 +159,8 @@ namespace TasksTrack.Services
                 var habitActivityCount = habitSpecificLogs.Count;
                 var habitTotalValue = habitSpecificLogs.Sum(log => log.Value);
                 var habitAverageValue = habitActivityCount > 0 ? habitTotalValue / habitActivityCount : 0;
-                var habitCurrentStreak = await GetCurrentStreakAsync(userId, habit.Id);
-                var habitLongestStreak = await GetLongestStreakAsync(userId, habit.Id);
+                var habitCurrentStreak = await GetCurrentStreakAsync(habit.Id);
+                var habitLongestStreak = await GetLongestStreakAsync(habit.Id);
 
                 habitBreakdown.Add(new HabitSummary
                 {
@@ -195,9 +195,9 @@ namespace TasksTrack.Services
             };
         }
 
-        public async Task<ActivityStatisticsResponse> GetActivityStatisticsAsync(string userId)
+        public async Task<ActivityStatisticsResponse> GetActivityStatisticsAsync()
         {
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any())
@@ -209,7 +209,7 @@ namespace TasksTrack.Services
             var userHabitLogs = allHabitLogs.Where(log => userHabitIds.Contains(log.HabitId)).ToList();
 
             // Get focus sessions for the user
-            var focusSessions = _focusSessionRepository.GetByUser(userId)
+            var focusSessions = _focusSessionRepository.GetQueryable()
                 .Where(session => userHabitIds.Contains(session.HabitId))
                 .ToList();
 
@@ -242,8 +242,8 @@ namespace TasksTrack.Services
             var completionRate = totalDaysTracked > 0 ? (double)totalActiveDays / totalDaysTracked * 100 : 0;
 
             // Calculate streaks
-            var currentOverallStreak = await GetCurrentOverallStreakAsync(userId);
-            var longestOverallStreak = await GetLongestOverallStreakAsync(userId);
+            var currentOverallStreak = await GetCurrentOverallStreakAsync();
+            var longestOverallStreak = await GetLongestOverallStreakAsync();
 
             // Most active day of the week
             var dayOfWeekStats = userHabitLogs
@@ -337,7 +337,7 @@ namespace TasksTrack.Services
             };
         }
 
-        public async Task<int> GetCurrentStreakAsync(string userId, int habitId)
+        public async Task<int> GetCurrentStreakAsync(int habitId)
         {
             var habitLogs = await _habitLogRepository.GetByHabitIdAsync(habitId);
             var orderedLogs = habitLogs.OrderByDescending(log => log.Date).ToList();
@@ -368,7 +368,7 @@ namespace TasksTrack.Services
             return streak;
         }
 
-        public async Task<int> GetLongestStreakAsync(string userId, int habitId)
+        public async Task<int> GetLongestStreakAsync(int habitId)
         {
             var habitLogs = await _habitLogRepository.GetByHabitIdAsync(habitId);
             var logDates = habitLogs.Select(log => log.Date).Distinct().OrderBy(d => d).ToList();
@@ -424,9 +424,9 @@ namespace TasksTrack.Services
             return 0; // No activity (shouldn't reach here if activityCount > 0)
         }
 
-        public async Task<int> GetCurrentOverallStreakAsync(string userId)
+        public async Task<int> GetCurrentOverallStreakAsync()
         {
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any())
@@ -463,9 +463,9 @@ namespace TasksTrack.Services
             return streak;
         }
 
-        public async Task<int> GetLongestOverallStreakAsync(string userId)
+        public async Task<int> GetLongestOverallStreakAsync()
         {
-            var userHabits = await _habitRepository.GetByUserIdAsync(userId);
+            var userHabits = await _habitRepository.GetAllAsync();
             var userHabitIds = userHabits.Select(h => h.Id).ToList();
 
             if (!userHabitIds.Any())

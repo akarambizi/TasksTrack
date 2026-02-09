@@ -1,25 +1,23 @@
 using TasksTrack.Models;
 using TasksTrack.Repositories;
+using TasksTrack.Services;
 
 namespace TasksTrack.Services
 {
     public class HabitService : IHabitService
     {
         private readonly IHabitRepository _repository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public HabitService(IHabitRepository repository)
+        public HabitService(IHabitRepository repository, ICurrentUserService currentUserService)
         {
             _repository = repository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<IEnumerable<Habit>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
-        }
-
-        public async Task<IEnumerable<Habit>> GetByUserIdAsync(string userId)
-        {
-            return await _repository.GetByUserIdAsync(userId);
         }
 
         public async Task<Habit?> GetByIdAsync(int id)
@@ -29,7 +27,9 @@ namespace TasksTrack.Services
 
         public async Task AddAsync(Habit habit)
         {
+            var userId = _currentUserService.GetUserId();
             habit.CreatedDate = DateTimeOffset.UtcNow;
+            habit.CreatedBy = userId;
             habit.IsActive = true;
             await _repository.AddAsync(habit);
         }
@@ -39,6 +39,8 @@ namespace TasksTrack.Services
             var existing = await _repository.GetByIdAsync(habit.Id);
             if (existing == null)
                 return false;
+
+            var userId = _currentUserService.GetUserId();
 
             // Update fields
             existing.Name = habit.Name;
@@ -52,7 +54,7 @@ namespace TasksTrack.Services
             existing.Color = habit.Color;
             existing.Icon = habit.Icon;
             existing.UpdatedDate = DateTimeOffset.UtcNow;
-            existing.UpdatedBy = habit.UpdatedBy;
+            existing.UpdatedBy = userId;
 
             await _repository.UpdateAsync(existing);
             return true;
@@ -73,26 +75,28 @@ namespace TasksTrack.Services
             return await _repository.GetByCategoryAsync(category);
         }
 
-        public async Task ArchiveAsync(int id, string? updatedBy = null)
+        public async Task ArchiveAsync(int id)
         {
             var habit = await _repository.GetByIdAsync(id);
             if (habit != null)
             {
+                var userId = _currentUserService.GetUserId();
                 habit.IsActive = false;
                 habit.UpdatedDate = DateTimeOffset.UtcNow;
-                habit.UpdatedBy = updatedBy;
+                habit.UpdatedBy = userId;
                 await _repository.UpdateAsync(habit);
             }
         }
 
-        public async Task ActivateAsync(int id, string? updatedBy = null)
+        public async Task ActivateAsync(int id)
         {
             var habit = await _repository.GetByIdAsync(id);
             if (habit != null)
             {
+                var userId = _currentUserService.GetUserId();
                 habit.IsActive = true;
                 habit.UpdatedDate = DateTimeOffset.UtcNow;
-                habit.UpdatedBy = updatedBy;
+                habit.UpdatedBy = userId;
                 await _repository.UpdateAsync(habit);
             }
         }

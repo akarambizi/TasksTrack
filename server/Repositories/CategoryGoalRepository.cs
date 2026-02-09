@@ -21,20 +21,11 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<CategoryGoal>> GetByUserIdAsync(string userId)
+        public async Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId)
         {
             return await _context.CategoryGoals
                 .Include(cg => cg.Category)
-                .Where(cg => cg.UserId == userId)
-                .OrderByDescending(cg => cg.CreatedDate)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<CategoryGoal>> GetActiveByCategoryIdAsync(int categoryId, string userId)
-        {
-            return await _context.CategoryGoals
-                .Include(cg => cg.Category)
-                .Where(cg => cg.CategoryId == categoryId && cg.UserId == userId && cg.IsActive)
+                .Where(cg => cg.CategoryId == categoryId && cg.IsActive)
                 .OrderByDescending(cg => cg.CreatedDate)
                 .ToListAsync();
         }
@@ -46,13 +37,11 @@ namespace TasksTrack.Repositories
                 .FirstOrDefaultAsync(cg => cg.Id == id);
         }
 
-        public async Task<CategoryGoal?> GetActiveByCategoryAndUserAsync(int categoryId, string userId)
+        public async Task<CategoryGoal?> GetActiveByCategoryAsync(int categoryId)
         {
             return await _context.CategoryGoals
                 .Include(cg => cg.Category)
-                .FirstOrDefaultAsync(cg => cg.CategoryId == categoryId
-                                         && cg.UserId == userId
-                                         && cg.IsActive);
+                .FirstOrDefaultAsync(cg => cg.CategoryId == categoryId && cg.IsActive);
         }
 
         public async Task AddAsync(CategoryGoal categoryGoal)
@@ -69,7 +58,7 @@ namespace TasksTrack.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var categoryGoal = await _context.CategoryGoals.FindAsync(id);
+            var categoryGoal = await _context.CategoryGoals.FirstOrDefaultAsync(cg => cg.Id == id);
             if (categoryGoal != null)
             {
                 _context.CategoryGoals.Remove(categoryGoal);
@@ -77,23 +66,20 @@ namespace TasksTrack.Repositories
             }
         }
 
-        public async Task DeactivateAsync(int id, string? updatedBy = null)
+        public async Task DeactivateAsync(int id)
         {
             var categoryGoal = await _context.CategoryGoals.FindAsync(id);
             if (categoryGoal != null)
             {
                 categoryGoal.IsActive = false;
                 categoryGoal.UpdatedDate = DateTimeOffset.UtcNow;
-                categoryGoal.UpdatedBy = updatedBy;
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task<bool> HasActiveGoalAsync(int categoryId, string userId, int? excludeId = null)
+        public async Task<bool> HasActiveGoalAsync(int categoryId, int? excludeId = null)
         {
-            var query = _context.CategoryGoals.Where(cg => cg.CategoryId == categoryId
-                                                         && cg.UserId == userId
-                                                         && cg.IsActive);
+            var query = _context.CategoryGoals.Where(cg => cg.CategoryId == categoryId && cg.IsActive);
             if (excludeId.HasValue)
             {
                 query = query.Where(cg => cg.Id != excludeId.Value);

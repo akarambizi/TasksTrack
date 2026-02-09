@@ -12,12 +12,13 @@ namespace TasksTrack.Tests.Services
     public class HabitServiceTests
     {
         private readonly Mock<IHabitRepository> _repositoryMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
         private readonly HabitService _service;
 
         public HabitServiceTests()
         {
             _repositoryMock = new Mock<IHabitRepository>();
-            _service = new HabitService(_repositoryMock.Object);
+            _currentUserServiceMock = new Mock<ICurrentUserService>();            _currentUserServiceMock.Setup(s => s.GetUserId()).Returns("test-user-123");            _service = new HabitService(_repositoryMock.Object, _currentUserServiceMock.Object);
         }
 
         [Fact]

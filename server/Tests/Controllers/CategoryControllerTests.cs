@@ -13,18 +13,12 @@ namespace TasksTrack.Tests.Controllers
     public class CategoryControllerTests
     {
         private readonly Mock<ICategoryService> _mockService;
-        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly CategoryController _controller;
 
         public CategoryControllerTests()
         {
             _mockService = new Mock<ICategoryService>();
-            _mockCurrentUserService = new Mock<ICurrentUserService>();
-
-            // Mock the GetUserId method to return test user ID
-            _mockCurrentUserService.Setup(x => x.GetUserId()).Returns("test-user-id");
-
-            _controller = new CategoryController(_mockService.Object, _mockCurrentUserService.Object);
+            _controller = new CategoryController(_mockService.Object);
         }
 
         [Fact]
@@ -202,7 +196,7 @@ namespace TasksTrack.Tests.Controllers
 
             // Assert
             Assert.IsType<NoContentResult>(result);
-            _mockService.Verify(service => service.UpdateAsync(It.Is<Category>(c => c.UpdatedBy == "test-user-id")), Times.Once);
+            _mockService.Verify(service => service.UpdateAsync(It.IsAny<Category>()), Times.Once);
         }
 
         [Fact]
@@ -283,14 +277,14 @@ namespace TasksTrack.Tests.Controllers
             };
 
             _mockService.Setup(service => service.GetByIdAsync(categoryId)).ReturnsAsync(category);
-            _mockService.Setup(service => service.ArchiveAsync(categoryId, "test-user-id")).Returns(Task.CompletedTask);
+            _mockService.Setup(service => service.ArchiveAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
 
             // Act
             var result = await _controller.Archive(categoryId);
 
             // Assert
             Assert.IsType<NoContentResult>(result);
-            _mockService.Verify(service => service.ArchiveAsync(categoryId, "test-user-id"), Times.Once);
+            _mockService.Verify(service => service.ArchiveAsync(It.IsAny<int>()), Times.Once);
         }
     }
 }

@@ -14,17 +14,14 @@ namespace TasksTrack.Tests.Controllers
     public class ActivityControllerTests
     {
         private readonly Mock<IActivityService> _activityServiceMock;
-        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+
         private readonly ActivityController _controller;
         private readonly string _userId = "testuser";
 
         public ActivityControllerTests()
         {
             _activityServiceMock = new Mock<IActivityService>();
-            _currentUserServiceMock = new Mock<ICurrentUserService>();
-            _controller = new ActivityController(_activityServiceMock.Object, _currentUserServiceMock.Object);
-
-            _currentUserServiceMock.Setup(service => service.GetUserId()).Returns(_userId);
+            _controller = new ActivityController(_activityServiceMock.Object);
         }
 
         [Fact]
@@ -45,7 +42,7 @@ namespace TasksTrack.Tests.Controllers
                 }
             };
 
-            _activityServiceMock.Setup(service => service.GetActivityGridAsync(_userId, DateOnly.Parse(startDate), DateOnly.Parse(endDate)))
+            _activityServiceMock.Setup(service => service.GetActivityGridAsync(DateOnly.Parse(startDate), DateOnly.Parse(endDate)))
                 .ReturnsAsync(expectedGrid);
 
             // Act
@@ -142,7 +139,7 @@ namespace TasksTrack.Tests.Controllers
                 HabitBreakdown = new List<HabitSummary>()
             };
 
-            _activityServiceMock.Setup(service => service.GetActivitySummaryAsync(_userId, DateOnly.Parse(startDate), DateOnly.Parse(endDate)))
+            _activityServiceMock.Setup(service => service.GetActivitySummaryAsync(DateOnly.Parse(startDate), DateOnly.Parse(endDate)))
                 .ReturnsAsync(expectedSummary);
 
             // Act
@@ -202,7 +199,7 @@ namespace TasksTrack.Tests.Controllers
                 WeeklyStats = new List<WeeklyStatistics>()
             };
 
-            _activityServiceMock.Setup(service => service.GetActivityStatisticsAsync(_userId))
+            _activityServiceMock.Setup(service => service.GetActivityStatisticsAsync())
                 .ReturnsAsync(expectedStats);
 
             // Act
@@ -223,7 +220,7 @@ namespace TasksTrack.Tests.Controllers
             var habitId = 1;
             var expectedStreak = 7;
 
-            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(_userId, habitId))
+            _activityServiceMock.Setup(service => service.GetCurrentStreakAsync(habitId))
                 .ReturnsAsync(expectedStreak);
 
             // Act
@@ -242,7 +239,7 @@ namespace TasksTrack.Tests.Controllers
             var habitId = 1;
             var expectedStreak = 15;
 
-            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(_userId, habitId))
+            _activityServiceMock.Setup(service => service.GetLongestStreakAsync(habitId))
                 .ReturnsAsync(expectedStreak);
 
             // Act
@@ -260,7 +257,7 @@ namespace TasksTrack.Tests.Controllers
             // Arrange
             var expectedStreak = 10;
 
-            _activityServiceMock.Setup(service => service.GetCurrentOverallStreakAsync(_userId))
+            _activityServiceMock.Setup(service => service.GetCurrentOverallStreakAsync())
                 .ReturnsAsync(expectedStreak);
 
             // Act
@@ -278,7 +275,7 @@ namespace TasksTrack.Tests.Controllers
             // Arrange
             var expectedStreak = 25;
 
-            _activityServiceMock.Setup(service => service.GetLongestOverallStreakAsync(_userId))
+            _activityServiceMock.Setup(service => service.GetLongestOverallStreakAsync())
                 .ReturnsAsync(expectedStreak);
 
             // Act
@@ -297,7 +294,7 @@ namespace TasksTrack.Tests.Controllers
             var startDate = "2024-01-01";
             var endDate = "2024-01-07";
 
-            _activityServiceMock.Setup(service => service.GetActivityGridAsync(_userId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+            _activityServiceMock.Setup(service => service.GetActivityGridAsync(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
                 .ThrowsAsync(new Exception("Database error"));
 
             // Act
@@ -315,7 +312,7 @@ namespace TasksTrack.Tests.Controllers
             var startDate = "2024-01-01";
             var endDate = "2024-01-07";
 
-            _activityServiceMock.Setup(service => service.GetActivitySummaryAsync(_userId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+            _activityServiceMock.Setup(service => service.GetActivitySummaryAsync(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
                 .ThrowsAsync(new Exception("Database error"));
 
             // Act
@@ -330,7 +327,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetActivityStatistics_WhenServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _activityServiceMock.Setup(service => service.GetActivityStatisticsAsync(_userId))
+            _activityServiceMock.Setup(service => service.GetActivityStatisticsAsync())
                 .ThrowsAsync(new Exception("Database error"));
 
             // Act

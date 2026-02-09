@@ -1,5 +1,6 @@
 using TasksTrack.Models;
 using TasksTrack.Repositories;
+using TasksTrack.Services;
 
 namespace TasksTrack.Services
 {
@@ -7,32 +8,31 @@ namespace TasksTrack.Services
     {
         private readonly IFocusSessionRepository _focusSessionRepository;
         private readonly IHabitRepository _habitRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public FocusSessionService(IFocusSessionRepository focusSessionRepository, IHabitRepository habitRepository)
+        public FocusSessionService(IFocusSessionRepository focusSessionRepository, IHabitRepository habitRepository, ICurrentUserService currentUserService)
         {
             _focusSessionRepository = focusSessionRepository;
             _habitRepository = habitRepository;
+            _currentUserService = currentUserService;
         }
 
-        public async Task<FocusSessionResponse> StartSessionAsync(FocusSessionStartRequest request, string userId)
+        public async Task<FocusSessionResponse> StartSessionAsync(FocusSessionStartRequest request)
         {
+            var userId = _currentUserService.GetUserId();
+
             // Check if user already has an active session
-            var existingSession = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+            var existingSession = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
             if (existingSession != null)
             {
                 throw new InvalidOperationException("User already has an active focus session. Complete or interrupt the current session first.");
             }
 
-            // Validate habit exists and belongs to user
+            // Validate habit exists
             var habit = await _habitRepository.GetByIdAsync(request.HabitId);
             if (habit == null)
             {
                 throw new ArgumentException("Habit not found.");
-            }
-
-            if (habit.CreatedBy != userId)
-            {
-                throw new UnauthorizedAccessException("You can only create focus sessions for your own habits.");
             }
 
             var focusSession = new FocusSession
@@ -51,9 +51,10 @@ namespace TasksTrack.Services
             return MapToResponse(focusSession, habit.Name);
         }
 
-        public async Task<FocusSessionResponse> PauseSessionAsync(string userId)
+        public async Task<FocusSessionResponse> PauseSessionAsync()
         {
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+            var userId = _currentUserService.GetUserId();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
 
             if (session == null)
             {
@@ -75,9 +76,10 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public async Task<FocusSessionResponse> ResumeSessionAsync(string userId)
+        public async Task<FocusSessionResponse> ResumeSessionAsync()
         {
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+            var userId = _currentUserService.GetUserId();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
 
             if (session == null)
             {
@@ -106,9 +108,10 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public async Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request, string userId)
+        public async Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request)
         {
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+            var userId = _currentUserService.GetUserId();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
 
             if (session == null)
             {
@@ -136,9 +139,10 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public async Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request, string userId)
+        public async Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request)
         {
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+            var userId = _currentUserService.GetUserId();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
 
             if (session == null)
             {
@@ -166,9 +170,9 @@ namespace TasksTrack.Services
             return MapToResponse(session, session.Habit?.Name);
         }
 
-        public IQueryable<FocusSessionResponse> GetSessions(string userId)
+        public IQueryable<FocusSessionResponse> GetSessions()
         {
-            var sessions = _focusSessionRepository.GetByUser(userId);
+            var sessions = _focusSessionRepository.GetQueryable();
             return sessions.Select(session => new FocusSessionResponse
             {
                 Id = session.Id,
@@ -188,15 +192,15 @@ namespace TasksTrack.Services
             });
         }
 
-        public async Task<FocusSessionResponse?> GetActiveSessionAsync(string userId)
+        public async Task<FocusSessionResponse?> GetActiveSessionAsync()
         {
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionByUserAsync(userId);
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
             return session != null ? MapToResponse(session, session.Habit?.Name) : null;
         }
 
-        public async Task<FocusSessionAnalytics> GetAnalyticsAsync(string userId)
+        public async Task<FocusSessionAnalytics> GetAnalyticsAsync()
         {
-            return await _focusSessionRepository.GetAnalyticsAsync(userId);
+            return await _focusSessionRepository.GetAnalyticsAsync();
         }
 
         private static FocusSessionResponse MapToResponse(FocusSession session, string? habitName)

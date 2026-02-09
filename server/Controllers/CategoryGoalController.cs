@@ -10,23 +10,18 @@ namespace TasksTrack.Controllers
     public class CategoryGoalController : ControllerBase
     {
         private readonly ICategoryGoalService _categoryGoalService;
-        private readonly ICurrentUserService _currentUserService;
 
-        public CategoryGoalController(ICategoryGoalService categoryGoalService, ICurrentUserService currentUserService)
+        public CategoryGoalController(ICategoryGoalService categoryGoalService)
         {
             _categoryGoalService = categoryGoalService;
-            _currentUserService = currentUserService;
         }
-
-        private string GetUserId() => _currentUserService.GetUserId();
 
         [HttpGet("api/category-goals")]
         public async Task<ActionResult<IEnumerable<CategoryGoal>>> GetByUser()
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _categoryGoalService.GetByUserIdAsync(userId);
+                var result = await _categoryGoalService.GetByUserIdAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -40,8 +35,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _categoryGoalService.GetActiveByCategoryIdAsync(categoryId, userId);
+                var result = await _categoryGoalService.GetActiveByCategoryIdAsync(categoryId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -75,8 +69,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _categoryGoalService.GetActiveByCategoryAndUserAsync(categoryId, userId);
+                var result = await _categoryGoalService.GetActiveByCategoryAndUserAsync(categoryId);
 
                 if (result == null)
                 {
@@ -101,9 +94,6 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                categoryGoal.UserId = userId;
-                categoryGoal.CreatedBy = userId;
 
                 await _categoryGoalService.AddAsync(categoryGoal);
                 return CreatedAtAction(nameof(GetById), new { id = categoryGoal.Id }, categoryGoal);
@@ -132,9 +122,6 @@ namespace TasksTrack.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
-                var userId = GetUserId();
-                categoryGoal.UpdatedBy = userId;
 
                 var updated = await _categoryGoalService.UpdateAsync(categoryGoal);
                 if (!updated)
@@ -185,8 +172,7 @@ namespace TasksTrack.Controllers
                     return NotFound(new { message = $"Category goal with ID {id} not found." });
                 }
 
-                var userId = GetUserId();
-                await _categoryGoalService.DeactivateAsync(id, userId);
+                await _categoryGoalService.DeactivateAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

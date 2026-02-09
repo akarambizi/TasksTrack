@@ -18,14 +18,6 @@ namespace TasksTrack.Repositories
             return await _context.Habits.OrderByDescending(h => h.CreatedDate).ToListAsync();
         }
 
-        public async Task<IEnumerable<Habit>> GetByUserIdAsync(string userId)
-        {
-            return await _context.Habits
-                .Where(h => h.CreatedBy == userId)
-                .OrderByDescending(h => h.CreatedDate)
-                .ToListAsync();
-        }
-
         public async Task<Habit?> GetByIdAsync(int id)
         {
             return await _context.Habits.FirstOrDefaultAsync(habit => habit.Id == id);
@@ -45,7 +37,7 @@ namespace TasksTrack.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var habit = await _context.Habits.FindAsync(id);
+            var habit = await _context.Habits.FirstOrDefaultAsync(h => h.Id == id);
             if (habit != null)
             {
                 _context.Habits.Remove(habit);

@@ -13,6 +13,13 @@ namespace TasksTrack.Services
         string GetUserId();
 
         /// <summary>
+        /// Gets the current authenticated user's ID, or null if not authenticated.
+        /// This method is safe to use in EF Core query filters.
+        /// </summary>
+        /// <returns>The user ID as a string, or null if not authenticated.</returns>
+        string? GetUserIdOrNull();
+
+        /// <summary>
         /// Gets the current authenticated user's email.
         /// </summary>
         /// <returns>The user email, or null if not found.</returns>

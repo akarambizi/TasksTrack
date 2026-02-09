@@ -5,9 +5,7 @@ import { FormField, TextareaField } from '@/components/ui';
 import { useEffect } from 'react';
 import { useHabitLogForm } from '@/hooks/useHabitLogForm';
 import { useCreateHabitLogMutation } from '@/queries/habitLogs';
-import { IHabit } from '@/types';
-import { HabitLogFormData } from '@/types';
-import { useAuthContext } from '@/context/useAuthContext';
+import { IHabit, HabitLogFormData } from '@/types';
 
 interface IAddHabitLogDialogProps {
     habit: IHabit;
@@ -17,7 +15,6 @@ interface IAddHabitLogDialogProps {
 }
 
 export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSuccess }: IAddHabitLogDialogProps) {
-    const { user } = useAuthContext();
     const createHabitLogMutation = useCreateHabitLogMutation();
     const {
         control,
@@ -33,12 +30,12 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
             reset({
                 date: today,
                 habitId: habit.id,
-                value: 0,
-                notes: '',
-                createdBy: user?.id || 'unknown'
+                value: '' as any, // Start with empty string for better UX
+                notes: ''
+                // createdBy is now handled automatically by backend
             });
         }
-    }, [isOpen, habit, reset, user]);
+    }, [isOpen, habit, reset]);
 
     const onSubmit = async (data: HabitLogFormData) => {
         try {
@@ -70,7 +67,7 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[425px]" data-testid="add-habit-log-dialog">
-                <form onSubmit={handleSubmit(onSubmit)} data-testid="habit-log-form">
+                <form onSubmit={handleSubmit(onSubmit as any)} data-testid="habit-log-form">
                     <DialogHeader>
                         <DialogTitle>Add Log Entry</DialogTitle>
                         <DialogDescription>
@@ -79,9 +76,9 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                     </DialogHeader>
 
                     <div className="grid gap-4 py-4">
-                        <FormField
+                        <FormField<HabitLogFormData>
                             name="value"
-                            control={control}
+                            control={control as any}
                             type="number"
                             label={`Value (${displayUnit})`}
                             placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
@@ -91,18 +88,18 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                             required
                         />
 
-                        <FormField
+                        <FormField<HabitLogFormData>
                             name="date"
-                            control={control}
+                            control={control as any}
                             type="date"
                             label="Date"
                             data-testid="date-input"
                             required
                         />
 
-                        <TextareaField
+                        <TextareaField<HabitLogFormData>
                             name="notes"
-                            control={control}
+                            control={control as any}
                             label="Notes (Optional)"
                             placeholder="How did it go? Any observations..."
                             rows={3}

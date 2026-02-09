@@ -20,8 +20,43 @@ export const habitLogFormSchema = habitLogEntitySchema.pick({
   value: true,
   date: true,
   notes: true,
-  createdBy: true,
 }).extend({
+  // More flexible validation for value field to allow empty inputs during editing
+  value: z.union([
+    z.number().min(0.01, "Value must be at least 0.01").max(999999),
+    z.string().transform((val, ctx) => {
+      if (val === '' || val === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Value is required",
+        });
+        return z.NEVER;
+      }
+      const parsed = parseFloat(val);
+      if (isNaN(parsed)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Value must be a valid number",
+        });
+        return z.NEVER;
+      }
+      if (parsed < 0.01) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Value must be at least 0.01",
+        });
+        return z.NEVER;
+      }
+      if (parsed > 999999) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Value cannot exceed 999,999",
+        });
+        return z.NEVER;
+      }
+      return parsed;
+    })
+  ]),
   // Add extra validation for date field in forms
   date: z.string()
     .min(1, 'Date is required')

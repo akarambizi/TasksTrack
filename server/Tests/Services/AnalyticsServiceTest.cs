@@ -35,7 +35,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetWeeklyAnalyticsAsync_WithValidUser_ReturnsWeeklyData()
         {
             // Arrange
-            var userId = "testuser";
             var weekOffset = 0;
 
             var habits = CreateTestHabits();
@@ -76,7 +75,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetCustomAnalyticsAsync_WithValidRequest_ReturnsCustomData()
         {
             // Arrange
-            var userId = "testuser";
             var request = new CustomAnalyticsRequest
             {
                 StartDate = "2026-01-01",
@@ -119,7 +117,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetCustomAnalyticsAsync_WithInvalidDateFormat_ThrowsArgumentException()
         {
             // Arrange
-            var userId = "testuser";
             var request = new CustomAnalyticsRequest
             {
                 StartDate = "invalid-date",
@@ -135,7 +132,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetCustomAnalyticsAsync_WithStartDateAfterEndDate_ThrowsArgumentException()
         {
             // Arrange
-            var userId = "testuser";
             var request = new CustomAnalyticsRequest
             {
                 StartDate = "2026-02-01",
@@ -151,7 +147,6 @@ namespace TasksTrack.Tests.Services
         public async Task ExportAnalyticsAsync_WithJsonFormat_ReturnsJsonData()
         {
             // Arrange
-            var userId = "testuser";
             var request = new ExportAnalyticsRequest
             {
                 StartDate = "2026-01-01",
@@ -194,7 +189,6 @@ namespace TasksTrack.Tests.Services
         public async Task ExportAnalyticsAsync_WithCsvFormat_ReturnsCsvData()
         {
             // Arrange
-            var userId = "testuser";
             var request = new ExportAnalyticsRequest
             {
                 StartDate = "2026-01-01",
@@ -236,7 +230,6 @@ namespace TasksTrack.Tests.Services
         public async Task ExportAnalyticsAsync_WithUnsupportedFormat_ThrowsArgumentException()
         {
             // Arrange
-            var userId = "testuser";
             var request = new ExportAnalyticsRequest
             {
                 StartDate = "2026-01-01",

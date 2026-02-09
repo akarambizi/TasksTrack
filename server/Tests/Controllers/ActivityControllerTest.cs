@@ -16,7 +16,6 @@ namespace TasksTrack.Tests.Controllers
         private readonly Mock<IActivityService> _activityServiceMock;
 
         private readonly ActivityController _controller;
-        private readonly string _userId = "testuser";
 
         public ActivityControllerTests()
         {

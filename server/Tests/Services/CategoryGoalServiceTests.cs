@@ -210,7 +210,6 @@ namespace TasksTrack.Tests.Services
         {
             // Arrange
             var goalId = 1;
-            var updatedBy = "test-user";
             var categoryGoal = new CategoryGoal
             {
                 Id = goalId,
@@ -239,7 +238,6 @@ namespace TasksTrack.Tests.Services
         {
             // Arrange
             var categoryId = 1;
-            var userId = "test-user";
 
             _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryId, It.IsAny<int?>()))
                 .ReturnsAsync(true);

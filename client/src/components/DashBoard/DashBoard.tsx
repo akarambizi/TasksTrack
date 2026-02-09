@@ -3,16 +3,25 @@ import { AnalyticsOverview } from '../Analytics';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { 
-    TrendingUp, 
-    Target, 
-    Clock, 
+import { AddHabitDialog } from '../Habits/AddHabitDialog';
+import { useState } from 'react';
+import {
+    TrendingUp,
+    Target,
+    Clock,
     Calendar,
     Plus,
     Sparkles
 } from 'lucide-react';
 
 export const Dashboard = () => {
+    const [showAddHabitDialog, setShowAddHabitDialog] = useState(false);
+
+    const handleStartFocusSession = () => {
+        // Navigate to focus session - we'll implement this
+        window.location.href = '/focus';
+    };
+
     return (
         <div className="space-y-8" data-testid="dashboard">
             {/* Welcome Header */}
@@ -24,11 +33,20 @@ export const Dashboard = () => {
                     </p>
                 </div>
                 <div className="flex gap-3">
-                    <Button className="gap-2">
+                    <Button
+                        className="gap-2"
+                        onClick={() => setShowAddHabitDialog(true)}
+                        data-testid="quick-add-habit-btn"
+                    >
                         <Plus size={16} />
                         Quick Add Habit
                     </Button>
-                    <Button variant="outline" className="gap-2">
+                    <Button
+                        variant="outline"
+                        className="gap-2"
+                        onClick={handleStartFocusSession}
+                        data-testid="start-focus-session-btn"
+                    >
                         <Clock size={16} />
                         Start Focus Session
                     </Button>
@@ -128,6 +146,13 @@ export const Dashboard = () => {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Add Habit Dialog */}
+            <AddHabitDialog
+                isOpen={showAddHabitDialog}
+                onClose={() => setShowAddHabitDialog(false)}
+                showButton={false}
+            />
         </div>
     );
 };

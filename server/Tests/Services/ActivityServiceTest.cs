@@ -29,7 +29,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetActivityGridAsync_WithNoHabits_ReturnsEmptyGrid()
         {
             // Arrange
-            var userId = "testuser";
             var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
             var endDate = DateOnly.FromDateTime(DateTime.Today);
 
@@ -107,7 +106,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetActivitySummaryAsync_WithNoHabits_ReturnsEmptySummary()
         {
             // Arrange
-            var userId = "testuser";
             var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
             var endDate = DateOnly.FromDateTime(DateTime.Today);
 
@@ -232,7 +230,6 @@ namespace TasksTrack.Tests.Services
         public async Task GetActivityStatisticsAsync_WithNoHabits_ReturnsEmptyStatistics()
         {
             // Arrange
-            var userId = "testuser";
             _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(new List<Habit>());
 

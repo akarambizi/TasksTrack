@@ -148,8 +148,10 @@ services:
           memory: 512M
     # Database isolated on backend network (no external internet access)
     # Server can still communicate with DB via backend network
+    # Also on frontend network to allow external connections for development tools like pgAdmin
     networks:
       - backend
+      - frontend
 
 volumes:
   postgres_data:

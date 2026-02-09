@@ -4,7 +4,7 @@ import { UserNav } from './UserNav';
 
 export const SideBarNav = () => {
     return (
-        <div className="hidden border-r bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60 md:block">
+        <div className="hidden border-r bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60 md:block fixed left-0 top-0 z-40 h-screen w-[280px] lg:w-[320px]">
             <div className="flex h-full max-h-screen flex-col">
                 {/* Logo/Brand Section */}
                 <div className="flex h-16 items-center border-b px-6">
@@ -18,7 +18,7 @@ export const SideBarNav = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <SideBarButtons />
                 <div className="flex-1 overflow-auto py-4">
                     <SideBarLinks />

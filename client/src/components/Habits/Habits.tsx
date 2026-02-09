@@ -119,7 +119,7 @@ export const Habits = () => {
                     <h2 className="text-xl font-semibold">Active Habits</h2>
                     <Badge variant="secondary">{activeHabits.length} habits</Badge>
                 </div>
-                
+
                 {activeHabits.length === 0 ? (
                     <Card>
                         <CardContent className="flex flex-col items-center justify-center py-12">
@@ -143,7 +143,7 @@ export const Habits = () => {
                             <Card key={habit.id} data-testid="habit-card" className="group hover:shadow-md transition-all">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between">
-                                        <div 
+                                        <div
                                             className="w-1 h-8 rounded-full"
                                             style={{ backgroundColor: habit.color || '#3b82f6' }}
                                         />
@@ -170,16 +170,18 @@ export const Habits = () => {
                                         </Badge>
                                     )}
                                 </CardHeader>
-                                
+
                                 <CardContent className="space-y-4">
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
                                             <span className="text-muted-foreground">Today's Progress</span>
-                                            <span className="font-medium">3/{habit.target}</span>
+                                            <span className="font-medium">
+                                                0/{habit.target || 0}
+                                            </span>
                                         </div>
-                                        <Progress value={75} className="h-2" />
+                                        <Progress value={0} className="h-2" />
                                     </div>
-                                    
+
                                     <div className="flex gap-2">
                                         <Button
                                             size="sm"
@@ -214,13 +216,13 @@ export const Habits = () => {
                         <h2 className="text-xl font-semibold text-muted-foreground">Inactive Habits</h2>
                         <Badge variant="outline">{inactiveHabits.length} habits</Badge>
                     </div>
-                    
+
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {inactiveHabits.map((habit) => (
                             <Card key={habit.id} className="opacity-60 hover:opacity-80 transition-opacity">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between">
-                                        <div 
+                                        <div
                                             className="w-1 h-8 rounded-full opacity-50"
                                             style={{ backgroundColor: habit.color || '#3b82f6' }}
                                         />

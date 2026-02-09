@@ -6,9 +6,13 @@ export * from './label';
 export * from './toast';
 export * from './toaster';
 export * from './toast-container';
-export * from './toast-test-button';
 export * from './loading';
 export * from './theme-toggle';
+export * from './progress';
+export * from './card';
+export * from './badge';
+export * from './select';
+export * from './textarea';
 
 // New reusable components
 export * from './common/auth-layout';

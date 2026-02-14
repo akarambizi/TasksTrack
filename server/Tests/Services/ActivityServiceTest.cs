@@ -29,15 +29,14 @@ namespace TasksTrack.Tests.Services
         public async Task GetActivityGridAsync_WithNoHabits_ReturnsEmptyGrid()
         {
             // Arrange
-            var userId = "testuser";
             var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
             var endDate = DateOnly.FromDateTime(DateTime.Today);
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(new List<Habit>());
 
             // Act
-            var result = await _service.GetActivityGridAsync(userId, startDate, endDate);
+            var result = await _service.GetActivityGridAsync(startDate, endDate);
 
             // Assert
             Assert.NotNull(result);
@@ -84,12 +83,12 @@ namespace TasksTrack.Tests.Services
                 }
             };
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId)).ReturnsAsync(habits);
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(habits);
             _habitLogRepositoryMock.Setup(repo => repo.GetByDateRangeAsync(startDate, endDate)).ReturnsAsync(habitLogs);
             _habitLogRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(habitLogs);
 
             // Act
-            var result = await _service.GetActivityGridAsync(userId, startDate, endDate);
+            var result = await _service.GetActivityGridAsync(startDate, endDate);
 
             // Assert
             var gridData = result.ToList();
@@ -107,15 +106,14 @@ namespace TasksTrack.Tests.Services
         public async Task GetActivitySummaryAsync_WithNoHabits_ReturnsEmptySummary()
         {
             // Arrange
-            var userId = "testuser";
             var startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
             var endDate = DateOnly.FromDateTime(DateTime.Today);
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(new List<Habit>());
 
             // Act
-            var result = await _service.GetActivitySummaryAsync(userId, startDate, endDate);
+            var result = await _service.GetActivitySummaryAsync(startDate, endDate);
 
             // Assert
             Assert.NotNull(result);
@@ -195,7 +193,7 @@ namespace TasksTrack.Tests.Services
                 }
             };
 
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId)).ReturnsAsync(habits);
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(habits);
             _habitLogRepositoryMock.Setup(repo => repo.GetByDateRangeAsync(startDate, endDate)).ReturnsAsync(habitLogs);
             _habitLogRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(habitLogs);
 
@@ -206,7 +204,7 @@ namespace TasksTrack.Tests.Services
                 .ReturnsAsync(habitLogs.Where(l => l.HabitId == 2));
 
             // Act
-            var result = await _service.GetActivitySummaryAsync(userId, startDate, endDate);
+            var result = await _service.GetActivitySummaryAsync(startDate, endDate);
 
             // Assert
             Assert.NotNull(result);
@@ -232,12 +230,11 @@ namespace TasksTrack.Tests.Services
         public async Task GetActivityStatisticsAsync_WithNoHabits_ReturnsEmptyStatistics()
         {
             // Arrange
-            var userId = "testuser";
-            _habitRepositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _habitRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(new List<Habit>());
 
             // Act
-            var result = await _service.GetActivityStatisticsAsync(userId);
+            var result = await _service.GetActivityStatisticsAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -274,7 +271,7 @@ namespace TasksTrack.Tests.Services
                 .ReturnsAsync(habitLogs);
 
             // Act
-            var streak = await _service.GetCurrentStreakAsync(userId, habitId);
+            var streak = await _service.GetCurrentStreakAsync(habitId);
 
             // Assert
             Assert.Equal(3, streak);
@@ -299,7 +296,7 @@ namespace TasksTrack.Tests.Services
                 .ReturnsAsync(habitLogs);
 
             // Act
-            var streak = await _service.GetCurrentStreakAsync(userId, habitId);
+            var streak = await _service.GetCurrentStreakAsync(habitId);
 
             // Assert
             Assert.Equal(0, streak);
@@ -340,7 +337,7 @@ namespace TasksTrack.Tests.Services
                 .ReturnsAsync(habitLogs);
 
             // Act
-            var streak = await _service.GetLongestStreakAsync(userId, habitId);
+            var streak = await _service.GetLongestStreakAsync(habitId);
 
             // Assert
             Assert.Equal(5, streak);

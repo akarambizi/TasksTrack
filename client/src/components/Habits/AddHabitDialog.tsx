@@ -3,13 +3,20 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useCreateHabitMutation } from "@/queries";
 import { IHabit } from "@/types";
-import { useAuthContext } from "@/context/useAuthContext";
 import { HabitFormDialog } from "./HabitFormDialog";
 
-export function AddHabitDialog() {
-  const [open, setOpen] = useState(false);
+interface IAddHabitDialogProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  showButton?: boolean;
+}
+
+export function AddHabitDialog({ isOpen, onClose, showButton = true }: IAddHabitDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const createHabitMutation = useCreateHabitMutation();
-  const { user } = useAuthContext();
+
+  // Use external state if provided, otherwise use internal state
+  const open = isOpen !== undefined ? isOpen : internalOpen;
 
   const handleSubmit = async (formData: any) => {
     // Create a habit object as expected by the backend
@@ -23,8 +30,8 @@ export function AddHabitDialog() {
       category: formData.category || undefined,
       color: formData.color || undefined,
       icon: formData.icon || undefined,
-      isActive: true,
-      createdBy: user?.id || 'unknown'
+      isActive: true
+      // createdBy is now handled automatically by backend
     };
 
     await createHabitMutation.mutateAsync(habitObject);
@@ -32,19 +39,29 @@ export function AddHabitDialog() {
 
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-        data-testid="add-habit-button"
-      >
-        <Plus className="h-4 w-4" />
-        Add Habit
-      </Button>
+      {showButton && (
+        <Button
+          onClick={() => isOpen !== undefined ? onClose?.() : setInternalOpen(true)}
+          className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+          data-testid="add-habit-button"
+        >
+          <Plus className="h-4 w-4" />
+          Add Habit
+        </Button>
+      )}
 
       <HabitFormDialog
         mode="create"
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={(newOpen) => {
+          if (isOpen !== undefined) {
+            // External control
+            if (!newOpen) onClose?.();
+          } else {
+            // Internal control
+            setInternalOpen(newOpen);
+          }
+        }}
         onSubmit={handleSubmit}
         isLoading={createHabitMutation.isPending}
         title="Add New Habit"

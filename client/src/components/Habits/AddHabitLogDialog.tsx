@@ -5,9 +5,7 @@ import { FormField, TextareaField } from '@/components/ui';
 import { useEffect } from 'react';
 import { useHabitLogForm } from '@/hooks/useHabitLogForm';
 import { useCreateHabitLogMutation } from '@/queries/habitLogs';
-import { IHabit } from '@/types';
-import { HabitLogFormData } from '@/types';
-import { useAuthContext } from '@/context/useAuthContext';
+import { IHabit, HabitLogFormData } from '@/types';
 
 interface IAddHabitLogDialogProps {
     habit: IHabit;
@@ -17,7 +15,6 @@ interface IAddHabitLogDialogProps {
 }
 
 export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSuccess }: IAddHabitLogDialogProps) {
-    const { user } = useAuthContext();
     const createHabitLogMutation = useCreateHabitLogMutation();
     const {
         control,
@@ -33,12 +30,12 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
             reset({
                 date: today,
                 habitId: habit.id,
-                value: 0,
-                notes: '',
-                createdBy: user?.id || 'unknown'
+                value: '', // Start with empty string for better UX
+                notes: ''
+                // createdBy is now handled automatically by backend
             });
         }
-    }, [isOpen, habit, reset, user]);
+    }, [isOpen, habit, reset]);
 
     const onSubmit = async (data: HabitLogFormData) => {
         try {

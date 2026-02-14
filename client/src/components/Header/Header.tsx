@@ -5,11 +5,15 @@ import { UserMenu } from '../Header/UserMenu';
 
 export const Header = () => {
     return (
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 px-6">
             <HeaderMobile />
-            <HeaderSearch />
-            <ThemeToggle />
-            <UserMenu />
+            <div className="flex-1">
+                <HeaderSearch />
+            </div>
+            <div className="flex items-center gap-4">
+                <ThemeToggle />
+                <UserMenu />
+            </div>
         </header>
     );
 };

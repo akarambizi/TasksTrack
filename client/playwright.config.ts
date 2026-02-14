@@ -18,8 +18,8 @@ export default defineConfig({
   /* Optimize workers for CI and local development */
   workers: process.env.CI ? '50%' : undefined,
 
-  /* Global timeout for each test */
-  timeout: 30 * 1000,
+  /* Global timeout for each test - increased for webkit compatibility */
+  timeout: 45 * 1000,
 
   /* Global timeout for each assertion */
   expect: {
@@ -65,7 +65,11 @@ export default defineConfig({
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: {
+        ...devices['Desktop Safari'],
+        // Webkit needs longer timeouts for some operations
+      },
+      timeout: 60 * 1000, // Longer timeout for webkit-specific issues
     },
 
     /* Test against mobile viewports. */

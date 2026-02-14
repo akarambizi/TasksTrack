@@ -10,15 +10,11 @@ namespace TasksTrack.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly ICurrentUserService _currentUserService;
 
-        public CategoryController(ICategoryService categoryService, ICurrentUserService currentUserService)
+        public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            _currentUserService = currentUserService;
         }
-
-        private string GetUserId() => _currentUserService.GetUserId();
 
         [HttpGet("api/categories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetAll()
@@ -101,9 +97,6 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                category.CreatedBy = userId;
-
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -137,8 +130,6 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                category.UpdatedBy = userId;
 
                 var updated = await _categoryService.UpdateAsync(category);
                 if (!updated)
@@ -189,8 +180,7 @@ namespace TasksTrack.Controllers
                     return NotFound(new { message = $"Category with ID {id} not found." });
                 }
 
-                var userId = GetUserId();
-                await _categoryService.ArchiveAsync(id, userId);
+                await _categoryService.ArchiveAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -210,8 +200,7 @@ namespace TasksTrack.Controllers
                     return NotFound(new { message = $"Category with ID {id} not found." });
                 }
 
-                var userId = GetUserId();
-                await _categoryService.ActivateAsync(id, userId);
+                await _categoryService.ActivateAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

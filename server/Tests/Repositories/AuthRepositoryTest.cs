@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using TasksTrack.Data;
 using TasksTrack.Models;
 using TasksTrack.Repositories;
+using TasksTrack.Services;
 using System.Threading.Tasks;
+using Moq;
 
 namespace TasksTrack.Tests.Repositories
 {
@@ -11,6 +13,7 @@ namespace TasksTrack.Tests.Repositories
     {
         private readonly TasksTrackContext _context;
         private readonly AuthRepository _repository;
+        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
 
         public AuthRepositoryTest()
         {
@@ -18,7 +21,10 @@ namespace TasksTrack.Tests.Repositories
                 .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
                 .Options;
 
-            _context = new TasksTrackContext(options);
+            _mockCurrentUserService = new Mock<ICurrentUserService>();
+            _mockCurrentUserService.Setup(s => s.GetUserIdOrNull()).Returns("testuser");
+
+            _context = new TasksTrackContext(options, _mockCurrentUserService.Object);
             _repository = new AuthRepository(_context);
         }
 

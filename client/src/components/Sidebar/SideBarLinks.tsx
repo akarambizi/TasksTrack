@@ -1,28 +1,54 @@
-import { Calendar, Clock, Home, List, PieChart } from 'lucide-react';
+import { Calendar, Clock, Home, PieChart, Target } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { Badge } from '../ui/badge';
 
 export const SideBarLinks = () => {
     return (
-        <>
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-                <NavItem to="/dashboard" icon={<Home size={18} />}>
+        <nav className="space-y-2">
+            {/* Overview Section */}
+            <div className="mb-6">
+                <div className="px-4 pb-2">
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Overview
+                    </h3>
+                </div>
+                <NavItem to="/dashboard" icon={<Home size={20} />}>
                     Dashboard
                 </NavItem>
-                <NavItem to="/habits" icon={<List size={18} />}>
-                    Habits
-                    <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">6</Badge>
+            </div>
+
+            {/* Productivity Section */}
+            <div className="mb-6">
+                <div className="px-4 pb-2">
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Productivity
+                    </h3>
+                </div>
+                <NavItem to="/habits" icon={<Target size={20} />}>
+                    <div className="flex items-center justify-between flex-1">
+                        <span>Habits</span>
+                        <Badge variant="secondary" className="text-xs px-2 py-0.5">6</Badge>
+                    </div>
                 </NavItem>
-                <NavItem to="/focus-sessions" icon={<Clock size={18} />}>
+                <NavItem to="/focus-sessions" icon={<Clock size={20} />}>
                     Focus Sessions
                 </NavItem>
-                <NavItem to="/history" icon={<Calendar size={18} />}>
+            </div>
+
+            {/* Analytics Section */}
+            <div>
+                <div className="px-4 pb-2">
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Analytics
+                    </h3>
+                </div>
+                <NavItem to="/history" icon={<Calendar size={20} />}>
                     History
                 </NavItem>
-                <NavItem to="/statistics" icon={<PieChart size={18} />}>
+                <NavItem to="/statistics" icon={<PieChart size={20} />}>
                     Statistics
                 </NavItem>
-            </nav>
-        </>
+            </div>
+        </nav>
     );
 };

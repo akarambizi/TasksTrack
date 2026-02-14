@@ -29,10 +29,9 @@ describe('useHabitLogForm', () => {
 
         const watchedValues = result.current.watch();
         expect(watchedValues.habitId).toBe(1);
-        expect(watchedValues.value).toBe(0);
+        expect(watchedValues.value).toBe('');
         expect(watchedValues.date).toBe(new Date().toISOString().split('T')[0]);
         expect(watchedValues.notes).toBe('');
-        expect(watchedValues.createdBy).toBe('test-user-id');
     });
 
     it('should use default habitId of 0 when not provided', () => {
@@ -68,7 +67,7 @@ describe('useHabitLogForm', () => {
         });
 
         const watchedValues = result.current.watch();
-        expect(watchedValues.value).toBe(0);
+        expect(watchedValues.value).toBe(''); // Updated to match new default value
         expect(watchedValues.notes).toBe('');
     });
 

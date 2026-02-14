@@ -13,8 +13,8 @@ namespace TasksTrack.Services
         Task AddAsync(Category category);
         Task<bool> UpdateAsync(Category category);
         Task DeleteAsync(int id);
-        Task ArchiveAsync(int id, string? updatedBy = null);
-        Task ActivateAsync(int id, string? updatedBy = null);
+        Task ArchiveAsync(int id);
+        Task ActivateAsync(int id);
         Task<bool> ExistsAsync(string name, int? excludeId = null);
     }
 }

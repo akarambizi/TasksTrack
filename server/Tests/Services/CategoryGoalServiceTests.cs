@@ -18,7 +18,9 @@ namespace TasksTrack.Tests.Services
         public CategoryGoalServiceTests()
         {
             _repositoryMock = new Mock<ICategoryGoalRepository>();
-            _service = new CategoryGoalService(_repositoryMock.Object);
+            var currentUserServiceMock = new Mock<ICurrentUserService>();
+            currentUserServiceMock.Setup(s => s.GetUserId()).Returns("test-user-123");
+            _service = new CategoryGoalService(_repositoryMock.Object, currentUserServiceMock.Object);
         }
 
         [Fact]
@@ -42,15 +44,15 @@ namespace TasksTrack.Tests.Services
                 }
             };
 
-            _repositoryMock.Setup(repo => repo.GetByUserIdAsync(userId))
+            _repositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(expectedGoals);
 
             // Act
-            var result = await _service.GetByUserIdAsync(userId);
+            var result = await _service.GetAllAsync();
 
             // Assert
             Assert.Equal(expectedGoals, result);
-            _repositoryMock.Verify(repo => repo.GetByUserIdAsync(userId), Times.Once);
+            _repositoryMock.Verify(repo => repo.GetAllAsync(), Times.Once);
         }
 
         [Fact]
@@ -67,7 +69,7 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "test-user"
             };
 
-            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryGoal.CategoryId, categoryGoal.UserId, It.IsAny<int?>()))
+            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryGoal.CategoryId, It.IsAny<int?>()))
                 .ReturnsAsync(false);
             _repositoryMock.Setup(repo => repo.AddAsync(It.IsAny<CategoryGoal>()))
                 .Returns(Task.CompletedTask);
@@ -78,7 +80,7 @@ namespace TasksTrack.Tests.Services
             // Assert
             Assert.True(categoryGoal.CreatedDate != DateTimeOffset.MinValue);
             Assert.True(categoryGoal.StartDate != DateTimeOffset.MinValue);
-            _repositoryMock.Verify(repo => repo.HasActiveGoalAsync(categoryGoal.CategoryId, categoryGoal.UserId, It.IsAny<int?>()), Times.Once);
+            _repositoryMock.Verify(repo => repo.HasActiveGoalAsync(categoryGoal.CategoryId, It.IsAny<int?>()), Times.Once);
             _repositoryMock.Verify(repo => repo.AddAsync(categoryGoal), Times.Once);
         }
 
@@ -95,7 +97,7 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "test-user"
             };
 
-            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryGoal.CategoryId, categoryGoal.UserId, It.IsAny<int?>()))
+            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryGoal.CategoryId, It.IsAny<int?>()))
                 .ReturnsAsync(true);
 
             // Act & Assert
@@ -136,7 +138,7 @@ namespace TasksTrack.Tests.Services
 
             _repositoryMock.Setup(repo => repo.GetByIdAsync(goalId))
                 .ReturnsAsync(existingGoal);
-            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(updatedGoal.CategoryId, updatedGoal.UserId, goalId))
+            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(updatedGoal.CategoryId, goalId))
                 .ReturnsAsync(false);
             _repositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<CategoryGoal>()))
                 .Returns(Task.CompletedTask);
@@ -192,15 +194,15 @@ namespace TasksTrack.Tests.Services
                 Category = new Category { Id = categoryId, Name = "Health", CreatedBy = "system" }
             };
 
-            _repositoryMock.Setup(repo => repo.GetActiveByCategoryAndUserAsync(categoryId, userId))
+            _repositoryMock.Setup(repo => repo.GetActiveByCategoryAsync(categoryId))
                 .ReturnsAsync(expectedGoal);
 
             // Act
-            var result = await _service.GetActiveByCategoryAndUserAsync(categoryId, userId);
+            var result = await _service.GetActiveByCategoryAndUserAsync(categoryId);
 
             // Assert
             Assert.Equal(expectedGoal, result);
-            _repositoryMock.Verify(repo => repo.GetActiveByCategoryAndUserAsync(categoryId, userId), Times.Once);
+            _repositoryMock.Verify(repo => repo.GetActiveByCategoryAsync(categoryId), Times.Once);
         }
 
         [Fact]
@@ -208,16 +210,27 @@ namespace TasksTrack.Tests.Services
         {
             // Arrange
             var goalId = 1;
-            var updatedBy = "test-user";
+            var categoryGoal = new CategoryGoal
+            {
+                Id = goalId,
+                CategoryId = 1,
+                UserId = "test-user",
+                WeeklyTargetMinutes = 150,
+                IsActive = true,
+                CreatedBy = "test-user"
+            };
 
-            _repositoryMock.Setup(repo => repo.DeactivateAsync(goalId, updatedBy))
+            _repositoryMock.Setup(repo => repo.GetByIdAsync(goalId))
+                .ReturnsAsync(categoryGoal);
+            _repositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<CategoryGoal>()))
                 .Returns(Task.CompletedTask);
 
             // Act
-            await _service.DeactivateAsync(goalId, updatedBy);
+            await _service.DeactivateAsync(goalId);
 
             // Assert
-            _repositoryMock.Verify(repo => repo.DeactivateAsync(goalId, updatedBy), Times.Once);
+            Assert.False(categoryGoal.IsActive);
+            _repositoryMock.Verify(repo => repo.UpdateAsync(categoryGoal), Times.Once);
         }
 
         [Fact]
@@ -225,17 +238,16 @@ namespace TasksTrack.Tests.Services
         {
             // Arrange
             var categoryId = 1;
-            var userId = "test-user";
 
-            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryId, userId, It.IsAny<int?>()))
+            _repositoryMock.Setup(repo => repo.HasActiveGoalAsync(categoryId, It.IsAny<int?>()))
                 .ReturnsAsync(true);
 
             // Act
-            var result = await _service.HasActiveGoalAsync(categoryId, userId);
+            var result = await _service.HasActiveGoalAsync(categoryId);
 
             // Assert
             Assert.True(result);
-            _repositoryMock.Verify(repo => repo.HasActiveGoalAsync(categoryId, userId, It.IsAny<int?>()), Times.Once);
+            _repositoryMock.Verify(repo => repo.HasActiveGoalAsync(categoryId, It.IsAny<int?>()), Times.Once);
         }
     }
 }

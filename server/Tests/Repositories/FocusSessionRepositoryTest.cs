@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using TasksTrack.Data;
 using TasksTrack.Models;
 using TasksTrack.Repositories;
+using TasksTrack.Services;
 using System.Threading.Tasks;
 using System.Linq;
+using Moq;
 
 namespace TasksTrack.Tests.Repositories
 {
@@ -12,6 +14,7 @@ namespace TasksTrack.Tests.Repositories
     {
         private readonly TasksTrackContext _context;
         private readonly FocusSessionRepository _repository;
+        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly string _testUserId = "test-user-123";
 
         public FocusSessionRepositoryTest()
@@ -20,7 +23,10 @@ namespace TasksTrack.Tests.Repositories
                 .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
                 .Options;
 
-            _context = new TasksTrackContext(options);
+            _mockCurrentUserService = new Mock<ICurrentUserService>();
+            _mockCurrentUserService.Setup(s => s.GetUserIdOrNull()).Returns(_testUserId);
+
+            _context = new TasksTrackContext(options, _mockCurrentUserService.Object);
             _repository = new FocusSessionRepository(_context);
 
             // Seed test data
@@ -133,18 +139,21 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = _repository.GetByUser(_testUserId);
+            var result = _repository.GetQueryable();
             var sessions = result.ToList();
 
             // Assert
+            // With global query filters, only sessions for the current user are returned
             Assert.Equal(2, sessions.Count);
+            // Verify all sessions belong to the current user
             Assert.All(sessions, s => Assert.Equal(_testUserId, s.CreatedBy));
             Assert.All(sessions, s => Assert.NotNull(s.Habit)); // Test Include
 
-            // Check that we get the sessions for this user (order doesn't matter at repository level for IQueryable)
+            // Check that we get the correct sessions for this user
             var sessionIds = sessions.Select(s => s.Id).ToList();
             Assert.Contains(session1.Id, sessionIds);
             Assert.Contains(session2.Id, sessionIds);
+            // session3 should NOT be included as it belongs to "other-user"
         }
 
         [Fact]
@@ -179,10 +188,11 @@ namespace TasksTrack.Tests.Repositories
             var sessions = result.ToList();
 
             // Assert
-            Assert.Equal(2, sessions.Count);
-            Assert.Equal(session2.Id, sessions[0].Id); // Most recent first
-            Assert.Equal(session1.Id, sessions[1].Id);
-            Assert.All(sessions, s => Assert.Equal(1, s.HabitId));
+            // With global query filters, only sessions for the current user are returned
+            Assert.Single(sessions);
+            Assert.Equal(session1.Id, sessions[0].Id);
+            Assert.Equal(1, sessions[0].HabitId);
+            Assert.Equal(_testUserId, sessions[0].CreatedBy);
         }
 
         [Fact]
@@ -213,7 +223,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveOrPausedSessionByUserAsync(_testUserId);
+            var result = await _repository.GetActiveOrPausedSessionAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -239,7 +249,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveOrPausedSessionByUserAsync(_testUserId);
+            var result = await _repository.GetActiveOrPausedSessionAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -265,7 +275,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveOrPausedSessionByUserAsync(_testUserId);
+            var result = await _repository.GetActiveOrPausedSessionAsync();
 
             // Assert
             Assert.Null(result);
@@ -401,7 +411,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetAnalyticsAsync(_testUserId);
+            var result = await _repository.GetAnalyticsAsync();
 
             // Assert
             Assert.Equal(3, result.TotalSessions);
@@ -441,7 +451,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetAnalyticsAsync(_testUserId);
+            var result = await _repository.GetAnalyticsAsync();
 
             // Assert
             Assert.Equal(2, result.TotalSessions); // Both sessions since we removed date filtering
@@ -455,7 +465,7 @@ namespace TasksTrack.Tests.Repositories
         public async Task GetAnalyticsAsync_WithNoSessions_ShouldReturnZeroValues()
         {
             // Act
-            var result = await _repository.GetAnalyticsAsync("nonexistent-user");
+            var result = await _repository.GetAnalyticsAsync();
 
             // Assert
             Assert.Equal(0, result.TotalSessions);

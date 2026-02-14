@@ -166,7 +166,7 @@ export function HabitFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" data-testid="habit-form-dialog">
         <form onSubmit={handleSubmit(onFormSubmit)} noValidate>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
@@ -191,6 +191,7 @@ export function HabitFormDialog({
                 control={control}
                 label="Habit Name"
                 placeholder="e.g., Read books, Exercise, Drink water"
+                testId="habit-name-input"
                 required
               />
 

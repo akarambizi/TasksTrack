@@ -15,15 +15,11 @@ namespace TasksTrack.Controllers
     public class AnalyticsController : ControllerBase
     {
         private readonly IAnalyticsService _analyticsService;
-        private readonly ICurrentUserService _currentUserService;
 
-        public AnalyticsController(IAnalyticsService analyticsService, ICurrentUserService currentUserService)
+        public AnalyticsController(IAnalyticsService analyticsService)
         {
             _analyticsService = analyticsService;
-            _currentUserService = currentUserService;
         }
-
-        private string GetUserId() => _currentUserService.GetUserId();
 
         /// <summary>
         /// Gets weekly analytics data for the specified week
@@ -35,8 +31,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _analyticsService.GetWeeklyAnalyticsAsync(userId, weekOffset);
+                var result = await _analyticsService.GetWeeklyAnalyticsAsync(weekOffset);
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -60,8 +55,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _analyticsService.GetMonthlyAnalyticsAsync(userId, monthOffset);
+                var result = await _analyticsService.GetMonthlyAnalyticsAsync(monthOffset);
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -85,8 +79,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _analyticsService.GetQuarterlyAnalyticsAsync(userId, quarterOffset);
+                var result = await _analyticsService.GetQuarterlyAnalyticsAsync(quarterOffset);
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -110,8 +103,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _analyticsService.GetYearlyAnalyticsAsync(userId, yearOffset);
+                var result = await _analyticsService.GetYearlyAnalyticsAsync(yearOffset);
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -140,8 +132,7 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                var result = await _analyticsService.GetCustomAnalyticsAsync(userId, request);
+                var result = await _analyticsService.GetCustomAnalyticsAsync(request);
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -192,10 +183,10 @@ namespace TasksTrack.Controllers
                     return BadRequest(new { message = "Invalid previous end date format. Use YYYY-MM-DD." });
                 }
 
-                var userId = GetUserId();
-                var result = await _analyticsService.GetComparisonAnalyticsAsync(userId, 
+
+                var result = await _analyticsService.GetComparisonAnalyticsAsync(
                     parsedCurrentStart, parsedCurrentEnd, parsedPreviousStart, parsedPreviousEnd);
-                
+
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -245,9 +236,9 @@ namespace TasksTrack.Controllers
                     return BadRequest(new { message = "Please provide valid habit IDs." });
                 }
 
-                var userId = GetUserId();
-                var result = await _analyticsService.GetHabitComparisonAsync(userId, habitIdList, parsedStartDate, parsedEndDate);
-                
+
+                var result = await _analyticsService.GetHabitComparisonAsync(habitIdList, parsedStartDate, parsedEndDate);
+
                 return Ok(result.AsQueryable());
             }
             catch (ArgumentException ex)
@@ -276,8 +267,8 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                var (data, contentType, fileName) = await _analyticsService.ExportAnalyticsAsync(userId, request);
+
+                var (data, contentType, fileName) = await _analyticsService.ExportAnalyticsAsync(request);
 
                 return File(data, contentType, fileName);
             }
@@ -319,9 +310,9 @@ namespace TasksTrack.Controllers
                     return BadRequest(new { message = "Invalid end date format. Use YYYY-MM-DD." });
                 }
 
-                var userId = GetUserId();
-                var result = await _analyticsService.CalculateGoalProgressAsync(userId, parsedStartDate, parsedEndDate, targetMinutes, targetSessions);
-                
+
+                var result = await _analyticsService.CalculateGoalProgressAsync(parsedStartDate, parsedEndDate, targetMinutes, targetSessions);
+
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -344,8 +335,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _analyticsService.GetDashboardOverviewAsync(userId);
+                var result = await _analyticsService.GetDashboardOverviewAsync();
                 return Ok(result);
             }
             catch (Exception ex)

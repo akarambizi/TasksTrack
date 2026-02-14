@@ -7,7 +7,7 @@ namespace TasksTrack.Repositories
         Task<IEnumerable<HabitLog>> GetAllAsync();
         Task<HabitLog?> GetByIdAsync(int id);
         Task AddAsync(HabitLog habitLog);
-        Task UpdateAsync(HabitLog habitLog);
+        Task<bool> UpdateAsync(HabitLog habitLog);
         Task DeleteAsync(int id);
         Task<IEnumerable<HabitLog>> GetByHabitIdAsync(int habitId);
         Task<IEnumerable<HabitLog>> GetByDateAsync(DateOnly date);

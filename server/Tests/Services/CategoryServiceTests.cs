@@ -13,12 +13,15 @@ namespace TasksTrack.Tests.Services
     public class CategoryServiceTests
     {
         private readonly Mock<ICategoryRepository> _repositoryMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
         private readonly CategoryService _service;
 
         public CategoryServiceTests()
         {
             _repositoryMock = new Mock<ICategoryRepository>();
-            _service = new CategoryService(_repositoryMock.Object);
+            _currentUserServiceMock = new Mock<ICurrentUserService>();
+            _currentUserServiceMock.Setup(s => s.GetUserId()).Returns("test-user-123");
+            _service = new CategoryService(_repositoryMock.Object, _currentUserServiceMock.Object);
         }
 
         [Fact]
@@ -143,7 +146,7 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "test-user"
             };
 
-            _repositoryMock.Setup(repo => repo.ExistsAsync(category.Name))
+            _repositoryMock.Setup(repo => repo.ExistsAsync(category.Name, null))
                 .ReturnsAsync(false);
             _repositoryMock.Setup(repo => repo.AddAsync(It.IsAny<Category>()))
                 .Returns(Task.CompletedTask);
@@ -153,7 +156,7 @@ namespace TasksTrack.Tests.Services
 
             // Assert
             Assert.True(category.CreatedDate != DateTimeOffset.MinValue);
-            _repositoryMock.Verify(repo => repo.ExistsAsync(category.Name), Times.Once);
+            _repositoryMock.Verify(repo => repo.ExistsAsync(category.Name, null), Times.Once);
             _repositoryMock.Verify(repo => repo.AddAsync(category), Times.Once);
         }
 
@@ -168,14 +171,14 @@ namespace TasksTrack.Tests.Services
                 CreatedBy = "test-user"
             };
 
-            _repositoryMock.Setup(repo => repo.ExistsAsync(category.Name))
+            _repositoryMock.Setup(repo => repo.ExistsAsync(category.Name, null))
                 .ReturnsAsync(true);
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.AddAsync(category));
             Assert.Contains("already exists", exception.Message);
-            _repositoryMock.Verify(repo => repo.ExistsAsync(category.Name), Times.Once);
+            _repositoryMock.Verify(repo => repo.ExistsAsync(category.Name, null), Times.Once);
             _repositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Category>()), Times.Never);
         }
 
@@ -268,11 +271,11 @@ namespace TasksTrack.Tests.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            await _service.ArchiveAsync(categoryId, "test-user");
+            await _service.ArchiveAsync(categoryId);
 
             // Assert
             Assert.False(category.IsActive);
-            Assert.Equal("test-user", category.UpdatedBy);
+            Assert.Equal("test-user-123", category.UpdatedBy);
             Assert.True(category.UpdatedDate.HasValue);
             _repositoryMock.Verify(repo => repo.UpdateAsync(category), Times.Once);
         }

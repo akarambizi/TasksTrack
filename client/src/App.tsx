@@ -1,4 +1,5 @@
 import { Container, Dashboard, Login, ResetPassword, Sessions, SignUp, HabitsContainer, HabitDetailPage, FocusSessions } from '@/components';
+import { Statistics } from '@/components/Statistics';
 import { QueryClientProvider } from '@/components/providers';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context';
@@ -26,7 +27,7 @@ const App = () => {
                                             <Route path="/habits/:habitId" element={<HabitDetailPage />} />
                                             <Route path="/focus-sessions" element={<FocusSessions />} />
                                             <Route path="/history" element={<Sessions />} />
-                                            <Route path="/statistics" element={<>Statistics</>} />
+                                            <Route path="/statistics" element={<Statistics />} />
                                             <Route path="*" element={<div>Not found</div>} />
                                         </Routes>
                                     </Container>

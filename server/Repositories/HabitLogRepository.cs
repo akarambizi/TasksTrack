@@ -35,15 +35,16 @@ namespace TasksTrack.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(HabitLog habitLog)
+        public async Task<bool> UpdateAsync(HabitLog habitLog)
         {
             _context.HabitLogs.Update(habitLog);
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var habitLog = await _context.HabitLogs.FindAsync(id);
+            var habitLog = await _context.HabitLogs.FirstOrDefaultAsync(hl => hl.Id == id);
             if (habitLog != null)
             {
                 _context.HabitLogs.Remove(habitLog);

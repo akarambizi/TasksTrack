@@ -10,24 +10,18 @@ namespace TasksTrack.Controllers
     public class HabitController : ControllerBase
     {
         private readonly IHabitService _habitService;
-        private readonly ICurrentUserService _currentUserService;
 
-        public HabitController(IHabitService habitService, ICurrentUserService currentUserService)
+        public HabitController(IHabitService habitService)
         {
             _habitService = habitService;
-            _currentUserService = currentUserService;
         }
-
-        private string GetUserId() => _currentUserService.GetUserId();
 
         [HttpGet("api/habits")]
         public async Task<ActionResult<IEnumerable<Habit>>> GetAll()
         {
             try
             {
-                var userId = GetUserId();
-
-                var result = await _habitService.GetByUserIdAsync(userId);
+                var result = await _habitService.GetAllAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -57,7 +51,7 @@ namespace TasksTrack.Controllers
         }
 
         [HttpPost("api/habits")]
-        public async Task<ActionResult> Add([FromBody] Habit habit)
+        public async Task<ActionResult> Add([FromBody] CreateHabitRequest request)
         {
             try
             {
@@ -66,9 +60,20 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                // Set the creator based on the authenticated user
-                var userId = GetUserId();
-                habit.CreatedBy = userId;
+                // Map DTO to domain model
+                var habit = new Habit
+                {
+                    Name = request.Name,
+                    Description = request.Description,
+                    MetricType = request.MetricType,
+                    Unit = request.Unit,
+                    Target = request.Target,
+                    TargetFrequency = request.TargetFrequency,
+                    Category = request.Category,
+                    Color = request.Color,
+                    Icon = request.Icon,
+                    CreatedBy = string.Empty // This will be set by the service
+                };
 
                 await _habitService.AddAsync(habit);
                 return CreatedAtAction(nameof(GetById), new { id = habit.Id }, habit);
@@ -114,6 +119,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
+
                 var existing = await _habitService.GetByIdAsync(id);
                 if (existing == null)
                 {

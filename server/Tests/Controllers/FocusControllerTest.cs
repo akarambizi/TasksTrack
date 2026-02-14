@@ -8,25 +8,20 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace TasksTrack.Tests.Controllers
 {
     public class FocusControllerTest
     {
         private readonly Mock<IFocusSessionService> _mockService;
-        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly FocusController _controller;
         private readonly string _testUserId = "test-user-123";
 
         public FocusControllerTest()
         {
             _mockService = new Mock<IFocusSessionService>();
-            _mockCurrentUserService = new Mock<ICurrentUserService>();
-
-            // Mock the GetUserId method to return test user ID
-            _mockCurrentUserService.Setup(x => x.GetUserId()).Returns(_testUserId);
-
-            _controller = new FocusController(_mockService.Object, _mockCurrentUserService.Object);
+            _controller = new FocusController(_mockService.Object);
 
             // Mock the HttpContext and User claims
             var claims = new List<Claim>
@@ -66,7 +61,7 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTimeOffset.UtcNow
             };
 
-            _mockService.Setup(s => s.StartSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.StartSessionAsync(request))
                        .ReturnsAsync(expectedResponse);
 
             // Act
@@ -89,7 +84,7 @@ namespace TasksTrack.Tests.Controllers
                 PlannedDurationMinutes = 25
             };
 
-            _mockService.Setup(s => s.StartSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.StartSessionAsync(request))
                        .ThrowsAsync(new InvalidOperationException("User already has an active focus session."));
 
             // Act
@@ -112,7 +107,7 @@ namespace TasksTrack.Tests.Controllers
                 PlannedDurationMinutes = 25
             };
 
-            _mockService.Setup(s => s.StartSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.StartSessionAsync(request))
                        .ThrowsAsync(new ArgumentException("Habit not found."));
 
             // Act
@@ -140,7 +135,7 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-10)
             };
 
-            _mockService.Setup(s => s.PauseSessionAsync(_testUserId))
+            _mockService.Setup(s => s.PauseSessionAsync())
                        .ReturnsAsync(expectedResponse);
 
             // Act
@@ -156,7 +151,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task PauseSession_NoActiveSession_ReturnsConflict()
         {
             // Arrange
-            _mockService.Setup(s => s.PauseSessionAsync(_testUserId))
+            _mockService.Setup(s => s.PauseSessionAsync())
                        .ThrowsAsync(new InvalidOperationException("No active session found to pause."));
 
             // Act
@@ -183,7 +178,7 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-15)
             };
 
-            _mockService.Setup(s => s.ResumeSessionAsync(_testUserId))
+            _mockService.Setup(s => s.ResumeSessionAsync())
                        .ReturnsAsync(expectedResponse);
 
             // Act
@@ -218,7 +213,7 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-25)
             };
 
-            _mockService.Setup(s => s.CompleteSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.CompleteSessionAsync(It.IsAny<FocusSessionCompleteRequest>()))
                        .ReturnsAsync(expectedResponse);
 
             // Act
@@ -261,7 +256,7 @@ namespace TasksTrack.Tests.Controllers
                 }
             };
 
-            _mockService.Setup(s => s.GetSessions(_testUserId))
+            _mockService.Setup(s => s.GetSessions())
                        .Returns(expectedSessions.AsQueryable());
 
             // Act
@@ -288,7 +283,7 @@ namespace TasksTrack.Tests.Controllers
                 CreatedDate = DateTimeOffset.UtcNow.AddMinutes(-10)
             };
 
-            _mockService.Setup(s => s.GetActiveSessionAsync(_testUserId))
+            _mockService.Setup(s => s.GetActiveSessionAsync())
                        .ReturnsAsync(expectedSession);
 
             // Act
@@ -304,7 +299,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetActiveSession_NoActiveSession_ReturnsNoContent()
         {
             // Arrange
-            _mockService.Setup(s => s.GetActiveSessionAsync(_testUserId))
+            _mockService.Setup(s => s.GetActiveSessionAsync())
                        .ReturnsAsync((FocusSessionResponse?)null);
 
             // Act
@@ -329,7 +324,7 @@ namespace TasksTrack.Tests.Controllers
                 CompletionRate = 0.8
             };
 
-            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId))
+            _mockService.Setup(s => s.GetAnalyticsAsync())
                        .ReturnsAsync(expectedAnalytics);
 
             // Act
@@ -356,7 +351,7 @@ namespace TasksTrack.Tests.Controllers
                 CompletionRate = 0.8
             };
 
-            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId))
+            _mockService.Setup(s => s.GetAnalyticsAsync())
                        .ReturnsAsync(expectedAnalytics);
 
             // Act
@@ -378,7 +373,7 @@ namespace TasksTrack.Tests.Controllers
                 PlannedDurationMinutes = 25
             };
 
-            _mockService.Setup(s => s.StartSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.StartSessionAsync(request))
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
@@ -393,7 +388,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task PauseSession_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.PauseSessionAsync(_testUserId))
+            _mockService.Setup(s => s.PauseSessionAsync())
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
@@ -408,7 +403,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task ResumeSession_NoSessionToPause_ReturnsConflict()
         {
             // Arrange
-            _mockService.Setup(s => s.ResumeSessionAsync(_testUserId))
+            _mockService.Setup(s => s.ResumeSessionAsync())
                        .ThrowsAsync(new InvalidOperationException("No paused session found to resume."));
 
             // Act
@@ -422,7 +417,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task ResumeSession_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.ResumeSessionAsync(_testUserId))
+            _mockService.Setup(s => s.ResumeSessionAsync())
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
@@ -442,7 +437,7 @@ namespace TasksTrack.Tests.Controllers
                 Notes = "Test notes"
             };
 
-            _mockService.Setup(s => s.CompleteSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.CompleteSessionAsync(It.IsAny<FocusSessionCompleteRequest>()))
                        .ThrowsAsync(new InvalidOperationException("No active session found to complete."));
 
             // Act
@@ -461,7 +456,7 @@ namespace TasksTrack.Tests.Controllers
                 Notes = "Test notes"
             };
 
-            _mockService.Setup(s => s.CompleteSessionAsync(request, _testUserId))
+            _mockService.Setup(s => s.CompleteSessionAsync(It.IsAny<FocusSessionCompleteRequest>()))
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
@@ -476,7 +471,7 @@ namespace TasksTrack.Tests.Controllers
         public void GetSessions_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.GetSessions(_testUserId))
+            _mockService.Setup(s => s.GetSessions())
                        .Throws(new Exception("Unexpected error"));
 
             // Act
@@ -491,7 +486,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetActiveSession_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.GetActiveSessionAsync(_testUserId))
+            _mockService.Setup(s => s.GetActiveSessionAsync())
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
@@ -506,7 +501,7 @@ namespace TasksTrack.Tests.Controllers
         public async Task GetAnalytics_ServiceThrowsException_ReturnsInternalServerError()
         {
             // Arrange
-            _mockService.Setup(s => s.GetAnalyticsAsync(_testUserId))
+            _mockService.Setup(s => s.GetAnalyticsAsync())
                        .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act

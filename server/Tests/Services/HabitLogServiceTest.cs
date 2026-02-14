@@ -20,7 +20,9 @@ namespace TasksTrack.Tests.Services
         {
             _habitLogRepositoryMock = new Mock<IHabitLogRepository>();
             _habitRepositoryMock = new Mock<IHabitRepository>();
-            _service = new HabitLogService(_habitLogRepositoryMock.Object, _habitRepositoryMock.Object);
+            var currentUserServiceMock = new Mock<ICurrentUserService>();
+            currentUserServiceMock.Setup(s => s.GetUserId()).Returns("test-user-123");
+            _service = new HabitLogService(_habitLogRepositoryMock.Object, _habitRepositoryMock.Object, currentUserServiceMock.Object);
         }
 
         [Fact]
@@ -171,7 +173,7 @@ namespace TasksTrack.Tests.Services
             };
 
             _habitLogRepositoryMock.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(existingLog);
-            _habitLogRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<HabitLog>())).Returns(Task.CompletedTask);
+            _habitLogRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<HabitLog>())).ReturnsAsync(true);
 
             // Act
             var result = await _service.UpdateAsync(updatedLog);

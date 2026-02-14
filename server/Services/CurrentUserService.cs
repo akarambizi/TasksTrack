@@ -39,6 +39,23 @@ namespace TasksTrack.Services
         }
 
         /// <summary>
+        /// Gets the current authenticated user's ID, or null if not authenticated.
+        /// This method is safe to use in EF Core query filters.
+        /// </summary>
+        /// <returns>The user ID as a string, or null if not authenticated.</returns>
+        public string? GetUserIdOrNull()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user?.Identity?.IsAuthenticated != true)
+            {
+                return null;
+            }
+
+            return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        /// <summary>
         /// Gets the current authenticated user's email from JWT token claims.
         /// </summary>
         /// <returns>The user email, or null if not found.</returns>

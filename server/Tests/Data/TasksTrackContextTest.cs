@@ -2,12 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using TasksTrack.Data;
 using TasksTrack.Models;
+using TasksTrack.Services;
+using Moq;
 
 namespace TasksTrack.Tests.Data
 {
     public class TasksTrackContextTest : IDisposable
     {
         private readonly TasksTrackContext _context;
+        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
 
         public TasksTrackContextTest()
         {
@@ -15,7 +18,10 @@ namespace TasksTrack.Tests.Data
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
-            _context = new TasksTrackContext(options);
+            _mockCurrentUserService = new Mock<ICurrentUserService>();
+            _mockCurrentUserService.Setup(s => s.GetUserIdOrNull()).Returns("testuser");
+
+            _context = new TasksTrackContext(options, _mockCurrentUserService.Object);
         }
 
         public void Dispose()

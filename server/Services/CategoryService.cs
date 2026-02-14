@@ -1,15 +1,18 @@
 using TasksTrack.Models;
 using TasksTrack.Repositories;
+using TasksTrack.Services;
 
 namespace TasksTrack.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CategoryService(ICategoryRepository repository)
+        public CategoryService(ICategoryRepository repository, ICurrentUserService currentUserService)
         {
             _repository = repository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
@@ -44,18 +47,14 @@ namespace TasksTrack.Services
 
         public async Task AddAsync(Category category)
         {
-            // Validate required fields
-            if (string.IsNullOrWhiteSpace(category.CreatedBy))
-            {
-                throw new ArgumentException("CreatedBy is required.");
-            }
+            var userId = _currentUserService.GetUserId();
 
             if (string.IsNullOrWhiteSpace(category.Name))
             {
                 throw new ArgumentException("Name is required.");
             }
 
-            // Validate category name uniqueness
+            // Validate category name uniqueness for this user
             if (await _repository.ExistsAsync(category.Name))
             {
                 throw new InvalidOperationException($"Category with name '{category.Name}' already exists.");
@@ -77,19 +76,22 @@ namespace TasksTrack.Services
                 }
             }
 
+            category.CreatedBy = userId;
             category.CreatedDate = DateTimeOffset.UtcNow;
+            category.IsActive = true;
             await _repository.AddAsync(category);
         }
 
         public async Task<bool> UpdateAsync(Category category)
         {
+            var userId = _currentUserService.GetUserId();
             var existingCategory = await _repository.GetByIdAsync(category.Id);
             if (existingCategory == null)
             {
                 return false;
             }
 
-            // Validate category name uniqueness
+            // Validate category name uniqueness for this user
             if (await _repository.ExistsAsync(category.Name, category.Id))
             {
                 throw new InvalidOperationException($"Category with name '{category.Name}' already exists.");
@@ -116,18 +118,6 @@ namespace TasksTrack.Services
                 {
                     throw new InvalidOperationException("Cannot move category under a subcategory. Only one level of nesting is allowed.");
                 }
-
-                // Prevent circular references: check if the parent is currently a subcategory of this category
-                if (parentCategory.ParentId.HasValue && parentCategory.ParentId.Value == category.Id)
-                {
-                    throw new InvalidOperationException("Cannot create circular reference: the parent category is currently a subcategory of this category.");
-                }
-
-                // Check if setting this parent would create a direct circular reference
-                if (category.ParentId == parentCategory.Id && parentCategory.Id == category.Id)
-                {
-                    throw new InvalidOperationException("Circular reference detected: Category cannot be its own parent");
-                }
             }
 
             existingCategory.Name = category.Name;
@@ -137,7 +127,7 @@ namespace TasksTrack.Services
             existingCategory.ParentId = category.ParentId;
             existingCategory.IsActive = category.IsActive;
             existingCategory.UpdatedDate = DateTimeOffset.UtcNow;
-            existingCategory.UpdatedBy = category.UpdatedBy;
+            existingCategory.UpdatedBy = userId;
 
             await _repository.UpdateAsync(existingCategory);
             return true;
@@ -148,26 +138,28 @@ namespace TasksTrack.Services
             await _repository.DeleteAsync(id);
         }
 
-        public async Task ArchiveAsync(int id, string? updatedBy = null)
+        public async Task ArchiveAsync(int id)
         {
             var category = await _repository.GetByIdAsync(id);
             if (category != null)
             {
                 category.IsActive = false;
                 category.UpdatedDate = DateTimeOffset.UtcNow;
-                category.UpdatedBy = updatedBy;
+                var userId = _currentUserService.GetUserId();
+                category.UpdatedBy = userId;
                 await _repository.UpdateAsync(category);
             }
         }
 
-        public async Task ActivateAsync(int id, string? updatedBy = null)
+        public async Task ActivateAsync(int id)
         {
             var category = await _repository.GetByIdAsync(id);
             if (category != null)
             {
                 category.IsActive = true;
                 category.UpdatedDate = DateTimeOffset.UtcNow;
-                category.UpdatedBy = updatedBy;
+                var userId = _currentUserService.GetUserId();
+                category.UpdatedBy = userId;
                 await _repository.UpdateAsync(category);
             }
         }

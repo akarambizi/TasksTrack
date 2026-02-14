@@ -12,15 +12,11 @@ namespace TasksTrack.Controllers
     public class ActivityController : ControllerBase
     {
         private readonly IActivityService _activityService;
-        private readonly ICurrentUserService _currentUserService;
 
-        public ActivityController(IActivityService activityService, ICurrentUserService currentUserService)
+        public ActivityController(IActivityService activityService)
         {
             _activityService = activityService;
-            _currentUserService = currentUserService;
         }
-
-        private string GetUserId() => _currentUserService.GetUserId();
 
         /// <summary>
         /// Gets activity grid data for a specific date range (typically 1 year for GitHub-style grid)
@@ -58,8 +54,7 @@ namespace TasksTrack.Controllers
                     return BadRequest(new { message = "Date range cannot exceed 2 years (730 days)." });
                 }
 
-                var userId = GetUserId();
-                var result = await _activityService.GetActivityGridAsync(userId, parsedStartDate, parsedEndDate);
+                var result = await _activityService.GetActivityGridAsync(parsedStartDate, parsedEndDate);
 
                 return Ok(result.AsQueryable());
             }
@@ -98,8 +93,7 @@ namespace TasksTrack.Controllers
                     return BadRequest(new { message = "Start date must be before or equal to end date." });
                 }
 
-                var userId = GetUserId();
-                var result = await _activityService.GetActivitySummaryAsync(userId, parsedStartDate, parsedEndDate);
+                var result = await _activityService.GetActivitySummaryAsync(parsedStartDate, parsedEndDate);
 
                 return Ok(result);
             }
@@ -119,8 +113,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _activityService.GetActivityStatisticsAsync(userId);
+                var result = await _activityService.GetActivityStatisticsAsync();
 
                 return Ok(result);
             }
@@ -141,8 +134,8 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var streak = await _activityService.GetCurrentStreakAsync(userId, habitId);
+
+                var streak = await _activityService.GetCurrentStreakAsync(habitId);
 
                 return Ok(streak);
             }
@@ -163,8 +156,8 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var streak = await _activityService.GetLongestStreakAsync(userId, habitId);
+
+                var streak = await _activityService.GetLongestStreakAsync(habitId);
 
                 return Ok(streak);
             }
@@ -184,8 +177,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var streak = await _activityService.GetCurrentOverallStreakAsync(userId);
+                var streak = await _activityService.GetCurrentOverallStreakAsync();
 
                 return Ok(streak);
             }
@@ -205,8 +197,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var streak = await _activityService.GetLongestOverallStreakAsync(userId);
+                var streak = await _activityService.GetLongestOverallStreakAsync();
 
                 return Ok(streak);
             }

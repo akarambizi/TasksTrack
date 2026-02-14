@@ -55,7 +55,7 @@ namespace TasksTrack.Controllers
         }
 
         [HttpPost("api/habit-logs")]
-        public async Task<ActionResult> Add([FromBody] HabitLog habitLog)
+        public async Task<ActionResult> Add([FromBody] CreateHabitLogRequest request)
         {
             try
             {
@@ -63,6 +63,16 @@ namespace TasksTrack.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                // Map DTO to domain model
+                var habitLog = new HabitLog
+                {
+                    HabitId = request.HabitId,
+                    Value = request.Value,
+                    Date = request.Date,
+                    Notes = request.Notes,
+                    CreatedBy = string.Empty // This will be set by the service
+                };
 
                 await _habitLogService.AddAsync(habitLog);
                 return CreatedAtAction(nameof(GetById), new { id = habitLog.Id }, habitLog);
@@ -75,7 +85,7 @@ namespace TasksTrack.Controllers
             {
                 // Log the exception details server-side
                 // TODO: Add proper logging
-                return StatusCode(500, new { message = "An error occurred while creating the habit log." });
+                return StatusCode(500, new { message = "An error occurred while adding the habit log." });
             }
         }
 

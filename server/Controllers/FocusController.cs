@@ -11,15 +11,11 @@ namespace TasksTrack.Controllers
     public class FocusController : ControllerBase
     {
         private readonly IFocusSessionService _focusSessionService;
-        private readonly ICurrentUserService _currentUserService;
 
-        public FocusController(IFocusSessionService focusSessionService, ICurrentUserService currentUserService)
+        public FocusController(IFocusSessionService focusSessionService)
         {
             _focusSessionService = focusSessionService;
-            _currentUserService = currentUserService;
         }
-
-        private string GetUserId() => _currentUserService.GetUserId();
 
         [HttpPost("api/focus/start")]
         public async Task<ActionResult<FocusSessionResponse>> StartSession([FromBody] FocusSessionStartRequest request)
@@ -31,8 +27,7 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                var result = await _focusSessionService.StartSessionAsync(request, userId);
+                var result = await _focusSessionService.StartSessionAsync(request);
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
@@ -60,8 +55,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _focusSessionService.PauseSessionAsync(userId);
+                var result = await _focusSessionService.PauseSessionAsync();
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
@@ -81,8 +75,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _focusSessionService.ResumeSessionAsync(userId);
+                var result = await _focusSessionService.ResumeSessionAsync();
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
@@ -107,8 +100,7 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                var result = await _focusSessionService.CompleteSessionAsync(request, userId);
+                var result = await _focusSessionService.CompleteSessionAsync(request);
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
@@ -133,8 +125,7 @@ namespace TasksTrack.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var userId = GetUserId();
-                var result = await _focusSessionService.CancelSessionAsync(request, userId);
+                var result = await _focusSessionService.CancelSessionAsync(request);
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
@@ -158,8 +149,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = _focusSessionService.GetSessions(userId);
+                var result = _focusSessionService.GetSessions();
                 return Ok(result);
             }
             catch (Exception)
@@ -175,8 +165,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _focusSessionService.GetActiveSessionAsync(userId);
+                var result = await _focusSessionService.GetActiveSessionAsync();
 
                 if (result == null)
                 {
@@ -199,8 +188,7 @@ namespace TasksTrack.Controllers
         {
             try
             {
-                var userId = GetUserId();
-                var result = await _focusSessionService.GetAnalyticsAsync(userId);
+                var result = await _focusSessionService.GetAnalyticsAsync();
                 return Ok(result);
             }
             catch (Exception)

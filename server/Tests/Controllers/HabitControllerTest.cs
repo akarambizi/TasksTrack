@@ -12,18 +12,12 @@ namespace TasksTrack.Tests.Controllers
     public class HabitControllerTests
     {
         private readonly Mock<IHabitService> _mockService;
-        private readonly Mock<ICurrentUserService> _mockCurrentUserService;
         private readonly HabitController _controller;
 
         public HabitControllerTests()
         {
             _mockService = new Mock<IHabitService>();
-            _mockCurrentUserService = new Mock<ICurrentUserService>();
-
-            // Mock the GetUserId method to return test user ID
-            _mockCurrentUserService.Setup(x => x.GetUserId()).Returns("test-user-id");
-
-            _controller = new HabitController(_mockService.Object, _mockCurrentUserService.Object);
+            _controller = new HabitController(_mockService.Object);
         }
 
         [Fact]
@@ -60,7 +54,7 @@ namespace TasksTrack.Tests.Controllers
                     CreatedDate = new System.DateTime(2024, 1, 1)
                 }
             };
-            _mockService.Setup(service => service.GetByUserIdAsync("test-user-id")).ReturnsAsync(habits);
+            _mockService.Setup(service => service.GetAllAsync()).ReturnsAsync(habits);
 
             // Act
             var result = await _controller.GetAll();
@@ -118,23 +112,19 @@ namespace TasksTrack.Tests.Controllers
         public async Task Add_ReturnsCreatedAtAction()
         {
             // Arrange
-            var habit = new Habit
+            var request = new CreateHabitRequest
             {
-                Id = 1,
                 Name = "Morning Exercise",
                 MetricType = "minutes",
                 Unit = "min",
                 Target = 30,
                 TargetFrequency = "daily",
                 Category = "Health",
-                IsActive = true,
-                CreatedBy = "User1",
-                CreatedDate = new System.DateTime(2024, 1, 1),
                 Description = "Daily morning workout routine"
             };
 
             // Act
-            var result = await _controller.Add(habit);
+            var result = await _controller.Add(request);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);

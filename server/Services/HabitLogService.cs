@@ -1,5 +1,6 @@
 using TasksTrack.Models;
 using TasksTrack.Repositories;
+using TasksTrack.Services;
 
 namespace TasksTrack.Services
 {
@@ -7,11 +8,13 @@ namespace TasksTrack.Services
     {
         private readonly IHabitLogRepository _repository;
         private readonly IHabitRepository _habitRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public HabitLogService(IHabitLogRepository repository, IHabitRepository habitRepository)
+        public HabitLogService(IHabitLogRepository repository, IHabitRepository habitRepository, ICurrentUserService currentUserService)
         {
             _repository = repository;
             _habitRepository = habitRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<IEnumerable<HabitLog>> GetAllAsync()
@@ -26,46 +29,41 @@ namespace TasksTrack.Services
 
         public async Task AddAsync(HabitLog habitLog)
         {
+            var userId = _currentUserService.GetUserId();
+
             // Validate that the habit exists
             var habit = await _habitRepository.GetByIdAsync(habitLog.HabitId);
             if (habit == null)
                 throw new ArgumentException($"Habit with ID {habitLog.HabitId} not found");
 
+            habitLog.CreatedBy = userId;
             habitLog.CreatedDate = DateTimeOffset.UtcNow;
-            // No need to normalize Date since DateOnly is already date-only
 
             await _repository.AddAsync(habitLog);
-        }
-
-        public async Task<bool> UpdateAsync(HabitLog habitLog)
-        {
-            var existing = await _repository.GetByIdAsync(habitLog.Id);
-            if (existing == null)
-                return false;
-
-            // Validate that the habit exists if habitId is being changed
-            if (existing.HabitId != habitLog.HabitId)
-            {
-                var habit = await _habitRepository.GetByIdAsync(habitLog.HabitId);
-                if (habit == null)
-                    throw new ArgumentException($"Habit with ID {habitLog.HabitId} not found");
-            }
-
-            // Update fields
-            existing.HabitId = habitLog.HabitId;
-            existing.Value = habitLog.Value;
-            existing.Date = habitLog.Date; // DateOnly is already date-only
-            existing.Notes = habitLog.Notes;
-            existing.UpdatedDate = DateTimeOffset.UtcNow;
-            existing.UpdatedBy = habitLog.UpdatedBy;
-
-            await _repository.UpdateAsync(existing);
-            return true;
         }
 
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(HabitLog habitLog)
+        {
+            var userId = _currentUserService.GetUserId();
+
+            // Get existing habit log to validate it exists
+            var existingLog = await _repository.GetByIdAsync(habitLog.Id);
+            if (existingLog == null)
+                return false;
+
+            // Update fields
+            existingLog.Date = habitLog.Date;
+            existingLog.Value = habitLog.Value;
+            existingLog.Notes = habitLog.Notes;
+            existingLog.UpdatedBy = userId;
+            existingLog.UpdatedDate = DateTimeOffset.UtcNow;
+
+            return await _repository.UpdateAsync(existingLog);
         }
 
         public async Task<IEnumerable<HabitLog>> GetByHabitIdAsync(int habitId)

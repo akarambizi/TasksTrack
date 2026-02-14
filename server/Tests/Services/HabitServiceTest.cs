@@ -18,7 +18,9 @@ namespace TasksTrack.Tests.Services
         public HabitServiceTests()
         {
             _repositoryMock = new Mock<IHabitRepository>();
-            _currentUserServiceMock = new Mock<ICurrentUserService>();            _currentUserServiceMock.Setup(s => s.GetUserId()).Returns("test-user-123");            _service = new HabitService(_repositoryMock.Object, _currentUserServiceMock.Object);
+            _currentUserServiceMock = new Mock<ICurrentUserService>();
+            _currentUserServiceMock.Setup(s => s.GetUserId()).Returns("test-user-123");
+            _service = new HabitService(_repositoryMock.Object, _currentUserServiceMock.Object);
         }
 
         [Fact]

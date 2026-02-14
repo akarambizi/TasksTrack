@@ -115,17 +115,6 @@ namespace TasksTrack.Tests.Controllers
                 Notes = "First log entry"
             };
 
-            var createdHabitLog = new HabitLog
-            {
-                Id = 1,
-                HabitId = request.HabitId,
-                Value = request.Value,
-                Date = request.Date,
-                Notes = request.Notes,
-                CreatedBy = "testuser",
-                CreatedDate = DateTime.Now
-            };
-
             _mockService.Setup(service => service.AddAsync(It.IsAny<HabitLog>())).Returns(Task.CompletedTask);
 
             // Act

@@ -30,7 +30,7 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
             reset({
                 date: today,
                 habitId: habit.id,
-                value: '' as any, // Start with empty string for better UX
+                value: '', // Start with empty string for better UX
                 notes: ''
                 // createdBy is now handled automatically by backend
             });
@@ -67,7 +67,7 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[425px]" data-testid="add-habit-log-dialog">
-                <form onSubmit={handleSubmit(onSubmit as any)} data-testid="habit-log-form">
+                <form onSubmit={handleSubmit(onSubmit)} data-testid="habit-log-form">
                     <DialogHeader>
                         <DialogTitle>Add Log Entry</DialogTitle>
                         <DialogDescription>
@@ -76,9 +76,9 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                     </DialogHeader>
 
                     <div className="grid gap-4 py-4">
-                        <FormField<HabitLogFormData>
+                        <FormField
                             name="value"
-                            control={control as any}
+                            control={control}
                             type="number"
                             label={`Value (${displayUnit})`}
                             placeholder={`Enter ${habit.metricType} (e.g., ${habit.target || 30})`}
@@ -88,18 +88,18 @@ export default function AddHabitLogDialog({ habit, isOpen, onClose, onSubmitSucc
                             required
                         />
 
-                        <FormField<HabitLogFormData>
+                        <FormField
                             name="date"
-                            control={control as any}
+                            control={control}
                             type="date"
                             label="Date"
                             data-testid="date-input"
                             required
                         />
 
-                        <TextareaField<HabitLogFormData>
+                        <TextareaField
                             name="notes"
-                            control={control as any}
+                            control={control}
                             label="Notes (Optional)"
                             placeholder="How did it go? Any observations..."
                             rows={3}

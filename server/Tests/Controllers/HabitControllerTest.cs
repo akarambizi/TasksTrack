@@ -112,23 +112,19 @@ namespace TasksTrack.Tests.Controllers
         public async Task Add_ReturnsCreatedAtAction()
         {
             // Arrange
-            var habit = new Habit
+            var request = new CreateHabitRequest
             {
-                Id = 1,
                 Name = "Morning Exercise",
                 MetricType = "minutes",
                 Unit = "min",
                 Target = 30,
                 TargetFrequency = "daily",
                 Category = "Health",
-                IsActive = true,
-                CreatedBy = "User1",
-                CreatedDate = new System.DateTime(2024, 1, 1),
                 Description = "Daily morning workout routine"
             };
 
             // Act
-            var result = await _controller.Add(habit);
+            var result = await _controller.Add(request);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);

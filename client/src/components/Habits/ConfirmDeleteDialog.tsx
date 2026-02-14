@@ -26,7 +26,7 @@ export function ConfirmDeleteDialog({ habit, open, onOpenChange }: ConfirmDelete
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[400px]" data-testid="confirm-delete-dialog">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="h-5 w-5" />
@@ -52,6 +52,7 @@ export function ConfirmDeleteDialog({ habit, open, onOpenChange }: ConfirmDelete
             variant="destructive"
             onClick={handleDelete}
             disabled={deleteHabitMutation.isPending}
+            data-testid="confirm-delete-button"
           >
             {deleteHabitMutation.isPending ? 'Deleting...' : 'Delete Habit'}
           </Button>

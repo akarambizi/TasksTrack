@@ -155,7 +155,7 @@ export const Habits = () => {
                                         />
                                     </div>
                                     <div>
-                                        <Link to={`/habits/${habit.id}`}>
+                                        <Link to={`/habits/${habit.id}`} data-testid="habit-title">
                                             <CardTitle className="text-lg hover:text-primary transition-colors">
                                                 {habit.name}
                                             </CardTitle>

@@ -67,6 +67,7 @@ export const HabitOptionsMenu = ({ habit, onEdit, onDelete, onLogActivity }: Hab
         <button
           className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
           disabled={isLoading}
+          data-testid="habit-options-menu"
         >
           <Settings size={16} className="text-slate-500 dark:text-slate-400" />
         </button>
@@ -104,7 +105,7 @@ export const HabitOptionsMenu = ({ habit, onEdit, onDelete, onLogActivity }: Hab
           )}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleDeleteHabit} className="text-red-600 dark:text-red-400" disabled={isLoading}>
+        <DropdownMenuItem onClick={handleDeleteHabit} className="text-red-600 dark:text-red-400" disabled={isLoading} data-testid="delete-habit-menu-item">
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Habit
         </DropdownMenuItem>

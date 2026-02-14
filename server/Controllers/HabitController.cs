@@ -51,7 +51,7 @@ namespace TasksTrack.Controllers
         }
 
         [HttpPost("api/habits")]
-        public async Task<ActionResult> Add([FromBody] Habit habit)
+        public async Task<ActionResult> Add([FromBody] CreateHabitRequest request)
         {
             try
             {
@@ -59,6 +59,21 @@ namespace TasksTrack.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                // Map DTO to domain model
+                var habit = new Habit
+                {
+                    Name = request.Name,
+                    Description = request.Description,
+                    MetricType = request.MetricType,
+                    Unit = request.Unit,
+                    Target = request.Target,
+                    TargetFrequency = request.TargetFrequency,
+                    Category = request.Category,
+                    Color = request.Color,
+                    Icon = request.Icon,
+                    CreatedBy = string.Empty // This will be set by the service
+                };
 
                 await _habitService.AddAsync(habit);
                 return CreatedAtAction(nameof(GetById), new { id = habit.Id }, habit);

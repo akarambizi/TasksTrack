@@ -34,7 +34,7 @@ namespace TasksTrack.Data
             // Global Query Filters for automatic user scoping
             // These filters are evaluated dynamically at query time, not at model creation time
             // When _currentUserService is null (migrations/tests) or user not authenticated, no filtering is applied
-            
+
             modelBuilder.Entity<Habit>()
                 .HasQueryFilter(h => _currentUserService == null || _currentUserService.GetUserIdOrNull() == null || h.CreatedBy == _currentUserService.GetUserIdOrNull());
 

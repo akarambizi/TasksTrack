@@ -124,7 +124,7 @@ namespace TasksTrack.Tests.Services
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => 
+            await Assert.ThrowsAsync<ArgumentException>(() =>
                 _service.GetCustomAnalyticsAsync(request));
         }
 
@@ -139,7 +139,7 @@ namespace TasksTrack.Tests.Services
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => 
+            await Assert.ThrowsAsync<ArgumentException>(() =>
                 _service.GetCustomAnalyticsAsync(request));
         }
 
@@ -238,7 +238,7 @@ namespace TasksTrack.Tests.Services
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => 
+            await Assert.ThrowsAsync<ArgumentException>(() =>
                 _service.ExportAnalyticsAsync(request));
         }
 

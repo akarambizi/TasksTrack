@@ -79,7 +79,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "express": "^5.2.1",
-    "happy-dom": "^20.0.2",
+    "happy-dom": "^20.8.8",
     "json-server": "^1.0.0-beta.5",
     "knip": "^5.83.0",
     "nodemon": "^3.1.0",

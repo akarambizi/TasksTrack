@@ -43,7 +43,7 @@ test.describe('Focus Timer', () => {
   test('should display focus session history', async ({ page }) => {
     // Check if focus session history section is displayed - use proper element that exists
     await expect(page.locator('h1:has-text("Focus Sessions")')).toBeVisible({ timeout: 5000 });
-    
+
     // Check that the history component is rendered (second "Focus Sessions" heading in history section)
     await expect(page.locator('text="Focus Sessions"').nth(1)).toBeVisible({ timeout: 5000 });
   });

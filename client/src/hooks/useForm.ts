@@ -1,6 +1,5 @@
 import { useForm as useReactHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { useLogin, useRegister, useResetPassword } from '@/queries';
 import {
     authFormSchema,

@@ -13,6 +13,7 @@
     },
     "chat.tools.terminal.autoApprove": {
         ".specify/scripts/bash/": true,
-        ".specify/scripts/powershell/": true
+        ".specify/extensions/agent-context/scripts/bash/": true,
+        ".specify/extensions/agent-context/scripts/powershell/": true
     }
 }

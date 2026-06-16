@@ -40,7 +40,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Existing-pattern-first check: Reference current repository patterns and justify any new pattern.
+- Server architecture check: Preserve Clean Architecture + Repository Pattern boundaries.
+- Client architecture check: Preserve React + TypeScript + TanStack Query conventions.
+- Date handling check: Use date-fns for all client-side date operations.
+- Security check: JWT-protected API behavior preserved; auth impact documented.
+- Quality gates check:
+  - Frontend build: zero errors and zero warnings.
+  - Backend build: zero errors and zero warnings.
+  - Frontend/backend tests: 100% pass.
+  - Coverage: >= 80% baseline maintained.
+- Testing discipline check: New behavior includes tests and edge-case coverage.
 
 ## Project Structure
 

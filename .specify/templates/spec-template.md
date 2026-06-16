@@ -92,6 +92,10 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-006**: Feature MUST describe how it reuses existing repository patterns before introducing new patterns.
+- **FR-007**: Server-side scope MUST preserve Clean Architecture + Repository Pattern boundaries when backend code is touched.
+- **FR-008**: Client-side scope MUST preserve React + TypeScript conventions and use date-fns for date operations when frontend code is touched.
+- **FR-009**: If protected API behavior is affected, JWT authentication and authorization consistency MUST be specified.
 
 *Example of marking unclear requirements:*
 
@@ -116,6 +120,16 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-005**: Frontend and backend builds complete with zero errors and zero warnings.
+- **SC-006**: Frontend and backend test suites pass at 100% pass rate for impacted scope.
+- **SC-007**: Coverage remains at or above 80% baseline.
+
+## Constitution Alignment *(mandatory)*
+
+- Pattern reuse evidence: [List existing files/patterns followed]
+- New pattern justification (if any): [Why existing patterns were insufficient]
+- Security/auth impact: [JWT-protected API impact or N/A]
+- Testing impact: [New tests and edge cases added]
 
 ## Assumptions
 

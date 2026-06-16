@@ -283,3 +283,9 @@ For detailed implementation guidance, refer to the specific instruction files:
 Remember: Both frontend and backend development have endless learning opportunities.
 The patterns in your codebase are your foundation - understanding them deeply will make you
 a better developer as you continue to grow and evolve your skills.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+at specs/001-timeline-calendar-views/plan.md
+<!-- SPECKIT END -->

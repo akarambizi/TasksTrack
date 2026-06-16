@@ -22,7 +22,6 @@ const App = () => {
                                     <Container>
                                         <Routes>
                                             <Route path="/" element={<Dashboard />} />
-                                            <Route path="/" element={<Dashboard />} />
                                             <Route path="/dashboard" element={<Dashboard />} />
                                             <Route path="/habits" element={<HabitsContainer />} />
                                             <Route path="/habits/:habitId" element={<HabitDetailPage />} />

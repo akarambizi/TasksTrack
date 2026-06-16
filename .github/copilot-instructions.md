@@ -286,5 +286,6 @@ a better developer as you continue to grow and evolve your skills.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read specs/001-timeline-calendar-views/plan.md
+shell commands, and other important information, read the current plan
+at specs/001-timeline-calendar-views/plan.md
 <!-- SPECKIT END -->

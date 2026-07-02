@@ -134,7 +134,7 @@ npm run test:e2e:trace
 ```bash
 # .env.test
 CI=true                    # CI mode (affects retries, workers)
-BASE_URL=http://localhost:3000
+BASE_URL=http://taskstrack.localhost
 DATABASE_URL=postgresql://...
 ```
 

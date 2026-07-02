@@ -1,4 +1,17 @@
 services:
+  proxy:
+    image: caddy:2
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - client
+      - server
+    restart: unless-stopped
+    networks:
+      - frontend
+
   client:
     build:
       context: ./client
@@ -118,6 +131,7 @@ services:
         condition: service_healthy
     networks:
       - backend
+      - frontend
     restart: "no"  # Only run once, don't restart
     deploy:
       resources:

@@ -38,9 +38,9 @@ export const useLogin = () => {
         onSuccess: (data: IAuthResult) => {
             // If login is successful and data is provided
             if (data.success && data.token) {
-                // Update auth state via context - need to get user data from response
-                const userEmail = data.user?.email || '';
-                const userId = data.user?.id?.toString() || '';
+                // Match backend contract fields from AuthResult
+                const userEmail = data.userEmail || '';
+                const userId = data.userId || '';
                 login(data.token, userEmail, userId);
 
                 // Update auth state - invalidate all auth queries

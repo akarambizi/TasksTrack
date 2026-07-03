@@ -7,9 +7,10 @@ define show_ready_message
 	@echo ""
 	@echo "✓ All services are ready!"
 	@echo ""
-	@echo "  Client:   http://localhost:3000"
-	@echo "  Server:   http://localhost:5206"
-	@echo "  Database: postgres://localhost:5432"
+	@echo "  App:      http://localhost"
+	@echo "  App:      http://taskstrack.localhost"
+	@echo "  API:      /api on both hosts"
+	@echo "  Database: postgres://localhost:5433"
 	@echo ""
 endef
 

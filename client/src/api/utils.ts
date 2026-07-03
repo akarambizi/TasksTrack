@@ -5,16 +5,17 @@
  */
 export const getUrl = (path: string) => {
     let baseUrl = '';
-    const env = process.env.NODE_ENV || 'dev';
-    switch (env) {
-        case 'prod':
+    const mode = import.meta.env.MODE || 'development';
+
+    switch (mode) {
+        case 'production':
             baseUrl = '';
             break;
         case 'mock':
-            baseUrl = 'http://localhost:4200'; // mock server
+            baseUrl = '/mock';
             break;
         default:
-            baseUrl = 'http://localhost:5206'; // dev
+            baseUrl = '';
     }
 
     return `${baseUrl}${path}`;

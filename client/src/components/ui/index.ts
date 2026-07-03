@@ -13,6 +13,9 @@ export * from './card';
 export * from './badge';
 export * from './select';
 export * from './textarea';
+export * from './table';
+export * from './chart';
+export * from './tabs';
 
 // New reusable components
 export * from './common/auth-layout';

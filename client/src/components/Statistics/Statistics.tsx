@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
     TrendingUp,
     Target,
@@ -13,6 +14,7 @@ import {
 import { useActivityStatistics } from '@/queries/activity';
 import { useHabitData } from '@/queries/habits';
 import { useFocusSessions } from '@/queries/focusSessions';
+import { goalCheckpoints, yearlySnapshots } from '@/mock-server/data/analytics/growthMetrics';
 
 export const Statistics = () => {
     const { isLoading: statsLoading } = useActivityStatistics();
@@ -52,32 +54,37 @@ export const Statistics = () => {
     // Calculate completion rates and streaks
     const completionRate = totalHabits > 0 ? Math.round((activeHabits / totalHabits) * 100) : 0;
     const averageSessionDuration = sessions.length > 0 ? Math.round(totalSessionMinutes / sessions.length) : 0;
-
-    // Current streak calculation (simplified)
-    const currentStreak = 0; // TODO: Implement streak calculation
-    const longestStreak = 0; // TODO: Implement streak calculation
+    const latestYear = yearlySnapshots[yearlySnapshots.length - 1];
+    const previousYear = yearlySnapshots[yearlySnapshots.length - 2];
+    const yearlyDelta = latestYear && previousYear
+        ? latestYear.goalCompletionRate - previousYear.goalCompletionRate
+        : 0;
 
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Statistics</h1>
-                <p className="text-muted-foreground">
+            <div className="tt-panel relative overflow-hidden p-6 lg:p-8">
+                <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10" />
+                <div className="absolute -left-12 bottom-0 h-32 w-32 rounded-full bg-warning/10" />
+                <div className="relative">
+                <h1 className="text-3xl font-bold tracking-tight tt-section-title md:text-4xl">Statistics</h1>
+                <p className="text-muted-foreground max-w-2xl mt-2">
                     Comprehensive insights into your productivity and habit formation
                 </p>
+                </div>
             </div>
 
             {/* Overview Stats */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Habits</CardTitle>
+                        <CardTitle className="text-sm font-medium">Goal Completion (Year)</CardTitle>
                         <Target className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totalHabits}</div>
+                        <div className="text-2xl font-bold text-success">{latestYear?.goalCompletionRate ?? 0}%</div>
                         <p className="text-xs text-muted-foreground">
-                            {activeHabits} currently active
+                            +{yearlyDelta}% vs previous year
                         </p>
                     </CardContent>
                 </Card>
@@ -95,8 +102,21 @@ export const Statistics = () => {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Focus Sessions</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total Habits</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{totalHabits}</div>
+                        <p className="text-xs text-muted-foreground">
+                            {activeHabits} currently active
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Focus Sessions</CardTitle>
+                        <Zap className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{sessions.length}</div>
@@ -105,20 +125,119 @@ export const Statistics = () => {
                         </p>
                     </CardContent>
                 </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
-                        <Zap className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-primary">{currentStreak} days</div>
-                        <p className="text-xs text-muted-foreground">
-                            Best: {longestStreak} days
-                        </p>
-                    </CardContent>
-                </Card>
             </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <BarChart3 size={20} />
+                        Cadence KPI Checkpoints
+                    </CardTitle>
+                    <CardDescription>
+                        Track target progress for daily to yearly habit outcomes
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    {goalCheckpoints.map((item) => {
+                        const checkpointProgress = item.target > 0
+                            ? Math.min(100, Math.round((item.actual / item.target) * 100))
+                            : 0;
+                        return (
+                            <div key={item.id} className="rounded-xl border p-3 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs uppercase tracking-wide text-muted-foreground">{item.cadence}</span>
+                                    <Badge variant={checkpointProgress >= 100 ? 'default' : 'secondary'}>{checkpointProgress}%</Badge>
+                                </div>
+                                <p className="font-medium leading-tight">{item.label}</p>
+                                <Progress value={checkpointProgress} className="h-2" />
+                                <p className="text-xs text-muted-foreground">{item.actual} / {item.target} {item.unit}</p>
+                            </div>
+                        );
+                    })}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Activity size={20} />
+                        Table Dashboard View
+                    </CardTitle>
+                    <CardDescription>
+                        Structured tables for fast year-over-year and cadence-level comparisons.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                        <h3 className="text-sm font-semibold">Yearly KPI Table</h3>
+                        <div className="overflow-x-auto rounded-xl border bg-card">
+                            <Table>
+                                <TableHeader className="bg-muted/50 text-left">
+                                    <TableRow>
+                                        <TableHead>Year</TableHead>
+                                        <TableHead>Goal Completion</TableHead>
+                                        <TableHead>Consistency</TableHead>
+                                        <TableHead>Focus Minutes</TableHead>
+                                        <TableHead>Completed Goals</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {yearlySnapshots.map((snapshot, index) => (
+                                        <TableRow key={snapshot.year}>
+                                            <TableCell className="font-medium">{snapshot.year}</TableCell>
+                                            <TableCell>{snapshot.goalCompletionRate}%</TableCell>
+                                            <TableCell>{snapshot.consistencyRate}%</TableCell>
+                                            <TableCell>{snapshot.focusMinutes.toLocaleString()}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <span>{snapshot.completedGoals}</span>
+                                                    {index === yearlySnapshots.length - 1 && (
+                                                        <Badge variant="default" className="text-[10px] px-1.5 py-0">Current</Badge>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="text-sm font-semibold">Cadence Target Table</h3>
+                        <div className="overflow-x-auto rounded-xl border bg-card">
+                            <Table>
+                                <TableHeader className="bg-muted/50 text-left">
+                                    <TableRow>
+                                        <TableHead>Cadence</TableHead>
+                                        <TableHead>Label</TableHead>
+                                        <TableHead>Actual</TableHead>
+                                        <TableHead>Target</TableHead>
+                                        <TableHead>Progress</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {goalCheckpoints.map((checkpoint) => {
+                                        const progress = checkpoint.target > 0
+                                            ? Math.min(100, Math.round((checkpoint.actual / checkpoint.target) * 100))
+                                            : 0;
+
+                                        return (
+                                            <TableRow key={checkpoint.id}>
+                                                <TableCell className="capitalize">{checkpoint.cadence}</TableCell>
+                                                <TableCell>{checkpoint.label}</TableCell>
+                                                <TableCell>{checkpoint.actual} {checkpoint.unit}</TableCell>
+                                                <TableCell>{checkpoint.target} {checkpoint.unit}</TableCell>
+                                                <TableCell>{progress}%</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
 
             {/* Detailed Statistics */}
             <div className="grid gap-6 md:grid-cols-2">

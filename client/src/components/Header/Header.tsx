@@ -5,7 +5,7 @@ import { UserMenu } from '../Header/UserMenu';
 
 export const Header = () => {
     return (
-        <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 px-6">
+        <header className="sticky top-0 z-40 mx-4 mt-4 flex h-16 items-center gap-4 rounded-2xl border border-border/70 bg-card/85 px-5 shadow-sm backdrop-blur md:mx-6 md:px-6 lg:mx-8">
             <HeaderMobile />
             <div className="flex-1">
                 <HeaderSearch />

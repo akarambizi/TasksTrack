@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24.18.0 <25"
+  },
   "scripts": {
     "dev": "vite",
     "mock-server": "nodemon --watch src/mock-server --ext ts,json --exec \"node --loader ts-node/esm --no-warnings src/mock-server/server.ts\"",
@@ -37,6 +40,7 @@
     "@radix-ui/react-progress": "^1.1.8",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tabs": "^1.1.16",
     "@radix-ui/react-toast": "^1.2.14",
     "@tanstack/react-query": "^5.76.1",
     "@tanstack/react-query-devtools": "^5.76.1",

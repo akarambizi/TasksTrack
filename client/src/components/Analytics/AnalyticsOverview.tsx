@@ -19,8 +19,11 @@ import {
 import {
     DailyProgressChart,
     HabitBreakdownChart,
-    CategoryBreakdownChart
+    CategoryBreakdownChart,
+    InteractiveAnalyticsLineChart
 } from '@/components/Analytics';
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import { growthRecommendations, yearlyMilestones, yearlySnapshots } from '@/mock-server/data/analytics/growthMetrics';
 
 import {
     useWeeklyAnalytics,
@@ -56,6 +59,11 @@ export const AnalyticsOverview: React.FC = () => {
     }, [period, weeklyQuery, monthlyQuery, quarterlyQuery, yearlyQuery]);
 
     const { data, isLoading, isError, error } = currentQuery;
+    const latestYear = yearlySnapshots[yearlySnapshots.length - 1];
+    const previousYear = yearlySnapshots[yearlySnapshots.length - 2];
+    const yoyDelta = latestYear && previousYear
+        ? latestYear.goalCompletionRate - previousYear.goalCompletionRate
+        : 0;
 
     // Calculate period dates for display
     const periodDates = useMemo(() => {
@@ -172,6 +180,12 @@ export const AnalyticsOverview: React.FC = () => {
                     />
                 </div>
 
+                {!isLoading && (data?.dailyProgress?.length || 0) > 0 && (
+                    <div className="lg:col-span-2">
+                        <InteractiveAnalyticsLineChart data={data?.dailyProgress || []} />
+                    </div>
+                )}
+
                 {/* Habit Breakdown Chart */}
                 <HabitBreakdownChart
                     data={data?.habitBreakdown || []}
@@ -221,6 +235,80 @@ export const AnalyticsOverview: React.FC = () => {
                     />
                 </div>
             )}
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <TrendingUp size={18} />
+                            Year-over-Year Momentum
+                        </CardTitle>
+                        <CardDescription>
+                            Compare annual goal completion performance and long-horizon consistency.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="rounded-lg border p-4">
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm text-muted-foreground">Current delta</p>
+                                <Badge variant={yoyDelta >= 0 ? 'default' : 'secondary'}>
+                                    {yoyDelta >= 0 ? '+' : ''}{yoyDelta}%
+                                </Badge>
+                            </div>
+                            <p className="mt-2 text-2xl font-bold">
+                                {latestYear?.year ?? 'Current'} vs {previousYear?.year ?? 'Previous'}
+                            </p>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                            {yearlySnapshots.slice(-4).map((snapshot) => (
+                                <div key={snapshot.year} className="rounded-lg border p-3">
+                                    <div className="flex items-center justify-between">
+                                        <p className="font-semibold">{snapshot.year}</p>
+                                        <Badge variant="secondary">{snapshot.goalCompletionRate}%</Badge>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        {snapshot.focusMinutes.toLocaleString()} focus min
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {snapshot.completedGoals} goals completed
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Trophy size={18} />
+                            Accountability + Next Best Action
+                        </CardTitle>
+                        <CardDescription>
+                            Weekly recommendations to protect growth trajectory.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        {growthRecommendations.map((recommendation, index) => (
+                            <div key={recommendation} className="rounded-lg border p-3">
+                                <p className="text-xs uppercase tracking-wider text-muted-foreground">Action {index + 1}</p>
+                                <p className="text-sm mt-1">{recommendation}</p>
+                            </div>
+                        ))}
+
+                        <div className="rounded-lg bg-muted p-3">
+                            <p className="text-xs uppercase tracking-wider text-muted-foreground">Recent milestone</p>
+                            <p className="text-sm mt-1 font-medium">
+                                {yearlyMilestones[yearlyMilestones.length - 1]?.label}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                {yearlyMilestones[yearlyMilestones.length - 1]?.note}
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 };

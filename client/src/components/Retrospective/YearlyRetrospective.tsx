@@ -1,17 +1,24 @@
 import { useMemo, useState } from 'react';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MultiYearComparisonChart, TYearMetric } from '@/components/Analytics/MultiYearComparisonChart';
-import { growthRecommendations, yearlyMilestones, yearlySnapshots } from '@/mock-server/data/analytics/growthMetrics';
+import { growthRecommendations, yearlyMilestones, yearlyMonthHighlights, yearlySnapshots } from '@/mock-server/data/analytics/growthMetrics';
 import { CalendarClock, Goal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const YearlyRetrospective = () => {
     const [selectedMetric, setSelectedMetric] = useState<TYearMetric>('goalCompletionRate');
     const [selectedYear, setSelectedYear] = useState<string>(String(yearlySnapshots[yearlySnapshots.length - 1]?.year ?? '2026'));
+    const [selectedHabitFilter, setSelectedHabitFilter] = useState('All habits');
+    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All categories');
 
     const selectedSnapshot = useMemo(
         () => yearlySnapshots.find((snapshot) => String(snapshot.year) === selectedYear),
+        [selectedYear]
+    );
+
+    const selectedHighlights = useMemo(
+        () => yearlyMonthHighlights.find((highlight) => highlight.year === Number(selectedYear)),
         [selectedYear]
     );
 
@@ -24,7 +31,7 @@ export const YearlyRetrospective = () => {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight tt-section-title md:text-4xl">Yearly Retrospective</h1>
                     <p className="text-muted-foreground max-w-2xl">
-                        Dedicated annual reflection view focused on completion rate, consistency, and execution quality.
+                        Dedicated annual reflection view focused on completion rate, consistency, execution quality, and what to tune next.
                     </p>
                 </div>
 
@@ -44,6 +51,60 @@ export const YearlyRetrospective = () => {
                 </div>
                 </div>
             </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-base">Trend Filters</CardTitle>
+                    <CardDescription>UI-only controls for slicing the retrospective by year, habit, and category.</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-3">
+                    <div className="space-y-2">
+                        <p className="text-sm font-medium">Year</p>
+                        <Select value={selectedYear} onValueChange={setSelectedYear}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {yearlySnapshots.map((snapshot) => (
+                                    <SelectItem key={snapshot.year} value={String(snapshot.year)}>
+                                        {snapshot.year}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <p className="text-sm font-medium">Habit</p>
+                        <Select value={selectedHabitFilter} onValueChange={setSelectedHabitFilter}>
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="All habits">All habits</SelectItem>
+                                <SelectItem value="Deep Work">Deep Work</SelectItem>
+                                <SelectItem value="Reading">Reading</SelectItem>
+                                <SelectItem value="Training">Training</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <p className="text-sm font-medium">Category</p>
+                        <Select value={selectedCategoryFilter} onValueChange={setSelectedCategoryFilter}>
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="All categories">All categories</SelectItem>
+                                <SelectItem value="Work">Work</SelectItem>
+                                <SelectItem value="Learning">Learning</SelectItem>
+                                <SelectItem value="Health">Health</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </CardContent>
+            </Card>
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <Card>
@@ -86,6 +147,36 @@ export const YearlyRetrospective = () => {
                     </CardContent>
                 </Card>
             </div>
+
+            {selectedHighlights && (
+                <div className="grid gap-4 md:grid-cols-2">
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex items-center gap-2 text-sm">
+                                <Badge variant="default">Best month</Badge>
+                                Peak performance
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-1">
+                            <p className="text-2xl font-bold">{selectedHighlights.bestMonth}</p>
+                            <p className="text-sm text-muted-foreground">{selectedHighlights.bestMonthRate}% completion in {selectedSnapshot?.year ?? selectedYear}</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex items-center gap-2 text-sm">
+                                <Badge variant="secondary">Worst month</Badge>
+                                Recovery window
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-1">
+                            <p className="text-2xl font-bold">{selectedHighlights.worstMonth}</p>
+                            <p className="text-sm text-muted-foreground">{selectedHighlights.worstMonthRate}% completion, with the biggest opportunity for improvement.</p>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
 
             <MultiYearComparisonChart
                 snapshots={yearlySnapshots}
@@ -172,6 +263,9 @@ export const YearlyRetrospective = () => {
                                 {item}
                             </div>
                         ))}
+                        <div className="rounded-lg border border-dashed p-3 text-sm text-muted-foreground">
+                            Filters currently point to {selectedHabitFilter.toLowerCase()} in {selectedCategoryFilter.toLowerCase()} for {selectedYear}.
+                        </div>
                     </CardContent>
                 </Card>
             </div>

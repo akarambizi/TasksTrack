@@ -6,6 +6,10 @@ import { Plus, Target } from 'lucide-react';
 
 const cadenceOptions: TCadence[] = ['daily', 'weekly', 'monthly', 'quarterly', 'yearly'];
 
+type TGoalStatus = 'on-track' | 'behind' | 'exceeded';
+
+const statusCycle: TGoalStatus[] = ['behind', 'on-track', 'exceeded'];
+
 const statusStyles: Record<string, string> = {
     'on-track': 'bg-success/10 text-success border-success/30',
     behind: 'bg-warning/20 text-warning-foreground border-warning/40',
@@ -14,24 +18,89 @@ const statusStyles: Record<string, string> = {
 
 export const Goals = () => {
     const [cadenceFilter, setCadenceFilter] = useState<'all' | TCadence>('all');
+    const [goals, setGoals] = useState(goalItems);
     const [newGoalName, setNewGoalName] = useState('');
     const [newGoalTarget, setNewGoalTarget] = useState('');
     const [newGoalCadence, setNewGoalCadence] = useState<TCadence>('weekly');
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [formError, setFormError] = useState<string | null>(null);
+    const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
     const filteredGoals = useMemo(() => {
+        const visibleGoals = goals.filter((goal) => !goal.archived);
+
         if (cadenceFilter === 'all') {
-            return goalItems;
+            return visibleGoals;
         }
 
-        return goalItems.filter((goal) => goal.cadence === cadenceFilter);
-    }, [cadenceFilter]);
+        return visibleGoals.filter((goal) => goal.cadence === cadenceFilter);
+    }, [cadenceFilter, goals]);
+
+    const cycleGoalStatus = (goalId: string) => {
+        setGoals((currentGoals) => currentGoals.map((goal) => {
+            if (goal.id !== goalId) {
+                return goal;
+            }
+
+            const currentIndex = statusCycle.indexOf(goal.status as TGoalStatus);
+            const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
+
+            return { ...goal, status: nextStatus };
+        }));
+    };
+
+    const archiveGoal = (goalId: string) => {
+        setGoals((currentGoals) => currentGoals.map((goal) => (
+            goal.id === goalId ? { ...goal, archived: true } : goal
+        )));
+    };
+
+    const createGoal = () => {
+        const trimmedName = newGoalName.trim();
+        const parsedTarget = Number(newGoalTarget);
+
+        if (!trimmedName) {
+            setFormError('Goal name is required.');
+            setSubmitState('error');
+            return;
+        }
+
+        if (!Number.isFinite(parsedTarget) || parsedTarget <= 0) {
+            setFormError('Target value must be a positive number.');
+            setSubmitState('error');
+            return;
+        }
+
+        setSubmitState('submitting');
+        setFormError(null);
+
+        window.setTimeout(() => {
+            setGoals((currentGoals) => [{
+                id: `goal-${Date.now()}`,
+                title: trimmedName,
+                cadence: newGoalCadence,
+                target: parsedTarget,
+                actual: 0,
+                unit: 'units',
+                status: 'on-track',
+                category: 'Custom'
+            }, ...currentGoals]);
+
+            setSubmitState('success');
+            setNewGoalName('');
+            setNewGoalTarget('');
+            setNewGoalCadence('weekly');
+        }, 300);
+    };
+
+    const targetIsInvalid = newGoalTarget.trim().length > 0 && (!Number.isFinite(Number(newGoalTarget)) || Number(newGoalTarget) <= 0);
 
     return (
         <div className="space-y-6" data-testid="goals-page">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Goals Management</h1>
-                    <p className="text-muted-foreground">Set measurable targets across every cadence and track completion rates.</p>
+                    <p className="text-muted-foreground">Set measurable targets across every cadence and keep progress editable, visible, and accountable.</p>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -47,7 +116,16 @@ export const Goals = () => {
                         </SelectContent>
                     </Select>
 
-                    <Dialog>
+                    <Dialog
+                        open={isCreateDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsCreateDialogOpen(open);
+                            if (!open) {
+                                setSubmitState('idle');
+                                setFormError(null);
+                            }
+                        }}
+                    >
                         <DialogTrigger asChild>
                             <Button className="gap-2">
                                 <Plus size={16} />
@@ -58,9 +136,27 @@ export const Goals = () => {
                             <DialogHeader>
                                 <DialogTitle>Create Goal (Mock)</DialogTitle>
                                 <DialogDescription>
-                                    This UI is mock-only for now. Backend wiring will come later.
+                                    This mock form validates inputs locally and previews what the eventual API submission will look like.
                                 </DialogDescription>
                             </DialogHeader>
+
+                            {submitState === 'submitting' && (
+                                <div className="rounded-md border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
+                                    Saving goal locally and preparing the optimistic update...
+                                </div>
+                            )}
+
+                            {submitState === 'success' && (
+                                <div className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+                                    Goal saved. The optimistic update is now visible in the list below.
+                                </div>
+                            )}
+
+                            {formError && (
+                                <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                                    {formError}
+                                </div>
+                            )}
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
@@ -81,7 +177,12 @@ export const Goals = () => {
                                         value={newGoalTarget}
                                         onChange={(e) => setNewGoalTarget(e.target.value)}
                                         placeholder="e.g. 10"
+                                        aria-invalid={targetIsInvalid}
+                                        className={targetIsInvalid ? 'border-destructive focus-visible:ring-destructive' : ''}
                                     />
+                                    {targetIsInvalid && (
+                                        <p className="text-xs text-destructive">Enter a number greater than zero.</p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -101,13 +202,22 @@ export const Goals = () => {
                                 <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
                                     {newGoalName && newGoalTarget
                                         ? `Preview: ${newGoalName} (${newGoalCadence}) target ${newGoalTarget}`
-                                        : 'Fill values to preview the mock submission.'}
+                                        : 'Fill the fields to preview the mock submission.'}
                                 </div>
                             </div>
 
                             <DialogFooter>
-                                <Button variant="outline">Cancel</Button>
-                                <Button disabled={!newGoalName || !newGoalTarget}>Save Goal (Mock)</Button>
+                                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+                                {submitState === 'success' ? (
+                                    <Button onClick={() => setIsCreateDialogOpen(false)}>Close</Button>
+                                ) : (
+                                    <Button
+                                        onClick={createGoal}
+                                        disabled={!newGoalName.trim() || targetIsInvalid || submitState === 'submitting'}
+                                    >
+                                        {submitState === 'submitting' ? 'Saving...' : 'Save Goal (Mock)'}
+                                    </Button>
+                                )}
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
@@ -141,8 +251,8 @@ export const Goals = () => {
                                 </p>
 
                                 <div className="flex gap-2 pt-1">
-                                    <Button size="sm" variant="outline" className="flex-1">Edit (Mock)</Button>
-                                    <Button size="sm" variant="ghost" className="flex-1">Archive (Mock)</Button>
+                                    <Button size="sm" variant="outline" className="flex-1" onClick={() => cycleGoalStatus(goal.id)}>Cycle Status (Mock)</Button>
+                                    <Button size="sm" variant="ghost" className="flex-1" onClick={() => archiveGoal(goal.id)}>Archive (Mock)</Button>
                                 </div>
                             </CardContent>
                         </Card>
@@ -159,7 +269,7 @@ export const Goals = () => {
                     <CardDescription>Goal Completion Rate should remain your primary metric while shipping this phase.</CardDescription>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                    Validate this weekly: goal completion metrics are visible, measurable, and trendable in dashboard and statistics views.
+                    Validate this weekly: goal completion metrics should stay visible, measurable, and trendable in dashboard and statistics views.
                 </CardContent>
             </Card>
         </div>

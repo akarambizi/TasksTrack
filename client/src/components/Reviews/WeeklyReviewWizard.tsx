@@ -58,6 +58,16 @@ export const WeeklyReviewWizard = () => {
         ? Math.round((completedCount / state.checklist.length) * 100)
         : 0;
 
+    const badgeLabel = completionPercent === 100
+        ? 'Streak secure'
+        : completionPercent >= 75
+            ? 'Momentum strong'
+            : 'Recovery needed';
+
+    const recoveryPrompt = completionPercent === 100
+        ? 'Keep this streak alive by scheduling the next review before Friday.'
+        : 'Reopen the checklist, finish the remaining items, and lock in a recovery block.';
+
     const nextStep = () => {
         setState((prev) => ({ ...prev, step: Math.min(TOTAL_STEPS, prev.step + 1) }));
     };
@@ -110,6 +120,18 @@ export const WeeklyReviewWizard = () => {
                             <p className="text-2xl font-bold">{completionPercent}%</p>
                             <Progress value={completionPercent} className="mt-2" />
                         </div>
+
+                        <div className="flex flex-wrap gap-2">
+                            <Badge variant="default">{badgeLabel}</Badge>
+                            <Badge variant="secondary">{completedCount} of {state.checklist.length} checks done</Badge>
+                            <Badge variant="outline">{Math.max(0, state.checklist.length - completedCount)} recovery items left</Badge>
+                        </div>
+
+                        <div className="rounded-lg border bg-muted/40 p-3 text-sm">
+                            <p className="font-medium">Recovery prompt</p>
+                            <p className="text-muted-foreground mt-1">{recoveryPrompt}</p>
+                        </div>
+
                         {state.checklist.map((item) => (
                             <button
                                 key={item.id}

@@ -41,6 +41,15 @@ export interface IYearlyMilestone {
     note: string;
 }
 
+export interface IYearMonthHighlight {
+    year: number;
+    bestMonth: string;
+    bestMonthRate: number;
+    worstMonth: string;
+    worstMonthRate: number;
+    note: string;
+}
+
 export interface ISyncEvent {
     id: string;
     source: 'habit-log' | 'focus-session' | 'goal';

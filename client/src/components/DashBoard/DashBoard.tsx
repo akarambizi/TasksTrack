@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui';
 import { AddHabitDialog } from '../Habits/AddHabitDialog';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { currentKpiSnapshot, goalCheckpoints, growthRecommendations, yearlySnapshots } from '@/mock-server/data/analytics/growthMetrics';
 import {
     TrendingUp,
@@ -28,9 +29,10 @@ type TDashboardKpiState = 'success' | 'loading' | 'empty' | 'error';
 export const Dashboard = () => {
     const [showAddHabitDialog, setShowAddHabitDialog] = useState(false);
     const [kpiState, setKpiState] = useState<TDashboardKpiState>('success');
+    const navigate = useNavigate();
 
     const handleStartFocusSession = () => {
-        window.location.href = '/dashboard/productivity-hub';
+        navigate('/productivity');
     };
 
     const latestYear = yearlySnapshots[yearlySnapshots.length - 1];

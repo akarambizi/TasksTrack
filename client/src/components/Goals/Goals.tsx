@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Input, Label, Progress, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
 import { goalItems } from '@/mock-server/data/analytics/growthMetrics';
 import { TCadence } from '@/types';
@@ -25,6 +25,15 @@ export const Goals = () => {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
     const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+    const saveTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (saveTimeoutRef.current !== null) {
+                window.clearTimeout(saveTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const filteredGoals = useMemo(() => {
         const visibleGoals = goals.filter((goal) => !goal.archived);
@@ -74,7 +83,8 @@ export const Goals = () => {
         setSubmitState('submitting');
         setFormError(null);
 
-        window.setTimeout(() => {
+        saveTimeoutRef.current = window.setTimeout(() => {
+            saveTimeoutRef.current = null;
             setGoals((currentGoals) => [{
                 id: `goal-${Date.now()}`,
                 title: trimmedName,
@@ -121,6 +131,10 @@ export const Goals = () => {
                         onOpenChange={(open) => {
                             setIsCreateDialogOpen(open);
                             if (!open) {
+                                if (saveTimeoutRef.current !== null) {
+                                    window.clearTimeout(saveTimeoutRef.current);
+                                    saveTimeoutRef.current = null;
+                                }
                                 setSubmitState('idle');
                                 setFormError(null);
                             }

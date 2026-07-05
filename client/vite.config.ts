@@ -15,7 +15,7 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/api': {
-        target: 'http://localhost:5206',
+        target: process.env.VITE_API_TARGET || 'http://localhost:5206',
         changeOrigin: true,
       },
     },

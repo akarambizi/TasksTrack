@@ -104,4 +104,5 @@ export type IAnalyticsResponse = z.infer<typeof analyticsResponseSchema>;
 export type IHabitAnalytics = z.infer<typeof habitAnalyticsSchema>;
 export type ICategoryAnalytics = z.infer<typeof categoryAnalyticsSchema>;
 export type IDailyProgress = z.infer<typeof dailyProgressSchema>;
-
+export type IMonthlyHistory = z.infer<typeof monthlyHistorySchema>;
+export type IQuarterlyHistory = z.infer<typeof quarterlyHistorySchema>;

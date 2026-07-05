@@ -31,6 +31,7 @@ import {
     useQuarterlyAnalytics,
     useYearlyAnalytics
 } from '@/queries';
+import type { IMonthlyHistory, IQuarterlyHistory } from '@/types';
 
 export const AnalyticsOverview: React.FC = () => {
     const [period, setPeriod] = useState<TPeriodType>('weekly');
@@ -234,6 +235,52 @@ export const AnalyticsOverview: React.FC = () => {
                         className={data.goalProgress.onTrack ? 'border-green-200' : 'border-red-200'}
                     />
                 </div>
+            )}
+
+            {/* Monthly History */}
+            {(period === 'monthly' || period === 'yearly') && (data?.monthlyHistory?.length ?? 0) > 0 && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Calendar size={18} />
+                            Monthly History
+                        </CardTitle>
+                        <CardDescription>Activity count and active days per month over time.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                            {data!.monthlyHistory!.map((entry: IMonthlyHistory) => (
+                                <div key={`${entry.year}-${entry.month}`} className="rounded-lg border p-3">
+                                    <p className="font-medium text-sm">{entry.monthName} {entry.year}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{entry.activityCount} activities &middot; {entry.activeDays} active days</p>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Quarterly History */}
+            {(period === 'quarterly' || period === 'yearly') && (data?.quarterlyHistory?.length ?? 0) > 0 && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Calendar size={18} />
+                            Quarterly History
+                        </CardTitle>
+                        <CardDescription>Activity count and active days per quarter over time.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                            {data!.quarterlyHistory!.map((entry: IQuarterlyHistory) => (
+                                <div key={`${entry.year}-${entry.quarter}`} className="rounded-lg border p-3">
+                                    <p className="font-medium text-sm">{entry.quarterLabel} {entry.year}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{entry.activityCount} activities &middot; {entry.activeDays} active days</p>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
             )}
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

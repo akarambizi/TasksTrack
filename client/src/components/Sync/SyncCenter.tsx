@@ -68,7 +68,7 @@ export const SyncCenter = () => {
                         <CardTitle className="text-sm">Sync Mode</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                        <Select defaultValue={telemetry.mode}>
+                        <Select value={telemetry.mode} onValueChange={(value) => setTelemetry({ ...telemetry, mode: value as 'manual' | 'near-real-time' })}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>

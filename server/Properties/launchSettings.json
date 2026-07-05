@@ -4,8 +4,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://taskstrack.localhost:7121;http://taskstrack.localhost:5206",
-      "sslPort": 44301
+      "applicationUrl": "http://taskstrack.localhost:5206",
+      "sslPort": 0
     }
   },
   "profiles": {

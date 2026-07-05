@@ -9,7 +9,7 @@ export const UserNav = () => {
     };
 
     return (
-        <div className="p-4 border-t border-slate-200" data-testid="user-menu">
+        <div className="p-4 border-t border-slate-200" data-testid="sidebar-user-menu">
             <div className="flex items-center mb-4">
                 <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
                     <User size={16} />

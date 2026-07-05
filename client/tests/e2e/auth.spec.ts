@@ -65,7 +65,9 @@ test.describe('Authentication Flow', () => {
 
     // Verify we're logged in - should see dashboard elements
     await expect(page.locator('[data-testid="dashboard"]')).toBeVisible();
-    await expect(page.locator('[data-testid="user-menu"]')).toBeVisible();
+    // Check for header user menu button (visible on all viewports)
+    const userMenuButton = page.locator('button[data-testid="user-menu"]');
+    await expect(userMenuButton).toBeVisible();
   });
 
   test('should show error for invalid login', async ({ page }) => {
@@ -105,7 +107,7 @@ test.describe('Authentication Flow', () => {
     }
 
     // Open user menu dropdown
-    await page.click('[data-testid="user-menu-trigger"]');
+    await page.click('[data-testid="user-menu"]');
     await page.waitForTimeout(1000);
 
     // Click logout button in dropdown with force click

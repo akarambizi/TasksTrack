@@ -27,9 +27,12 @@ test.describe('Habits Management', () => {
   });
 
   test('should display habits page with main elements', async ({ page }) => {
-    // Use broader selectors that are more likely to exist
-    await expect(page.locator('h1, h2, h3').first()).toBeVisible();
+    // Wait for page to fully load
+    await page.waitForLoadState('networkidle');
+    // Check for the add habit button which indicates the page is ready
     await expect(page.locator('[data-testid="add-habit-button"]')).toBeVisible();
+    // Verify we have some content on the page
+    await expect(page.locator('main, [role="main"]')).toBeVisible();
   });
 
   test('should create a new habit successfully', async ({ page }) => {

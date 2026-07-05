@@ -2,6 +2,9 @@ import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { screen, cleanup, fireEvent } from '@testing-library/react';
 import { NavItem } from './NavItem';
 import { UserNav } from './UserNav';
+import { SideBarButtons } from './SideBarButtons';
+import { SideBarLinks } from './SideBarLinks';
+import { SideBarNav } from './SideBarNav';
 import { renderWithProviders } from '../../utils/test-utils';
 
 const mockLogout = vi.fn();
@@ -98,5 +101,73 @@ describe('UserNav', () => {
         });
         renderWithProviders(<UserNav />);
         expect(screen.getByText('User Name')).toBeInTheDocument();
+    });
+});
+
+describe('SideBarButtons', () => {
+    afterEach(() => cleanup());
+
+    it('renders the Task Tracker brand link', () => {
+        renderWithProviders(<SideBarButtons />);
+        expect(screen.getByText('Task Tracker')).toBeInTheDocument();
+    });
+
+    it('renders a link to home', () => {
+        renderWithProviders(<SideBarButtons />);
+        const link = screen.getByRole('link');
+        expect(link).toHaveAttribute('href', '/');
+    });
+
+    it('renders notification bell button', () => {
+        renderWithProviders(<SideBarButtons />);
+        expect(screen.getByRole('button')).toBeInTheDocument();
+    });
+});
+
+describe('SideBarLinks', () => {
+    afterEach(() => cleanup());
+
+    it('renders Dashboard nav link', () => {
+        renderWithProviders(<SideBarLinks />);
+        expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    });
+
+    it('renders Productivity Hub nav link', () => {
+        renderWithProviders(<SideBarLinks />);
+        expect(screen.getByText('Productivity Hub')).toBeInTheDocument();
+    });
+
+    it('renders Weekly Review nav link', () => {
+        renderWithProviders(<SideBarLinks />);
+        expect(screen.getByText('Weekly Review')).toBeInTheDocument();
+    });
+
+    it('renders Analytics Hub nav link', () => {
+        renderWithProviders(<SideBarLinks />);
+        expect(screen.getByText('Analytics Hub')).toBeInTheDocument();
+    });
+
+    it('renders Sheets Sync nav link', () => {
+        renderWithProviders(<SideBarLinks />);
+        expect(screen.getByText('Sheets Sync')).toBeInTheDocument();
+    });
+});
+
+describe('SideBarNav', () => {
+    afterEach(() => cleanup());
+
+    it('renders the TasksTrack brand name', () => {
+        renderWithProviders(<SideBarNav />);
+        expect(screen.getByText('TasksTrack')).toBeInTheDocument();
+    });
+
+    it('renders sidebar navigation links', () => {
+        renderWithProviders(<SideBarNav />);
+        expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    });
+
+    it('renders user nav section', () => {
+        renderWithProviders(<SideBarNav />);
+        expect(screen.getByTestId('sidebar-user-menu')).toBeInTheDocument();
     });
 });

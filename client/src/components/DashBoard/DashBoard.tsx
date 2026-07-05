@@ -30,7 +30,7 @@ export const Dashboard = () => {
     const [kpiState, setKpiState] = useState<TDashboardKpiState>('success');
 
     const handleStartFocusSession = () => {
-        window.location.href = '/focus-sessions';
+        window.location.href = '/dashboard/productivity-hub';
     };
 
     const latestYear = yearlySnapshots[yearlySnapshots.length - 1];

@@ -57,7 +57,7 @@ builder.Services.AddControllers().AddOData(options =>
 
 // Add CORS services
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? ["http://taskstrack.localhost", "http://localhost:3000", "http://127.0.0.1:3000"];
+    ?? ["http://localhost", "http://localhost:3000", "http://127.0.0.1:3000", "http://taskstrack.localhost", "http://taskstrack.localhost:3000"];
 
 builder.Services.AddCors(options =>
 {

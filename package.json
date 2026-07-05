@@ -2,6 +2,9 @@
   "name": "taskstrack",
   "version": "1.0.0",
   "description": "Full-stack habit tracking application",
+  "engines": {
+    "node": ">=24.18.0 <25"
+  },
   "scripts": {
     "prepare": "husky",
     "build": "npm run build:client && npm run build:server",

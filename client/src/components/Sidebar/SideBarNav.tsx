@@ -4,17 +4,18 @@ import { UserNav } from './UserNav';
 
 export const SideBarNav = () => {
     return (
-        <div className="hidden border-r bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60 md:block fixed left-0 top-0 z-40 h-screen w-[280px] lg:w-[320px]">
+        <div className="hidden md:block fixed left-4 top-4 bottom-4 z-40 w-[272px] lg:w-[304px]">
+            <div className="h-full rounded-3xl border border-border/70 bg-card/90 shadow-lg backdrop-blur">
             <div className="flex h-full max-h-screen flex-col">
                 {/* Logo/Brand Section */}
-                <div className="flex h-16 items-center border-b px-6">
+                <div className="flex h-20 items-center border-b border-border/70 px-6">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                            <span className="text-sm font-bold">T</span>
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                            <span className="text-sm font-bold tracking-tight">TT</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-foreground">TasksTrack</span>
-                            <span className="text-xs text-muted-foreground">Productivity Hub</span>
+                            <span className="text-base font-semibold text-foreground tt-section-title">TasksTrack</span>
+                            <span className="text-xs text-muted-foreground">Executive Productivity Hub</span>
                         </div>
                     </div>
                 </div>
@@ -26,6 +27,7 @@ export const SideBarNav = () => {
                 <div className="border-t">
                     <UserNav />
                 </div>
+            </div>
             </div>
         </div>
     );

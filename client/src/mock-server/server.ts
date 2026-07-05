@@ -9,7 +9,10 @@ const middlewares = jsonServer.defaults({ logger: false });
 
 server.use(middlewares);
 server.use(jsonServer.bodyParser); // Enable JSON body parsing
-server.use(jsonServer.rewriter({ '/api/*': '/$1' }));
+server.use(jsonServer.rewriter({
+    '/api/*': '/$1',
+    '/mock/api/*': '/$1',
+}));
 customMiddlewares.forEach((mw) => server.use(mw as RequestHandler)); // Apply routes middlewares
 server.use(router);
 

@@ -1,0 +1,14 @@
+{
+    auto_https off
+}
+
+http://taskstrack.localhost, http://localhost {
+    @api path /api* /swagger* /health*
+    handle @api {
+        reverse_proxy server:5206
+    }
+
+    handle {
+        reverse_proxy client:3000
+    }
+}

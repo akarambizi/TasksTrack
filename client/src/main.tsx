@@ -8,7 +8,7 @@ import '@/assets/styles/index.css';
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <CookiesProvider>
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
                 <App />
             </ThemeProvider>
         </CookiesProvider>

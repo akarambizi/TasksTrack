@@ -11,8 +11,8 @@ export const NavItem = ({ to, children, icon }: NavItemProps) => (
         to={to}
         className={({ isActive }) =>
             isActive
-                ? 'flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 mx-2 text-primary font-medium transition-all hover:bg-primary/15 border border-primary/20'
-                : 'flex items-center gap-3 rounded-xl px-4 py-3 mx-2 text-muted-foreground transition-all hover:text-foreground hover:bg-muted/50'
+                ? 'flex items-center gap-3 rounded-xl bg-primary/12 px-4 py-3 mx-2 text-primary font-medium transition-all border border-primary/30 shadow-sm'
+                : 'flex items-center gap-3 rounded-xl px-4 py-3 mx-2 text-muted-foreground transition-all hover:text-foreground hover:bg-muted/60'
         }
     >
         <div className="flex-shrink-0">

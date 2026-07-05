@@ -1,14 +1,14 @@
-import { Calendar, Clock, Home, PieChart, Target } from 'lucide-react';
+import { Home, PieChart, Target, Sheet, ClipboardCheck } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { Badge } from '../ui/badge';
 
 export const SideBarLinks = () => {
     return (
-        <nav className="space-y-2">
+        <nav className="space-y-3 px-2">
             {/* Overview Section */}
             <div className="mb-6">
-                <div className="px-4 pb-2">
-                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="px-4 pb-1">
+                    <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em]">
                         Overview
                     </h3>
                 </div>
@@ -19,34 +19,34 @@ export const SideBarLinks = () => {
 
             {/* Productivity Section */}
             <div className="mb-6">
-                <div className="px-4 pb-2">
-                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="px-4 pb-1">
+                    <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em]">
                         Productivity
                     </h3>
                 </div>
-                <NavItem to="/habits" icon={<Target size={20} />}>
+                <NavItem to="/productivity" icon={<Target size={20} />}>
                     <div className="flex items-center justify-between flex-1">
-                        <span>Habits</span>
-                        <Badge variant="secondary" className="text-xs px-2 py-0.5">6</Badge>
+                        <span>Productivity Hub</span>
+                        <Badge variant="secondary" className="text-xs px-2 py-0.5">3</Badge>
                     </div>
                 </NavItem>
-                <NavItem to="/focus-sessions" icon={<Clock size={20} />}>
-                    Focus Sessions
+                <NavItem to="/weekly-review" icon={<ClipboardCheck size={20} />}>
+                    Weekly Review
                 </NavItem>
             </div>
 
             {/* Analytics Section */}
             <div>
-                <div className="px-4 pb-2">
-                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="px-4 pb-1">
+                    <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em]">
                         Analytics
                     </h3>
                 </div>
-                <NavItem to="/history" icon={<Calendar size={20} />}>
-                    History
+                <NavItem to="/analytics" icon={<PieChart size={20} />}>
+                    Analytics Hub
                 </NavItem>
-                <NavItem to="/statistics" icon={<PieChart size={20} />}>
-                    Statistics
+                <NavItem to="/sync" icon={<Sheet size={20} />}>
+                    Sheets Sync
                 </NavItem>
             </div>
         </nav>

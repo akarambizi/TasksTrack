@@ -62,8 +62,9 @@ and modern React development practices.
 
 3. **Access the Application:**
 
-   - **Frontend:** <http://localhost:3000>
-   - **Backend API:** <http://localhost:5206>
+   - **App:** <http://localhost>
+   - **App (local domain):** <http://taskstrack.localhost>
+   - **Backend API:** `/api` on either host
 
 ### Development Commands
 

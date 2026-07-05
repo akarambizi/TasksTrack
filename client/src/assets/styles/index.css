@@ -4,88 +4,80 @@
 
 @layer base {
   :root {
-    /* Modern productivity theme - Light mode */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 36 33% 97%;
+    --foreground: 220 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 25% 12%;
 
-    /* Modern blue-based primary for productivity apps */
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 174 68% 34%;
+    --primary-foreground: 50 30% 98%;
 
-    /* Softer secondary with slight blue tint */
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
+    --secondary: 34 35% 91%;
+    --secondary-foreground: 220 25% 18%;
 
-    /* Warmer muted colors for better readability */
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
+    --muted: 36 28% 92%;
+    --muted-foreground: 217 15% 40%;
 
-    /* Accent for interactive elements */
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --accent: 168 40% 90%;
+    --accent-foreground: 173 71% 22%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 5 80% 56%;
+    --destructive-foreground: 0 0% 98%;
 
-    /* Subtle borders for modern look */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 35 23% 84%;
+    --input: 35 23% 84%;
+    --ring: 174 68% 34%;
 
-    --radius: 0.75rem;
+    --radius: 0.9rem;
 
-    /* Success colors for productivity tracking */
-    --success: 142.1 76.2% 36.3%;
-    --success-foreground: 355.7 100% 97.3%;
+    --success: 145 63% 33%;
+    --success-foreground: 148 52% 96%;
 
-    /* Warning colors */
-    --warning: 47.9 95.8% 53.1%;
-    --warning-foreground: 26 83.3% 14.1%;
+    --warning: 38 92% 51%;
+    --warning-foreground: 22 80% 14%;
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Manrope', sans-serif;
   }
 
   .dark {
-    /* Modern dark theme optimized for long work sessions */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 210 24% 10%;
+    --foreground: 42 24% 93%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 213 22% 13%;
+    --card-foreground: 42 24% 93%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 213 22% 13%;
+    --popover-foreground: 42 24% 93%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary: 168 67% 52%;
+    --primary-foreground: 171 72% 10%;
 
-    /* Warmer dark secondary */
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 212 18% 20%;
+    --secondary-foreground: 42 24% 93%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 213 18% 18%;
+    --muted-foreground: 216 18% 68%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 168 30% 24%;
+    --accent-foreground: 157 64% 84%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 6 73% 43%;
+    --destructive-foreground: 8 100% 97%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --border: 212 16% 26%;
+    --input: 212 16% 26%;
+    --ring: 168 67% 52%;
 
-    /* Dark mode success/warning colors */
-    --success: 142.1 70.6% 45.3%;
-    --success-foreground: 144.9 80.4% 10%;
+    --success: 145 55% 47%;
+    --success-foreground: 146 58% 11%;
 
-    --warning: 47.9 95.8% 53.1%;
-    --warning-foreground: 26 83.3% 14.1%;
+    --warning: 39 92% 58%;
+    --warning-foreground: 22 72% 14%;
   }
 }
 
@@ -94,8 +86,43 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
     font-feature-settings: "rlig" 1, "calt" 1;
+    background-image:
+      radial-gradient(circle at 0% 0%, hsl(var(--primary) / 0.12), transparent 36%),
+      radial-gradient(circle at 100% 0%, hsl(var(--warning) / 0.1), transparent 40%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  thead th {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+  }
+
+  tbody tr:hover {
+    background: hsl(var(--accent) / 0.35);
   }
 }
 
@@ -123,5 +150,15 @@
   }
   .bg-warning-foreground {
     background-color: hsl(var(--warning-foreground));
+  }
+
+  .tt-panel {
+    @apply rounded-2xl border bg-card/85 backdrop-blur;
+    box-shadow: 0 10px 35px hsl(var(--foreground) / 0.06);
+  }
+
+  .tt-section-title {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }

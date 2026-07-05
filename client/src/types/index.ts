@@ -11,3 +11,4 @@ export * from './auth';
 export * from './analytics';
 export * from './focusSession';
 export * from './activity';
+export * from './growthMetrics';

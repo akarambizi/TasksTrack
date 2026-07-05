@@ -4,21 +4,20 @@ import { Request, Response, NextFunction } from 'express';
 
 // Simple mock user structure for testing
 interface MockUser {
-  id: number;
-  email: string;
-  password: string;
-  name?: string;
+    id: number;
+    email: string;
+    password: string;
+    name?: string;
 }
 
 // Response objects for each auth endpoint
 const loginSuccessResponse = (user: MockUser): IAuthResult => ({
-  success: true,
-  message: 'Login successful',
-  data: {
-    user: { id: user.id, email: user.email, name: user.name },
+    success: true,
+    message: 'Login successful',
     token: `mock-token-${user.email}`,
-    refreshToken: `mock-refresh-token-${user.id}`
-  }
+    refreshToken: `mock-refresh-token-${user.id}`,
+    userId: String(user.id),
+    userEmail: user.email
 });
 const loginFailureResponse: IAuthResult = { success: false, message: 'Invalid credentials' };
 

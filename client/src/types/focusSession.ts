@@ -9,12 +9,12 @@ export const focusSessionEntitySchema = z.object({
   id: z.number(),
   habitId: z.number(),
   startTime: z.string(), // DateTimeOffset serialized as string
-  endTime: z.string().optional(), // DateTimeOffset? serialized as string or null
+  endTime: z.string().nullish(), // DateTimeOffset? serialized as string, null, or omitted
   plannedDurationMinutes: z.number(),
   notes: z.string().optional(),
   createdBy: z.string().optional(), // nullable in response
-  pauseTime: z.string().optional(), // DateTimeOffset? serialized as string or null
-  resumeTime: z.string().optional(), // DateTimeOffset? serialized as string or null
+  pauseTime: z.string().nullish(), // DateTimeOffset? serialized as string, null, or omitted
+  resumeTime: z.string().nullish(), // DateTimeOffset? serialized as string, null, or omitted
   status: z.string(), // Server sends as string
   actualDurationSeconds: z.number(), // Non-nullable in response (defaults to 0)
   pausedDurationSeconds: z.number(), // Non-nullable in response (defaults to 0)

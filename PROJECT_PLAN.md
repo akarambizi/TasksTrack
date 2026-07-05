@@ -1,12 +1,28 @@
 # HabitTrack - Project Plan
-*A comprehensive habit tracking application inspired by FocusKit and HabitKit*
+*Checklist tracker for frontend, mock data, backend tasks*
 
-## 🎯 Project Vision
-Build a full-stack habit tracking application that helps users build consistent daily habits by:
-- Logging daily practice sessions with customizable metrics (minutes, miles, reps, etc.)
-- Providing visual progress tracking through GitHub-style activity grids
-- Offering comprehensive analytics with multiple dashboard views
-- Supporting various skill types and measurement units
+## 0. Project Vision Checklist
+
+- [ ] Build a full-stack habit tracking application.
+- [ ] Support customizable practice metrics such as minutes, miles, reps, and custom units.
+- [ ] Provide GitHub-style activity progress tracking.
+- [ ] Offer multiple dashboard and analytics views.
+- [ ] Support habit, focus, goal, calendar, and sync workflows.
+
+## 0.1 Tracking Scope
+
+- [ ] Keep this file as the single tracking document.
+- [ ] Track frontend, mock data, backend, and reliability work here.
+- [ ] Keep mock-data surfaces listed so frontend and backend stay aligned.
+- [ ] Mark completed work with `[x]` and open work with `[ ]`.
+
+## 0.2 KPI Glossary
+
+- [x] Goal completion rate - percentage of goals completed in the selected period.
+- [x] Consistency rate - how steadily habits are completed across the period.
+- [x] Streak - number of consecutive successful days or sessions.
+- [x] Focus minutes - total time spent in focused work sessions.
+- [x] Weekly check-ins - weekly review completion and accountability cadence.
 
 ## 1. User Authentication ✅
 
@@ -268,3 +284,94 @@ Build a full-stack habit tracking application that helps users build consistent 
 - [ ] Implement bottom navigation (Timeline, Insights, Settings)
 - [ ] Add swipe gestures for navigation
 - [ ] Create mobile-optimized timer interface
+
+## 12. Frontend / Mock Backlog Before Backend Finish
+
+### 12.1 Settings, Preferences, and Account UX
+- [ ] Build a settings page for theme, notification, cadence, sync, and privacy preferences.
+- [ ] Add workspace/profile settings for user identity, timezone, and default habit behavior.
+- [ ] Add account/security UI for password change, session logout, and device/session listing.
+
+### 12.2 Search, Filter, Sort, and Pagination
+- [ ] Add search/filter/sort/pagination across goals, sessions, habits, analytics tables, and activity lists.
+- [ ] Add saved view presets for common filters like active habits, stale sessions, or this-year metrics.
+
+### 12.3 Audit, Notifications, and Reliability UX
+- [ ] Add an audit/activity history page for user-visible changes and event history.
+- [ ] Add a notification center or inbox for sync failures, reminders, and weekly review prompts.
+- [ ] Add optimistic updates with rollback states for create/edit/archive actions.
+- [ ] Add empty, loading, error, retry, and offline-style states across every major page.
+- [ ] Add conflict handling UI for edits made in multiple places or after stale data.
+
+### 12.4 Import/Export and Debug Surfaces
+- [ ] Add export flows for CSV and JSON reports.
+- [ ] Add import flows for CSV and JSON seed data.
+- [ ] Add admin/debug pages for telemetry, job status, sync health, and logs.
+- [ ] Add a backend-oriented diagnostics page for API health, queue health, and system status.
+
+### 12.5 Access and Workspace Structure
+- [ ] Add role-based access UI or workspace separation controls, even if mock-only first.
+- [ ] Add workspace-level switching if you want to model personal vs team data later.
+
+### 12.6 Frontend Completion Checklist
+
+#### KPI Baseline UI Contract
+- [x] Add KPI glossary section to UI docs (goal completion rate, consistency, streak, focus minutes)
+- [x] Add baseline KPI widgets to Dashboard
+- [x] Add mock KPI data source used by Dashboard + Statistics
+- [x] Add period switcher UX placeholders (weekly/monthly/quarterly/yearly)
+- [x] KPI checkpoint: Goal completion rate visible on Dashboard and Statistics
+
+#### Goal Cadence UX Foundation
+- [x] Add UI model for cadences: daily/weekly/monthly/quarterly/yearly
+- [x] Add mock goal cards grouped by cadence
+- [x] Add target progress bars with status badges (on-track/behind/exceeded)
+- [x] KPI checkpoint: all 5 cadences displayed with numeric targets and progress
+
+#### Goal Management Screens
+- [x] Add goal management panel (create/edit/archive interactions mocked)
+- [x] Add numeric validation states in forms (client-only)
+- [x] Add mock optimistic updates for goal status
+- [x] KPI checkpoint: 100% form states represented (valid/invalid/submitting/success/error)
+
+#### Dashboard Reliability UX
+- [x] Align all dashboard KPI cards to one canonical visual format
+- [x] Add trend deltas against prior period (mock)
+- [x] Add loading/skeleton and empty/error states for KPI blocks
+- [x] KPI checkpoint: dashboard has success/loading/empty/error variants for all KPI groups
+
+#### Year-over-Year Analytics UX
+- [x] Add Year-over-Year comparison cards (current year vs previous year)
+- [x] Add mock annual aggregates and percentage deltas
+- [x] Add best/worst month highlight cards
+- [x] KPI checkpoint: YoY delta and annual totals visible on Statistics page
+
+#### Multi-Year Trend UX
+- [x] Add multi-year trend chart section (mock-driven)
+- [x] Add filters by habit/category/year (UI only)
+- [x] Add yearly milestone timeline section
+- [x] KPI checkpoint: 3+ year trend visualization rendered from mock data
+
+#### Accountability UX
+- [x] Add weekly review checklist component
+- [x] Add streak milestone badges and recovery prompts
+- [x] Add next best action recommendation card (mock rules)
+- [x] KPI checkpoint: weekly review completion meter visible and actionable
+
+#### Sync UX Foundation
+- [x] Add Google Sheets integration settings UI shell
+- [x] Add sync mode controls (manual/near real-time placeholder)
+- [x] Add sync health card (last sync, success rate, failed events)
+- [x] KPI checkpoint: sync health KPIs visible from mock sync telemetry
+
+#### Near Real-Time Sync UX Simulation
+- [x] Simulate near real-time event feed in UI with mock stream
+- [x] Add retry and replay controls for failed events (mock)
+- [x] Add tab mapping preview for Sheets destination
+- [x] KPI checkpoint: mock sync freshness and success rate metrics update in UI
+
+#### Hardening + Visual Polish
+- [x] Perform responsive polish for dashboard/statistics/goal management
+- [x] Standardize typography, spacing, states, and color semantics
+- [x] Finalize user-facing copy for KPI and analytics sections
+- [x] KPI checkpoint: mobile + desktop parity for all critical analytics screens

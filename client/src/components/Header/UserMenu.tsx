@@ -13,7 +13,7 @@ export const UserMenu = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="rounded-full" data-testid="user-menu-trigger">
+                <Button variant="secondary" size="icon" className="rounded-full" data-testid="user-menu">
                     <CircleUser className="h-5 w-5" />
                     <span className="sr-only">Toggle user menu</span>
                 </Button>

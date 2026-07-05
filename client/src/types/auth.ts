@@ -51,30 +51,16 @@ export const registerRequestSchema = z.object({
   password: z.string()
 });
 
-// Auth data schema
-export const authDataSchema = z.object({
-  user: z.object({
-    id: z.number(),
-    email: z.string().email(),
-    name: z.string().optional(),
-  }),
-  token: z.string(),
-  refreshToken: z.string().optional(),
-});
-
-// Auth result schema - updated to match actual API response structure
+// Auth result schema - matches server AuthResult JSON contract
 export const authResultSchema = z.object({
   success: z.boolean(),
   message: z.string().optional(),
-  token: z.string().optional(), // Token directly on response for successful login
+  token: z.string().optional(),
   refreshToken: z.string().optional(),
   tokenExpiry: z.string().optional(),
-  user: z.object({
-    id: z.number(),
-    email: z.string().email(),
-    name: z.string().optional(),
-  }).optional(),
-  data: authDataSchema.optional(), // Include authDataSchema for nested data structure
+  refreshTokenExpiry: z.string().optional(),
+  userId: z.string().optional(),
+  userEmail: z.string().email().optional(),
   errors: z.array(z.string()).optional(),
 });
 

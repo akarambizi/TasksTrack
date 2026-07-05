@@ -130,10 +130,9 @@ export const Habits = () => {
                                 <div>
                                     <h3 className="text-lg font-medium">No active habits yet</h3>
                                     <p className="text-muted-foreground">
-                                        Start your journey by creating your first habit
+                                        Start your journey by creating your first habit using the Add Habit button above
                                     </p>
                                 </div>
-                                <AddHabitDialog />
                             </div>
                         </CardContent>
                     </Card>

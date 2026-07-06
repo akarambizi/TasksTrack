@@ -58,8 +58,10 @@ describe('SyncCenter', () => {
         renderWithProviders(<SyncCenter />);
         const retryButton = screen.getByRole('button', { name: /retry failed/i });
         fireEvent.click(retryButton);
-        // After retry, failedEvents decreases so success rate improves slightly
-        expect(screen.getAllByText(/97/).length).toBeGreaterThan(0);
+
+        // failedEvents: 1 -> 0, successRate: 97.2 -> 97.6
+        expect(screen.getByText(/Failed:\s*0/i)).toBeInTheDocument();
+        expect(screen.getByText('97.6%')).toBeInTheDocument();
     });
 
     it('handles force resync click', () => {

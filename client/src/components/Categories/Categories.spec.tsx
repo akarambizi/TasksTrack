@@ -175,10 +175,9 @@ describe('CategoryList', () => {
             />
         );
         const expandButton = document.querySelector('button.absolute.-left-6');
-        if (expandButton) {
-            fireEvent.click(expandButton);
-            expect(onToggle).toHaveBeenCalledWith(2);
-        }
+        expect(expandButton).not.toBeNull();
+        fireEvent.click(expandButton as Element);
+        expect(onToggle).toHaveBeenCalledWith(2);
     });
 
     it('shows expanded subcategories when category is expanded', () => {

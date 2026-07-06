@@ -192,13 +192,12 @@ describe('AnalyticsOverview', () => {
         renderWithProviders(<AnalyticsOverview />);
 
         // Switch to monthly period
-        const monthlyButton = screen.queryByRole('button', { name: /monthly/i })
-            || screen.queryByText(/monthly/i);
-        if (monthlyButton) {
-            fireEvent.click(monthlyButton);
-            await waitFor(() => {
-                expect(screen.queryByText('Monthly History')).toBeInTheDocument();
-            });
-        }
+        const periodTrigger = screen.getByRole('combobox');
+        fireEvent.click(periodTrigger);
+        fireEvent.click(await screen.findByText('Monthly'));
+
+        await waitFor(() => {
+            expect(screen.getByText('Monthly History')).toBeInTheDocument();
+        });
     });
 });

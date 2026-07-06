@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { screen, cleanup, fireEvent } from '@testing-library/react';
 import { DailyProgressChart } from './DailyProgressChart';
@@ -6,15 +7,18 @@ import { CategoryBreakdownChart } from './CategoryBreakdownChart';
 import { InteractiveAnalyticsLineChart } from './InteractiveAnalyticsLineChart';
 import { PerformanceHub } from './PerformanceHub';
 import { renderWithProviders } from '../../utils/test-utils';
+import type { IDailyProgress } from '@/types';
+
+type MockChildrenProps = PropsWithChildren;
 
 // Mock recharts to avoid rendering issues in test environment
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div data-testid="responsive-container">{children}</div>,
-    AreaChart: ({ children }: any) => <div data-testid="area-chart">{children}</div>,
-    BarChart: ({ children }: any) => <div data-testid="bar-chart">{children}</div>,
-    LineChart: ({ children }: any) => <div data-testid="line-chart">{children}</div>,
-    PieChart: ({ children }: any) => <div data-testid="pie-chart">{children}</div>,
-    ChartContainer: ({ children }: any) => <div data-testid="chart-container">{children}</div>,
+    ResponsiveContainer: ({ children }: MockChildrenProps) => <div data-testid="responsive-container">{children}</div>,
+    AreaChart: ({ children }: MockChildrenProps) => <div data-testid="area-chart">{children}</div>,
+    BarChart: ({ children }: MockChildrenProps) => <div data-testid="bar-chart">{children}</div>,
+    LineChart: ({ children }: MockChildrenProps) => <div data-testid="line-chart">{children}</div>,
+    PieChart: ({ children }: MockChildrenProps) => <div data-testid="pie-chart">{children}</div>,
+    ChartContainer: ({ children }: MockChildrenProps) => <div data-testid="chart-container">{children}</div>,
     Area: () => null,
     Bar: () => null,
     Line: () => null,
@@ -28,7 +32,7 @@ vi.mock('recharts', () => ({
 }));
 
 vi.mock('@/components/ui/chart', () => ({
-    ChartContainer: ({ children }: any) => <div data-testid="chart-container">{children}</div>,
+    ChartContainer: ({ children }: MockChildrenProps) => <div data-testid="chart-container">{children}</div>,
     ChartTooltip: () => null,
     ChartTooltipContent: () => null,
 }));
@@ -82,11 +86,6 @@ const mockHabitData = [
 const mockCategoryData = [
     { category: 'Health', sessionCount: 5, totalSessions: 5, totalMinutes: 180, averageSessionDuration: 36, habitCount: 2, completionRate: 0.75, targetAchievementRate: 0.8, consistencyScore: 0.7 },
     { category: 'Learning', sessionCount: 3, totalSessions: 3, totalMinutes: 90, averageSessionDuration: 30, habitCount: 1, completionRate: 0.6, targetAchievementRate: 0.65, consistencyScore: 0.6 },
-];
-
-const mockLineChartData = [
-    { date: '2026-01-01', value: 10, average: 8 },
-    { date: '2026-01-02', value: 12, average: 9 },
 ];
 
 describe('DailyProgressChart', () => {
@@ -191,14 +190,14 @@ describe('InteractiveAnalyticsLineChart', () => {
 
     it('renders chart with data', () => {
         renderWithProviders(
-            <InteractiveAnalyticsLineChart data={mockDailyData as any} />
+            <InteractiveAnalyticsLineChart data={mockDailyData as IDailyProgress[]} />
         );
         expect(screen.getByText('Interactive Trend Line')).toBeInTheDocument();
     });
 
     it('renders metric selector buttons', () => {
         renderWithProviders(
-            <InteractiveAnalyticsLineChart data={mockDailyData as any} />
+            <InteractiveAnalyticsLineChart data={mockDailyData as IDailyProgress[]} />
         );
         expect(screen.getByRole('button', { name: /minutes/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /sessions/i })).toBeInTheDocument();
@@ -207,7 +206,7 @@ describe('InteractiveAnalyticsLineChart', () => {
 
     it('renders chart container', () => {
         renderWithProviders(
-            <InteractiveAnalyticsLineChart data={mockDailyData as any} />
+            <InteractiveAnalyticsLineChart data={mockDailyData as IDailyProgress[]} />
         );
         expect(screen.getByTestId('chart-container')).toBeInTheDocument();
     });
@@ -221,7 +220,7 @@ describe('InteractiveAnalyticsLineChart', () => {
 
     it('changes active metric on button click', () => {
         renderWithProviders(
-            <InteractiveAnalyticsLineChart data={mockDailyData as any} />
+            <InteractiveAnalyticsLineChart data={mockDailyData as IDailyProgress[]} />
         );
         fireEvent.click(screen.getByRole('button', { name: /sessions/i }));
         // Sessions button should now have default variant styling

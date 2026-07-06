@@ -1,3 +1,4 @@
+import type { MouseEventHandler, PropsWithChildren } from 'react';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { screen, cleanup, fireEvent } from '@testing-library/react';
 import { UserMenu } from './UserMenu';
@@ -5,27 +6,28 @@ import { ThemeToggle } from './ThemeToggle';
 import { Header } from './Header';
 import { renderWithProviders } from '../../utils/test-utils';
 
+type MockChildrenProps = PropsWithChildren;
+type MockTriggerProps = PropsWithChildren<{ asChild?: boolean }>;
+type MockButtonProps = PropsWithChildren<{ onClick?: MouseEventHandler<HTMLButtonElement> }>;
+
 // Mock dropdown-menu to render inline (avoid portal issues in happy-dom)
 vi.mock('@/components/ui/dropdown-menu', () => ({
-    DropdownMenu: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuTrigger: ({ children, asChild }: any) => {
-        if (asChild) return children;
-        return <div>{children}</div>;
-    },
-    DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
-    DropdownMenuLabel: ({ children }: any) => <div>{children}</div>,
+    DropdownMenu: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuTrigger: ({ children, asChild = false }: MockTriggerProps) => (asChild ? children : <div>{children}</div>),
+    DropdownMenuContent: ({ children }: MockChildrenProps) => <div data-testid="dropdown-content">{children}</div>,
+    DropdownMenuLabel: ({ children }: MockChildrenProps) => <div>{children}</div>,
     DropdownMenuSeparator: () => <hr />,
-    DropdownMenuItem: ({ children, onClick, ...props }: any) => (
+    DropdownMenuItem: ({ children, onClick, ...props }: MockButtonProps) => (
         <button onClick={onClick} {...props}>{children}</button>
     ),
-    DropdownMenuGroup: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuSub: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuSubTrigger: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuSubContent: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuRadioGroup: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuRadioItem: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
-    DropdownMenuCheckboxItem: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuShortcut: ({ children }: any) => <span>{children}</span>,
+    DropdownMenuGroup: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuSub: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuSubTrigger: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuSubContent: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuRadioGroup: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuRadioItem: ({ children, onClick }: MockButtonProps) => <button onClick={onClick}>{children}</button>,
+    DropdownMenuCheckboxItem: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    DropdownMenuShortcut: ({ children }: MockChildrenProps) => <span>{children}</span>,
 }));
 
 const mockLogoutMutate = vi.fn();

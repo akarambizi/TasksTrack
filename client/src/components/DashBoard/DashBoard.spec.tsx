@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { screen, cleanup, fireEvent } from '@testing-library/react';
 import { Dashboard } from './DashBoard';
-import { renderWithProviders, createMockQuery } from '../../utils/test-utils';
+import { renderWithProviders } from '../../utils/test-utils';
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -117,11 +117,8 @@ describe('Dashboard', () => {
 
     it('shows empty KPI state text when kpiState is empty', () => {
         renderWithProviders(<Dashboard />);
-        // Check the select has empty option
-        const trigger = document.querySelector('[role="combobox"]');
-        if (trigger) fireEvent.click(trigger);
-        // KPI selector renders mock states
-        expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('combobox'));
+        expect(screen.getByText('Empty')).toBeInTheDocument();
     });
 
     it('renders actions tab content when actions tab clicked', () => {

@@ -1,14 +1,17 @@
+import type { PropsWithChildren } from 'react';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import { AnalyticsOverview } from './AnalyticsOverview';
 import { renderWithProviders } from '../../utils/test-utils';
 
+type MockChildrenProps = PropsWithChildren;
+
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
-    AreaChart: ({ children }: any) => <div>{children}</div>,
-    BarChart: ({ children }: any) => <div>{children}</div>,
-    LineChart: ({ children }: any) => <div>{children}</div>,
-    PieChart: ({ children }: any) => <div>{children}</div>,
+    ResponsiveContainer: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    AreaChart: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    BarChart: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    LineChart: ({ children }: MockChildrenProps) => <div>{children}</div>,
+    PieChart: ({ children }: MockChildrenProps) => <div>{children}</div>,
     Area: () => null,
     Bar: () => null,
     Line: () => null,
@@ -22,7 +25,7 @@ vi.mock('recharts', () => ({
 }));
 
 vi.mock('@/components/ui/chart', () => ({
-    ChartContainer: ({ children }: any) => <div>{children}</div>,
+    ChartContainer: ({ children }: MockChildrenProps) => <div>{children}</div>,
     ChartTooltip: () => null,
     ChartTooltipContent: () => null,
 }));
@@ -33,10 +36,10 @@ const mockUseQuarterlyAnalytics = vi.fn();
 const mockUseYearlyAnalytics = vi.fn();
 
 vi.mock('@/queries', () => ({
-    useWeeklyAnalytics: (...args: any[]) => mockUseWeeklyAnalytics(...args),
-    useMonthlyAnalytics: (...args: any[]) => mockUseMonthlyAnalytics(...args),
-    useQuarterlyAnalytics: (...args: any[]) => mockUseQuarterlyAnalytics(...args),
-    useYearlyAnalytics: (...args: any[]) => mockUseYearlyAnalytics(...args),
+    useWeeklyAnalytics: (...args: unknown[]) => mockUseWeeklyAnalytics(...args),
+    useMonthlyAnalytics: (...args: unknown[]) => mockUseMonthlyAnalytics(...args),
+    useQuarterlyAnalytics: (...args: unknown[]) => mockUseQuarterlyAnalytics(...args),
+    useYearlyAnalytics: (...args: unknown[]) => mockUseYearlyAnalytics(...args),
 }));
 
 vi.mock('@/mock-server/data/analytics/growthMetrics', () => ({

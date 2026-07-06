@@ -24,13 +24,10 @@ const mockCategories: ICategory[] = [
         description: 'Health habits',
         color: '#22c55e',
         icon: 'Heart',
-        parentId: null,
         isActive: true,
         subCategories: [],
         createdDate: '2026-01-01T00:00:00Z',
         createdBy: 'user1',
-        updatedDate: null,
-        updatedBy: null,
     },
     {
         id: 2,
@@ -38,7 +35,6 @@ const mockCategories: ICategory[] = [
         description: 'Learning habits',
         color: '#3b82f6',
         icon: 'BookOpen',
-        parentId: null,
         isActive: true,
         subCategories: [
             {
@@ -52,14 +48,10 @@ const mockCategories: ICategory[] = [
                 subCategories: [],
                 createdDate: '2026-01-01T00:00:00Z',
                 createdBy: 'user1',
-                updatedDate: null,
-                updatedBy: null,
             }
         ],
         createdDate: '2026-01-01T00:00:00Z',
         createdBy: 'user1',
-        updatedDate: null,
-        updatedBy: null,
     },
 ];
 
@@ -143,8 +135,8 @@ describe('CategoryList', () => {
         expect(screen.getByText('Learning')).toBeInTheDocument();
     });
 
-    it('renders expand button for categories with subcategories', () => {
-        renderWithProviders(
+    it('renders expansion control for categories with subcategories', () => {
+        const { container } = renderWithProviders(
             <CategoryList
                 hierarchicalCategories={mockCategories}
                 expandedCategories={new Set()}
@@ -156,13 +148,12 @@ describe('CategoryList', () => {
                 deleteMutation={{ isPending: false }}
             />
         );
-        // Learning has subcategories - should have expand button
-        expect(screen.getByText('Reading')).toBeInTheDocument();
+        expect(container.querySelector('button.absolute.-left-6')).not.toBeNull();
     });
 
     it('calls onToggleExpansion when expand button clicked', () => {
         const onToggle = vi.fn();
-        renderWithProviders(
+        const { container } = renderWithProviders(
             <CategoryList
                 hierarchicalCategories={mockCategories}
                 expandedCategories={new Set()}
@@ -174,7 +165,7 @@ describe('CategoryList', () => {
                 deleteMutation={{ isPending: false }}
             />
         );
-        const expandButton = document.querySelector('button.absolute.-left-6');
+        const expandButton = container.querySelector('button.absolute.-left-6');
         expect(expandButton).not.toBeNull();
         fireEvent.click(expandButton as Element);
         expect(onToggle).toHaveBeenCalledWith(2);

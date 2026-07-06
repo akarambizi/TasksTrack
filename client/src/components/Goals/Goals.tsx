@@ -25,7 +25,7 @@ export const Goals = () => {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
     const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-    const saveTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+    const saveTimeoutRef = useRef<number | null>(null);
 
     useEffect(() => {
         return () => {

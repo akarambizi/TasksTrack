@@ -56,12 +56,13 @@ describe('SyncCenter', () => {
 
     it('handles retry failed events click', () => {
         renderWithProviders(<SyncCenter />);
+        expect(screen.getByText(/Failed:\s*1/i)).toBeInTheDocument();
         const retryButton = screen.getByRole('button', { name: /retry failed/i });
         fireEvent.click(retryButton);
 
-        // failedEvents: 1 -> 0, successRate: 97.2 -> 97.6
         expect(screen.getByText(/Failed:\s*0/i)).toBeInTheDocument();
-        expect(screen.getByText('97.6%')).toBeInTheDocument();
+        expect(screen.queryByText('97.2%')).not.toBeInTheDocument();
+        expect(screen.getAllByText('97.6%').length).toBeGreaterThan(0);
     });
 
     it('handles force resync click', () => {

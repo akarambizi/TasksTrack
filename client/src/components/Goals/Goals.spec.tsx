@@ -132,13 +132,12 @@ describe('Goals Component', () => {
       const user = userEvent.setup();
       renderWithProviders(<Goals />);
       const cycleButtons = screen.getAllByRole('button', { name: /cycle status/i });
-      if (cycleButtons.length > 0) {
-        const statusBadges = screen.getAllByText(/on-track|behind|exceeded/);
-        const initialStatus = statusBadges[0].textContent;
-        await user.click(cycleButtons[0]);
-        const updatedBadges = screen.getAllByText(/on-track|behind|exceeded/);
-        expect(updatedBadges[0].textContent).not.toBe(initialStatus);
-      }
+      expect(cycleButtons.length).toBeGreaterThan(0);
+      const statusBadges = screen.getAllByText(/on-track|behind|exceeded/);
+      const initialStatus = statusBadges[0].textContent;
+      await user.click(cycleButtons[0]);
+      const updatedBadges = screen.getAllByText(/on-track|behind|exceeded/);
+      expect(updatedBadges[0].textContent).not.toBe(initialStatus);
     });
   });
 

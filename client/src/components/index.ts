@@ -6,7 +6,7 @@ export * from './Sidebar/SideBarNav';
 export * from './Habits/HabitsContainer';
 export * from './Habits/HabitDetailPage';
 export * from './Productivity/ProductivityHub';
-export * from './FocusSession/FocusSessions';
+export * from './FocusSession';
 export * from './Container';
 export * from './Sessions/Sessions';
 export * from './DashBoard/DashBoard';

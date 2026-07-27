@@ -3,16 +3,16 @@ FROM node:24.18.0-alpine
 WORKDIR /app
 
 # Copy package files first for better caching
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
+
+# Enable pnpm via Corepack
+RUN corepack enable
 
 # Install dependencies with network timeout and retry
-RUN yarn install --network-timeout 1000000 --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
-
-# Verify all dependencies are properly installed
-RUN yarn install --check-files
 
 # Set environment variables
 ENV NODE_ENV=development
@@ -22,4 +22,4 @@ ENV VITE_HOST=0.0.0.0
 EXPOSE 3000
 
 # Start the application
-CMD ["yarn", "dev", "--host"]
+CMD ["pnpm", "dev", "--host"]

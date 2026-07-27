@@ -18,12 +18,17 @@ jobs:
       with:
         node-version: '24.18.0'
 
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: pnpm install --frozen-lockfile
       working-directory: ./client
 
     - name: Run tests
-      run: yarn test
+      run: pnpm test
       working-directory: ./client
 
   server-tests:

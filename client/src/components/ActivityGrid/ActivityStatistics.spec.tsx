@@ -1,7 +1,7 @@
 import { renderWithProviders } from '../../utils/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
-import { ActivityStatistics } from './ActivityStatistics';
+import { ActivityStatistics } from './index';
 import { useActivityStatistics } from '../../queries/activity';
 import { IActivityStatisticsResponse } from '@/types';
 

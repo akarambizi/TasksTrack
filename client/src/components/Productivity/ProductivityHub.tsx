@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui';
 import { HabitsContainer } from '@/components/Habits/HabitsContainer';
-import { FocusSessions } from '@/components/FocusSession/FocusSessions';
+import { FocusSessions } from '@/components/FocusSession';
 import { Goals } from '@/components/Goals/Goals';
 
 type TProductivityTab = 'habits' | 'focus' | 'goals';

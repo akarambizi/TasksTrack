@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { CategoryRow } from '@/components/ui/common';
+import { CategoryActions, CategoryDisplay, CategoryRow } from '@/components/ui/common';
 import type { ICategory } from '@/types';
 
 interface CategoryListProps {
@@ -51,14 +51,31 @@ export const CategoryList: React.FC<CategoryListProps> = ({
                             </button>
                         )}
 
-                        <CategoryRow
-                            category={category}
-                            onEdit={onEdit}
-                            onArchive={onArchive}
-                            onDelete={onDelete}
-                            archiveMutation={archiveMutation}
-                            deleteMutation={deleteMutation}
-                        />
+                        <div className="grid grid-cols-4 gap-4">
+                            <div>
+                                <CategoryDisplay category={category} />
+                            </div>
+                            <div className="text-muted-foreground">
+                                {category.description || 'No description'}
+                            </div>
+                            <div>
+                                <Badge
+                                    variant={category.isActive ? 'default' : 'secondary'}
+                                >
+                                    {category.isActive ? 'Active' : 'Archived'}
+                                </Badge>
+                            </div>
+                            <div className="text-right">
+                                <CategoryActions
+                                    category={category}
+                                    onEdit={() => onEdit(category)}
+                                    onArchive={() => onArchive(category.id)}
+                                    onDelete={() => onDelete(category.id)}
+                                    archiveMutation={archiveMutation}
+                                    deleteMutation={deleteMutation}
+                                />
+                            </div>
+                        </div>
 
                         {/* Subcategory tags */}
                         {hasSubcategories && (

@@ -21,7 +21,6 @@ const App = () => {
                                     <Container>
                                         <Routes>
                                             <Route path="/" element={<Dashboard />} />
-                                            <Route path="/" element={<Dashboard />} />
                                             <Route path="/dashboard" element={<Dashboard />} />
                                             <Route path="/productivity" element={<ProductivityHub />} />
                                             <Route path="/habits" element={<Navigate to="/productivity?tab=habits" replace />} />

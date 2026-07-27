@@ -6,7 +6,7 @@ This project supports local workflow validation using Act.
 
 - Docker Desktop is running
 - Act is installed (`brew install act`)
-- Run from repo root: `/Users/arthurkarambizi/Desktop/Workspace/TasksTrack`
+- Run from repository root (folder containing `docker-compose.yml`, `client/`, and `server/`)
 
 ## Repo Defaults
 

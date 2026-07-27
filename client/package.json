@@ -12,7 +12,7 @@
     "mock-server": "nodemon --watch src/mock-server --ext ts,json --exec \"node --loader ts-node/esm --no-warnings src/mock-server/server.ts\"",
     "dev:mock": "concurrently \"pnpm run mock-server\" \"vite --mode mock\"",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest --coverage",
     "test:ui": "vitest --ui",
@@ -64,6 +64,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.0",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
@@ -75,6 +77,7 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^6.0.4",
     "@vitest/coverage-istanbul": "^4.1.10",
     "@vitest/ui": "^4.1.10",
@@ -92,7 +95,7 @@
     "postcss": "^8.5.23",
     "tailwindcss": "^3.4.19",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
   }

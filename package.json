@@ -20,7 +20,7 @@
     "mcp:shadcn": "npx @jpisnice/shadcn-ui-mcp-server"
   },
   "dependencies": {
-    "markdownlint-cli2": "^0.20.0"
+    "markdownlint-cli2": "^0.23.2"
   },
   "devDependencies": {
     "@jpisnice/shadcn-ui-mcp-server": "^2.0.0",

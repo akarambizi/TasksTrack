@@ -6,6 +6,19 @@ import userEvent from '@testing-library/user-event';
 import { FocusTimer } from './FocusTimer';
 import type { IHabit } from '@/types';
 
+const createDefaultFocusTimerContext = () => ({
+    timeLeft: 1500,
+    totalDuration: 1500,
+    isRunning: false,
+    progress: 0,
+    hasActiveSession: false,
+    showCompletionCelebration: false,
+    activeSession: null,
+    isLoadingSession: false,
+    updateTimerState: vi.fn(),
+    setCompletionCelebration: vi.fn()
+});
+
 // Mock all dependencies
 vi.mock('@/queries', () => ({
     useActiveFocusSession: vi.fn(),
@@ -27,22 +40,7 @@ vi.mock('@/services/focusNotificationService', () => ({
 }));
 
 vi.mock('@/hooks/useFocusTimerContext', () => ({
-    useFocusTimerContext: vi.fn()
-}));
-
-vi.mock('@/hooks/useFocusTimerContext', () => ({
-    useFocusTimerContext: vi.fn(() => ({
-        timeLeft: 1500,
-        totalDuration: 1500,
-        isRunning: false,
-        progress: 0,
-        hasActiveSession: false,
-        showCompletionCelebration: false,
-        activeSession: null,
-        isLoadingSession: false,
-        updateTimerState: vi.fn(),
-        setCompletionCelebration: vi.fn()
-    }))
+    useFocusTimerContext: vi.fn(() => createDefaultFocusTimerContext())
 }));
 
 vi.mock('@/utils/focusTimer', () => ({
@@ -89,6 +87,10 @@ describe('FocusTimer', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+
+        (useFocusTimerContext as ReturnType<typeof vi.fn>).mockReturnValue(
+            createDefaultFocusTimerContext()
+        );
 
         (useStartFocusSessionMutation as ReturnType<typeof vi.fn>).mockReturnValue({
             mutate: mockStartSession,
@@ -410,6 +412,21 @@ describe('FocusTimer', () => {
         (mockResumeSession as { isPending?: boolean }).isPending = true;
         (mockCancelSession as { isPending?: boolean }).isPending = true;
         (mockCompleteSession as { isPending?: boolean }).isPending = true;
+
+        (useFocusTimerContext as ReturnType<typeof vi.fn>).mockReturnValue({
+            ...createDefaultFocusTimerContext(),
+            activeSession: {
+                id: 1,
+                habitId: 1,
+                status: 'paused' as const,
+                startTime: '2026-01-31T10:00:00Z',
+                plannedDurationMinutes: 25
+            },
+            isRunning: false,
+            hasActiveSession: true,
+            timeLeft: 1200,
+            progress: 20
+        });
 
         renderWithProviders(
 

@@ -20,15 +20,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.17.1
+        run_install: false
+
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: '24.18.0'
+        cache: 'pnpm'
+        cache-dependency-path: client/pnpm-lock.yaml
 
     - name: Install Playwright Browsers
       working-directory: ./client
       run: |
-        npm ci
-        npx playwright install --with-deps
+        pnpm install --frozen-lockfile
+        pnpm exec playwright install --with-deps
 
     - name: Start application stack
       run: |
@@ -48,7 +56,7 @@ jobs:
 
     - name: Run E2E tests
       working-directory: ./client
-      run: npx playwright test --project=chromium --project=firefox --project=webkit --reporter=list
+      run: pnpm exec playwright test --project=chromium --project=firefox --project=webkit --reporter=list
       env:
         CI: true
 
@@ -66,9 +74,9 @@ jobs:
       run: |
         echo "📋 Collecting logs for debugging..."
         mkdir -p debug-logs
-        docker-compose logs database > debug-logs/database.log 2>&1 || true
-        docker-compose logs server > debug-logs/server.log 2>&1 || true
-        docker-compose logs client > debug-logs/client.log 2>&1 || true
+        docker compose logs db > debug-logs/database.log 2>&1 || true
+        docker compose logs server > debug-logs/server.log 2>&1 || true
+        docker compose logs client > debug-logs/client.log 2>&1 || true
 
         echo "📊 System status at failure:"
         docker ps -a > debug-logs/containers.log 2>&1 || true

@@ -21,7 +21,7 @@ services:
       - ./client:/app
       # Prevents node_modules from being overwritten by host directory
       - /app/node_modules
-    command: yarn dev --host
+    command: pnpm dev --host
     environment:
       - VITE_API_TARGET=http://server:5206
     restart: unless-stopped

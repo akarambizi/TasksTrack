@@ -81,10 +81,10 @@ make help    # View all available commands
 
 ```bash
 cd client
-yarn install
+pnpm install
 
 # With Mock Server (UI development)
-yarn dev:mock
+pnpm dev:mock
 
 # Access: http://localhost:3000
 # Mock API: http://localhost:4200

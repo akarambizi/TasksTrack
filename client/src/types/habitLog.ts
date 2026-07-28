@@ -76,7 +76,7 @@ export const habitLogFormSchema = habitLogEntitySchema.pick({
 });
 
 // Habit log request schemas for API operations
-export const habitLogUpdateRequestSchema = habitLogFormSchema.extend({
+const habitLogUpdateRequestSchema = habitLogFormSchema.extend({
   id: z.number(),
 }).partial().extend({
   id: z.number(), // id is always required for updates

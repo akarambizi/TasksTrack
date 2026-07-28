@@ -1,7 +1,7 @@
 import { renderWithProviders } from '../../utils/test-utils';
 import { describe, it, expect, vi } from 'vitest';
 import { screen, fireEvent } from '@testing-library/react';
-import { ActivityGrid } from './ActivityGrid';
+import { ActivityGrid } from './index';
 import { IActivityGridResponse } from '@/types';
 import { format, subDays } from 'date-fns';
 

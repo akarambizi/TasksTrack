@@ -2,29 +2,30 @@
   "name": "taskstrack",
   "version": "1.0.0",
   "description": "Full-stack habit tracking application",
+  "packageManager": "pnpm@10.17.1",
   "engines": {
     "node": ">=24.18.0 <25"
   },
   "scripts": {
     "prepare": "husky",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "cd client && npm run build",
-    "build:server": "cd server && dotnet build --configuration Release --no-restore --verbosity quiet -p:TreatWarningsAsErrors=true",
-    "test": "npm run test:client && npm run test:server",
-    "test:client": "cd client && npm run test -- --run",
+    "build": "pnpm run build:client && pnpm run build:server",
+    "build:client": "cd client && pnpm run build",
+    "build:server": "cd server && dotnet restore && dotnet build --configuration Release --no-restore --verbosity quiet -p:TreatWarningsAsErrors=true",
+    "test": "pnpm run test:client && pnpm run test:server",
+    "test:client": "cd client && pnpm run test -- --run",
     "test:server": "cd server && dotnet test --no-restore --verbosity quiet",
     "lint:md": "markdownlint-cli2 **/*.md --config .markdownlint.json",
-    "find-unused": "cd client && npm run find-unused",
-    "precommit": "npm run build && npm run lint:md",
-    "install:all": "npm install && cd client && npm install && cd ../server && dotnet restore",
+    "find-unused": "cd client && pnpm run find-unused",
+    "precommit": "pnpm run build && pnpm run lint:md",
+    "install:all": "pnpm install && cd client && pnpm install && cd ../server && dotnet restore",
     "mcp:shadcn": "npx @jpisnice/shadcn-ui-mcp-server"
   },
   "dependencies": {
-    "markdownlint-cli2": "^0.20.0"
+    "markdownlint-cli2": "^0.23.2"
   },
   "devDependencies": {
     "@jpisnice/shadcn-ui-mcp-server": "^2.0.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2"
+    "husky": "^9.1.7",
+    "lint-staged": "^17.2.0"
   }
 }

@@ -33,6 +33,43 @@
 - [ ] User timezone support, offline sync/PWA, reminders, achievements, templates, sharing, import/backup, and notifications remain unimplemented.
 - [ ] Before relying on this tracker for delivery status, run the full frontend quality gates; backend focus-history tests pass, but the feature needs broader timezone coverage.
 
+## 0.4 Future TODO Queue
+
+Use this as the short, backend-first queue. The detailed acceptance work remains in the numbered sections and `specs/001-timeline-calendar-views/tasks.md`.
+
+### Next: Timeline and Calendar MVP
+
+- [ ] Add client history DTOs, API functions, query keys, and TanStack Query hooks for the focus-history endpoints.
+- [ ] Replace the existing focus-session list with calendar and timeline views backed by the new API.
+- [ ] Add week/month navigation, habit/category filtering, selectable day details, empty states, and mobile responsiveness.
+- [ ] Add repository, service, controller, component, and E2E coverage for midnight crossings, DST, filters, and zero-result states.
+
+### Then: Complete the Real Data Model
+
+- [ ] Decide whether `CategoryGoal` remains the goal model or introduce a first-class goal entity with all required cadences.
+- [ ] Build API-backed goals inside the habit workflow; remove remaining mock goal checkpoints and yearly analytics fixtures.
+- [ ] Add planning overlays and valid create/update eligibility rules to Focus History day details.
+- [ ] Make activity and analytics date grouping consistently timezone-aware.
+
+### Replace Deferred Mock Workflows
+
+- [ ] Choose whether Google Sheets sync is in scope; if yes, add connection, sync-event, job, retry, and status APIs before keeping Sync Center interactive.
+- [ ] Replace mock yearly retrospective, recommendations, and KPI data with analytics API responses, or remove those UI sections until the backend supports them.
+- [ ] Reintroduce weekly review, reminders, achievements, or notifications only after their persistence and API contracts exist.
+
+### Production Hardening
+
+- [ ] Add optimistic updates with rollback, loading/error/retry states, and stale-edit conflict handling to API-backed mutations.
+- [ ] Add CSV/JSON import/export, backups, audit history, health checks, and diagnostics as separate backend-first features.
+- [ ] Implement PWA/offline sync and push notifications only after server-side sync/conflict behavior is defined and tested.
+- [ ] Add database indexes and record performance results for 31-day and 92-day focus-history queries.
+
+### Keep Current
+
+- [ ] Update this plan and the related spec task checkboxes in the same pull request as each completed feature.
+- [ ] Run client build, lint, test/coverage, backend Release build, and backend tests before merging feature work.
+- [ ] Keep generated reports and build outputs out of Git; run `pnpm exec knip --reporter compact` after structural changes.
+
 ## 1. User Authentication ✅
 
 ### 1.1 Backend ✅

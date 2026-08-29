@@ -62,7 +62,7 @@ export const SyncTables = ({ telemetry, eventLog }: ISyncTablesProps) => {
                                 {eventLog.map((event) => (
                                     <TableRow key={event.id}>
                                         <TableCell className="font-medium">{event.id}</TableCell>
-                                        <TableCell className="capitalize">{event.source.replace('-', ' ')}</TableCell>
+                                        <TableCell className="capitalize">{event.source.replace(/-/g, ' ')}</TableCell>
                                         <TableCell className="capitalize">{event.state}</TableCell>
                                         <TableCell>{new Date(event.occurredAt).toLocaleString()}</TableCell>
                                     </TableRow>

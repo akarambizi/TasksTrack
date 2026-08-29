@@ -8,10 +8,11 @@ namespace TasksTrack.Repositories
         IQueryable<FocusSession> GetQueryable();
         Task<IEnumerable<FocusSession>> GetByHabitAsync(int habitId);
         Task<IEnumerable<FocusSession>> GetHistorySessionsAsync(
+            string userId,
             FocusSessionHistoryFilterRequest filter,
             DateTimeOffset rangeStartUtc,
             DateTimeOffset rangeEndUtc);
-        Task<FocusSession?> GetActiveOrPausedSessionAsync();
+        Task<FocusSession?> GetActiveOrPausedSessionAsync(string userId);
         Task AddAsync(FocusSession focusSession);
         Task<bool> UpdateAsync(FocusSession focusSession);
         Task DeleteAsync(int id);

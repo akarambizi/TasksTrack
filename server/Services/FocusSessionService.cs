@@ -23,7 +23,7 @@ namespace TasksTrack.Services
             var userId = _currentUserService.GetUserId();
 
             // Check if user already has an active session
-            var existingSession = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
+            var existingSession = await _focusSessionRepository.GetActiveOrPausedSessionAsync(userId);
             if (existingSession != null)
             {
                 throw new InvalidOperationException("User already has an active focus session. Complete or interrupt the current session first.");
@@ -55,7 +55,7 @@ namespace TasksTrack.Services
         public async Task<FocusSessionResponse> PauseSessionAsync()
         {
             var userId = _currentUserService.GetUserId();
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync(userId);
 
             if (session == null)
             {
@@ -80,7 +80,7 @@ namespace TasksTrack.Services
         public async Task<FocusSessionResponse> ResumeSessionAsync()
         {
             var userId = _currentUserService.GetUserId();
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync(userId);
 
             if (session == null)
             {
@@ -112,7 +112,7 @@ namespace TasksTrack.Services
         public async Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request)
         {
             var userId = _currentUserService.GetUserId();
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync(userId);
 
             if (session == null)
             {
@@ -143,7 +143,7 @@ namespace TasksTrack.Services
         public async Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request)
         {
             var userId = _currentUserService.GetUserId();
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync(userId);
 
             if (session == null)
             {
@@ -266,7 +266,8 @@ namespace TasksTrack.Services
 
         public async Task<FocusSessionResponse?> GetActiveSessionAsync()
         {
-            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync();
+            var userId = _currentUserService.GetUserId();
+            var session = await _focusSessionRepository.GetActiveOrPausedSessionAsync(userId);
             return session != null ? MapToResponse(session, session.Habit?.Name) : null;
         }
 
@@ -309,7 +310,8 @@ namespace TasksTrack.Services
 
             var rangeStartUtc = new DateTimeOffset(TimeZoneInfo.ConvertTimeToUtc(startDate.ToDateTime(TimeOnly.MinValue), timezone));
             var rangeEndUtc = new DateTimeOffset(TimeZoneInfo.ConvertTimeToUtc(endDate.AddDays(1).ToDateTime(TimeOnly.MinValue), timezone));
-            var sessions = (await _focusSessionRepository.GetHistorySessionsAsync(filter, rangeStartUtc, rangeEndUtc)).ToList();
+            var userId = _currentUserService.GetUserId();
+            var sessions = (await _focusSessionRepository.GetHistorySessionsAsync(userId, filter, rangeStartUtc, rangeEndUtc)).ToList();
 
             return (sessions, timezone, startDate, endDate);
         }

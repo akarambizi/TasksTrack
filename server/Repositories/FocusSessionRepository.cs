@@ -36,13 +36,16 @@ namespace TasksTrack.Repositories
         }
 
         public async Task<IEnumerable<FocusSession>> GetHistorySessionsAsync(
+            string userId,
             FocusSessionHistoryFilterRequest filter,
             DateTimeOffset rangeStartUtc,
             DateTimeOffset rangeEndUtc)
         {
             var query = _context.FocusSessions
                 .Include(fs => fs.Habit)
-                .Where(fs => fs.StartTime < rangeEndUtc && (fs.EndTime == null || fs.EndTime >= rangeStartUtc));
+                .Where(fs => fs.CreatedBy == userId &&
+                             fs.StartTime < rangeEndUtc &&
+                             (fs.EndTime == null || fs.EndTime >= rangeStartUtc));
 
             if (filter.HabitId.HasValue)
             {
@@ -59,12 +62,13 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<FocusSession?> GetActiveOrPausedSessionAsync()
+        public async Task<FocusSession?> GetActiveOrPausedSessionAsync(string userId)
         {
             return await _context.FocusSessions
                 .Include(fs => fs.Habit)
-                .FirstOrDefaultAsync(fs => fs.Status == FocusSessionStatus.Active.ToStringValue() ||
-                                         fs.Status == FocusSessionStatus.Paused.ToStringValue());
+                .FirstOrDefaultAsync(fs => fs.CreatedBy == userId &&
+                                         (fs.Status == FocusSessionStatus.Active.ToStringValue() ||
+                                          fs.Status == FocusSessionStatus.Paused.ToStringValue()));
         }
 
         public async Task AddAsync(FocusSession focusSession)

@@ -109,8 +109,8 @@ Expected outcome:
 ## Frontend
 
 - Add/extend tests in:
-  - `client/src/components/FocusSession/*.spec.tsx`
-  - `client/src/queries/focusSessions.spec.ts`
+  - `client/src/features/FocusSession/*.spec.tsx`
+  - `client/src/data/queries/focusSessions.spec.ts`
   - optional e2e additions in `client/tests/e2e`
 - Cover:
   - calendar highlight logic

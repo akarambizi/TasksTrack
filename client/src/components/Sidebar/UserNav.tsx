@@ -1,4 +1,4 @@
-import { LogOut, Settings, User } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import { useAuthContext } from '@/context';
 
 export const UserNav = () => {
@@ -20,13 +20,6 @@ export const UserNav = () => {
                 </div>
             </div>
             <div className="flex space-x-2">
-                <button
-                    className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 flex-1 flex items-center justify-center"
-                    data-testid="settings-button"
-                >
-                    <Settings size={16} className="mr-1" />
-                    <span className="text-xs">Settings</span>
-                </button>
                 <button
                     className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 flex-1 flex items-center justify-center"
                     data-testid="logout-button"

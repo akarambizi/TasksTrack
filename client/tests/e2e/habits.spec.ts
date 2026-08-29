@@ -12,6 +12,10 @@ test.describe('Habits Management', () => {
     password: 'TestPassword123!',
   };
 
+  const getHabitTitle = (page: import('@playwright/test').Page, habitName: string) => {
+    return page.getByTestId('habit-title').filter({ hasText: habitName }).first();
+  };
+
   test.beforeEach(async ({ page }) => {
     // Login before each test using actual working pattern
     await page.goto('/login');
@@ -20,9 +24,9 @@ test.describe('Habits Management', () => {
     await page.fill('[data-testid="password-input"]', testUser.password);
     await page.click('[data-testid="submit-button"]');
 
-    // Wait for login and navigate to habits
+    // Wait for login and navigate to the Habits tab
     await page.waitForURL('**/dashboard', { timeout: 10000 });
-    await page.goto('/habits');
+    await page.goto('/productivity?tab=habits');
     await page.waitForLoadState('networkidle');
   });
 
@@ -30,6 +34,7 @@ test.describe('Habits Management', () => {
     // Wait for page to fully load
     await page.waitForLoadState('networkidle');
     // Check for the add habit button which indicates the page is ready
+    await expect(page.locator('[data-testid="habit-list"]')).toBeVisible();
     await expect(page.locator('[data-testid="add-habit-button"]')).toBeVisible();
     // Verify we have some content on the page
     await expect(page.locator('main, [role="main"]')).toBeVisible();
@@ -54,7 +59,7 @@ test.describe('Habits Management', () => {
     await page.waitForTimeout(TIMEOUTS.LONG);
 
     // Verify habit was created - just check that the habit name appears on the page
-    await expect(page.locator(`text="${habitName}"`)).toBeVisible({ timeout: 10000 });
+    await expect(getHabitTitle(page, habitName)).toBeVisible({ timeout: 10000 });
   });
 
   test('should log a habit activity', async ({ page }) => {
@@ -97,9 +102,7 @@ test.describe('Habits Management', () => {
       habitCard = page.locator(`[data-testid="habit-card"]:has-text("${habitName}")`);
       await expect(habitCard).toBeVisible({ timeout: 5000 });
     } catch {
-      // Fallback: try finding by text anywhere on page
-      await expect(page.locator(`text="${habitName}"`)).toBeVisible({ timeout: 5000 });
-      // Then find the card containing that text
+      await expect(getHabitTitle(page, habitName)).toBeVisible({ timeout: 5000 });
       habitCard = page.locator(`[data-testid="habit-card"]:has-text("${habitName}"), .habit-card:has-text("${habitName}"), [class*="card"]:has-text("${habitName}")`).first();
       await expect(habitCard).toBeVisible();
     }
@@ -155,8 +158,7 @@ test.describe('Habits Management', () => {
       habitCard = page.locator(`[data-testid="habit-card"]:has-text("${habitName}")`);
       await expect(habitCard).toBeVisible({ timeout: 5000 });
     } catch {
-      // Fallback approach
-      await expect(page.locator(`text="${habitName}"`)).toBeVisible({ timeout: 5000 });
+      await expect(getHabitTitle(page, habitName)).toBeVisible({ timeout: 5000 });
       habitCard = page.locator(`[data-testid="habit-card"]:has-text("${habitName}"), [class*="card"]:has-text("${habitName}")`).first();
       await expect(habitCard).toBeVisible();
     }
@@ -178,7 +180,7 @@ test.describe('Habits Management', () => {
     if (currentURL.includes('/habits/')) {
       // Success - we're on a detail page based on URL
       try {
-        await expect(page.locator(`text="${habitName}"`)).toBeVisible({ timeout: 5000 });
+        await expect(getHabitTitle(page, habitName)).toBeVisible({ timeout: 5000 });
       } catch {
         // Habit name might not be visible but URL indicates we're on detail page
         console.log('On habit detail page but habit name not immediately visible');
@@ -186,7 +188,7 @@ test.describe('Habits Management', () => {
     } else {
       // Try to find the habit name as alternative verification
       try {
-        await expect(page.locator(`text="${habitName}"`)).toBeVisible({ timeout: 5000 });
+        await expect(getHabitTitle(page, habitName)).toBeVisible({ timeout: 5000 });
       } catch {
         throw new Error(`Navigation failed - current URL: ${currentURL}`);
       }
@@ -218,8 +220,7 @@ test.describe('Habits Management', () => {
       habitCard = page.locator(`[data-testid="habit-card"]:has-text("${habitName}")`);
       await expect(habitCard).toBeVisible({ timeout: 5000 });
     } catch {
-      // Fallback approach
-      await expect(page.locator(`text="${habitName}"`)).toBeVisible({ timeout: 5000 });
+      await expect(getHabitTitle(page, habitName)).toBeVisible({ timeout: 5000 });
       habitCard = page.locator(`[data-testid="habit-card"]:has-text("${habitName}"), [class*="card"]:has-text("${habitName}")`).first();
       await expect(habitCard).toBeVisible();
     }

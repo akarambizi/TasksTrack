@@ -12,13 +12,10 @@ vi.mock('@/components', async (importOriginal) => {
     };
 });
 
-vi.mock('@/components/providers', () => ({
-    QueryClientProvider: ({ children }: { children: ReactNode }) => <>{children}</>
-}));
-
 vi.mock('./context', () => ({
     AuthProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
     ProtectedRoute: ({ children }: { children: ReactNode }) => <>{children}</>,
+    QueryClientProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
     useAuthContext: () => ({
         user: { email: 'test@example.com', name: 'User Name' },
         logout: vi.fn(),
@@ -33,8 +30,8 @@ describe('App routes', () => {
         cleanup();
     });
 
-    it('renders yearly retrospective route', async () => {
-        window.history.pushState({}, 'Retrospective', '/retrospective');
+    it('renders the retrospective Analytics Hub tab', async () => {
+        window.history.pushState({}, 'Retrospective', '/analytics?tab=retrospective');
 
         render(<App />);
 

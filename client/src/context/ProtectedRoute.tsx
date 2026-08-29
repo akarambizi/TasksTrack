@@ -1,4 +1,4 @@
-import { Login } from '@/components';
+import { Login } from '@/features/Auth/Login';
 import { Loading } from '@/components/ui/loading';
 import { useAuthContext } from './useAuthContext';
 

@@ -1,4 +1,5 @@
 import { IFocusSession, IHabit } from '@/types';
+import { getActualMinutesCompleted } from '@/utils/focusTimer';
 
 /**
  * Focus session status and action utilities
@@ -128,8 +129,6 @@ export const createFocusSessionHandlers = (
             await completeMutation.mutateAsync({});
 
             if (activeSession?.habit) {
-                // Dynamically import the utility function to avoid circular dependencies
-                const { getActualMinutesCompleted } = await import('@/utils/focusTimer');
                 const actualMinutes = getActualMinutesCompleted(
                     activeSession.plannedDurationMinutes * 60,
                     timeLeft

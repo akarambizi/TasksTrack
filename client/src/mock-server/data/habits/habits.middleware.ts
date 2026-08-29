@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import type { IHabit } from '@/types';
 import habits from './habits.ts';
 import categories from '../categories/categories.ts';
 
@@ -11,7 +12,7 @@ const sendNotFound = (res: Response): void => {
     res.status(404).json({ message: 'Resource not found' });
 };
 
-const addHabitWithCategory = (habit: any) => {
+const addHabitWithCategory = (habit: IHabit) => {
     const category = categories.find((c) => c.name === habit.category);
     return {
         ...habit,

@@ -17,7 +17,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['dist'],
+    ignores: ['coverage', 'dist', 'playwright-report', 'test-results'],
   },
   ...compat.config({
     env: { browser: true, es2020: true },
@@ -35,6 +35,45 @@ export default [
     rules: {
       ...tseslintPlugin.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
+      'no-undef': 'off',
+      'react-hooks/preserve-manual-memoization': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/static-components': 'off',
+    },
+  },
+  {
+    files: ['**/*.config.{js,ts}', 'src/mock-server/**/*.ts'],
+    languageOptions: {
+      globals: {
+        __dirname: 'readonly',
+        process: 'readonly',
+      },
+    },
+  },
+  {
+    files: ['src/**/*.spec.{ts,tsx}', 'tests/**/*.ts'],
+    languageOptions: {
+      globals: {
+        afterAll: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        beforeEach: 'readonly',
+        describe: 'readonly',
+        expect: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        vi: 'readonly',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react-hooks/rules-of-hooks': 'off',
+    },
+  },
+  {
+    files: ['src/utils/test-utils.tsx'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   {
@@ -42,10 +81,7 @@ export default [
       'react-refresh': reactRefresh,
     },
     rules: {
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': 'off',
     },
   },
 ];

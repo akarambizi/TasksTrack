@@ -4,8 +4,8 @@
 
 TasksTrack is a full-stack productivity application built with:
 
-- **Backend**: ASP.NET Core 8 Web API with PostgreSQL
-- **Frontend**: React 18 + TypeScript + Vite
+- **Backend**: ASP.NET Core 9 Web API with PostgreSQL
+- **Frontend**: React 19 + TypeScript + Vite
 - **Architecture**: Clean Architecture with Repository Pattern
 - **Authentication**: JWT Token-based authentication
 - **Database**: Entity Framework Core with PostgreSQL
@@ -22,14 +22,14 @@ This project has separated instruction files for better readability and focused 
 - Git workflow and code review guidelines
 
 ### **Server Instructions** (`.github/copilot-instructions-server.md`)
-- References to existing ASP.NET Core 8 patterns in your codebase
+- References to existing ASP.NET Core 9 patterns in your codebase
 - Guides Copilot to follow your established C# conventions and architecture
 - Points to actual implementations (AuthController.cs, AuthService.cs, etc.)
 - Emphasizes learning through understanding existing patterns
 - Focuses on consistency with your Repository Pattern and JWT authentication
 
 ### **Client Instructions** (`.github/copilot-instructions-client.md`)
-- References to existing React 18 + TypeScript patterns in your codebase
+- References to existing React 19 + TypeScript patterns in your codebase
 - Guides Copilot to follow your established component and hook patterns
 - Points to actual implementations (useAuth.ts, Login.tsx, etc.)
 - Emphasizes learning through understanding existing code structure
@@ -94,19 +94,20 @@ TasksTrack/
 │   ├── copilot-instructions.md         # Main instructions (this file)
 │   ├── copilot-instructions-server.md  # Server-specific instructions
 │   └── copilot-instructions-client.md  # Client-specific instructions
-├── server/                             # ASP.NET Core 8 Web API
+├── server/                             # ASP.NET Core 9 Web API
 │   ├── Controllers/                    # API Controllers
 │   ├── Services/                       # Business logic layer
 │   ├── Repositories/                   # Data access layer
 │   ├── Models/                         # Domain models and DTOs
 │   ├── Data/                           # DbContext and configurations
 │   └── Tests/                          # Unit and integration tests
-└── client/                             # React 18 + TypeScript + Vite
+└── client/                             # React 19 + TypeScript + Vite
     ├── src/
-    │   ├── api/                        # API service functions and types
-    │   ├── components/                 # Reusable UI components
-    │   ├── hooks/                      # Custom React hooks
-    │   ├── context/                    # React Context providers
+    │   ├── components/                 # Shared UI primitives and application layout
+    │   ├── context/                    # Application-wide providers and state
+    │   ├── data/                       # API functions, queries, and schemas/types
+    │   ├── features/                   # Domain-specific UI components
+    │   ├── pages/                      # Route-level page components
     │   └── services/                   # Business logic services
     └── public/
 ```
@@ -181,10 +182,10 @@ dotnet test          # Must show 100% test pass rate
 **If any quality gate fails, the feature is NOT ready for merge.**
 
 ##### **Reference Testing Patterns**
-- **Form Components**: See `client/src/components/Habits/AddHabitLogDialog.spec.tsx`
-- **Router Components**: See `client/src/components/Auth/Login.spec.tsx`
-- **Complex State**: See `client/src/components/FocusSession/FocusTimer.spec.tsx`
-- **API Functions**: See `client/src/api/habitLog.spec.ts`
+- **Form Components**: See `client/src/features/Habits/AddHabitLogDialog.spec.tsx`
+- **Router Components**: See `client/src/features/Auth/Login.spec.tsx`
+- **Complex State**: See `client/src/features/FocusSession/FocusTimer.spec.tsx`
+- **API Functions**: See `client/src/data/api/habitLog.spec.ts`
 - **Server Controllers**: See `server/Tests/Controllers/` directory
 
 #### **Validation Commands**

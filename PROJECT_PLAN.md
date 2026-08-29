@@ -24,6 +24,52 @@
 - [x] Focus minutes - total time spent in focused work sessions.
 - [x] Weekly check-ins - weekly review completion and accountability cadence.
 
+## 0.3 Implementation Audit (2026-08-28)
+
+- [x] Authentication, habits, habit logs, focus sessions, activity grid, categories, category goals, and period analytics have concrete backend implementations.
+- [x] Category management, activity grid, focus-session list, and period analytics have API-connected UI implementations.
+- [ ] Timeline/calendar backend history is implemented; calendar and timeline UI remain unimplemented. See `specs/001-timeline-calendar-views/tasks.md`.
+- [ ] Goals, year-over-year insights, weekly review, and sync-center interactions currently use mock data or mock-only actions and require backend contracts before they are production features.
+- [ ] User timezone support, offline sync/PWA, reminders, achievements, templates, sharing, import/backup, and notifications remain unimplemented.
+- [ ] Before relying on this tracker for delivery status, run the full frontend quality gates; backend focus-history tests pass, but the feature needs broader timezone coverage.
+
+## 0.4 Future TODO Queue
+
+Use this as the short, backend-first queue. The detailed acceptance work remains in the numbered sections and `specs/001-timeline-calendar-views/tasks.md`.
+
+### Next: Timeline and Calendar MVP
+
+- [ ] Add client history DTOs, API functions, query keys, and TanStack Query hooks for the focus-history endpoints.
+- [ ] Replace the existing focus-session list with calendar and timeline views backed by the new API.
+- [ ] Add week/month navigation, habit/category filtering, selectable day details, empty states, and mobile responsiveness.
+- [ ] Add repository, service, controller, component, and E2E coverage for midnight crossings, DST, filters, and zero-result states.
+
+### Then: Complete the Real Data Model
+
+- [ ] Decide whether `CategoryGoal` remains the goal model or introduce a first-class goal entity with all required cadences.
+- [ ] Build API-backed goals inside the habit workflow; remove remaining mock goal checkpoints and yearly analytics fixtures.
+- [ ] Add planning overlays and valid create/update eligibility rules to Focus History day details.
+- [ ] Make activity and analytics date grouping consistently timezone-aware.
+
+### Replace Deferred Mock Workflows
+
+- [ ] Choose whether Google Sheets sync is in scope; if yes, add connection, sync-event, job, retry, and status APIs before keeping Sync Center interactive.
+- [ ] Replace mock yearly retrospective, recommendations, and KPI data with analytics API responses, or remove those UI sections until the backend supports them.
+- [ ] Reintroduce weekly review, reminders, achievements, or notifications only after their persistence and API contracts exist.
+
+### Production Hardening
+
+- [ ] Add optimistic updates with rollback, loading/error/retry states, and stale-edit conflict handling to API-backed mutations.
+- [ ] Add CSV/JSON import/export, backups, audit history, health checks, and diagnostics as separate backend-first features.
+- [ ] Implement PWA/offline sync and push notifications only after server-side sync/conflict behavior is defined and tested.
+- [ ] Add database indexes and record performance results for 31-day and 92-day focus-history queries.
+
+### Keep Current
+
+- [ ] Update this plan and the related spec task checkboxes in the same pull request as each completed feature.
+- [ ] Run client build, lint, test/coverage, backend Release build, and backend tests before merging feature work.
+- [ ] Keep generated reports and build outputs out of Git; run `pnpm exec knip --reporter compact` after structural changes.
+
 ## 1. User Authentication ✅
 
 ### 1.1 Backend ✅
@@ -36,7 +82,6 @@
 - [x] Implement authentication middleware to protect routes
 - [x] Integrate authentication with database
 - [x] Handle authentication errors and validation errors
-
 ### 1.2 Frontend ✅
 
 - [x] Create user registration form
@@ -149,11 +194,11 @@
 
 ### 6.1 Backend
 
-- [ ] Implement calendar data endpoint (`GET /api/calendar/sessions`)
-- [ ] Implement timeline data with date navigation (`GET /api/timeline`)
-- [ ] Create session aggregation by date
-- [ ] Implement calendar filtering by habit/category
-- [ ] Handle timezone-aware date calculations
+- [x] Implement calendar data endpoint (`GET /api/focus/history/calendar`)
+- [x] Implement timeline data with date navigation (`GET /api/focus/history/timeline`)
+- [x] Create session aggregation by date
+- [x] Implement calendar filtering by habit/category
+- [x] Handle timezone-aware date calculations
 - [ ] Implement calendar event creation and updates
 
 ### 6.2 Frontend
@@ -169,28 +214,28 @@
 
 ## 7. Dashboard & Analytics
 
-### 5.1 Backend
+### 7.1 Backend
 
-- [ ] Implement weekly analytics (`GET /api/analytics/weekly`)
-- [ ] Implement monthly analytics (`GET /api/analytics/monthly`)
-- [ ] Implement quarterly analytics (`GET /api/analytics/quarterly`)
-- [ ] Implement yearly analytics (`GET /api/analytics/yearly`)
-- [ ] Implement custom date range analytics (`GET /api/analytics/custom`)
-- [ ] Create comprehensive progress tracking algorithms
-- [ ] Implement goal progress calculations
-- [ ] Create comparative analytics (habit vs habit, period vs period)
-- [ ] Implement export functionality for analytics data
+- [x] Implement weekly analytics (`GET /api/analytics/weekly`)
+- [x] Implement monthly analytics (`GET /api/analytics/monthly`)
+- [x] Implement quarterly analytics (`GET /api/analytics/quarterly`)
+- [x] Implement yearly analytics (`GET /api/analytics/yearly`)
+- [x] Implement custom date range analytics (`POST /api/analytics/custom`)
+- [x] Create comprehensive progress tracking algorithms
+- [x] Implement goal progress calculations
+- [x] Create comparative analytics (habit vs habit, period vs period)
+- [x] Implement export functionality for analytics data
 
-### 5.2 Frontend
+### 7.2 Frontend
 
-- [ ] Create main dashboard with key metrics overview
-- [ ] Implement weekly progress dashboard with charts
-- [ ] Create monthly analytics view with detailed breakdowns
-- [ ] Implement quarterly review dashboard
-- [ ] Create yearly progress summary with achievements
+- [x] Create main dashboard with key metrics overview
+- [x] Implement weekly progress dashboard with charts
+- [x] Create monthly analytics view with detailed breakdowns
+- [x] Implement quarterly review dashboard
+- [x] Create yearly progress summary with achievements (some long-term insight content remains mock-backed)
 - [ ] Implement custom date range analytics
-- [ ] Add interactive charts and visualizations (Chart.js/D3.js)
-- [ ] Create progress comparison tools
+- [x] Add interactive charts and visualizations (Chart.js/D3.js)
+- [x] Create progress comparison tools
 - [ ] Implement dashboard customization options
 - [ ] Add export functionality for reports
 
@@ -198,13 +243,13 @@
 
 ### 8.1 Backend
 
-- [ ] Implement streak calculation system
+- [x] Implement streak calculation system
 - [ ] Create achievement/milestone tracking
-- [ ] Implement longest streak calculations
+- [x] Implement longest streak calculations
 - [ ] Create habit consistency scoring
 - [ ] Implement achievement notification system
-- [ ] Create habit performance analytics
-- [ ] Implement goal setting and tracking (like "25h" goals)
+- [x] Create habit performance analytics
+- [x] Implement goal setting and tracking (daily/weekly category goals; additional cadences remain needed)
 - [ ] Create streak recovery and motivation algorithms
 
 ### 8.2 Frontend
@@ -223,22 +268,22 @@
 
 ### 9.1 Backend
 
-- [ ] Implement category management (`POST/GET/PUT/DELETE /api/categories`)
+- [x] Implement category management (`POST/GET/PUT/DELETE /api/categories`)
 - [ ] Create predefined categories (Health, Personal, Creative, Work, Study, Learning, Reading)
 - [ ] Implement category-based habit filtering
-- [ ] Create category analytics and distribution
-- [ ] Handle "No Category" assignments
-- [ ] Implement category color and icon management
+- [x] Create category analytics and distribution
+- [x] Handle "No Category" assignments
+- [x] Implement category color and icon management
 
 ### 9.2 Frontend
 
-- [ ] Create category selection interface for habits
-- [ ] Implement category-based habit organization
-- [ ] Create category distribution visualization (with percentages and time)
+- [x] Create category selection interface for habits
+- [x] Implement category-based habit organization
+- [x] Create category distribution visualization (with percentages and time)
 - [ ] Add category filtering and search
-- [ ] Implement category color coding and icons
-- [ ] Create category management settings
-- [ ] Add category-based dashboard views
+- [x] Implement category color coding and icons
+- [x] Create category management settings
+- [x] Add category-based dashboard views
 
 ## 10. Advanced Features
 
@@ -256,7 +301,7 @@
 
 - [ ] Create habit template library
 - [ ] Implement reminder management interface
-- [ ] Add dark/light theme support
+- [x] Add dark/light theme support
 - [ ] Create habit sharing and social features
 - [ ] Implement habit coaching interface
 - [ ] Add advanced filtering and search
@@ -323,16 +368,16 @@
 - [x] KPI checkpoint: Goal completion rate visible on Dashboard and Statistics
 
 #### Goal Cadence UX Foundation
-- [x] Add UI model for cadences: daily/weekly/monthly/quarterly/yearly
-- [x] Add mock goal cards grouped by cadence
-- [x] Add target progress bars with status badges (on-track/behind/exceeded)
-- [x] KPI checkpoint: all 5 cadences displayed with numeric targets and progress
+- [ ] Add UI model for cadences: daily/weekly/monthly/quarterly/yearly
+- [ ] Add API-backed goal cards grouped by cadence
+- [ ] Add target progress bars with status badges (on-track/behind/exceeded)
+- [ ] KPI checkpoint: all 5 cadences displayed with numeric targets and progress
 
 #### Goal Management Screens
-- [x] Add goal management panel (create/edit/archive interactions mocked)
-- [x] Add numeric validation states in forms (client-only)
-- [x] Add mock optimistic updates for goal status
-- [x] KPI checkpoint: 100% form states represented (valid/invalid/submitting/success/error)
+- [ ] Add goal management within the habit workflow after the backend contract is complete.
+- [ ] Add server-side validation for cadence, target, archive, and progress updates.
+- [ ] Add optimistic updates with rollback for goal status changes.
+- [ ] KPI checkpoint: API-backed valid/invalid/submitting/success/error states are covered.
 
 #### Dashboard Reliability UX
 - [x] Align all dashboard KPI cards to one canonical visual format
@@ -353,10 +398,10 @@
 - [x] KPI checkpoint: 3+ year trend visualization rendered from mock data
 
 #### Accountability UX
-- [x] Add weekly review checklist component
-- [x] Add streak milestone badges and recovery prompts
-- [x] Add next best action recommendation card (mock rules)
-- [x] KPI checkpoint: weekly review completion meter visible and actionable
+- [ ] Add API-backed weekly review and accountability data.
+- [ ] Add streak milestone badges and recovery prompts.
+- [ ] Add next best action recommendation based on real activity data.
+- [ ] KPI checkpoint: weekly review completion meter is persisted and actionable.
 
 #### Sync UX Foundation
 - [x] Add Google Sheets integration settings UI shell

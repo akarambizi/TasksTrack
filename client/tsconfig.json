@@ -20,6 +20,48 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
+      "@/api": [
+        "./src/data/api/index.ts"
+      ],
+      "@/api/*": [
+        "./src/data/api/*"
+      ],
+      "@/queries": [
+        "./src/data/queries/index.ts"
+      ],
+      "@/queries/*": [
+        "./src/data/queries/*"
+      ],
+      "@/types": [
+        "./src/data/types/index.ts"
+      ],
+      "@/types/*": [
+        "./src/data/types/*"
+      ],
+      "@/components/Analytics": [
+        "./src/features/Analytics/index.ts"
+      ],
+      "@/components/Analytics/*": [
+        "./src/features/Analytics/*"
+      ],
+      "@/components/Auth/*": [
+        "./src/features/Auth/*"
+      ],
+      "@/components/Categories/*": [
+        "./src/features/Categories/*"
+      ],
+      "@/components/FocusSession": [
+        "./src/features/FocusSession/index.ts"
+      ],
+      "@/components/FocusSession/*": [
+        "./src/features/FocusSession/*"
+      ],
+      "@/components/Habits/*": [
+        "./src/features/Habits/*"
+      ],
+      "@/components/Sync/*": [
+        "./src/features/Sync/*"
+      ],
       "*": [
         "./*"
       ],

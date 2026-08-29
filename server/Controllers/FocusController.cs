@@ -160,6 +160,62 @@ namespace TasksTrack.Controllers
             }
         }
 
+        [HttpGet("api/focus/history/calendar")]
+        public async Task<ActionResult<CalendarHistoryResponse>> GetCalendarHistory([FromQuery] FocusSessionHistoryFilterRequest filter)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(await _focusSessionService.GetCalendarHistoryAsync(filter));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/focus/history/timeline")]
+        public async Task<ActionResult<TimelineHistoryResponse>> GetTimelineHistory([FromQuery] FocusSessionHistoryFilterRequest filter)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(await _focusSessionService.GetTimelineHistoryAsync(filter));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/focus/history/day/{localDate}")]
+        public async Task<ActionResult<FocusSessionDayDetailResponse>> GetDayDetail(
+            string localDate,
+            [FromQuery] FocusSessionHistoryFilterRequest filter)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(await _focusSessionService.GetDayDetailAsync(localDate, filter));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpGet("api/focus/active")]
         public async Task<ActionResult<FocusSessionResponse?>> GetActiveSession()
         {

@@ -1,11 +1,9 @@
 import {
     ICurrentKpiSnapshot,
     IGoalCheckpoint,
-    IGoalItem,
     IYearMonthHighlight,
     ISyncEvent,
     ISyncKpis,
-    IWeeklyReviewItem,
     IYearlyMilestone,
     IYearSnapshot
 } from '@/types';
@@ -25,98 +23,6 @@ export const yearlySnapshots: IYearSnapshot[] = [
     { year: 2024, goalCompletionRate: 68, consistencyRate: 64, focusMinutes: 28950, completedGoals: 138 },
     { year: 2025, goalCompletionRate: 74, consistencyRate: 71, focusMinutes: 36480, completedGoals: 172 },
     { year: 2026, goalCompletionRate: 79, consistencyRate: 76, focusMinutes: 49120, completedGoals: 219 }
-];
-
-export const goalItems: IGoalItem[] = [
-    {
-        id: 'goal-1',
-        title: 'Deep Work Sessions',
-        cadence: 'daily',
-        target: 120,
-        actual: 95,
-        unit: 'min',
-        status: 'behind',
-        category: 'Work'
-    },
-    {
-        id: 'goal-2',
-        title: 'Weekly Focus Blocks',
-        cadence: 'weekly',
-        target: 10,
-        actual: 11,
-        unit: 'sessions',
-        status: 'exceeded',
-        category: 'Work'
-    },
-    {
-        id: 'goal-3',
-        title: 'Reading Volume',
-        cadence: 'monthly',
-        target: 600,
-        actual: 540,
-        unit: 'min',
-        status: 'on-track',
-        category: 'Learning'
-    },
-    {
-        id: 'goal-4',
-        title: 'Training Sessions',
-        cadence: 'quarterly',
-        target: 120,
-        actual: 120,
-        unit: 'sessions',
-        status: 'on-track',
-        category: 'Health'
-    },
-    {
-        id: 'goal-5',
-        title: 'Yearly Focus Time',
-        cadence: 'yearly',
-        target: 72000,
-        actual: 49120,
-        unit: 'min',
-        status: 'on-track',
-        category: 'Work'
-    },
-    {
-        id: 'goal-6',
-        title: 'Hydration Check-ins',
-        cadence: 'daily',
-        target: 8,
-        actual: 8,
-        unit: 'glasses',
-        status: 'on-track',
-        category: 'Health'
-    },
-    {
-        id: 'goal-7',
-        title: 'Language Flashcards',
-        cadence: 'weekly',
-        target: 60,
-        actual: 72,
-        unit: 'flashcards',
-        status: 'exceeded',
-        category: 'Learning'
-    },
-    {
-        id: 'goal-8',
-        title: 'Personal Writing',
-        cadence: 'monthly',
-        target: 400,
-        actual: 260,
-        unit: 'min',
-        status: 'behind',
-        category: 'Personal'
-    }
-];
-
-export const weeklyReviewChecklist: IWeeklyReviewItem[] = [
-    { id: 'wr-1', label: 'Reviewed weekly goals', completed: true },
-    { id: 'wr-2', label: 'Planned recovery actions', completed: false },
-    { id: 'wr-3', label: 'Updated next week priorities', completed: true },
-    { id: 'wr-4', label: 'Scheduled high-focus blocks', completed: true },
-    { id: 'wr-5', label: 'Checked streak risk and recovery prompts', completed: false },
-    { id: 'wr-6', label: 'Confirmed calendar commitments', completed: true }
 ];
 
 export const yearlyMilestones: IYearlyMilestone[] = [

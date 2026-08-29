@@ -193,8 +193,8 @@ interface IFilterCondition {
 ## Examples
 
 ### Focus Sessions (Reference Implementation)
-- **Frontend**: `client/src/components/FocusSession/FocusSessionHistory.tsx`
-- **API**: `client/src/api/focusSession.ts` → `getFocusSessions()`
+- **Frontend**: `client/src/features/FocusSession/FocusSessionHistory.tsx`
+- **API**: `client/src/data/api/focusSession.ts` → `getFocusSessions()`
 - **Backend**: `server/Controllers/FocusController.cs` → `GetSessions()`
 - **Service**: `server/Services/FocusSessionService.cs` → `GetSessions()`
 

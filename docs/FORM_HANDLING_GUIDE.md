@@ -96,5 +96,5 @@ vi.mocked(useLoginForm).mockReturnValue({
 ## Reference Files
 
 - `client/src/hooks/useForm.ts` - Form hook patterns
-- `client/src/components/Auth/Login.tsx` - Controller pattern example
-- `client/src/components/Habits/AddHabitLogDialog.tsx` - Complex form example
+- `client/src/features/Auth/Login.tsx` - Controller pattern example
+- `client/src/features/Habits/AddHabitLogDialog.tsx` - Complex form example

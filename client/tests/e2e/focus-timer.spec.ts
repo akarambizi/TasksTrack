@@ -17,7 +17,7 @@ test.describe('Focus Timer', () => {
 
     // Wait for successful login
     await page.waitForURL('**/dashboard', { timeout: 10000 });
-    await page.goto('/focus-sessions');
+    await page.goto('/productivity?tab=focus');
     await page.waitForLoadState('networkidle');
   });
 

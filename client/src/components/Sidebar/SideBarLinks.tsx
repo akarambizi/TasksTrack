@@ -1,4 +1,4 @@
-import { Home, PieChart, Target, Sheet, ClipboardCheck } from 'lucide-react';
+import { Home, PieChart, Target, Sheet } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { Badge } from '../ui/badge';
 
@@ -29,9 +29,6 @@ export const SideBarLinks = () => {
                         <span>Productivity Hub</span>
                         <Badge variant="secondary" className="text-xs px-2 py-0.5">3</Badge>
                     </div>
-                </NavItem>
-                <NavItem to="/weekly-review" icon={<ClipboardCheck size={20} />}>
-                    Weekly Review
                 </NavItem>
             </div>
 

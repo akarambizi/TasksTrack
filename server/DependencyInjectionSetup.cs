@@ -10,9 +10,6 @@ public static class DependencyInjectionSetup
         // User context service
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-
         // Habit services
         services.AddScoped<IHabitService, HabitService>();
         services.AddScoped<IHabitRepository, HabitRepository>();

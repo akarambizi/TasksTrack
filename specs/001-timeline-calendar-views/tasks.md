@@ -18,10 +18,10 @@
 
 **Purpose**: Prepare feature scaffolding and shared contracts/types aligned with existing architecture.
 
-- [ ] T001 Add focus-history DTO files for request/response contracts in `server/Models/FocusSession/FocusSessionHistoryFilterRequest.cs`, `server/Models/FocusSession/CalendarDaySummaryResponse.cs`, `server/Models/FocusSession/TimelineDayGroupResponse.cs`, and `server/Models/FocusSession/FocusSessionDayDetailResponse.cs`
-- [ ] T002 [P] Add frontend history view types aligned to API contract in `client/src/types/focusSession.ts`
+- [x] T001 Add focus-history DTO files for request/response contracts in `server/Models/FocusSession/FocusSessionHistoryModels.cs`
+- [ ] T002 [P] Add frontend history view types aligned to API contract in `client/src/data/types/focusSession.ts`
 - [ ] T003 [P] Add shared date-range/timezone helper utilities (date-fns based) in `client/src/utils/focusSession.utils.ts`
-- [ ] T004 Register new focus-history query key builders/constants in `client/src/queries/queryKeys.ts` and export in `client/src/queries/index.ts`
+- [ ] T004 Register new focus-history query key builders/constants in `client/src/data/queries/queryKeys.ts` and export in `client/src/data/queries/index.ts`
 
 ---
 
@@ -31,12 +31,12 @@
 
 **⚠️ CRITICAL**: No user story work begins until this phase completes.
 
-- [ ] T005 Extend repository contracts for calendar/timeline/day-detail retrieval in `server/Repositories/IFocusSessionRepository.cs`
-- [ ] T006 Implement timezone-aware range/filter query methods in `server/Repositories/FocusSessionRepository.cs`
-- [ ] T007 Extend service contracts for focus-history orchestration in `server/Services/IFocusSessionService.cs`
-- [ ] T008 Implement service-level validation (date span, timezone, filters) and mapping in `server/Services/FocusSessionService.cs`
-- [ ] T009 Add authenticated controller endpoints for `/api/focus/history/calendar`, `/api/focus/history/timeline`, and `/api/focus/history/day/{localDate}` in `server/Controllers/FocusController.cs`
-- [ ] T010 [P] Add foundational backend tests for validation and auth guards in `server/Tests/Services/FocusSessionServiceTest.cs` and `server/Tests/Controllers/FocusControllerTest.cs`
+- [x] T005 Extend repository contracts for calendar/timeline/day-detail retrieval in `server/Repositories/IFocusSessionRepository.cs`
+- [x] T006 Implement timezone-aware range/filter query methods in `server/Repositories/FocusSessionRepository.cs`
+- [x] T007 Extend service contracts for focus-history orchestration in `server/Services/IFocusSessionService.cs`
+- [x] T008 Implement service-level validation (date span, timezone, filters) and mapping in `server/Services/FocusSessionService.cs`
+- [x] T009 Add authenticated controller endpoints for `/api/focus/history/calendar`, `/api/focus/history/timeline`, and `/api/focus/history/day/{localDate}` in `server/Controllers/FocusController.cs`
+- [x] T010 [P] Add foundational backend tests for validation and auth guards in `server/Tests/Services/FocusSessionServiceTest.cs` and `server/Tests/Controllers/FocusControllerTest.cs`
 
 **Checkpoint**: Foundation complete; user story implementation can proceed.
 
@@ -55,17 +55,17 @@
 - [ ] T011 [P] [US1] Add backend repository aggregation tests for active-day and chronological grouping in `server/Tests/Repositories/FocusSessionRepositoryTest.cs`
 - [ ] T012 [P] [US1] Add backend service tests for local-day bucketing (including midnight crossing) in `server/Tests/Services/FocusSessionServiceTest.cs`
 - [ ] T013 [P] [US1] Add backend controller tests for calendar/timeline/day-detail success and invalid-input paths in `server/Tests/Controllers/FocusControllerTest.cs`
-- [ ] T014 [P] [US1] Add frontend API contract tests for new history endpoints in `client/src/api/focusSession.spec.ts`
-- [ ] T015 [P] [US1] Add frontend query tests for history hooks and cache keys in `client/src/queries/focusSessions.spec.ts`
-- [ ] T016 [P] [US1] Add component tests for calendar highlights, day detail drawer, and timeline ordering in `client/src/components/FocusSession/FocusSessionHistory.spec.tsx`
+- [ ] T014 [P] [US1] Add frontend API contract tests for new history endpoints in `client/src/data/api/focusSession.spec.ts`
+- [ ] T015 [P] [US1] Add frontend query tests for history hooks and cache keys in `client/src/data/queries/focusSessions.spec.ts`
+- [ ] T016 [P] [US1] Add component tests for calendar highlights, day detail drawer, and timeline ordering in `client/src/features/FocusSession/FocusSessionHistory.spec.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T017 [US1] Implement calendar/timeline/day-detail API functions in `client/src/api/focusSession.ts`
-- [ ] T018 [US1] Implement TanStack Query hooks for history and day details in `client/src/queries/focusSessions.ts`
-- [ ] T019 [US1] Implement calendar active-day rendering and day-selection detail panel in `client/src/components/FocusSession/FocusSessionHistory.tsx`
-- [ ] T020 [US1] Implement timeline day grouping and chronological session list UI in `client/src/components/FocusSession/FocusSessionHistory.tsx`
-- [ ] T021 [US1] Wire history view entry points and tab state in `client/src/components/FocusSession/FocusSessions.tsx`
+- [ ] T017 [US1] Implement calendar/timeline/day-detail API functions in `client/src/data/api/focusSession.ts`
+- [ ] T018 [US1] Implement TanStack Query hooks for history and day details in `client/src/data/queries/focusSessions.ts`
+- [ ] T019 [US1] Implement calendar active-day rendering and day-selection detail panel in `client/src/features/FocusSession/FocusSessionHistory.tsx`
+- [ ] T020 [US1] Implement timeline day grouping and chronological session list UI in `client/src/features/FocusSession/FocusSessionHistory.tsx`
+- [ ] T021 [US1] Wire history view entry points and tab state in `client/src/features/FocusSession/FocusSessions.tsx`
 
 **Checkpoint**: User Story 1 is independently functional and testable.
 
@@ -82,16 +82,16 @@
 - [ ] T022 [P] [US2] Add backend repository tests for habit/category filter correctness across ranges in `server/Tests/Repositories/FocusSessionRepositoryTest.cs`
 - [ ] T023 [P] [US2] Add backend service tests for range validation limits and zero-match handling in `server/Tests/Services/FocusSessionServiceTest.cs`
 - [ ] T024 [P] [US2] Add backend controller tests for filter query binding and 400 responses on invalid filters in `server/Tests/Controllers/FocusControllerTest.cs`
-- [ ] T025 [P] [US2] Add frontend query tests for filter/range key invalidation behavior in `client/src/queries/focusSessions.spec.ts`
-- [ ] T026 [P] [US2] Add component tests for filter controls, week/month navigation, and empty states in `client/src/components/FocusSession/FocusSessionHistory.spec.tsx`
+- [ ] T025 [P] [US2] Add frontend query tests for filter/range key invalidation behavior in `client/src/data/queries/focusSessions.spec.ts`
+- [ ] T026 [P] [US2] Add component tests for filter controls, week/month navigation, and empty states in `client/src/features/FocusSession/FocusSessionHistory.spec.tsx`
 - [ ] T027 [P] [US2] Add e2e tests for filter and range navigation workflows in `client/tests/e2e/focus-timer.spec.ts`
 
 ### Implementation for User Story 2
 
 - [ ] T028 [US2] Add habit/category filter support to backend history endpoints in `server/Controllers/FocusController.cs` and `server/Services/FocusSessionService.cs`
-- [ ] T029 [US2] Implement week/month range state and date-fns navigation helpers in `client/src/components/FocusSession/FocusSessionHistory.tsx` and `client/src/utils/focusSession.utils.ts`
-- [ ] T030 [US2] Implement habit/category filter controls and server-query wiring in `client/src/components/FocusSession/FocusSessionHistory.tsx`
-- [ ] T031 [US2] Implement motivational zero-results empty state and start-session CTA in `client/src/components/FocusSession/FocusSessionHistory.tsx`
+- [ ] T029 [US2] Implement week/month range state and date-fns navigation helpers in `client/src/features/FocusSession/FocusSessionHistory.tsx` and `client/src/utils/focusSession.utils.ts`
+- [ ] T030 [US2] Implement habit/category filter controls and server-query wiring in `client/src/features/FocusSession/FocusSessionHistory.tsx`
+- [ ] T031 [US2] Implement motivational zero-results empty state and start-session CTA in `client/src/features/FocusSession/FocusSessionHistory.tsx`
 
 **Checkpoint**: User Stories 1 and 2 are independently functional and testable.
 
@@ -108,17 +108,17 @@
 - [ ] T032 [P] [US3] Add backend service tests for planning overlay mapping from existing category-goal data in `server/Tests/Services/FocusSessionServiceTest.cs`
 - [ ] T033 [P] [US3] Add backend controller tests for planning overlay responses in day-detail endpoint in `server/Tests/Controllers/FocusControllerTest.cs`
 - [ ] T033A [P] [US3] Add backend service/controller tests for planning eligibility rules (PER-003, PER-004, PER-005) including blocked create/update and clear validation responses in `server/Tests/Services/FocusSessionServiceTest.cs` and `server/Tests/Controllers/FocusControllerTest.cs`
-- [ ] T034 [P] [US3] Add frontend API tests for planning-aware day-detail payload handling in `client/src/api/focusSession.spec.ts`
-- [ ] T035 [P] [US3] Add component tests for planning create/update interactions from selected day in `client/src/components/FocusSession/FocusSessionHistory.spec.tsx`
-- [ ] T035A [P] [US3] Add frontend component tests for non-destructive blocked-action messaging when planning eligibility validation fails in `client/src/components/FocusSession/FocusSessionHistory.spec.tsx`
+- [ ] T034 [P] [US3] Add frontend API tests for planning-aware day-detail payload handling in `client/src/data/api/focusSession.spec.ts`
+- [ ] T035 [P] [US3] Add component tests for planning create/update interactions from selected day in `client/src/features/FocusSession/FocusSessionHistory.spec.tsx`
+- [ ] T035A [P] [US3] Add frontend component tests for non-destructive blocked-action messaging when planning eligibility validation fails in `client/src/features/FocusSession/FocusSessionHistory.spec.tsx`
 - [ ] T036 [P] [US3] Add e2e tests for planning create/update and reflected timeline/day-detail behavior in `client/tests/e2e/focus-timer.spec.ts`
 
 ### Implementation for User Story 3
 
 - [ ] T037 [US3] Extend day-detail service/repository composition to include planning overlays from existing category-goal domain in `server/Services/FocusSessionService.cs` and `server/Repositories/FocusSessionRepository.cs`
 - [ ] T038 [US3] Add planning entry projection model for history payloads in `server/Models/FocusSession/PlanningEntryViewResponse.cs`
-- [ ] T039 [US3] Add planning create/update interaction wiring using existing endpoints in `client/src/api/categories.ts` and `client/src/components/FocusSession/FocusSessionHistory.tsx`
-- [ ] T040 [US3] Render planning overlays and update states in selected-day detail UI in `client/src/components/FocusSession/FocusSessionHistory.tsx`
+- [ ] T039 [US3] Add planning create/update interaction wiring using existing endpoints in `client/src/data/api/categories.ts` and `client/src/features/FocusSession/FocusSessionHistory.tsx`
+- [ ] T040 [US3] Render planning overlays and update states in selected-day detail UI in `client/src/features/FocusSession/FocusSessionHistory.tsx`
 
 **Checkpoint**: All user stories are independently functional and testable.
 
@@ -129,9 +129,9 @@
 **Purpose**: Cross-story hardening, documentation, and mandatory quality gates.
 
 - [ ] T041 [P] Add DST/timezone regression fixtures and assertions in `server/Tests/Repositories/FocusSessionRepositoryTest.cs` and `server/Tests/Services/FocusSessionServiceTest.cs`
-- [ ] T042 [P] Add mobile swipe navigation interaction tests in `client/src/components/FocusSession/FocusSessionHistory.spec.tsx` and `client/tests/e2e/focus-timer.spec.ts`
-- [ ] T042A [P] Add responsive layout tests for calendar/timeline/day-detail across mobile/tablet/desktop breakpoints in `client/src/components/FocusSession/FocusSessionHistory.spec.tsx` and `client/tests/e2e/focus-timer.spec.ts`
-- [ ] T043 [P] Update focus history API notes and usage examples in `client/src/api/API_DOCS.md`
+- [ ] T042 [P] Add mobile swipe navigation interaction tests in `client/src/features/FocusSession/FocusSessionHistory.spec.tsx` and `client/tests/e2e/focus-timer.spec.ts`
+- [ ] T042A [P] Add responsive layout tests for calendar/timeline/day-detail across mobile/tablet/desktop breakpoints in `client/src/features/FocusSession/FocusSessionHistory.spec.tsx` and `client/tests/e2e/focus-timer.spec.ts`
+- [ ] T043 [P] Update focus history API notes and usage examples in `client/src/data/api/API_DOCS.md`
 - [ ] T044 [P] Update end-to-end validation steps for this feature in `specs/001-timeline-calendar-views/quickstart.md`
 - [ ] T044A [P] Add performance verification step for history endpoints (31-day and 92-day windows) and record p95 results in `specs/001-timeline-calendar-views/quickstart.md`
 - [ ] T045 Run frontend quality gate build (`npm run build`) in `client/` and resolve all errors/warnings
@@ -184,9 +184,9 @@ Task: T012 server/Tests/Services/FocusSessionServiceTest.cs
 Task: T013 server/Tests/Controllers/FocusControllerTest.cs
 
 # Frontend tests in parallel
-Task: T014 client/src/api/focusSession.spec.ts
-Task: T015 client/src/queries/focusSessions.spec.ts
-Task: T016 client/src/components/FocusSession/FocusSessionHistory.spec.tsx
+Task: T014 client/src/data/api/focusSession.spec.ts
+Task: T015 client/src/data/queries/focusSessions.spec.ts
+Task: T016 client/src/features/FocusSession/FocusSessionHistory.spec.tsx
 ```
 
 ## Parallel Example: User Story 2
@@ -194,8 +194,8 @@ Task: T016 client/src/components/FocusSession/FocusSessionHistory.spec.tsx
 ```bash
 # Filter and navigation tests in parallel
 Task: T022 server/Tests/Repositories/FocusSessionRepositoryTest.cs
-Task: T025 client/src/queries/focusSessions.spec.ts
-Task: T026 client/src/components/FocusSession/FocusSessionHistory.spec.tsx
+Task: T025 client/src/data/queries/focusSessions.spec.ts
+Task: T026 client/src/features/FocusSession/FocusSessionHistory.spec.tsx
 Task: T027 client/tests/e2e/focus-timer.spec.ts
 ```
 

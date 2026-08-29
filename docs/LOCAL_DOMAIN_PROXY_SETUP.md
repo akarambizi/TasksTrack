@@ -45,7 +45,7 @@ File: `docker-compose.yml`
 ### 3) Updated frontend API behavior
 
 Files:
-- `client/src/api/utils.ts`
+- `client/src/data/api/utils.ts`
 - `client/vite.config.ts`
 
 Changes:

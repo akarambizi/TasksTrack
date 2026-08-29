@@ -196,6 +196,46 @@ namespace TasksTrack.Tests.Repositories
         }
 
         [Fact]
+        public async Task GetHistorySessionsAsync_ExcludesSessionsOwnedByOtherUsers()
+        {
+            var rangeStartUtc = new DateTimeOffset(2026, 8, 28, 0, 0, 0, TimeSpan.Zero);
+            var rangeEndUtc = rangeStartUtc.AddDays(1);
+            var userSession = new FocusSession
+            {
+                HabitId = 1,
+                CreatedBy = _testUserId,
+                StartTime = rangeStartUtc.AddHours(9),
+                Status = "completed",
+                PlannedDurationMinutes = 25,
+                CreatedDate = rangeStartUtc.AddHours(9)
+            };
+            var otherUserSession = new FocusSession
+            {
+                HabitId = 1,
+                CreatedBy = "other-user",
+                StartTime = rangeStartUtc.AddHours(10),
+                Status = "completed",
+                PlannedDurationMinutes = 25,
+                CreatedDate = rangeStartUtc.AddHours(10)
+            };
+            _context.FocusSessions.AddRange(userSession, otherUserSession);
+            await _context.SaveChangesAsync();
+
+            var filter = new FocusSessionHistoryFilterRequest
+            {
+                StartDate = "2026-08-28",
+                EndDate = "2026-08-28",
+                Timezone = "UTC"
+            };
+
+            var sessions = (await _repository.GetHistorySessionsAsync(_testUserId, filter, rangeStartUtc, rangeEndUtc)).ToList();
+
+            Assert.Single(sessions);
+            Assert.Equal(userSession.Id, sessions[0].Id);
+            Assert.Equal(_testUserId, sessions[0].CreatedBy);
+        }
+
+        [Fact]
         public async Task GetActiveOrPausedSessionByUserAsync_WithActiveSession_ShouldReturnSession()
         {
             // Arrange
@@ -223,7 +263,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveOrPausedSessionAsync();
+            var result = await _repository.GetActiveOrPausedSessionAsync(_testUserId);
 
             // Assert
             Assert.NotNull(result);
@@ -249,7 +289,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveOrPausedSessionAsync();
+            var result = await _repository.GetActiveOrPausedSessionAsync(_testUserId);
 
             // Assert
             Assert.NotNull(result);
@@ -275,7 +315,7 @@ namespace TasksTrack.Tests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetActiveOrPausedSessionAsync();
+            var result = await _repository.GetActiveOrPausedSessionAsync(_testUserId);
 
             // Assert
             Assert.Null(result);

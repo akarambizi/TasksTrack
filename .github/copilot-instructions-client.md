@@ -7,7 +7,7 @@ new ones.**
 
 ### Project Architecture
 
-- **React 18** with functional components and hooks
+- **React 19** with functional components and hooks
 - **TypeScript** for type safety
 - **Vite** for fast development and building
 - **TanStack Query** for server state management
@@ -25,6 +25,10 @@ new ones.**
 **MANDATORY: Follow these component organization rules for all UI development:**
 
 ### **Component Location Strategy**
+- **Route-level pages** → `client/src/pages/`
+  - Compose feature components and own route-level state.
+- **Domain-specific UI** → `client/src/features/<FeatureName>/`
+  - Keep habit, focus session, analytics, sync, auth, and category behavior in its feature folder.
 - **Custom reusable components** → `client/src/components/ui/common/`
   - Project-specific components like timer-display, habit-info, select-field, etc.
   - Components built specifically for TasksTrack functionality
@@ -37,13 +41,16 @@ new ones.**
    - Review current components: timer-display, timer-controls, habit-info, select-field,
      textarea-field, auth-layout, form-field, status-badge, stats-card, page-header, loading-skeleton
    - Extend or compose existing components instead of creating duplicates
-2. **Check existing utility functions** in `client/src/utils/`
+2. **Check the owning feature** in `client/src/features/` before creating a feature component.
+3. **Check existing utility functions** in `client/src/utils/`
    - Review focusSession.utils.ts and other utility files
    - Reuse existing business logic and helper functions
-3. **Follow the barrel export pattern** - All components must be exported through `client/src/components/ui/index.ts`
+4. **Follow the barrel export pattern** - Export shared UI through `client/src/components/ui/index.ts`; keep pages out of component barrels.
 
 ### **Component Creation Rules**
 - **New reusable component needed?** → Create in `ui/common/` and add to index.ts exports
+- **New feature component needed?** → Create it in its owning `features/` folder
+- **New route owner needed?** → Create it in `pages/` and compose feature components there
 - **Need shadcn component?** → Install via shadcn CLI into `ui/` directory
 - **Extending existing component?** → Modify the existing component rather than duplicating
 - **Business logic needed?** → Add to appropriate utility files in `utils/` directory
@@ -91,9 +98,9 @@ const { data } = useMyDataHook(queryString);
 ```
 
 ### Reference Implementation
-- **Component**: `client/src/components/FocusSession/FocusSessionHistory.tsx`
-- **API**: `client/src/api/focusSession.ts`
-- **Hook**: `client/src/queries/focusSessions.ts`
+- **Component**: `client/src/features/FocusSession/FocusSessionHistory.tsx`
+- **API**: `client/src/data/api/focusSession.ts`
+- **Hook**: `client/src/data/queries/focusSessions.ts`
 
 ### OData Query Builder Methods
 ```typescript
@@ -126,7 +133,9 @@ const { data } = useMyDataHook(queryString);
 
 **Examine these files to understand the established patterns:**
 
-- `client/src/api/` - for API interface naming (e.g., `IHabit`, `IAuthData`)
+- `client/src/data/api/` - for API function and request/response patterns
+- `client/src/data/queries/` - for TanStack Query hooks and query keys
+- `client/src/data/types/` - for schemas and API/domain types
 - `client/src/hooks/` - for custom hook patterns (e.g., `useAuth.ts`, `useForm.ts`)
 - `client/src/components/` - for component structure and naming
 
@@ -143,15 +152,17 @@ const { data } = useMyDataHook(queryString);
 
 ```text
 client/src/
-├── api/                    # API service functions and types
+├── components/             # Shared UI primitives and application layout
 ├── assets/                 # Static assets (images, icons, etc.)
-├── components/            # UI components organized by feature
-├── context/              # React Context providers
-├── hooks/                # Custom React hooks
-├── lib/                  # Utility functions
-├── mock-server/          # Development mock server
-├── queries/              # TanStack Query hooks (useQuery, useMutation)
-└── services/             # Business logic services
+├── context/                # Application-wide providers and state
+├── data/                   # API functions, queries, and schemas/types
+├── features/               # Domain-specific UI
+├── hooks/                  # Reusable React hooks
+├── lib/                    # Generic utility functions
+├── mock-server/            # Development mock server
+├── pages/                  # Route-level page components
+├── services/               # Browser and cross-cutting services
+└── utils/                  # Domain utility functions and test helpers
 ```
 
 **When creating new files, examine existing files in the same directory to match:**
@@ -381,17 +392,17 @@ it('should handle API errors gracefully', async () => {
 
 **Study these successful test files for patterns:**
 
-- `client/src/components/Auth/Login.spec.tsx` - Form testing with validation
-- `client/src/components/Habits/AddHabitLogDialog.spec.tsx` - Dialog with React Hook Form
-- `client/src/components/FocusSession/FocusTimer.spec.tsx` - Complex state management
-- `client/src/api/habitLog.spec.ts` - API function testing with error handling
+- `client/src/features/Auth/Login.spec.tsx` - Form testing with validation
+- `client/src/features/Habits/AddHabitLogDialog.spec.tsx` - Dialog with React Hook Form
+- `client/src/features/FocusSession/FocusTimer.spec.tsx` - Complex state management
+- `client/src/data/api/habitLog.spec.ts` - API function testing with error handling
 
 ### 4. **Reference Existing Interface Patterns**
 
 **Before creating new interfaces, check these existing files:**
 
-- `client/src/api/*.types.ts` - for all API-related interfaces (habit.types.ts, userAuth.types.ts, etc.)
-- `client/src/components/Habits/useHabitForm.ts` - for form validation and error display
+- `client/src/data/api/*.types.ts` - for all API-related interfaces (habit.types.ts, userAuth.types.ts, etc.)
+- `client/src/features/Habits/useHabitForm.ts` - for form validation and error display
 
 **Always maintain consistency with the established interface patterns:**
 
@@ -404,9 +415,9 @@ it('should handle API errors gracefully', async () => {
 
 **Study these component examples to understand the established patterns:**
 
-- `client/src/components/Auth/Login.tsx` - for form components and validation
-- `client/src/components/Habits/Habits.tsx` - for data fetching and rendering patterns
-- `client/src/components/Habits/HabitsContainer.tsx` - for container component structure
+- `client/src/features/Auth/Login.tsx` - for form components and validation
+- `client/src/features/Habits/Habits.tsx` - for data fetching and rendering patterns
+- `client/src/features/Habits/HabitsContainer.tsx` - for container component structure
 
 **Key patterns to follow:**
 
@@ -421,7 +432,7 @@ it('should handle API errors gracefully', async () => {
 **Reference these existing hooks before creating new ones:**
 
 - `client/src/hooks/useAuth.ts` - for authentication-related hooks
-- `client/src/components/Habits/useHabitForm.ts` - for form management hooks
+- `client/src/features/Habits/useHabitForm.ts` - for form management hooks
 - `client/src/hooks/useForm.ts` - for form handling patterns
 
 **Key patterns to maintain:**
@@ -438,11 +449,11 @@ it('should handle API errors gracefully', async () => {
 
 **Study the established query organization in:**
 
-- `client/src/queries/habits.ts` - for all habit queries and mutations (useHabitData, useCreateHabitMutation,
+- `client/src/data/queries/habits.ts` - for all habit queries and mutations (useHabitData, useCreateHabitMutation,
   useDeleteHabitMutation, etc.)
-- `client/src/queries/auth.ts` - for authentication queries
-- `client/src/queries/queryKeys.ts` - for centralized query key management
-- `client/src/queries/index.ts` - for centralized exports
+- `client/src/data/queries/auth.ts` - for authentication queries
+- `client/src/data/queries/queryKeys.ts` - for centralized query key management
+- `client/src/data/queries/index.ts` - for centralized exports
 
 **Key patterns to maintain:**
 
@@ -516,9 +527,9 @@ export const useCreateHabitMutation = () => {
 
 **Study the established API patterns in:**
 
-- `client/src/api/habit.ts` - for habit-related API functions
-- `client/src/api/userAuth.ts` - for authentication API functions
-- `client/src/queries/queryKeys.ts` - for query key patterns
+- `client/src/data/api/habit.ts` - for habit-related API functions
+- `client/src/data/api/userAuth.ts` - for authentication API functions
+- `client/src/data/queries/queryKeys.ts` - for query key patterns
 
 **Maintain consistency with:**
 
@@ -536,9 +547,9 @@ export const useCreateHabitMutation = () => {
 
 - `client/src/hooks/useForm.ts` - for form hook patterns and integration
 - `client/src/hooks/useHabitLogForm.ts` - for simple form hook examples
-- `client/src/components/Auth/Login.tsx` - for Controller pattern implementation
-- `client/src/components/Auth/ResetPassword.tsx` - for FormField usage
-- `client/src/components/Habits/AddHabitLogDialog.tsx` - for complex forms
+- `client/src/features/Auth/Login.tsx` - for Controller pattern implementation
+- `client/src/features/Auth/ResetPassword.tsx` - for FormField usage
+- `client/src/features/Habits/AddHabitLogDialog.tsx` - for complex forms
 - `client/docs/FORM_HANDLING.md` - for complete documentation
 
 **Form Development Rules:**
@@ -616,33 +627,33 @@ export const useCreateHabitMutation = () => {
 
 **Study the existing query patterns in:**
 
-- `client/src/queries/habits.ts` - for query key management and data fetching patterns
-- `client/src/queries/auth.ts` - for authentication query patterns
+- `client/src/data/queries/habits.ts` - for query key management and data fetching patterns
+- `client/src/data/queries/auth.ts` - for authentication query patterns
 - `client/src/hooks/useAuth.ts` - for context-based state management
 
 ### 2. **Error Handling Patterns**
 
 **Reference existing error handling in:**
 
-- `client/src/api/habit.ts` - for API error handling and user feedback
+- `client/src/data/api/habit.ts` - for API error handling and user feedback
 - `client/src/services/toastService.ts` - for user notification patterns
-- `client/src/components/Habits/useHabitForm.ts` - for form validation and error display
+- `client/src/features/Habits/useHabitForm.ts` - for form validation and error display
 
 ### 3. **Loading and Error State Patterns**
 
 **Study how loading and error states are handled in:**
 
-- `client/src/components/Habits/Habits.tsx` - for data loading and empty states
-- `client/src/components/Auth/Login.tsx` - for form loading states
-- `client/src/queries/habits.ts` - for mutation loading indicators
+- `client/src/features/Habits/Habits.tsx` - for data loading and empty states
+- `client/src/features/Auth/Login.tsx` - for form loading states
+- `client/src/data/queries/habits.ts` - for mutation loading indicators
 
 ### 4. **Styling and UI Patterns**
 
 **Follow the established styling approach in:**
 
 - `client/src/components/ui/` - for shadcn/ui component usage
-- `client/src/components/Habits/Habits.tsx` - for Tailwind CSS class patterns
-- `client/src/components/Auth/Login.tsx` - for form styling consistency
+- `client/src/features/Habits/Habits.tsx` - for Tailwind CSS class patterns
+- `client/src/features/Auth/Login.tsx` - for form styling consistency
 
 ### 5. **Routing Patterns**
 
@@ -655,8 +666,8 @@ export const useCreateHabitMutation = () => {
 
 **Study existing test patterns in:**
 
-- `client/src/components/Auth/Login.spec.tsx` - for component testing approaches
-- `client/src/components/Habits/HabitsCardList.spec.tsx` - for testing with mocks and queries
+- `client/src/features/Auth/Login.spec.tsx` - for component testing approaches
+- `client/src/features/Habits/HabitsCardList.spec.tsx` - for testing with mocks and queries
 
 **Follow the established testing patterns for:**
 
@@ -707,15 +718,15 @@ When working on client-side code, always reference these key files first:
 ### **Core Patterns**
 
 - `client/src/hooks/useAuth.ts` - Authentication and mutations
-- `client/src/components/Habits/useHabitForm.ts` - Form handling and validation
-- `client/src/queries/habits.ts` - Data fetching and state management
-- `client/src/api/` - API interfaces and function patterns
+- `client/src/features/Habits/useHabitForm.ts` - Form handling and validation
+- `client/src/data/queries/habits.ts` - Data fetching and state management
+- `client/src/data/api/` - API interfaces and function patterns
 
 ### **Component Patterns**
 
-- `client/src/components/Auth/Login.tsx` - Form components
-- `client/src/components/Habits/Habits.tsx` - Data display components
-- `client/src/components/Habits/HabitsContainer.tsx` - Container component patterns
+- `client/src/features/Auth/Login.tsx` - Form components
+- `client/src/features/Habits/Habits.tsx` - Data display components
+- `client/src/features/Habits/HabitsContainer.tsx` - Container component patterns
 - `client/src/components/` - General component structure
 
 ### **Configuration**
@@ -814,9 +825,9 @@ Always examine the current codebase first!**
 **Study existing test patterns in:**
 
 - `client/src/hooks/useHabitLogForm.spec.ts` - for custom hook testing
-- `client/src/components/Auth/Login.spec.tsx` - for component testing
-- `client/src/api/habitLog.spec.ts` - for API service testing
-- `client/src/queries/habitLogs.spec.tsx` - for TanStack Query hook testing
+- `client/src/features/Auth/Login.spec.tsx` - for component testing
+- `client/src/data/api/habitLog.spec.ts` - for API service testing
+- `client/src/data/queries/habitLogs.spec.tsx` - for TanStack Query hook testing
 
 **Maintain consistency with:**
 

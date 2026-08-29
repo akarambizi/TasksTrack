@@ -17,12 +17,12 @@ rather than creating new ones.**
 
 ## MANDATORY: OData Endpoint Pattern
 
-**CRITICAL: For ANY endpoint that returns collections or needs filtering - ALWAYS use OData with [EnableQuery].**
+**CRITICAL: Use OData with `[EnableQuery]` for entity collection endpoints that expose client-driven filtering, sorting, or pagination.**
 
 ### When to Use OData
 - GET endpoints that return collections
 - Endpoints needing filtering, sorting, pagination
-- Analytics endpoints
+- Collection endpoints where clients need query composition
 - Any endpoint where clients need flexible querying
 
 ### Required Controller Pattern
@@ -72,10 +72,10 @@ IQueryable<MyResourceResponse> GetResources(string userId);
 - **Interface**: `server/Services/IFocusSessionService.cs`
 
 ### DON'T
-- Return `List<T>` or materialized collections from services
+- Return materialized collections from OData services
 - Add manual filtering logic in controllers
 - Use custom query parameter parsing
-- Forget the `[EnableQuery]` attribute
+- Forget the `[EnableQuery]` attribute on an OData collection endpoint
 
 ### DO
 - Always add `[EnableQuery]` attribute
@@ -90,6 +90,7 @@ IQueryable<MyResourceResponse> GetResources(string userId);
 - Authentication endpoints
 - File upload/download
 - Simple lookup data
+- Aggregate/read-model endpoints with a fixed response contract, such as `api/focus/history/calendar`, `api/focus/history/timeline`, and `api/focus/history/day/{localDate}`
 
 ### 1. **Follow Existing Naming Conventions**
 
@@ -177,7 +178,7 @@ server/
 
 - `server/Controllers/AuthController.cs` - for authentication endpoints and response patterns
 - `server/Controllers/AuthController.cs` - for API endpoint patterns and error handling
-- `server/Controllers/UsersController.cs` - for additional API patterns
+- `server/Controllers/ActivityController.cs` - for date-range validation and aggregate API patterns
 
 **Key patterns to maintain:**
 

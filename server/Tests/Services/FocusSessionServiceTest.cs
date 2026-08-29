@@ -361,5 +361,68 @@ namespace TasksTrack.Tests.Services
             Assert.Equal(25, result.AverageSessionMinutes);
             Assert.Equal(0.8, result.CompletionRate);
         }
+
+        [Fact]
+        public async Task GetCalendarHistoryAsync_GroupsSessionsByLocalDate()
+        {
+            // Arrange
+            var sessions = new List<FocusSession>
+            {
+                new()
+                {
+                    Id = 1,
+                    HabitId = 1,
+                    CreatedBy = _testUserId,
+                    StartTime = new DateTimeOffset(2026, 8, 28, 9, 0, 0, TimeSpan.Zero),
+                    Status = "completed",
+                    ActualDurationSeconds = 1800,
+                    PlannedDurationMinutes = 25,
+                    Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = _testUserId }
+                },
+                new()
+                {
+                    Id = 2,
+                    HabitId = 1,
+                    CreatedBy = _testUserId,
+                    StartTime = new DateTimeOffset(2026, 8, 28, 11, 0, 0, TimeSpan.Zero),
+                    Status = "interrupted",
+                    ActualDurationSeconds = 900,
+                    PlannedDurationMinutes = 25,
+                    Habit = new Habit { Name = "Reading", MetricType = "minutes", CreatedBy = _testUserId }
+                }
+            };
+            _mockFocusSessionRepository
+                .Setup(repository => repository.GetHistorySessionsAsync(It.IsAny<FocusSessionHistoryFilterRequest>(), It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>()))
+                .ReturnsAsync(sessions);
+            var filter = new FocusSessionHistoryFilterRequest
+            {
+                StartDate = "2026-08-28",
+                EndDate = "2026-08-28",
+                Timezone = "UTC"
+            };
+
+            // Act
+            var result = await _service.GetCalendarHistoryAsync(filter);
+
+            // Assert
+            var day = Assert.Single(result.Days);
+            Assert.Equal("2026-08-28", day.LocalDate);
+            Assert.Equal(2, day.SessionCount);
+            Assert.Equal(45, day.TotalFocusMinutes);
+            Assert.Equal(1, day.CompletedSessionCount);
+        }
+
+        [Fact]
+        public async Task GetCalendarHistoryAsync_DateRangeExceedsLimit_ThrowsArgumentException()
+        {
+            var filter = new FocusSessionHistoryFilterRequest
+            {
+                StartDate = "2026-01-01",
+                EndDate = "2026-04-03",
+                Timezone = "UTC"
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetCalendarHistoryAsync(filter));
+        }
     }
 }

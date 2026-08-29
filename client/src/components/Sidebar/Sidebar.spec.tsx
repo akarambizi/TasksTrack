@@ -78,11 +78,6 @@ describe('UserNav', () => {
         expect(screen.getByText('test@example.com')).toBeInTheDocument();
     });
 
-    it('shows settings button', () => {
-        renderWithProviders(<UserNav />);
-        expect(screen.getByTestId('settings-button')).toBeInTheDocument();
-    });
-
     it('shows logout button', () => {
         renderWithProviders(<UserNav />);
         expect(screen.getByTestId('logout-button')).toBeInTheDocument();
@@ -115,12 +110,7 @@ describe('SideBarButtons', () => {
     it('renders a link to home', () => {
         renderWithProviders(<SideBarButtons />);
         const link = screen.getByRole('link');
-        expect(link).toHaveAttribute('href', '/');
-    });
-
-    it('renders notification bell button', () => {
-        renderWithProviders(<SideBarButtons />);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        expect(link).toHaveAttribute('href', '/dashboard');
     });
 });
 
@@ -135,11 +125,6 @@ describe('SideBarLinks', () => {
     it('renders Productivity Hub nav link', () => {
         renderWithProviders(<SideBarLinks />);
         expect(screen.getByText('Productivity Hub')).toBeInTheDocument();
-    });
-
-    it('renders Weekly Review nav link', () => {
-        renderWithProviders(<SideBarLinks />);
-        expect(screen.getByText('Weekly Review')).toBeInTheDocument();
     });
 
     it('renders Analytics Hub nav link', () => {

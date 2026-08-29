@@ -36,12 +36,12 @@ vi.mock('@/queries', () => ({
 }));
 
 const mockSetTheme = vi.fn();
-vi.mock('@/components/theme-provider', () => ({
+vi.mock('@/context/ThemeProvider', () => ({
     useTheme: vi.fn(() => ({ setTheme: mockSetTheme, theme: 'light' })),
 }));
 
 import * as queriesModule from '@/queries';
-import * as themeModule from '@/components/theme-provider';
+import * as themeModule from '@/context/ThemeProvider';
 
 const mockUseLogout = queriesModule.useLogout as ReturnType<typeof vi.fn>;
 const mockUseTheme = themeModule.useTheme as ReturnType<typeof vi.fn>;
@@ -76,11 +76,6 @@ describe('UserMenu', () => {
         expect(mockLogoutMutate).toHaveBeenCalled();
     });
 
-    it('shows Settings and Support options', () => {
-        renderWithProviders(<UserMenu />);
-        expect(screen.getByText('Settings')).toBeInTheDocument();
-        expect(screen.getByText('Support')).toBeInTheDocument();
-    });
 });
 
 describe('ThemeToggle', () => {

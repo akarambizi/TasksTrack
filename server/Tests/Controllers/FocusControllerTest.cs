@@ -511,5 +511,47 @@ namespace TasksTrack.Tests.Controllers
             var statusResult = Assert.IsType<ObjectResult>(result.Result);
             Assert.Equal(500, statusResult.StatusCode);
         }
+
+        [Fact]
+        public async Task GetCalendarHistory_ValidFilter_ReturnsOkResult()
+        {
+            var filter = new FocusSessionHistoryFilterRequest
+            {
+                StartDate = "2026-08-28",
+                EndDate = "2026-08-28",
+                Timezone = "UTC"
+            };
+            var response = new CalendarHistoryResponse
+            {
+                StartDate = filter.StartDate,
+                EndDate = filter.EndDate,
+                Timezone = filter.Timezone,
+                Days = new List<CalendarDaySummaryResponse>()
+            };
+            _mockService.Setup(service => service.GetCalendarHistoryAsync(filter)).ReturnsAsync(response);
+
+            var result = await _controller.GetCalendarHistory(filter);
+
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetCalendarHistory_InvalidDateRange_ReturnsBadRequest()
+        {
+            var filter = new FocusSessionHistoryFilterRequest
+            {
+                StartDate = "2026-08-29",
+                EndDate = "2026-08-28",
+                Timezone = "UTC"
+            };
+            _mockService
+                .Setup(service => service.GetCalendarHistoryAsync(filter))
+                .ThrowsAsync(new ArgumentException("Start date must be before or equal to end date."));
+
+            var result = await _controller.GetCalendarHistory(filter);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
     }
 }

@@ -1,5 +1,4 @@
 import { test as baseTest } from '@playwright/test';
-import { TEST_USERS } from './constants/test-data';
 
 /**
  * Base test configuration with common setup
@@ -16,6 +15,3 @@ export const test = baseTest.extend({
 
 // Re-export for convenience
 export { expect } from '@playwright/test';
-
-/** @lintignore */
-export const testUser = TEST_USERS.STANDARD;

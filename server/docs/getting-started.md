@@ -9,7 +9,7 @@ It covers the essential setup steps, key concepts, and common development workfl
 
 Before starting development, ensure you have:
 
-- [ ] **.NET 8 SDK** - [Download here](https://dotnet.microsoft.com/download)
+- [ ] **.NET 9 SDK** - [Download here](https://dotnet.microsoft.com/download)
 - [ ] **Node.js 18+** - [Download here](https://nodejs.org/)
 - [ ] **Docker Desktop** - [Download here](https://www.docker.com/products/docker-desktop)
 - [ ] **Git** - [Download here](https://git-scm.com/)
@@ -71,7 +71,7 @@ npm run dev       # Uses real backend server
 
 ```text
 TasksTrack/
-├── server/                    # ASP.NET Core 8 Web API
+├── server/                    # ASP.NET Core 9 Web API
 │   ├── Controllers/          # HTTP request handlers
 │   ├── Services/             # Business logic layer
 │   ├── Repositories/         # Data access layer
@@ -79,7 +79,7 @@ TasksTrack/
 │   ├── Data/                 # Database context
 │   ├── Tests/                # Unit and integration tests
 │   └── docs/                 # Server documentation
-├── client/                    # React 18 + TypeScript
+├── client/                    # React 19 + TypeScript
 │   ├── src/
 │   │   ├── components/       # UI components
 │   │   ├── hooks/            # Custom React hooks
@@ -178,7 +178,7 @@ Component → Custom Hook → API Service → Backend API
 1. **Create API Types:**
 
    ```typescript
-   // client/src/api/taskCategories.types.ts
+   // client/src/data/api/taskCategories.types.ts
    export interface ITaskCategory {
        id: number;
        name: string;
@@ -189,7 +189,7 @@ Component → Custom Hook → API Service → Backend API
 2. **Create API Service:**
 
    ```typescript
-   // client/src/api/taskCategories.ts
+   // client/src/data/api/taskCategories.ts
    export const getTaskCategories = async (): Promise<ITaskCategory[]> => {
        // API call implementation
    };

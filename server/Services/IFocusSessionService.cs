@@ -10,6 +10,9 @@ namespace TasksTrack.Services
         Task<FocusSessionResponse> CompleteSessionAsync(FocusSessionCompleteRequest request);
         Task<FocusSessionResponse> CancelSessionAsync(FocusSessionCompleteRequest request);
         IQueryable<FocusSessionResponse> GetSessions();
+        Task<CalendarHistoryResponse> GetCalendarHistoryAsync(FocusSessionHistoryFilterRequest filter);
+        Task<TimelineHistoryResponse> GetTimelineHistoryAsync(FocusSessionHistoryFilterRequest filter);
+        Task<FocusSessionDayDetailResponse> GetDayDetailAsync(string localDate, FocusSessionHistoryFilterRequest filter);
         Task<FocusSessionResponse?> GetActiveSessionAsync();
         Task<FocusSessionAnalytics> GetAnalyticsAsync();
     }

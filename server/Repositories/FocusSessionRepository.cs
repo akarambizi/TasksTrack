@@ -35,6 +35,30 @@ namespace TasksTrack.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<FocusSession>> GetHistorySessionsAsync(
+            FocusSessionHistoryFilterRequest filter,
+            DateTimeOffset rangeStartUtc,
+            DateTimeOffset rangeEndUtc)
+        {
+            var query = _context.FocusSessions
+                .Include(fs => fs.Habit)
+                .Where(fs => fs.StartTime < rangeEndUtc && (fs.EndTime == null || fs.EndTime >= rangeStartUtc));
+
+            if (filter.HabitId.HasValue)
+            {
+                query = query.Where(fs => fs.HabitId == filter.HabitId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Category))
+            {
+                query = query.Where(fs => fs.Habit != null && fs.Habit.Category == filter.Category);
+            }
+
+            return await query
+                .OrderBy(fs => fs.StartTime)
+                .ToListAsync();
+        }
+
         public async Task<FocusSession?> GetActiveOrPausedSessionAsync()
         {
             return await _context.FocusSessions

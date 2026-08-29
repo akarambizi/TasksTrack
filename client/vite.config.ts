@@ -25,6 +25,15 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@/api": path.resolve(__dirname, "./src/data/api"),
+      "@/queries": path.resolve(__dirname, "./src/data/queries"),
+      "@/types": path.resolve(__dirname, "./src/data/types"),
+      "@/components/Analytics": path.resolve(__dirname, "./src/features/Analytics"),
+      "@/components/Auth": path.resolve(__dirname, "./src/features/Auth"),
+      "@/components/Categories": path.resolve(__dirname, "./src/features/Categories"),
+      "@/components/FocusSession": path.resolve(__dirname, "./src/features/FocusSession"),
+      "@/components/Habits": path.resolve(__dirname, "./src/features/Habits"),
+      "@/components/Sync": path.resolve(__dirname, "./src/features/Sync"),
       "@": path.resolve(__dirname, "./src"),
     },
   },
